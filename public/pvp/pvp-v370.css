@@ -254,3 +254,18 @@ html.pvp-mobile-device.pvp-v370 .pvp370-identity-box{max-width:180px;padding:3px
 html.pvp-mobile-device.pvp-v370 .pvp370-id-player{font-size:8px}
 html.pvp-mobile-device.pvp-v370 .pvp370-id-deck{font-size:7px}
 html.pvp-mobile-device.pvp-v370 .pvp370-signal{flex-basis:26px;width:26px;height:15px}
+
+/* PvP first-paint gate: never expose placeholder/empty battlefield during coin/opening hydration. */
+body.pvp-booting .app{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+.pvp370-coin{z-index:30050!important;background:#02080e!important}
+body.pvp-coin-gate .pvp370-coin{display:grid!important}
+
+/* Portable Active Card is height-constrained so the complete card remains visible on short tablet/phone landscapes. */
+html.pvp-mobile-device.pvp-v370 .active-card-stage{align-items:stretch!important;min-height:0!important;overflow:hidden!important}
+html.pvp-mobile-device.pvp-v370 .active-card-visual{
+  width:auto!important;height:100%!important;max-width:100%!important;max-height:100%!important;
+  aspect-ratio:5/7!important;flex:0 1 auto!important;margin:0 auto!important;
+}
+html.pvp-mobile-device.pvp-v370 .active-card-visual img{
+  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;
+}

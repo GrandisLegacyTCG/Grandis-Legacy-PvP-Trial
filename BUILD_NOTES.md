@@ -68,3 +68,10 @@ This is the **v3.70 testing branch**. Promote to v3.80 only after live two-brows
 - Event IDs are deduplicated client-side so reconnect/resend cannot replay settled battle feedback.
 - Physical/Magical Attack, Physical/Magical Defense, Dodge, and Heal continue to use the original bundled VS AI v6.80 assets; no website dependency or replacement effect was added.
 - Added an authoritative battle-feedback regression test covering attacks from both canonical sides and verifying the server emits exactly one public feedback event originating from the canonical PvP ledger.
+
+## 2026-10-02 — Authoritative presentation parity pass
+- PvP presentation timing now follows the proven v3.51 authoritative orchestration model: capture old geometry, import the authoritative snapshot without heuristic diff animation, then replay explicit server animation events.
+- Actual card motion, Draw, Shard gain, Tribute, Rank Up, Legacy, battle VFX, and SFX continue to use the VS AI v6.80 presentation engine/assets.
+- Battle VFX now retries until the target Hero anchor is paint-ready; battle audio is deduplicated separately.
+- Opening coin flow fully gates the battlefield until first authoritative hydration/paint is ready, preventing Round/Phase information leaks and empty-field flashes on slower tablets.
+- Mobile/tablet Active Card preview is height-constrained with contain scaling so the full card remains visible.
