@@ -279,15 +279,32 @@ function importBoard(msg){
   try{
     if(!serverBoardHydrated(board))throw new Error('Authoritative server board is missing Hero/deck state.');
     adapter()?.setSharedBoardMode?.(true);
+    // Follow the proven PvP v3.51 orchestration: capture from the old board, fire
+    // authoritative battle SFX immediately, import the new state, then queue all
+    // non-battle motions without an extra paint delay. Battle VFX alone waits for
+    // the imported Hero anchors to become paint-ready.
     const animationPlans=prepareAuthoritativeAnimations(m,seat),battleFeedback=battleFeedbackFromPlans(animationPlans);
     if(battleFeedback.length)playBattleAudioNow(battleFeedback);
     const ok=adapter()?.importViewerSafeSnapshot?.(board,seat,{skipImportAnimations:true});
     if(ok===false||!runtimeBoardHydrated())throw new Error('Viewer-safe board import did not hydrate the local v6.80 runtime.');
-    state.lastAppliedRevision=rev;state.lastAppliedStatus=status;forceBattlefieldRender();
-    const afterPaint=()=>{playAuthoritativeAnimations(animationPlans);B()?.renderCurrentAuthoritativePendingChoice?.();ensureBattlefieldChrome();if(battleFeedback.length)scheduleBattleVfx(battleFeedback)};
+    state.lastAppliedRevision=rev;state.lastAppliedStatus=status;
+    const playImportedPresentation=()=>{
+      playAuthoritativeAnimations(animationPlans);
+      B()?.renderCurrentAuthoritativePendingChoice?.();
+      ensureBattlefieldChrome();
+      if(battleFeedback.length)scheduleBattleVfx(battleFeedback);
+    };
     const firstStartedReveal=status==='started'&&document.body.classList.contains('pvp-booting');
-    if(firstStartedReveal)revealBattlefieldAfterHydration(afterPaint);
-    else if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(afterPaint));else setTimeout(afterPaint,34);
+    if(firstStartedReveal){
+      // Keep the first field hidden until it is hydrated/painted on slower tablets,
+      // then reveal and immediately start the authoritative presentation.
+      forceBattlefieldRender();
+      revealBattlefieldAfterHydration(playImportedPresentation);
+    }else{
+      // Normal gameplay revisions must not wait two RAFs before Draw / Rank Up /
+      // Card / Shard sound+motion. This is the key PvP v3.51 timing behavior.
+      playImportedPresentation();
+    }
   }catch(err){console.error('[PvP v3.70] board import failed',err);state.lastAppliedRevision=-1;state.lastAppliedStatus='';setMessage('Battlefield sync failed: '+String(err?.message||err),true)}
 }
 function handleSnapshot(msg){
@@ -343,6 +360,11 @@ function boot(){
   orientationRoot();
   if(state.deckKey){try{E()?.selectOptionBDeck?.('PLAYER',state.deckKey)}catch{}}
   installDom();adapter()?.setSharedBoardMode?.(true);B()?.setSharedBoardMode?.(true);
+  // Match PvP v3.51: unlock/preroll audio on a real user gesture and warm battle
+  // presentation assets early so authoritative SFX/VFX do not start cold.
+  const requestGameplayAudioUnlock=()=>{try{return !!B()?.unlockGameplayAudioPlayback?.()}catch{return false}};
+  ['pointerdown','touchstart','keydown'].forEach(type=>document.addEventListener(type,requestGameplayAudioUnlock,{capture:true,passive:type==='touchstart'}));
+  try{B()?.prepareAuthoritativeBattleAssets?.()}catch{}
   window.GL_PVP_NETWORK={version:VERSION,send,sendIntent,getSnapshot:()=>state.snapshot,reconnect:()=>{state.seatExitHold=false;connect(true)},resetRoom,surrender:()=>sendIntent('executeConfirmedSurrender',[]),fitIdentity};
   connect();
   setInterval(()=>{if(state.ws?.readyState===WebSocket.OPEN){state.pingAt=Date.now();send('ping',{clientAt:state.pingAt,latencyMs:state.latencyMs})}},10000);

@@ -75,3 +75,11 @@ This is the **v3.70 testing branch**. Promote to v3.80 only after live two-brows
 - Battle VFX now retries until the target Hero anchor is paint-ready; battle audio is deduplicated separately.
 - Opening coin flow fully gates the battlefield until first authoritative hydration/paint is ready, preventing Round/Phase information leaks and empty-field flashes on slower tablets.
 - Mobile/tablet Active Card preview is height-constrained with contain scaling so the full card remains visible.
+
+
+## 2026-10-02 — PvP v3.51 timing parity + battle VFX readiness
+- Normal authoritative presentation no longer waits for an extra double-`requestAnimationFrame` after each imported revision. Draw, Shard Draw, Rank Up, Tribute, Legacy, and card motions are queued immediately after the server snapshot import, matching the proven PvP v3.51 orchestration timing.
+- Battle SFX still fires before board import; only battle VFX waits for paint-ready Hero anchors.
+- Added user-gesture audio unlock/warmup and early battle-asset priming so Card/Battle audio starts warm instead of cold on mobile/tablet browsers.
+- Battle VFX PNG animations are paused at frame 0 until image decode completes; the removal timer also starts only after decode. This prevents large Attack/Defense/Heal PNGs from finishing invisibly while `gl-decode-pending` is active.
+- Battle VFX PNGs were losslessly re-optimized (same dimensions/transparency/pixels) to reduce decode/transfer cost where possible.

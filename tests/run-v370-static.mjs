@@ -57,4 +57,14 @@ for(const needle of ['body.pvp-booting .app','.pvp370-coin{z-index:30050','activ
 
 const router=readFileSync(join(root,'server/gameplay-intent-router.mjs'),'utf8');
 for(const needle of ['commitManaShardPaymentChoice','repairOrphanBlockingState']) if(!router.includes(needle)) throw new Error('Intent router missing '+needle);
+
+// Presentation timing parity: v3.51 orchestration with v6.80 presentation.
+if(!client.includes("const requestGameplayAudioUnlock=()=>")) throw new Error('PvP gesture audio unlock hook missing');
+if(!sharedApp.includes('unlockGameplayAudioPlayback:unlockGameplayAudioPlayback')||!sharedApp.includes('prepareAuthoritativeBattleAssets:primeBattleFeedbackAssets')) throw new Error('PvP audio/VFX warmup bridge missing');
+const importIdx=client.indexOf('const ok=adapter()?.importViewerSafeSnapshot?.(board,seat,{skipImportAnimations:true});');
+const normalPlayIdx=client.indexOf('playImportedPresentation();',importIdx);
+if(importIdx<0||normalPlayIdx<0) throw new Error('Authoritative v3.51-style immediate post-import presentation path missing');
+if(client.slice(importIdx,normalPlayIdx).includes('requestAnimationFrame')) throw new Error('Normal Draw/Rank Up presentation is still delayed by RAF after import');
+if(!sharedApp.includes("node.style.animationPlayState='paused'")||!sharedApp.includes('node._battleReadyPromise')) throw new Error('Battle VFX decode-safe animation clock missing');
+
 console.log('v3.70 static architecture: PASS');

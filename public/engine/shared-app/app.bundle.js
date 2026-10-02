@@ -290,6 +290,18 @@
     clip.style.left=rect.left+'px';clip.style.top=rect.top+'px';clip.style.width=rect.width+'px';clip.style.height=rect.height+'px';
     layer.appendChild(clip);return clip;
   }
+  function armBattleVfxImage(node){
+    if(!node)return Promise.resolve(false);
+    // PvP presentation can receive the authoritative result before a large VFX PNG has
+    // finished decoding on slower/tablet browsers. Pause the CSS animation at frame 0
+    // until the image is actually paint-ready, then start the animation clock.
+    try{node.style.animationPlayState='paused';}catch(e){}
+    var ready=Promise.resolve(prepareImageForPaint(node)).then(function(ok){
+      try{node.style.animationPlayState='running';}catch(e){}
+      return ok!==false;
+    },function(){try{node.style.animationPlayState='running';}catch(e){}return false;});
+    node._battleReadyPromise=ready;return ready;
+  }
   function battleVfxNode(src,cls,rect,scale,clipToCard){
     var layer=battleFeedbackLayer();if(!layer||!rect)return null;
     var tier=battleVfxTier(cls);
@@ -306,15 +318,19 @@
       node.style.width=(insideScale*100)+'%';node.style.height=(insideScale*100)+'%';
       node.style.left=(((1-insideScale)*50))+'%';node.style.top=(((1-insideScale)*50))+'%';
     }
-    node.draggable=false;host.appendChild(node);prepareImageForPaint(node);node._battleHost=host;return node;
+    node.draggable=false;host.appendChild(node);node._battleHost=host;armBattleVfxImage(node);return node;
   }
   function battleHealNode(src,cls,rect,side){
     var host=battleVfxClip(rect,11852);if(!host)return null;
     var node=document.createElement('img');node.src=src;node.className='gl-battle-vfx '+cls;
     node.style.width='46%';node.style.height='58%';node.style.top='34%';node.style.left=(side==='right'?'50%':'4%');
-    node.draggable=false;host.appendChild(node);prepareImageForPaint(node);node._battleHost=host;return node;
+    node.draggable=false;host.appendChild(node);node._battleHost=host;armBattleVfxImage(node);return node;
   }
-  function battleRemoveLater(node,ms){if(!node)return;setTimeout(function(){var host=node._battleHost;removeVisualNode(node);if(host&&host!==node&&host.parentNode)removeVisualNode(host);},Math.max(50,Number(ms||700)));}
+  function battleRemoveLater(node,ms){
+    if(!node)return;
+    function armRemoval(){setTimeout(function(){var host=node._battleHost;removeVisualNode(node);if(host&&host!==node&&host.parentNode)removeVisualNode(host);},Math.max(50,Number(ms||700)));}
+    if(node._battleReadyPromise&&typeof node._battleReadyPromise.then==='function')node._battleReadyPromise.then(armRemoval,armRemoval);else armRemoval();
+  }
   function battlePulseHeroClass(side,lane,cls,ms){
     var anchor=battleHeroAnchor(side,lane);if(!anchor)return false;
     anchor.classList.remove(cls);void anchor.offsetWidth;anchor.classList.add(cls);
@@ -327,7 +343,7 @@
     evt._sound_played=true;
     if(evt.kind==='heal')return battlePlayAudio(GL_BATTLE_AUDIO.heal,.52);
     if(evt.outcome==='dodge')return battlePlayAudio(GL_BATTLE_AUDIO.dodge,.62);
-    if(evt.outcome==='block')return battlePlayAudio((evt.defense_kind||'P')==='M'?GL_BATTLE_AUDIO.mDefense:GL_BATTLE_AUDIO.pDefense,.6);
+    if(evt.outcome==='block'||evt.outcome==='negate')return battlePlayAudio((evt.defense_kind||'P')==='M'?GL_BATTLE_AUDIO.mDefense:GL_BATTLE_AUDIO.pDefense,.6);
     return battlePlayAudio((evt.attack_kind||'P')==='M'?GL_BATTLE_AUDIO.mAttack:GL_BATTLE_AUDIO.pAttack,.6);
   }
   function runBattleFeedback(evt){
@@ -349,8 +365,8 @@
     }else{
       var attackNode=battleVfxNode(attackSrc,attackKind==='M'?'gl-battle-mattack':'gl-battle-pattack',rect,.72,true);
       battleRemoveLater(attackNode,650);
-      if(evt.has_damage)battlePulseHeroClass(evt.side,evt.lane,'gl-battle-damage-card',520);
-      if(evt.outcome==='block'){
+      if(evt.has_damage&&evt.outcome!=='negate')battlePulseHeroClass(evt.side,evt.lane,'gl-battle-damage-card',520);
+      if(evt.outcome==='block'||evt.outcome==='negate'){
         duration=820;
         var defKind=evt.defense_kind||'P',defSrc=defKind==='M'?GL_BATTLE_VFX.mDefense:GL_BATTLE_VFX.pDefense;
         setTimeout(function(){
@@ -358,6 +374,7 @@
           var isMagicDefense=defKind==='M';
           var defNode=battleVfxNode(defSrc,isMagicDefense?'gl-battle-mdef':'gl-battle-pdef',fresh,1.08,isMagicDefense?false:true);
           battleRemoveLater(defNode,640);
+          if(evt.outcome==='negate')battlePulseHeroClass(evt.side,evt.lane,'gl-battle-negate-card',700);
         },105);
       }else{
       }
@@ -485,8 +502,24 @@
   }
   if(typeof window!=='undefined'&&window.addEventListener){window.addEventListener('resize',refreshPendingAttackDirectionGeometry);window.addEventListener('scroll',refreshPendingAttackDirectionGeometry,true);}
   function primeBattleFeedbackAssets(){
-    Object.keys(GL_BATTLE_VFX).forEach(function(k){preloadVisualAsset(GL_BATTLE_VFX[k]);});
+    var visualPromises=Object.keys(GL_BATTLE_VFX).map(function(k){return preloadVisualAsset(GL_BATTLE_VFX[k]);});
     Object.keys(GL_BATTLE_AUDIO).forEach(function(k){primeAudioAsset(GL_BATTLE_AUDIO[k]);});
+    return Promise.all(visualPromises);
+  }
+  function unlockGameplayAudioPlayback(){
+    if(typeof Audio==='undefined')return false;
+    var sources=['engine/assets/audio/Card Sound.mp3','engine/assets/audio/Coin Flip.mp3'];
+    Object.keys(GL_BATTLE_AUDIO).forEach(function(k){sources.push(GL_BATTLE_AUDIO[k]);});
+    sources.forEach(function(src){
+      try{
+        var base=primeAudioAsset(src),probe=(base&&typeof base.cloneNode==='function')?base.cloneNode(true):new Audio(src);
+        probe.preload='auto';probe.muted=true;probe.volume=0;probe.currentTime=0;
+        var pr=probe.play();
+        if(pr&&typeof pr.then==='function')pr.then(function(){try{probe.pause();probe.currentTime=0;}catch(e){}}).catch(function(){});
+        else{try{probe.pause();probe.currentTime=0;}catch(e){}}
+      }catch(e){}
+    });
+    return true;
   }
   var GL_AI_TURN_DIRECTOR={active:false,token:0,timer:null};
   function aiTurnDirectorAvailable(){ return !window.GL_PVP_SHARED_BOARD_ACTIVE && typeof window!=='undefined' && typeof setTimeout==='function'; }
@@ -10695,6 +10728,8 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     testGameplayFoundationFixes:simulateV559GameplayFixes,
     testV69SourcePendingAudit:simulateV69SourcePendingAudit,
     playOpeningCoinSound:playOpeningCoinSound,
+    unlockGameplayAudioPlayback:unlockGameplayAudioPlayback,
+    prepareAuthoritativeBattleAssets:primeBattleFeedbackAssets,
     // Authoritative PvP presentation transport: audio is played as soon as the
     // server revision arrives; VFX is replayed after the imported board is painted.
     playAuthoritativeBattleFeedbackAudio:function(evt){ return playBattleFeedbackAudioNow(evt); },
