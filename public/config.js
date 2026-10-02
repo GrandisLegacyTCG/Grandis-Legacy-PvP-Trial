@@ -7,7 +7,7 @@
   window.GL_PVP_SHARED_BOARD_ACTIVE=true;
   window.GL_CONFIG={
     version:'Grandis Legacy PvP v3.70',
-    buildId:'gl-pvp-3.70-v680-fresh-r4-local-assets-hydration-2026-10-02',
+    buildId:'gl-pvp-3.70-v680-fresh-r5-battle-feedback-2026-10-02',
     mode:'server-authoritative-human-vs-human',
     singleRoom:true,
     roomId:'GRANDIS_PVP',

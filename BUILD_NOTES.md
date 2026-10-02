@@ -19,7 +19,7 @@ Build date: 2026-10-02
 
 The current PvP branch keeps the v6.80 battlefield/runtime as the base and changes only the PvP integration points needed for local assets, two-human state mirroring, and presentation/network wiring. Against the supplied 294-file v6.80 package, all 294 files remain present; 288 are byte-identical and 6 are intentionally changed (`index.html`, `option-b-runtime.js`, `FILE_MANIFEST_SHA256.csv`, `engine/shared-app/app.bundle.js`, `engine/js/app.bundle.js`, `engine/js/static-data.js`).
 
-The `engine/shared-app/app.bundle.js` change is limited to the PvP seat-mirroring contract for physical Shard state; it does not enable AI control. Card art/audio and the normal battlefield presentation remain bundled locally.
+The `engine/shared-app/app.bundle.js` changes are limited to PvP seat mirroring for physical Shard state plus authoritative battle-feedback instrumentation/bridge hooks; they do not enable AI control or replace v6.80 battle presentation. Card art/audio and the normal battlefield presentation remain bundled locally.
 
 ## Verification
 
@@ -59,3 +59,12 @@ This is the **v3.70 testing branch**. Promote to v3.80 only after live two-brows
 - Fixed remote pending ownership leak: a Player 2 Tribute/selection may block Player 2 correctly, but Player 1 no longer receives Player 2's `CANCEL` button (and vice versa).
 - Added setup Lobby **Leave Seat** / remove-seat flow: P1 and P2 can leave themselves; P1 can remove P2; P2 can remove P1 only while P1 is offline. Seat exit invalidates the token and suppresses automatic immediate seat reclaim.
 - Retains the earlier anti-stuck Draw→Deploy human progression normalization, first-hydration guard, local asset bundle, Northflank Docker fix, identity layout, opponent resource-label mirroring, compact Shard stacking, fixed Mana Pool container, and mobile/tablet zoom/scroll lock.
+
+
+## v3.70 authoritative battle presentation fix
+
+- Restored the proven PvP v3.51 transport pattern without using v3.51 gameplay or assets: the headless server records the exact resolved v6.80 battle feedback while render suppression is active, publishes it as a one-shot `battle_feedback` event, and strips the internal ledger from viewer snapshots.
+- Browser clients localize the event for seat 1/seat 2, play the approved v6.80 battle SFX immediately on the authoritative revision, import/render the canonical board, then replay the approved v6.80 VFX after two animation frames so Hero anchors are paint-ready.
+- Event IDs are deduplicated client-side so reconnect/resend cannot replay settled battle feedback.
+- Physical/Magical Attack, Physical/Magical Defense, Dodge, and Heal continue to use the original bundled VS AI v6.80 assets; no website dependency or replacement effect was added.
+- Added an authoritative battle-feedback regression test covering attacks from both canonical sides and verifying the server emits exactly one public feedback event originating from the canonical PvP ledger.

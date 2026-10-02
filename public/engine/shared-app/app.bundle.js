@@ -368,9 +368,24 @@
     },duration+40);
     return true;
   }
+  function recordPvpBattleFeedbackEvent(state,feedback){
+    if(!state||!feedback||!state.pvpHumanVsHuman)return null;
+    var ledger=state.pvpBattleFeedbackEvents||(state.pvpBattleFeedbackEvents=[]);
+    var copy=Object.assign({},feedback);
+    copy.id=copy.id||('pvp-battle-'+Date.now()+'-'+(++GL_BATTLE_FEEDBACK_SEQUENCE));
+    copy.timestamp=Number(copy.timestamp||Date.now());
+    ledger.push(copy);
+    if(ledger.length>80)ledger.splice(0,ledger.length-80);
+    return copy;
+  }
   function queueBattleFeedback(evt){
-    if(!evt||(SUPPRESS_RENDER&&!EXTERNAL_HUMAN_UI))return false;
-    evt=Object.assign({id:++GL_BATTLE_FEEDBACK_SEQUENCE,play_sound:true},evt);
+    if(!evt)return false;
+    evt=Object.assign({id:'battle-'+Date.now()+'-'+(++GL_BATTLE_FEEDBACK_SEQUENCE),play_sound:true},evt);
+    // In server-authoritative human PvP the runtime resolves with render suppression on.
+    // Preserve the exact approved v6.80 battle feedback in a canonical ledger so the
+    // server can transport one viewer-safe event to both browsers.
+    recordPvpBattleFeedbackEvent(appState,evt);
+    if(SUPPRESS_RENDER&&!EXTERNAL_HUMAN_UI)return true;
     playBattleFeedbackAudioNow(evt);
     GL_BATTLE_FEEDBACK_QUEUE.push(evt);return true;
   }
@@ -10615,6 +10630,10 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     testGameplayFoundationFixes:simulateV559GameplayFixes,
     testV69SourcePendingAudit:simulateV69SourcePendingAudit,
     playOpeningCoinSound:playOpeningCoinSound,
+    // Authoritative PvP presentation transport: audio is played as soon as the
+    // server revision arrives; VFX is replayed after the imported board is painted.
+    playAuthoritativeBattleFeedbackAudio:function(evt){ return playBattleFeedbackAudioNow(evt); },
+    playAuthoritativeBattleFeedback:function(evt){ return runBattleFeedback(evt); },
     captureAuthoritativePlayedCardMotion:function(cardId,side,action){ return capturePlayedCardMotion(cardId,side,action||{}); },
     commitAuthoritativePlayedCardMotion:function(snapshot,destination){ return commitAuthoritativePlayedCardMotion(snapshot,destination||{type:'target'}); },
     queueAuthoritativeDrawMotion:function(side,cardId,count){var n=Math.max(1,Number(count||1)),events=[],hand=sideHand(appState,side)||[];for(var i=0;i<n;i++)events.push({id:'external-'+(++GL_ANIMATION_SEQUENCE),type:'CARD_DRAWN',side:side,card_id:cardId,hand_index:Math.max(0,hand.length-n+i),reason:'CARD_EFFECT'});return queueDrawEvents(events,appState);},

@@ -34,6 +34,8 @@ for(const needle of ['compactStep','cards.length>=9?0.46:0.56','isPortable&&!isP
 if(!optionRuntime.includes("pendingOwner(p)==='PLAYER'&&!p?.private_masked")) throw new Error('Remote pending CANCEL ownership guard missing.');
 const sharedApp=readFileSync(join(root,'public/engine/shared-app/app.bundle.js'),'utf8');
 for(const needle of ["sw('playerManaDeck','aiManaDeck')","sw('playerManaPoolCards','aiManaPoolCards')","sw('playerManaClasses','aiManaClasses')","sw('playerManaDeckCount','aiManaDeckCount')"]) if(!sharedApp.includes(needle)) throw new Error('Seat-2 Shard mirror regression guard missing '+needle);
+for(const needle of ['recordPvpBattleFeedbackEvent','playAuthoritativeBattleFeedbackAudio','playAuthoritativeBattleFeedback']) if(!sharedApp.includes(needle)) throw new Error('Authoritative battle presentation bridge missing '+needle);
+for(const needle of ['collectBattleFeedback','playBattleFeedbackAudio','playBattleFeedbackAfterRender','seenBattleFeedbackIds']) if(!client.includes(needle)) throw new Error('PvP battle presentation client transport missing '+needle);
 
 // Tester build must be self-contained: no gameplay/card/shard asset may depend on the public website.
 const publicTextFiles=['public/engine/shared-app/app.bundle.js','public/engine/js/app.bundle.js','public/engine/js/static-data.js'];
@@ -47,8 +49,9 @@ for(const f of [
   'public/assets/shards/Generic.webp','public/assets/shards/Warrior.webp','public/assets/shards/Mage.webp','public/assets/shards/Archer.webp','public/assets/shards/Cleric.webp','public/assets/shards/Thief.webp'
 ]) if(!existsSync(join(root,f))) throw new Error('Bundled PvP asset missing '+f);
 for(const id of ['S1-MAG-H001','S1-WAR-H001','S1-THF-H001','S1-WAR-001','S1-ITM-001','S1-EVT-001']) if(!existsSync(join(root,'public/card-art',id+'.webp'))) throw new Error('Bundled card art missing '+id);
+for(const f of ['public/engine/assets/battle/P.Attack.png','public/engine/assets/battle/M.Attack.png','public/engine/assets/battle/P.Defense.png','public/engine/assets/battle/M.Defense.png','public/engine/assets/battle/Heal.png','public/engine/assets/audio/battle/P.Atk.mp3','public/engine/assets/audio/battle/M.Atk.mp3','public/engine/assets/audio/battle/P.Def.mp3','public/engine/assets/audio/battle/M.Def.mp3','public/engine/assets/audio/battle/Dodge.mp3','public/engine/assets/audio/battle/Heal.mp3']) if(!existsSync(join(root,f))) throw new Error('Bundled battle presentation asset missing '+f);
 if(!client.includes('runtimeBoardHydrated')||!client.includes("if(msg.match?.status==='setup')syncEngineDeckFromLocal()")) throw new Error('Active-match runtime hydration guard missing.');
-for(const needle of ["const firstHydration=state.lastAppliedRevision<0||!runtimeBoardHydrated()","skipImportAnimations:firstHydration","animated board import failed; retrying state-only hydration","if(msg.match?.status==='setup'){state.lastAppliedRevision=-1;state.lastAppliedStatus=''}"]) if(!client.includes(needle)) throw new Error('First-hydration regression guard missing '+needle);
+for(const needle of ["const firstHydration=state.lastAppliedRevision<0||!runtimeBoardHydrated()","skipImportAnimations:firstHydration","animated board import failed; retrying state-only hydration","if(msg.match?.status==='setup'){state.lastAppliedRevision=-1;state.lastAppliedStatus='';state.seenBattleFeedbackIds=Object.create(null)}"]) if(!client.includes(needle)) throw new Error('First-hydration regression guard missing '+needle);
 
 const router=readFileSync(join(root,'server/gameplay-intent-router.mjs'),'utf8');
 for(const needle of ['commitManaShardPaymentChoice','repairOrphanBlockingState']) if(!router.includes(needle)) throw new Error('Intent router missing '+needle);
