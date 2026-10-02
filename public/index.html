@@ -4,7 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Grandis Legacy — PvP v3.70</title>
-<script id="pvp370-mobile-landscape-detect">
+<link rel="icon" type="image/png" href="assets/favicon.png" />
+<script id="pvp370-mobile-orientation-detect">
 (() => {
   const ua = navigator.userAgent || '';
   const screenShort = Math.min(Number(screen.width || 0), Number(screen.height || 0));
@@ -41,18 +42,15 @@
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07111c;color:var(--text);font-family:Noto,Arial,sans-serif}
 body{background-image:linear-gradient(rgba(3,10,18,.30),rgba(3,10,18,.30)),url('assets/ui/Background.png');background-size:cover;background-position:center}
 button{font:inherit}
-/* PvP mobile is landscape-only. Portrait is intentionally not maintained as a gameplay layout. */
-#pvpLandscapeGate{display:none}
-html.pvp-mobile-device.pvp-mobile-portrait #pvpLandscapeGate{
-  position:fixed;inset:0;z-index:60000;display:flex;align-items:center;justify-content:center;
-  padding:24px;background:#07111c;color:#f2f6fb;text-align:center;pointer-events:auto;
+/* Phone/tablet use one landscape layout. In physical portrait the entire app is
+   presented as a virtual landscape canvas, so the user does not need auto-rotate enabled. */
+#pvpOrientationRoot{position:relative;width:100%;height:100%;overflow:hidden}
+html.pvp-mobile-device.pvp-mobile-portrait body{overflow:hidden!important}
+html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot{
+  position:fixed;left:0;top:0;width:100dvh;height:100dvw;overflow:hidden;
+  transform-origin:top left;transform:rotate(90deg) translateY(-100%);
 }
-#pvpLandscapeGate .pvp-landscape-gate-card{
-  width:min(88vw,420px);padding:22px 20px;border:1px solid rgba(244,211,94,.45);border-radius:12px;
-  background:rgba(3,12,20,.96);box-shadow:0 16px 42px rgba(0,0,0,.48);
-}
-#pvpLandscapeGate strong{display:block;color:#f3cf58;font-size:18px;letter-spacing:.03em}
-#pvpLandscapeGate span{display:block;margin-top:7px;color:#cbd8e5;font-size:12px;line-height:1.45}
+html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot>.app{width:100%!important;height:100%!important}
 .app{width:100vw;height:100vh;display:grid;grid-template-columns:85vw 15vw;overflow:hidden}
 .battlefield{position:relative;height:100vh;min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr) 39px minmax(0,1fr) auto;overflow:hidden;border-right:1px solid rgba(244,211,94,.20);padding:0 8px}
 
@@ -281,9 +279,6 @@ html,body{width:100%;height:100%;overflow:hidden}
 <link rel="stylesheet" href="pvp/pvp-v370.css">
 </head>
 <body>
-  <div id="pvpLandscapeGate" aria-live="polite" aria-label="Landscape orientation required">
-    <div class="pvp-landscape-gate-card"><strong>LANDSCAPE REQUIRED</strong><span>Rotate your device to landscape to play.</span></div>
-  </div>
 <div class="app ob-lobby-hidden">
   <main class="battlefield">
     <div class="concept" aria-hidden="true"></div>

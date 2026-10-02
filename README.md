@@ -51,9 +51,12 @@ Actual local/deployed browser play still requires `npm install` so the real `ws`
 
 ## Mobile PvP behavior
 
-- Mobile gameplay is **landscape-only**. Portrait does not expose a separate battlefield layout.
+- Phone and tablet share one **landscape gameplay layout**. If the device is physically portrait, the whole app is rotated as a virtual landscape canvas instead of showing a separate portrait layout or a rotate-device gate.
 - On mobile, tapping a battlefield card shows the standard desktop-position hover preview. Tapping outside the card dismisses it.
 - The mobile double-click/double-tap Card Review popup is disabled. Desktop Card Review behavior is unchanged.
+- The PvP lobby follows the v3.51 visual baseline and is compacted to fit one viewport with no lobby scrolling.
+- Starter Deck 1 is the immediate default lobby selection, so formation/title/Your Deck counts stay synchronized from first render.
+- Mobile and desktop both connect to the same-origin `/ws`; the client guards against stale socket close events and reconnects cleanly after network/background resume.
 
 
 ## Northflank deployment

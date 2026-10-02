@@ -163,7 +163,6 @@ function mobilePreviewImageFromTarget(target){
 }
 document.addEventListener('click',e=>{
   if(!isPvpMobileDevice())return;
-  if(document.documentElement.classList.contains('pvp-mobile-portrait')){hideBattlefieldCardPreview();return}
   const img=mobilePreviewImageFromTarget(e.target);
   if(img){showBattlefieldCardPreview(img);return}
   if(!e.target.closest?.('#sharedPreviewBox'))hideBattlefieldCardPreview();

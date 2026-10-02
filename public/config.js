@@ -7,14 +7,14 @@
   window.GL_PVP_SHARED_BOARD_ACTIVE=true;
   window.GL_CONFIG={
     version:'Grandis Legacy PvP v3.70',
-    buildId:'gl-pvp-3.70-v680-fresh-r2-2026-10-02',
+    buildId:'gl-pvp-3.70-v680-fresh-r3-northflank-mobile-2026-10-02',
     mode:'server-authoritative-human-vs-human',
     singleRoom:true,
     roomId:'GRANDIS_PVP',
     roomName:'Grandis PvP',
     wsPath:'/ws',
-    /* Reuse the former Room 1 service slot for the single v3.70 room after that backend is redeployed. */
-    wsBase:'wss://p01--grandis-legacy-pvp--2kwws8nzlcc2.code.run',
+    // Same-origin WebSocket only. Northflank serves /ws from this exact deployment.
+    wsBase:'',
     maxPlayers:2,
     maxSpectators:0,
     spectatorView:null,

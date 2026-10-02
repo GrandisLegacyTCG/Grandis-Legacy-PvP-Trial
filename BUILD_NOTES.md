@@ -52,5 +52,7 @@ This is the **v3.70 testing branch**. Promote to v3.80 only after live two-brows
 ## v3.70 Northflank + mobile landscape patch
 - Removed stale Docker `COPY runtime` / `COPY sync` steps; the current v6.80-based server uses `public/engine` plus `data`.
 - Increased isolated runtime execution ceiling from 2s to 15s for smaller/throttled deployment instances; gameplay logic is unchanged.
-- Mobile PvP is landscape-only; portrait is blocked by a rotate-device gate.
+- Phone/tablet use one landscape layout. Physical portrait is rendered as a rotated virtual-landscape canvas; the user does not need to enable auto-rotate.
 - Mobile Card Review popup is disabled. A tap on a battlefield card shows the same sidebar hover preview used on desktop; tapping outside dismisses it. Desktop double-click Card Review remains unchanged.
+- Lobby visual baseline follows PvP v3.51, with no-scroll compact height tiers, transparent swap-button hit areas, fixed logo/favicon paths, Player 1 pre-match Kick for Player 2, and Starter Deck 1 initialized immediately.
+- WebSocket is same-origin `/ws` only; mobile reconnect uses stale-socket guards plus online/pageshow/visibility recovery.
