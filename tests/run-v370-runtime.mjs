@@ -17,7 +17,12 @@ const ctx={window:win,document:doc,console,setTimeout,clearTimeout,requestAnimat
 ctx.globalThis=ctx;win.window=win;win.globalThis=ctx;vm.createContext(ctx);new vm.Script(code,{filename:'v680-runtime.js'}).runInContext(ctx,{timeout:5000});normalizeHeadlessRuntimeMetadata(win);
 const b=win.GL_LOCAL_AI_BRIDGE;if(!b?.startSharedMatch||!b?.getCanonicalSnapshot||!b?.completeOpeningFlow) throw new Error('v6.80 PvP bridge unavailable');
 b.setSharedBoardMode?.(true);b.setRenderSuppressed?.(true);
-const start=b.startSharedMatch({player1Name:'Alice',player2Name:'Bob'});if(!start?.appState?.pvpHumanVsHuman) throw new Error('Human-vs-human flag was not enabled');
+const starterKey='starter_01_elemental_lord_conqueror_renegade';
+const start=b.startSharedMatch({player1Name:'Alice',player2Name:'Bob',playerDeckKey:starterKey,player2DeckKey:starterKey});if(!start?.appState?.pvpHumanVsHuman) throw new Error('Human-vs-human flag was not enabled');
+if(!start.appState.playerHeroes?.LEFT?.card_id||!start.appState.aiHeroes?.LEFT?.card_id) throw new Error('Shared match started without Hero state');
+if((start.appState.playerDeck||[]).length!==60||(start.appState.aiDeck||[]).length!==60) throw new Error('Shared match started without 60-card decks');
+const localThumb=win.GL_OPTION_B_ENGINE?.cardView?.('S1-MAG-H001')?.thumb||'';
+if(!/\/card-art\/S1-MAG-H001\.webp(?:\?|$)/.test(localThumb)) throw new Error('Runtime card art is not using bundled local card-art: '+localThumb);
 const opening=b.completeOpeningFlow('PLAYER',{choice:'HEADS',outcome:'TAILS',firstSeat:1},{holdAtDraw:true,bridgeImmediate:false});
 if(!opening?.snapshot?.appState) throw new Error('Opening flow did not produce a canonical snapshot');
 const p1=b.getCanonicalSnapshot(1),p2=b.getCanonicalSnapshot(2);if(!p1?.appState||!p2?.appState) throw new Error('Seat-oriented canonical snapshots unavailable');
