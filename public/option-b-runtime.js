@@ -142,12 +142,32 @@ function discardSelectionState(p,handIndex){
 function directTributeHeroReady(p,side,lane){return !!(isDirectHandCardSearch(p)&&p.resolve_to==='source_exp'&&selectedChoiceIndex(p)!=null&&side===(p.source_side||p.host_side||p.side||'PLAYER')&&lane===(p.source_lane||p.host_lane));}
 function phaseName(p){return String(p||'').replace(/\s*Phase$/i,'');}
 function fitPlayedCards(){const grid=playedGrid;if(!grid)return;const cs=getComputedStyle(grid),gap=parseFloat(cs.columnGap)||0,cell=Math.max(0,(grid.clientWidth-gap*2)/3),w=Math.floor(Math.min(72,cell)),h=Math.floor(w*7/5);grid.querySelectorAll(':scope > .played-card').forEach(x=>{x.style.width=w+'px';x.style.height=h+'px'});}
+function isPvpMobileDevice(){return document.documentElement.classList.contains('pvp-mobile-device')}
+function showBattlefieldCardPreview(img){if(!img||!preview||!sharedBox)return;preview.src=img.src;sharedBox.classList.add('previewing')}
+function hideBattlefieldCardPreview(){if(!preview||!sharedBox)return;sharedBox.classList.remove('previewing');preview.removeAttribute('src')}
 function bindPreview(img){
   if(!img||img.dataset.obPreviewBound==='1')return;
   img.dataset.obPreviewBound='1';
-  img.addEventListener('mouseenter',()=>{preview.src=img.src;sharedBox.classList.add('previewing')});
-  img.addEventListener('mouseleave',()=>{sharedBox.classList.remove('previewing');preview.removeAttribute('src')});
+  img.addEventListener('mouseenter',()=>{if(isPvpMobileDevice())return;showBattlefieldCardPreview(img)});
+  img.addEventListener('mouseleave',()=>{if(isPvpMobileDevice())return;hideBattlefieldCardPreview()});
 }
+function mobilePreviewImageFromTarget(target){
+  if(!isPvpMobileDevice()||!target?.closest)return null;
+  const host=target.closest('.hand-card,.hero-card,.attachment-card,.ob-combat-card,.zone-card,.zoneCard,.played-card,.active-card-visual');
+  if(!host||!host.closest('.app'))return null;
+  const img=target.matches?.('img')?target:host.querySelector('img');
+  if(!img)return null;
+  const src=String(img.getAttribute('src')||img.src||'');
+  if(!src)return null;
+  return img;
+}
+document.addEventListener('click',e=>{
+  if(!isPvpMobileDevice())return;
+  if(document.documentElement.classList.contains('pvp-mobile-portrait')){hideBattlefieldCardPreview();return}
+  const img=mobilePreviewImageFromTarget(e.target);
+  if(img){showBattlefieldCardPreview(img);return}
+  if(!e.target.closest?.('#sharedPreviewBox'))hideBattlefieldCardPreview();
+});
 function hideSidebarHoverPreview(){sidebarHoverPreview.classList.remove('open');sidebarHoverPreview.setAttribute('aria-hidden','true');sidebarHoverImg.removeAttribute('src')}
 function placeSidebarHoverPreview(anchor){
   if(!anchor||!sidebarHoverPreview||!sidebar)return;
@@ -193,6 +213,8 @@ function bindModalPreview(img){
 }
 function closeCardReview(){cardReviewOverlay.classList.remove('open');const body=cardReviewOverlay.querySelector('.ob-card-review-body');if(body)body.innerHTML='';}
 function openCardReview(cardId){
+  // Mobile PvP intentionally has no second-level Card Review popup. A tap uses the normal battlefield hover preview instead.
+  if(isPvpMobileDevice())return;
   if(!cardId)return;const v=cv(cardId),body=cardReviewOverlay.querySelector('.ob-card-review-body');
   cardReviewOverlay.querySelector('#obCardReviewTitle').textContent=v?.name||'Card Review';
   let html='';try{html=window.GL_CARD_PREVIEW_QA?.html?.(cardId)||''}catch{}

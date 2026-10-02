@@ -47,3 +47,10 @@ The server simulation intentionally uses a temporary local WebSocket test stub a
 ## Promotion gate
 
 This is the **v3.70 testing branch**. Promote to v3.80 only after live two-browser end-to-end play confirms networking/reconnect and visual parity in the deployed environment.
+
+
+## v3.70 Northflank + mobile landscape patch
+- Removed stale Docker `COPY runtime` / `COPY sync` steps; the current v6.80-based server uses `public/engine` plus `data`.
+- Increased isolated runtime execution ceiling from 2s to 15s for smaller/throttled deployment instances; gameplay logic is unchanged.
+- Mobile PvP is landscape-only; portrait is blocked by a rotate-device gate.
+- Mobile Card Review popup is disabled. A tap on a battlefield card shows the same sidebar hover preview used on desktop; tapping outside dismisses it. Desktop double-click Card Review remains unchanged.

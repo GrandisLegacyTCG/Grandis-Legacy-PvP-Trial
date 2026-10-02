@@ -14,7 +14,7 @@ const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').tr
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
 const VERSION = 'Grandis Legacy PvP v3.70 — Fresh VS AI v6.80 Base — Single Room — 2 Human Players';
-const BUILD_ID = 'gl-pvp-3.70-v680-fresh-r2-2026-10-02';
+const BUILD_ID = 'gl-pvp-3.70-v680-fresh-r3-northflank-mobile-2026-10-02';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
@@ -1054,7 +1054,7 @@ function createRuntimeEngine() {
   win.window = win;
   win.globalThis = ctx;
   vm.createContext(ctx);
-  RUNTIME_SCRIPT.runInContext(ctx, { timeout: 2000 });
+  RUNTIME_SCRIPT.runInContext(ctx, { timeout: 15000 });
   // Browser Candidate 15 receives these compatibility aliases from its presentation adapter.
   // The headless authority intentionally does not load presentation code, so normalize metadata only.
   normalizeHeadlessRuntimeMetadata(ctx.window);

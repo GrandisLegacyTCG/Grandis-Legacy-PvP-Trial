@@ -47,3 +47,18 @@ npm test
 The test suite verifies the v3.70 wiring, executes the VS AI v6.80 shared runtime headlessly, checks the human-vs-human bridge/opening flow/viewer-safe snapshots, and simulates Player 1 + Player 2 through the fixed-room server including coin flip, turn handoff, second-player action, and rejection of a third client. The server simulation uses a temporary local `ws` test stub and removes it afterward, so the repository is not shipped with `node_modules`.
 
 Actual local/deployed browser play still requires `npm install` so the real `ws` package is available, followed by a two-browser end-to-end check.
+
+
+## Mobile PvP behavior
+
+- Mobile gameplay is **landscape-only**. Portrait does not expose a separate battlefield layout.
+- On mobile, tapping a battlefield card shows the standard desktop-position hover preview. Tapping outside the card dismisses it.
+- The mobile double-click/double-tap Card Review popup is disabled. Desktop Card Review behavior is unchanged.
+
+
+## Northflank deployment
+
+- Builder: **Dockerfile** at repository root.
+- Container port: `3000` by default; Northflank may inject `PORT` and the server honors it.
+- Health check: `/health`.
+- The Docker image copies only `server.js`, `server/`, `public/`, and `data/`. The removed legacy `runtime/` and `sync/` folders are not required by this v6.80-based build.
