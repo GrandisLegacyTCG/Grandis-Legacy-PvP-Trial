@@ -56,3 +56,10 @@ This is the **v3.70 testing branch**. Promote to v3.80 only after live two-brows
 - Mobile Card Review popup is disabled. A tap on a battlefield card shows the same sidebar hover preview used on desktop; tapping outside dismisses it. Desktop double-click Card Review remains unchanged.
 - Lobby visual baseline follows PvP v3.51, with no-scroll compact height tiers, transparent swap-button hit areas, fixed logo/favicon paths, Player 1 pre-match Kick for Player 2, and Starter Deck 1 initialized immediately.
 - WebSocket is same-origin `/ws` only; mobile reconnect uses stale-socket guards plus online/pageshow/visibility recovery.
+
+## v3.70 browser first-hydration fix
+- The first authoritative PvP board snapshot is imported state-only (`skipImportAnimations: true`) so the v6.80 animation diff never runs against a missing previous browser state.
+- After the first successful hydration, subsequent snapshots keep the normal v6.80 import-animation path.
+- If an animated import ever fails on an already hydrated board, the client retries that snapshot state-only rather than leaving the battlefield blank.
+- Returning to setup/lobby resets the per-match hydration marker so the next match also receives a safe first import.
+- Verified in headless Chromium: first import uses state-only hydration, second import re-enables animations, all six Hero slots hydrate, and deck/shard state is populated.

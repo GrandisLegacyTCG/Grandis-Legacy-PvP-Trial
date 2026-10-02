@@ -39,6 +39,7 @@ for(const f of [
 ]) if(!existsSync(join(root,f))) throw new Error('Bundled PvP asset missing '+f);
 for(const id of ['S1-MAG-H001','S1-WAR-H001','S1-THF-H001','S1-WAR-001','S1-ITM-001','S1-EVT-001']) if(!existsSync(join(root,'public/card-art',id+'.webp'))) throw new Error('Bundled card art missing '+id);
 if(!client.includes('runtimeBoardHydrated')||!client.includes("if(msg.match?.status==='setup')syncEngineDeckFromLocal()")) throw new Error('Active-match runtime hydration guard missing.');
+for(const needle of ["const firstHydration=state.lastAppliedRevision<0||!runtimeBoardHydrated()","skipImportAnimations:firstHydration","animated board import failed; retrying state-only hydration","if(msg.match?.status==='setup'){state.lastAppliedRevision=-1;state.lastAppliedStatus=''}"]) if(!client.includes(needle)) throw new Error('First-hydration regression guard missing '+needle);
 
 const router=readFileSync(join(root,'server/gameplay-intent-router.mjs'),'utf8');
 for(const needle of ['commitManaShardPaymentChoice','repairOrphanBlockingState']) if(!router.includes(needle)) throw new Error('Intent router missing '+needle);
