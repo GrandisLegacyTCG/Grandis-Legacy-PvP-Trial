@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <title>Grandis Legacy — PvP v3.70</title>
 <link rel="icon" type="image/png" href="assets/favicon.png" />
 <script id="pvp370-mobile-orientation-detect">
@@ -19,6 +19,14 @@
   sync();
   window.addEventListener('resize', sync, { passive: true });
   window.addEventListener('orientationchange', sync, { passive: true });
+  // Tablet/phone battlefield is a fixed canvas: block browser pinch-zoom/gesture zoom.
+  const stopGesture = e => e.preventDefault();
+  document.addEventListener('gesturestart', stopGesture, { passive: false });
+  document.addEventListener('gesturechange', stopGesture, { passive: false });
+  document.addEventListener('gestureend', stopGesture, { passive: false });
+  document.addEventListener('touchmove', e => {
+    if (e.touches && e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
 })();
 </script>
 <style>
@@ -44,7 +52,9 @@ body{background-image:linear-gradient(rgba(3,10,18,.30),rgba(3,10,18,.30)),url('
 button{font:inherit}
 /* Phone/tablet use one landscape layout. In physical portrait the entire app is
    presented as a virtual landscape canvas, so the user does not need auto-rotate enabled. */
-#pvpOrientationRoot{position:relative;width:100%;height:100%;overflow:hidden}
+#pvpOrientationRoot{position:relative;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+html.pvp-mobile-device,html.pvp-mobile-device body{overscroll-behavior:none!important}
+html.pvp-mobile-device #pvpOrientationRoot,html.pvp-mobile-device #pvpOrientationRoot>.app{touch-action:none}
 html.pvp-mobile-device.pvp-mobile-portrait body{overflow:hidden!important}
 html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot{
   position:fixed;left:0;top:0;width:100dvh;height:100dvw;overflow:hidden;

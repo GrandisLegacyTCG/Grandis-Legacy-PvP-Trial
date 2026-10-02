@@ -10,28 +10,16 @@ Build date: 2026-10-02
 - Two human player seats only.
 - Spectator / Teaching View parked (`maxSpectators: 0`).
 - No room switching, `Go To`, or `Switch To` controls.
-- Battlefield identity is `[Player Name] - [Deck Name]` with one shared 40-character display budget including ` - `.
-- Connection signal renders to the left of the battlefield identity.
+- Battlefield identity is two-line: local **Player Name / Deck Name**, opponent **Deck Name / Player Name**. Desktop limit is 25 characters per line; phone/tablet is 20.
+- Connection signal sits outside the identity box: local-left / opponent-right, aligned to Deck Name.
 - Match timer occupies the first slot of the existing bottom action row, matching the PvP timer position.
 - Human-vs-human opening coin flip: Player 2 calls Heads/Tails.
 
 ## VS AI v6.80 parity guard
 
-The original v6.80 public source contains 294 files. In this PvP build:
+The current PvP branch keeps the v6.80 battlefield/runtime as the base and changes only the PvP integration points needed for local assets, two-human state mirroring, and presentation/network wiring. Against the supplied 294-file v6.80 package, all 294 files remain present; 288 are byte-identical and 6 are intentionally changed (`index.html`, `option-b-runtime.js`, `FILE_MANIFEST_SHA256.csv`, `engine/shared-app/app.bundle.js`, `engine/js/app.bundle.js`, `engine/js/static-data.js`).
 
-- 292 / 294 original v6.80 files are byte-identical.
-- Only `index.html` and `option-b-runtime.js` are changed among original v6.80 files, for PvP wiring/presentation.
-- No original v6.80 file is missing.
-- `engine/shared-app/app.bundle.js` is byte-identical to v6.80.
-- `engine/shared-app/app.css` is byte-identical to v6.80.
-- `engine/shared-ui/*` is byte-identical to v6.80.
-- Card art: 200 / 200 byte-identical to v6.80.
-- Audio: 8 / 8 byte-identical to v6.80.
-
-Source ZIP SHA-256:
-
-- VS AI v6.80: `2fdc1de2436f19cfc30198b85665e5e9f2d988243fda43427e95be7db034397f`
-- PvP v3.51 donor/reference: `138f1f56f2b786deea90ae843c6bc22734b28ea2f5789dee4b56523b19e95dee`
+The `engine/shared-app/app.bundle.js` change is limited to the PvP seat-mirroring contract for physical Shard state; it does not enable AI control. Card art/audio and the normal battlefield presentation remain bundled locally.
 
 ## Verification
 
@@ -63,3 +51,11 @@ This is the **v3.70 testing branch**. Promote to v3.80 only after live two-brows
 - If an animated import ever fails on an already hydrated board, the client retries that snapshot state-only rather than leaving the battlefield blank.
 - Returning to setup/lobby resets the per-match hydration marker so the next match also receives a safe first import.
 - Verified in headless Chromium: first import uses state-only hydration, second import re-enables animations, all six Hero slots hydrate, and deck/shard state is populated.
+
+## v3.70 combined PvP bug-fix batch
+
+- Fixed Player 2 Shard Draw/Mana Regen cross-wiring by mirroring `playerManaDeck/aiManaDeck`, `playerManaPoolCards/aiManaPoolCards`, `playerManaClasses/aiManaClasses`, and Shard Deck counts with the seat.
+- Added server simulation assertions that Shard Pools advance on the correct seat across P1 → P2 → P1 turn handoffs.
+- Fixed remote pending ownership leak: a Player 2 Tribute/selection may block Player 2 correctly, but Player 1 no longer receives Player 2's `CANCEL` button (and vice versa).
+- Added setup Lobby **Leave Seat** / remove-seat flow: P1 and P2 can leave themselves; P1 can remove P2; P2 can remove P1 only while P1 is offline. Seat exit invalidates the token and suppresses automatic immediate seat reclaim.
+- Retains the earlier anti-stuck Draw→Deploy human progression normalization, first-hydration guard, local asset bundle, Northflank Docker fix, identity layout, opponent resource-label mirroring, compact Shard stacking, fixed Mana Pool container, and mobile/tablet zoom/scroll lock.

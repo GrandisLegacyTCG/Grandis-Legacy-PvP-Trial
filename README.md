@@ -19,9 +19,10 @@ This repository is a **fresh build from Grandis Legacy VS AI v6.80**. It is not 
 - No `Go To` navigation buttons.
 - Spectator and Teaching View are parked for this branch.
 - Lobby: player name, deck selection/import, formation swap, rank preview, Ready/Unready, player seats, Start Match.
+- Seat controls in setup: either player may **Leave Seat**; Player 1 may remove Player 2; Player 2 may remove Player 1 only while Player 1 is offline.
 - Opening coin flip is human-vs-human: Player 2 calls Heads/Tails; the winner starts.
-- Battlefield identity format: `[Player Name] - [Deck Name]` with a shared **40-character display budget including ` - `**.
-- Connection signal appears to the **left** of each battlefield identity label.
+- Battlefield identity uses two lines: local side shows **Player Name / Deck Name**; opponent side shows **Deck Name / Player Name**. Desktop display limit is **25 characters per line**; phone/tablet display limit is **20 characters per line**.
+- Connection signal sits **outside** the identity container: left of the local Deck Name line, right of the opponent Deck Name line.
 - Match duration timer is added to the existing v6.80 sidebar action row.
 - Result/turn wording is humanized for PvP while gameplay semantics remain v6.80.
 
@@ -57,7 +58,16 @@ Actual local/deployed browser play still requires `npm install` so the real `ws`
 - The PvP lobby follows the v3.51 visual baseline and is compacted to fit one viewport with no lobby scrolling.
 - Starter Deck 1 is the immediate default lobby selection, so formation/title/Your Deck counts stay synchronized from first render.
 - Mobile and desktop both connect to the same-origin `/ws`; the client guards against stale socket close events and reconnects cleanly after network/background resume.
+- Phone/tablet viewport is fixed: pinch zoom, page scrolling, and overscroll are blocked. Shard Pool containers stay fixed; only card sizing/stacking is adjusted for compact layouts.
 
+
+## Current PvP regression guards
+
+- Player 1 ↔ Player 2 turn handoff is fully human-authoritative; the internal `AI` side name is retained only as a v6.80 data-side identifier and does not run AI progression.
+- Physical Shard state (`Mana Deck`, `Shard Pool`, Class Shard classes/counts) mirrors with the seat, preventing Player 2 Draw/Mana Regen from modifying Player 1 resources.
+- Remote/private pending actions may not render local `CANCEL`; only the player who owns the pending choice can cancel it.
+- First browser hydration imports state-only before re-enabling normal v6.80 snapshot animations.
+- Gameplay/card/shard assets are bundled locally; deployed PvP does not depend on the public website for match assets.
 
 ## Northflank deployment
 

@@ -242,11 +242,8 @@ html.pvp-v370 .player-name>.pvp370-identity-box{order:2}
 html.pvp-v370 .opponent-field .zone-label{top:1px!important;bottom:auto!important}
 
 /* Touch phone/tablet keeps one landscape battlefield geometry.
-   Shard Pool and Hand share the same bottom baseline; the Hand reserves the
-   connection/identity area so the two never collide. */
-html.pvp-mobile-device.pvp-v370 .player-mana-pool{
-  transform:translateY(var(--pvp370-pool-shift-y,0px))!important;
-}
+   Keep the v6.80 Mana Pool rail fixed (never chase the Hand vertically).
+   The Hand only reserves horizontal room for the Shard Pool and identity. */
 html.pvp-mobile-device.pvp-v370 .bottom-hud .hand.bottom{
   left:var(--pvp370-hand-left,22%)!important;
   right:var(--pvp370-hand-right,180px)!important;

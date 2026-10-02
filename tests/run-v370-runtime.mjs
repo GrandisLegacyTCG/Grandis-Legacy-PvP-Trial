@@ -27,4 +27,19 @@ const opening=b.completeOpeningFlow('PLAYER',{choice:'HEADS',outcome:'TAILS',fir
 if(!opening?.snapshot?.appState) throw new Error('Opening flow did not produce a canonical snapshot');
 const p1=b.getCanonicalSnapshot(1),p2=b.getCanonicalSnapshot(2);if(!p1?.appState||!p2?.appState) throw new Error('Seat-oriented canonical snapshots unavailable');
 if((p1.appState.playerHand||[]).length<1||(p2.appState.playerHand||[]).length<1) throw new Error('Seat hand mirroring did not expose each player local hand');
+// Regression: seat 2 must mirror physical Shard Deck/Pool/Class state, not only hand/hero state.
+const asym=structuredClone(p1);
+asym.appState.playerManaPoolCards=(asym.appState.playerManaPoolCards||[]).slice(0,1);
+asym.appState.aiManaPoolCards=(asym.appState.aiManaPoolCards||[]).slice(0,2);
+asym.appState.playerManaDeck=(asym.appState.playerManaDeck||[]).slice(0,7);
+asym.appState.aiManaDeck=(asym.appState.aiManaDeck||[]).slice(0,5);
+asym.appState.playerManaClasses=['Warrior'];
+asym.appState.aiManaClasses=['Mage','Thief'];
+asym.appState.playerManaDeckCount=7;asym.appState.aiManaDeckCount=5;asym.appState.mana=1;asym.appState.aiMana=2;
+if(!b.importCanonicalSnapshot(asym,1,{skipImportAnimations:true})) throw new Error('Could not load asymmetric Shard mirror QA state');
+const seat2ShardView=b.getCanonicalSnapshot(2).appState;
+if((seat2ShardView.playerManaPoolCards||[]).length!==2||(seat2ShardView.aiManaPoolCards||[]).length!==1) throw new Error('Seat 2 Shard Pool mirror is cross-wired');
+if((seat2ShardView.playerManaDeck||[]).length!==5||(seat2ShardView.aiManaDeck||[]).length!==7) throw new Error('Seat 2 Shard Deck mirror is cross-wired');
+if(JSON.stringify(seat2ShardView.playerManaClasses)!==JSON.stringify(['Mage','Thief'])||JSON.stringify(seat2ShardView.aiManaClasses)!==JSON.stringify(['Warrior'])) throw new Error('Seat 2 Class Shard mirror is cross-wired');
+if(Number(seat2ShardView.playerManaDeckCount)!==5||Number(seat2ShardView.aiManaDeckCount)!==7||Number(seat2ShardView.mana)!==2||Number(seat2ShardView.aiMana)!==1) throw new Error('Seat 2 Shard counters are cross-wired');
 console.log('v6.80 shared human-vs-human runtime bridge: PASS');

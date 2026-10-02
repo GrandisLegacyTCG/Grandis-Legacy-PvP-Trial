@@ -9809,6 +9809,11 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     var s=glPvpDeepSwapSides(clone(state));
     function sw(a,b){ var t=s[a]; s[a]=s[b]; s[b]=t; }
     sw('mana','aiMana'); sw('manaRegen','aiManaRegen'); sw('racial','aiRacial');
+    // Physical Shard state belongs to the seat too. Without these swaps, seat 2
+    // resolves its local Draw/Mana Regen against seat 1's Shard Deck/Pool after
+    // mirroring, causing the opponent to gain Shards instead of the active player.
+    sw('playerManaDeck','aiManaDeck'); sw('playerManaPoolCards','aiManaPoolCards');
+    sw('playerManaClasses','aiManaClasses'); sw('playerManaDeckCount','aiManaDeckCount');
     sw('playerDeck','aiDeck'); sw('playerHand','aiHand'); sw('playerDiscard','aiDiscard');
     sw('playerHeroes','aiHeroes'); sw('playerLegacy','aiLegacy');
     sw('playerLegacyPackageSlots','aiLegacyPackageSlots'); sw('playerDeckName','aiDeckName');

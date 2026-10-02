@@ -19,13 +19,21 @@ for(const src of ['server.js','server','public','data']) if(!existsSync(join(roo
 const client=readFileSync(join(root,'public/pvp/pvp-v370.js'),'utf8');
 for(const needle of ["const ROOM='GRANDIS_PVP'","const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade'",'fitIdentity','battlefieldIdentityLimit','identityBoxHtml','sendIntent','confirm-coin-flip','choose-coin-flip','pvp370-match-timer','maxlength=\"25\"','actions.prepend(timer)',"identityBoxHtml('opponent'","identityBoxHtml('player'","l.deckSource==='custom'&&l.deckData"]) if(!client.includes(needle)) throw new Error('PvP client feature missing '+needle);
 if(/otherRoomUrl|SWITCH TO|GO TO VS AI|GO TO DECK|CURRENT ROOM|SPECTATE/i.test(client)) throw new Error('Parked/multi-room/spectator navigation leaked into v3.70 client.');
+for(const needle of ["send('remove-seat',{seat:targetSeat})",'seatExitHold=true','localSeat===2&&seat===1&&!online']) if(!client.includes(needle)) throw new Error('Leave/Kick seat client contract missing '+needle);
 const server=readFileSync(join(root,'server.js'),'utf8');
 for(const needle of ["const MAX_SPECTATORS = 0","const FIXED_ROOM_ID = 'GRANDIS_PVP'","engine/shared-app/app.bundle.js","Grandis Legacy PvP v3.70","deckData: client.deckSource === 'custom'","timeout: 15000",'function normalizeHumanPvpProgression','st.drawPhaseResolvedFor === side',"st.phase = 'Deploy'"]) if(!server.includes(needle)) throw new Error('server wiring missing '+needle);
 if(/maxSpectators:\s*[1-9]/.test(server)) throw new Error('Spectator capacity must remain parked at 0.');
+for(const needle of ['function removePlayerSeat','canP2RemoveOfflineP1',"case 'remove-seat'"]) if(!server.includes(needle)) throw new Error('Leave/Kick seat server contract missing '+needle);
 const css=readFileSync(join(root,'public/pvp/pvp-v370.css'),'utf8');
 if(/\.pvp370-grid|\.pvp370-shell|\.pvp370-brand\s/.test(css)) throw new Error('Stale pre-lobby selectors leaked into final v3.70 CSS.');
 if(!css.includes('html.pvp-v370 .bottom-actions{grid-template-columns:1fr 1fr 1fr!important}')) throw new Error('Match timer battlefield slot styling missing.');
-for(const needle of ['.pvp370-identity-box','html.pvp-mobile-device.pvp-v370 .player-mana-pool','--pvp370-pool-shift-y','.opponent-field .zone-label{top:1px']) if(!css.includes(needle)) throw new Error('PvP battlefield layout fix missing '+needle);
+for(const needle of ['.pvp370-identity-box','.opponent-field .zone-label{top:1px']) if(!css.includes(needle)) throw new Error('PvP battlefield layout fix missing '+needle);
+if(css.includes('--pvp370-pool-shift-y')||css.includes('html.pvp-mobile-device.pvp-v370 .player-mana-pool{')) throw new Error('Portable Mana Pool container must stay fixed; old vertical chase rule leaked back in.');
+for(const needle of ['maximum-scale=1','user-scalable=no','viewport-fit=cover','touch-action:none','gesturestart']) if(!index.includes(needle)) throw new Error('Tablet zoom/scroll lock missing '+needle);
+for(const needle of ['compactStep','cards.length>=9?0.46:0.56','isPortable&&!isPlayer&&cards.length>4']) if(!optionRuntime.includes(needle)) throw new Error('Portable opponent Shard stacking fix missing '+needle);
+if(!optionRuntime.includes("pendingOwner(p)==='PLAYER'&&!p?.private_masked")) throw new Error('Remote pending CANCEL ownership guard missing.');
+const sharedApp=readFileSync(join(root,'public/engine/shared-app/app.bundle.js'),'utf8');
+for(const needle of ["sw('playerManaDeck','aiManaDeck')","sw('playerManaPoolCards','aiManaPoolCards')","sw('playerManaClasses','aiManaClasses')","sw('playerManaDeckCount','aiManaDeckCount')"]) if(!sharedApp.includes(needle)) throw new Error('Seat-2 Shard mirror regression guard missing '+needle);
 
 // Tester build must be self-contained: no gameplay/card/shard asset may depend on the public website.
 const publicTextFiles=['public/engine/shared-app/app.bundle.js','public/engine/js/app.bundle.js','public/engine/js/static-data.js'];

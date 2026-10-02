@@ -1307,28 +1307,61 @@ function releaseTimedOutSeat(room, client, reason) {
   return true;
 }
 
-function kickSeat2(room, requester, requestWs = null) {
-  if (!requester || requester.role !== 'player' || Number(requester.seat) !== 1) throw new Error('Only the current Player 1 may remove Player 2.');
-  const liveSeat1 = [...room.players.values()].find((p) => Number(p.seat) === 1);
-  if (!liveSeat1 || liveSeat1.clientId !== requester.clientId || liveSeat1.ws !== requester.ws || (requestWs && requestWs !== requester.ws)) throw new Error('Stale Player 1 session cannot remove Player 2.');
-  if (room.match.status !== 'setup') throw new Error('Player 2 can only be removed before the match starts.');
-  const target = [...room.players.values()].find((p) => Number(p.seat) === 2);
-  if (!target) throw new Error('Player 2 seat is already empty.');
-  target.ready = false; target.deckKey = null; target.deckName = null; target.deckData = null; target.deckSource = null; target.formation = null;
+function livePlayerBySeat(room, seat) {
+  return [...room.players.values()].find((p) => Number(p.seat) === Number(seat)) || null;
+}
+function assertCurrentPlayerSession(room, requester, requestWs = null) {
+  if (!requester || requester.role !== 'player' || ![1,2].includes(Number(requester.seat))) throw new Error('Only a seated player may remove a seat.');
+  const live = livePlayerBySeat(room, requester.seat);
+  if (!live || live.clientId !== requester.clientId || live.ws !== requester.ws || (requestWs && requestWs !== requester.ws)) throw new Error('Stale player session cannot remove a seat.');
+  return live;
+}
+function removePlayerSeat(room, requester, targetSeat, requestWs = null) {
+  assertCurrentPlayerSession(room, requester, requestWs);
+  if (room.match.status !== 'setup') throw new Error('Seats can only be left or removed before the match starts.');
+  targetSeat = Number(targetSeat);
+  if (targetSeat !== 1 && targetSeat !== 2) throw new Error('Choose Player 1 or Player 2 seat.');
+  const target = livePlayerBySeat(room, targetSeat);
+  if (!target) throw new Error(`Player ${targetSeat} seat is already empty.`);
+
+  const requesterSeat = Number(requester.seat);
+  const isSelf = target.clientId === requester.clientId;
+  const canHostRemoveP2 = requesterSeat === 1 && targetSeat === 2;
+  const canP2RemoveOfflineP1 = requesterSeat === 2 && targetSeat === 1 && target.connected === false;
+  if (!isSelf && !canHostRemoveP2 && !canP2RemoveOfflineP1) {
+    if (requesterSeat === 2 && targetSeat === 1) throw new Error('Player 2 can only remove Player 1 while Player 1 is offline.');
+    throw new Error('You do not have permission to remove that seat.');
+  }
+
+  const targetName = target.name || publicSeatLabel(targetSeat);
+  const oldToken = target.seatToken || '';
+  target.ready = false;
+  target.deckKey = null; target.deckName = null; target.deckData = null; target.deckSource = null; target.formation = null;
   clearDisconnectReservation(target);
+  clearExpiredSeat1Authority(room, target.clientId, oldToken);
   room.players.delete(target.clientId);
   const oldWs = target.ws;
   delete target.seat; delete target.seatToken; delete target.seatTokenHash;
-  target.role = 'spectator'; target.observerAuthorized = true; target.teachingViewUnlocked = false; target.connected = Boolean(oldWs && oldWs.readyState === WebSocket.OPEN);
-  if (target.connected && room.spectators.size < MAX_SPECTATORS) {
-    room.spectators.set(target.clientId, target);
-    send(oldWs, { type: 'seat-kicked', message: 'You were removed from the room by Player 1.' });
-  } else if (target.connected) {
-    send(oldWs, { type: 'seat-kicked', message: 'You were removed from the room by Player 1.' });
-    try { oldWs.close(4002, 'Removed by Player 1'); } catch {}
+  target.role = 'unseated'; target.observerAuthorized = false; target.teachingViewUnlocked = false;
+
+  const actorName = requester.name || publicSeatLabel(requesterSeat);
+  const actionText = isSelf ? `${targetName} left Player ${targetSeat} seat.` : `${actorName} removed ${targetName} from Player ${targetSeat} seat.`;
+  if (oldWs && oldWs.readyState === WebSocket.OPEN) {
+    send(oldWs, {
+      type: 'seat-kicked',
+      kind: isSelf ? 'left' : 'removed',
+      seat: targetSeat,
+      message: isSelf ? `You left Player ${targetSeat} seat.` : `You were removed from Player ${targetSeat} seat by ${actorName}.`
+    });
+    // A removed/left client must not instantly reconnect and reclaim the seat.
+    // The browser may explicitly reload/reconnect later if the user wants to join again.
+    try { oldWs.close(4002, isSelf ? 'Seat left' : 'Seat removed'); } catch {}
   }
-  addLog(room, `${requester.name || 'Player 1'} removed ${target.name || 'Player 2'} from Player 2 seat.`);
+  addLog(room, actionText);
   return true;
+}
+function kickSeat2(room, requester, requestWs = null) {
+  return removePlayerSeat(room, requester, 2, requestWs);
 }
 
 function expireDisconnectedPlayers(room, now = Date.now()) {
@@ -1894,6 +1927,7 @@ wss.on('connection', (ws, req) => {
           addLog(room, `SERVER-AUTH HUMAN MATCH STARTED. ${p1.name} vs ${p2.name}. Canonical board lives in the authoritative Node runtime; clients may only submit intents.`);
           break;
         }
+        case 'remove-seat': removePlayerSeat(room, client, msg.seat, ws); break;
         case 'kick-seat-2': kickSeat2(room, client, ws); break;
         case 'reset-room': if (client.role !== 'player') throw new Error('Spectators cannot reset the room.'); if (client.seat !== 1 && room.match.status !== 'finished') throw new Error('Only Player 1 may reset room before the match ends.'); room.engine = null; room.gameplayIntentLedger = new Map(); room.match = freshMatchState(); for (const p of room.players.values()) p.ready = false; addLog(room, `${client.name} reset the room to setup.`); break;
         case 'surrender-match': applyServerSurrender(room, client); break;
@@ -1986,6 +2020,8 @@ wss.on('connection', (ws, req) => {
       const policy = startDisconnectReservation(room, client);
       const minutes = Math.round(policy.timeoutMs / 60000);
       addLog(room, `${client.name} disconnected from Player ${client.seat}. Reconnect reserved for ${minutes} minute${minutes === 1 ? '' : 's'} (${policy.reason}).`);
+    } else if (client.role === 'unseated') {
+      addLog(room, `${client.name} disconnected after leaving/releasing a player seat.`);
     } else {
       room.spectators.delete(client.clientId);
       addLog(room, `${client.name} disconnected as Spectator.`);

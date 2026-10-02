@@ -529,8 +529,16 @@ function layoutManaPoolCards(host){
   const inner=Math.max(cw,hostWidth-4),naturalStep=cw+5,start=2;
   // One continuous Shard stack. Position sorting is handled by renderPool; layering follows
   // the visual stack direction only, never Shard type and never payment-selection state.
-  const step=cards.length<=1?0:Math.max(7,Math.min(naturalStep,(inner-cw)/(cards.length-1)));
+  let step=cards.length<=1?0:Math.max(7,Math.min(naturalStep,(inner-cw)/(cards.length-1)));
   const isPlayer=host===playerManaHost||host.id==='manaCards';
+  const isPortable=document.documentElement.classList.contains('pvp-mobile-device');
+  // On tablet/phone the opponent pool is viewed in the compact mirrored rail.
+  // Keep a real overlapping stack as the pool grows instead of spreading every
+  // Shard nearly edge-to-edge across the whole pool. The pool box itself stays put.
+  if(isPortable&&!isPlayer&&cards.length>4){
+    const compactStep=Math.max(9,cw*(cards.length>=9?0.46:0.56));
+    step=Math.min(step,compactStep);
+  }
   cards.forEach((c,i)=>{
     c.style.left=(start+i*step)+'px';
     // Player: farther right = visually in front. Opponent: mirrored, farther left = in front.
@@ -1076,7 +1084,7 @@ function renderPhase(s){
   else if(pendingOwner(p)==='PLAYER'&&p?.type==='response_payment_choice'){mode='cancel-response-payment';label='CANCEL'}
   else if(responseOwned){mode='pass';label='PASS'}
   else if(pendingOwner(p)==='PLAYER'&&(p?.type==='optional_swap'||p?.type==='optional_target_swap')){mode='decline-swap';label='CANCEL'}
-  else if(isPrecommitCancelable(s)||p?.type==='manual_reposition'){mode='cancel';label='CANCEL'}
+  else if(pendingOwner(p)==='PLAYER'&&!p?.private_masked&&(isPrecommitCancelable(s)||p?.type==='manual_reposition')){mode='cancel';label='CANCEL'}
   else{
     const pairs=E().getRepositionPairs()||[];
     if(s.turn==='PLAYER'&&(s.phase==='Deploy'||s.phase==='Reform')&&!s.pending&&!s.responseWindow&&pairs.length){mode='reposition';label='REPOSITION'}
