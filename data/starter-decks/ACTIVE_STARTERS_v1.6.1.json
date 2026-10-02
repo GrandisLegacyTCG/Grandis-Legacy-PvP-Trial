@@ -1,0 +1,99 @@
+{
+  "schema": "GL-STARTER-DECK-AUTHORITY-1.0",
+  "authority_version": "v1.6.1",
+  "osa_version": "v1.9.2",
+  "status": "CURRENT_ACTIVE",
+  "active_starter_count": 5,
+  "change_scope": "STARTER_1_ONLY",
+  "retired_model": "Starter60 v1.5 15-preset library is HISTORICAL/NON-ACTIVE",
+  "previous_authority": "v1.6.0",
+  "canonical_card_registry": "Authority/Game/Cards/cards.canonical.v1.6.0.json",
+  "canonical_registry_hash": "85d25ebda9bb2bc260983a566e6d430dde97bfc7a32e8042ec2fddfeaff1b42f",
+  "starters": [
+    {
+      "slot": 1,
+      "starter_id": "starter_01_elemental_lord_conqueror_renegade",
+      "display_name": "Starter 1 - ElementalLord/Conqueror/Renegade",
+      "canonical_path": "Authority/Game/Starter-Decks/Active/starter_01_elemental_lord_conqueror_renegade.json",
+      "source_type": "NEW_USER_UPLOAD_PATCH",
+      "source_filename": "Starter_1_ElementalLord_Conqueror_Renegade.json",
+      "source_sha256": "f63e14a9cc43729fe2e27d77a6d1606a067bc399a5230fa2489eded3ad066353",
+      "canonical_source_sha256": "15788ed47922f3a517992e58da7c3e887bc9618c91421a365f90459155a0a795",
+      "main_deck_total": 60,
+      "legacy_deck_count": 12,
+      "default_formation": {
+        "LEFT": "S1-MAG-H001",
+        "CENTER": "S1-WAR-H001",
+        "RIGHT": "S1-THF-H001"
+      }
+    },
+    {
+      "slot": 2,
+      "starter_id": "starter_02_saint_crusader_grand_ranger",
+      "display_name": "Starter 2 - Saint/Crusader/GrandRanger",
+      "canonical_path": "Authority/Game/Starter-Decks/Active/starter_02_saint_crusader_grand_ranger.json",
+      "source_type": "NEW_USER_UPLOAD",
+      "source_filename": "Starter_2_Saint_Crusader_GrandRanger.json",
+      "source_sha256": "7dd7efcdee83851411f4f8904c230b63e3a2b1e70fd6178909f65fccf1ae4299",
+      "canonical_source_sha256": "d1e36758a72a452123f1b72ac5b8d06aebf98692e1cd5cc4a193662080e50de3",
+      "main_deck_total": 60,
+      "legacy_deck_count": 12,
+      "default_formation": {
+        "LEFT": "S1-CLE-H004",
+        "CENTER": "S1-WAR-H004",
+        "RIGHT": "S1-ARC-H001"
+      }
+    },
+    {
+      "slot": 3,
+      "starter_id": "starter_03_arcane_duelist_elemental_lord_saint",
+      "display_name": "Starter 3 - ArcaneDuelist/ElementalLord/Saint",
+      "canonical_path": "Authority/Game/Starter-Decks/Active/starter_03_arcane_duelist_elemental_lord_saint.json",
+      "source_type": "DECK_BUILDER_V1.30_RETAINED",
+      "source_filename": "Starter_3_ArcaneDuelist_ElementalLord_Saint.json",
+      "source_sha256": "6886211afec312035e8094a6c8b54a54aceeeccc1724f647ff186295a7967444",
+      "canonical_source_sha256": "dbc7ea2c42da2db8eac7e3594fbef8286a2d5717b9a5e8b4e015c60a74e057a5",
+      "main_deck_total": 60,
+      "legacy_deck_count": 12,
+      "default_formation": {
+        "LEFT": "S1-THF-H004",
+        "CENTER": "S1-MAG-H004",
+        "RIGHT": "S1-CLE-H001"
+      }
+    },
+    {
+      "slot": 4,
+      "starter_id": "starter_04_grand_ranger_grand_arbalest_renegade",
+      "display_name": "Starter 4 - GrandRanger/GrandArbalest/Renegade",
+      "canonical_path": "Authority/Game/Starter-Decks/Active/starter_04_grand_ranger_grand_arbalest_renegade.json",
+      "source_type": "NEW_USER_UPLOAD",
+      "source_filename": "Starter_4_GrandRanger_GrandArbalest_Renegade.json",
+      "source_sha256": "527407b9eb90dbcbb04313c78316585b85d8e311767ca5dd35788e62cc0c8904",
+      "canonical_source_sha256": "ea077eb002c51376ba3ae891ce01175becb86c285a4511a3ea914b1e91b1e4c7",
+      "main_deck_total": 60,
+      "legacy_deck_count": 12,
+      "default_formation": {
+        "LEFT": "S1-ARC-H001",
+        "CENTER": "S1-ARC-H004",
+        "RIGHT": "S1-THF-H001"
+      }
+    },
+    {
+      "slot": 5,
+      "starter_id": "starter_05_renegade_arcane_duelist_elemental_lord",
+      "display_name": "Starter 5 - Renegade/ArcaneDuelist/ElementalLord",
+      "canonical_path": "Authority/Game/Starter-Decks/Active/starter_05_renegade_arcane_duelist_elemental_lord.json",
+      "source_type": "DECK_BUILDER_V1.30_RETAINED",
+      "source_filename": "Starter_5_Renegade_ArcaneDuelist_ElementalLord.json",
+      "source_sha256": "9431696b8c292e3dd16411012d509bf4e0871714d048788b8133280cb7635140",
+      "canonical_source_sha256": "2bd572f6c8cb08e8d10b905b6c0c02e4af59cd17f0671622afa8d196e7e414a7",
+      "main_deck_total": 60,
+      "legacy_deck_count": 12,
+      "default_formation": {
+        "LEFT": "S1-THF-H001",
+        "CENTER": "S1-THF-H004",
+        "RIGHT": "S1-MAG-H004"
+      }
+    }
+  ]
+}

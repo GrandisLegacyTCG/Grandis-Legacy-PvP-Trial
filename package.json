@@ -1,0 +1,50 @@
+{
+  "name": "grandis-legacy-pvp-v370",
+  "version": "3.70.0",
+  "private": true,
+  "type": "module",
+  "description": "Grandis Legacy PvP v3.70 — fresh two-human PvP shell over the VS AI v6.80 battlefield/runtime.",
+  "scripts": {
+    "start": "node server.js",
+    "check:syntax": "node --check server.js && node --check server/gameplay-intent-router.mjs && node --check public/option-b-runtime.js && node --check public/pvp/pvp-v370.js && node --check public/pvp/pvp-presentation-adapter.js",
+    "test:static": "node tests/run-v370-static.mjs",
+    "test:runtime": "node tests/run-v370-runtime.mjs",
+    "test": "npm run check:syntax && npm run test:static && npm run test:runtime && npm run test:server-sim",
+    "check": "npm test",
+    "test:server-sim": "node tests/run-v370-server-sim.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "grandisLegacySourceStack": {
+    "behaviorReference": "VS AI v6.80 (2026-10-02 AI Update) is the gameplay, battlefield, behavior, animation, sound, and presentation base. Its promoted release intentionally preserves the underlying v6.48/shared-runtime implementation identity where present. PvP v3.51 contributes only the multiplayer lobby/server/network pattern.",
+    "sourceAuthorityStackBundle": "1.9.5",
+    "oneSourceAuthority": "1.9.5",
+    "canonicalCardAuthority": "1.6.0",
+    "runtimeData": "0.16.2",
+    "effectCheckpoint": "0.15.2",
+    "effectRecipe": "0.15.2",
+    "legalityMap": "1.5.0",
+    "heroComponentAuthority": "1.1.0",
+    "canonicalRegistryHash": "7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389",
+    "heroComponentRegistryHash": "f36f1cc83eb9845743176c3af71f7823125353eae73e832588e9d8b42c6818be",
+    "runtimeFoundation": "1.94.2",
+    "uiLock": "2.53",
+    "starter60": "1.6.1",
+    "applicationRuntimeSync": "v3.70-v680-fresh",
+    "activeStarterCount": 5
+  },
+  "northflankDeployment": {
+    "builder": "DOCKERFILE",
+    "dockerfile": "Dockerfile",
+    "startCommand": "node server.js",
+    "healthcheckPath": "/health",
+    "healthcheckTimeoutSeconds": 120,
+    "services": 1,
+    "roomPerService": 1,
+    "singleFixedRoom": "GRANDIS_PVP"
+  }
+}

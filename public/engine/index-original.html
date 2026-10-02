@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Play Grandis Legacy against a local AI directly in your browser.">
+  <meta name="theme-color" content="#16294C">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4C2Z5T0EWR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4C2Z5T0EWR');
+  </script>
+  <title>Grandis Legacy — VS AI Lobby</title>
+  <link rel="stylesheet" href="shared-app/app.css?v=gl-vs-ai-648-import-hf-r1">
+  <link rel="stylesheet" href="shared-app/battlefield-authority.css?v=gl-authority-v645-opponent-hand-final-r2">
+  <link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=2.53">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=6.32">
+</head>
+<body>
+  <button id="glMobileAppMenuButton" class="gl-mobile-app-menu-button" type="button" aria-expanded="false" aria-controls="glMobileAppMenu" aria-label="Open Grandis Legacy menu"><span></span><span></span><span></span></button>
+  <nav id="glMobileAppMenu" class="gl-mobile-app-menu" aria-label="Grandis Legacy applications" hidden>
+    <a href="https://grandislegacytcg.github.io/">HOME</a>
+    <a href="https://grandislegacytcg.github.io/Grandis-Legacy-VS-AI/">VS AI</a>
+    <a href="https://grandislegacytcg.github.io/Grandis-Legacy-VS-AI/tutorial/">TUTORIAL</a>
+    <a href="https://grandislegacytcg.github.io/pvp/">PVP</a>
+    <a href="https://grandislegacytcg.github.io/Grandis-Legacy-Deck-Builder/style-1/">DECK BUILDER</a>
+  </nav>
+
+  <div id="app" aria-live="polite">
+    <noscript>Grandis Legacy Local AI requires JavaScript enabled.</noscript>
+  </div>
+
+  <div id="choiceOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Card Choice">
+    <section class="choice-panel">
+      <header class="choice-head"><h2 id="choiceTitle">Choice</h2><button id="choiceClose" type="button">Close</button></header>
+      <div id="choiceBody" class="choice-body"></div>
+      <footer class="choice-foot"><button id="choiceConfirm" type="button">Confirm</button></footer>
+    </section>
+  </div>
+
+  <div id="infoOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Information">
+    <section class="info-panel">
+      <header class="info-head"><h2 id="infoTitle">Info</h2><button id="infoClose" type="button">Close</button></header>
+      <div id="infoBody" class="info-body"></div>
+    </section>
+  </div>
+
+  <div id="responseOverlay" class="modal-overlay response-overlay" role="dialog" aria-modal="true" aria-label="Response Window">
+    <section class="response-panel">
+      <header class="response-head"><h2>Response Window</h2><button id="responseClose" type="button">Close</button></header>
+      <div id="responseBody" class="response-body"></div>
+      <footer id="responseFooter" class="response-foot"></footer>
+    </section>
+  </div>
+
+  <div id="previewOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Card Preview">
+    <section class="preview-panel">
+      <header class="preview-head"><h2>Card Preview</h2><button id="previewClose" type="button">Close</button></header>
+      <div id="previewBody" class="preview-body"></div>
+    </section>
+  </div>
+
+  <div id="hoverCardZoom" class="hover-card-zoom" hidden aria-hidden="true"><img id="hoverCardZoomImage" src="" alt="Card zoom"></div>
+
+  <div id="glAnimationLayer" class="gl-animation-layer" aria-hidden="true"></div>
+
+  <script>window.GL_APP_MODE="LOCAL_AI";</script>
+  <script src="shared-ui/battlefield-ui.js?v=2.53"></script>
+  <script src="js/static-data.js?v=gl-vs-ai-6.48"></script>
+  <script src="js/runtime-authority.js?v=gl-vs-ai-6.48"></script>
+  <script src="shared-app/active-starters.js?v=gl-active-starters-v1"></script>
+  <script src="shared-app/app.bundle.js?v=gl-vs-ai-648-import-hf-r1"></script>
+  <script src="js/mobile-app-nav.js?v=gl-vs-ai-6.48"></script>
+</body>
+</html>
