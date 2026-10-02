@@ -643,12 +643,45 @@ function buildPublicAnimationEvents(beforeState, afterState, actorSide, intent, 
 function buildPublicAnimationEvent(beforeState, afterState, actorSide, intent, revision) {
   return buildPublicAnimationEvents(beforeState, afterState, actorSide, intent, revision)[0] || null;
 }
+function normalizeHumanPvpProgression(board) {
+  const st = board && board.appState;
+  if (!st || !st.pvpHumanVsHuman) return false;
+  let changed = false;
+  // In two-human PvP the second canonical side is still named AI internally for v6.80
+  // snapshot compatibility, but no AI director/control state may own progression.
+  if (st.aiControl) { st.aiControl = null; changed = true; }
+  if (st.phase === 'Draw' && (st.turn === 'PLAYER' || st.turn === 'AI')) {
+    const side = st.turn;
+    const drawComplete = st.drawPhaseResolvedFor === side && !st.drawPresentationPending && !st.pending && !st.responseWindow && !st.gameOver;
+    if (drawComplete) {
+      st.phase = 'Deploy';
+      st.drawPhaseResolvedFor = null;
+      st.drawPhaseContinuation = null;
+      st.autoDrawAdvanceScheduled = false;
+      st.pvpTurnReady = false;
+      if (Array.isArray(st.log)) st.log.unshift((side === 'AI' ? 'Player 2' : 'Player 1') + ' completes Draw Phase and enters Deploy Phase automatically.');
+      changed = true;
+    }
+  }
+  // v6.80's bridge-immediate opening path for canonical side AI already lands on
+  // Deploy after resolving Draw. Clear the Draw marker as well so both human seats
+  // enter the exact same authoritative post-Draw state.
+  if (st.phase === 'Deploy' && (st.turn === 'PLAYER' || st.turn === 'AI') && st.drawPhaseResolvedFor === st.turn && !st.pending && !st.responseWindow) {
+    st.drawPhaseResolvedFor = null;
+    st.drawPhaseContinuation = null;
+    st.autoDrawAdvanceScheduled = false;
+    st.pvpTurnReady = false;
+    changed = true;
+  }
+  return changed;
+}
 function normalizeServerBoard(board) {
   const st = board && board.appState;
   if (!st) return board;
   st.racial = Math.max(0, Math.min(2, Number(st.racial || 0)));
   st.aiRacial = Math.max(0, Math.min(2, Number(st.aiRacial || 0)));
   st.pvpHumanVsHuman = true;
+  normalizeHumanPvpProgression(board);
   // Result-popup visibility is client-local. Never let the headless server render consume it.
   st.gameResultShown = false;
   return board;
@@ -1610,7 +1643,7 @@ wss.on('connection', (ws, req) => {
   // released synchronously before any seat-token recovery decision is made.
   expireDisconnectedPlayers(room, Date.now());
   const clientId = safeClient(url.searchParams.get('client'));
-  const name = safeText(url.searchParams.get('name') || 'Player', 40) || 'Player';
+  const name = safeText(url.searchParams.get('name') || 'Player', 25) || 'Player';
   const initialDeck = deckOption(url.searchParams.get('deck'));
   const suppliedSeatToken = safeClient(url.searchParams.get('seatToken'));
   // Build ids are diagnostic only. Static frontend and room services may deploy independently,
@@ -1682,7 +1715,7 @@ wss.on('connection', (ws, req) => {
         }
         case 'activity': send(ws, { type: 'activity-ack', at: nowIso() }); return;
         case 'rename': {
-          const nextName = safeText(msg.name || client.name, 40) || client.name;
+          const nextName = safeText(msg.name || client.name, 25) || client.name;
           const changed = nextName !== client.name;
           client.name = nextName;
           if (changed && room.match.status === 'setup') client.ready = false;

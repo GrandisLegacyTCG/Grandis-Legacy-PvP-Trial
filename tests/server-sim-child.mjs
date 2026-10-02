@@ -31,6 +31,20 @@ if((a2.playerHand||[]).some(x=>typeof x==='string'&&!x.startsWith('__HIDDEN')))t
 if(!(a2.aiHand||[]).some(x=>typeof x==='string'&&!x.startsWith('__HIDDEN')))throw new Error('P2 did not receive own private hand identity before client-side seat mirroring');
 const firstSeat=Number(s1.match.firstSeat||s1.match.coinFlip?.firstSeat||1),actor=firstSeat===2?p2:p1,other=firstSeat===2?p1:p2;
 const sideForSeat=(seat)=>Number(seat)===2?'AI':'PLAYER';
+const seatForSide=(side)=>side==='AI'?2:1;
+function assertHumanDeployReady(snapshot,label){
+  const st=snapshot.match.serverBoard?.appState;
+  if(!st)throw new Error(label+': missing canonical app state.');
+  if(st.aiControl)throw new Error(label+': AI controller became active in human-vs-human PvP.');
+  if(!st.pending&&!st.responseWindow&&!st.gameOver){
+    if(st.phase==='Draw')throw new Error(label+': human turn is stuck in Draw after Draw/Mana Regen completed.');
+    if(st.phase!=='Deploy')throw new Error(label+': expected automatic Draw -> Deploy handoff, got '+String(st.phase));
+    if(st.drawPhaseResolvedFor!=null)throw new Error(label+': drawPhaseResolvedFor was not cleared after automatic Deploy transition.');
+  }
+  return st;
+}
+let openingState=assertHumanDeployReady(snap(actor),'Opening active player');
+if(openingState.turn!==sideForSeat(firstSeat))throw new Error('Opening active side does not match coin-flip winner.');
 let actionN=0;
 function phaseIntent(ws){
   const before=snap(ws),baseRevision=Number(before.match.serverBoardRevision||0),id='sim_phase_'+(++actionN);
@@ -39,16 +53,32 @@ function phaseIntent(ws){
   const after=snap(ws);if(Number(after.match.serverBoardRevision||0)<=baseRevision)throw new Error('Canonical revision did not advance for '+id);
   return after;
 }
-let actorState=snap(actor),actorSide=sideForSeat(firstSeat),guard=0;
-while(actorState.match.serverBoard?.appState?.turn===actorSide && guard++<7) actorState=phaseIntent(actor);
-if(guard>7)throw new Error('First human turn did not hand control to the other player.');
-const canonicalAfterTurn=actorState.match.serverBoard?.appState;if(canonicalAfterTurn?.turn===actorSide)throw new Error('Turn ownership did not change after human phase cycle.');
-if(canonicalAfterTurn?.aiControl)throw new Error('AI controller became active during human-vs-human turn handoff.');
-const otherBefore=snap(other),otherBase=Number(otherBefore.match.serverBoardRevision||0);
-other.message({type:'runtime-intent',intent:'advancePhase',args:[],baseRevision:otherBase,clientActionId:'sim_other_phase'});
-const otherAck=other.latest('intent-ack');if(!otherAck||otherAck.clientActionId!=='sim_other_phase')throw new Error('Second human player could not act after turn handoff.');
-const otherAfter=snap(other);if(Number(otherAfter.match.serverBoardRevision||0)<=otherBase)throw new Error('Second human action did not advance canonical revision.');
+function finishCurrentTurn(ws,side,label){
+  let state=snap(ws),guard=0;
+  while(state.match.serverBoard?.appState?.turn===side && guard++<7) state=phaseIntent(ws);
+  if(guard>7)throw new Error(label+' did not hand control to the other human player.');
+  const st=state.match.serverBoard?.appState;
+  if(st?.turn===side)throw new Error(label+' ownership did not change after human phase cycle.');
+  assertHumanDeployReady(state,label+' -> next human');
+  return state;
+}
+const actorSide=sideForSeat(firstSeat);
+const afterFirstTurn=finishCurrentTurn(actor,actorSide,'First human turn');
+const secondSeat=seatForSide(afterFirstTurn.match.serverBoard.appState.turn);
+if(secondSeat===firstSeat)throw new Error('First handoff did not reach the other player seat.');
+const secondWs=secondSeat===1?p1:p2;
+const secondSide=sideForSeat(secondSeat);
+const secondStart=assertHumanDeployReady(snap(secondWs),'Second human turn start');
+if(secondStart.turn!==secondSide)throw new Error('Second human did not receive turn ownership.');
+const otherBefore=snap(secondWs),otherBase=Number(otherBefore.match.serverBoardRevision||0);
+secondWs.message({type:'runtime-intent',intent:'advancePhase',args:[],baseRevision:otherBase,clientActionId:'sim_other_phase'});
+const otherAck=secondWs.latest('intent-ack');if(!otherAck||otherAck.clientActionId!=='sim_other_phase')throw new Error('Second human player could not act after turn handoff.');
+const otherAfter=snap(secondWs);if(Number(otherAfter.match.serverBoardRevision||0)<=otherBase)throw new Error('Second human action did not advance canonical revision.');
+// Finish Player 2/other human as well, proving the authoritative no-AI flow works in both directions.
+const afterSecondTurn=finishCurrentTurn(secondWs,secondSide,'Second human turn');
+const returned=assertHumanDeployReady(firstSeat===1?snap(p1):snap(p2),'Return to first human');
+if(returned.turn!==actorSide)throw new Error('Second handoff did not return control to the first human side.');
 const p3=connect('test_p3','Charlie'),fatal=p3.latest('fatal');if(!fatal||!/exactly 2 player seats|full/i.test(String(fatal.message||'')))throw new Error('Third client was not rejected from the two-player room.');
 console.log('two-human single-room server simulation: PASS');
-console.log('seats=1/2, coin-flow=PASS, viewer-safe=PASS, human-turn-handoff=PASS, second-human-action=PASS, no-spectator-capacity=PASS, revision='+otherAfter.match.serverBoardRevision);
+console.log('seats=1/2, coin-flow=PASS, viewer-safe=PASS, P1<->P2 deploy-handoff=PASS, AI-controller=OFF, second-human-action=PASS, no-spectator-capacity=PASS, revision='+afterSecondTurn.match.serverBoardRevision);
 process.exit(0);
