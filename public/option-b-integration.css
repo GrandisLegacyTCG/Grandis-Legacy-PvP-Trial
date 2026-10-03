@@ -10,17 +10,19 @@
 .card-actions button{display:block;height:16px;min-width:46px;font-size:7px;font-weight:950;text-transform:uppercase}
 .card-actions button.discard{border-color:#8b4249;background:#411920;color:#ffd8db}
 .card-actions button.tribute{border-color:#826d2c;background:#332b13;color:#ffe07a}
-.card-actions button.play{border-color:#3c7656;background:#164e33;color:#c9ffe0}
+.card-actions button.play{border-color:#4f8e69;background:#164e33;color:#fff;-webkit-text-stroke:.35px #b8952f;paint-order:stroke fill;text-shadow:none}
 /* Copy the approved Option B hover interaction unit: button + card share the extended hit area. */
 .hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected{z-index:80!important;transform:translateY(0) rotate(0deg) scale(1.04)!important}
 .hand.bottom .hand-card:after{content:""!important;position:absolute!important;left:-4px!important;right:-4px!important;top:-34px!important;bottom:-18px!important;z-index:-1!important;pointer-events:auto!important}
 
 /* ---------- hero area ---------- */
-.hero-lane{overflow:visible!important}
-/* Physical Hero + EXP package follows the established VS AI geometry. The Option B Hero size is retained. */
+/* v6.88: lane bottom aligns with the two-card deck rail (Legacy+Shard / Discard+Main),
+   while the 120% Hero visual is centered vertically inside that fixed responsive box. */
+.hero-lane{overflow:visible!important;height:calc((var(--zone-h) * 2) + var(--rail-gap))!important;max-height:calc((var(--zone-h) * 2) + var(--rail-gap))!important}
+/* Physical Hero + EXP package follows the established VS AI geometry. The enlarged Hero size is visual-only. */
 .ob-hero-physical-stack{
-  position:absolute!important;left:50%!important;top:calc(var(--hero-h) * .05 + 8px)!important;
-  width:var(--hero-w)!important;height:var(--hero-h)!important;transform:translateX(-50%) rotate(0deg)!important;
+  position:absolute!important;left:50%!important;top:50%!important;
+  width:var(--hero-w)!important;height:var(--hero-h)!important;transform:translate(-50%,-50%) rotate(0deg)!important;
   transform-origin:center center!important;transition:transform .28s cubic-bezier(.2,.75,.2,1)!important;
   display:grid!important;place-items:center!important;z-index:3!important;overflow:visible!important;pointer-events:none!important;
 }
@@ -28,10 +30,10 @@
   position:relative!important;left:auto!important;top:auto!important;width:var(--hero-w)!important;height:var(--hero-h)!important;
   transform:none!important;margin:0!important;pointer-events:auto!important;transition:filter .28s ease!important;
 }
-.ob-hero-physical-stack.is-ready{transform:translateX(-50%) rotate(0deg)!important}
+.ob-hero-physical-stack.is-ready{transform:translate(-50%,-50%) rotate(0deg)!important}
 .ob-hero-physical-stack.is-ready>.hero-card{transform:none!important;filter:none!important}
 /* Rotate the physical Hero + EXP package as one unit so EXP stays attached during Ready/Exhaust. */
-.ob-hero-physical-stack.is-exhausted{transform:translateX(-50%) rotate(-90deg)!important}
+.ob-hero-physical-stack.is-exhausted{transform:translate(-50%,-50%) rotate(-90deg)!important}
 .ob-hero-physical-stack.is-exhausted>.hero-card{transform:none!important;filter:saturate(.72) brightness(.84)!important}
 .hero-card.ob-selectable,.hero-card.ob-selected{filter:none!important;box-shadow:none!important;outline:0!important}
 /* VS AI v5.18 full-slot legality treatment. */
@@ -40,7 +42,7 @@
 .hero-lane.ob-invalid{filter:saturate(.86) brightness(.88)!important}
 
 /* HP/state overlay stays upright; it is deliberately outside the physical package. */
-.ob-hp-overlay{position:absolute!important;left:calc(50% + (var(--hero-w) / 2) + 1px)!important;top:calc(var(--hero-h) * .05 + 10px)!important;transform:translateX(-100%)!important;z-index:230!important;width:46px!important;height:21px!important;padding:0!important;border-radius:6px!important;background:rgba(2,8,12,.94)!important;color:#fff!important;white-space:nowrap!important;pointer-events:none!important;overflow:visible!important}
+.ob-hp-overlay{position:absolute!important;left:calc(50% + (var(--hero-w) / 2) + 1px)!important;top:calc(var(--hero-layout-h) * .05 + 10px)!important;transform:translateX(-100%)!important;z-index:230!important;width:46px!important;height:21px!important;padding:0!important;border-radius:6px!important;background:rgba(2,8,12,.94)!important;color:#fff!important;white-space:nowrap!important;pointer-events:none!important;overflow:visible!important}
 .ob-hp-text{position:absolute!important;z-index:2!important;inset:0 0 auto 0!important;width:46px!important;height:14px!important;display:grid!important;place-items:center!important;padding:0 2px!important;color:#fff!important;font-size:9px!important;font-weight:950!important;line-height:14px!important;letter-spacing:-.2px!important;text-shadow:0 1px 2px #000!important}
 .ob-hp-track{position:absolute!important;left:6px!important;bottom:2px!important;width:34px!important;height:5px!important;border-radius:999px!important;background:rgba(0,0,0,.76)!important;overflow:hidden!important}
 .ob-hp-fill{display:block!important;width:100%!important;height:100%!important;border-radius:999px!important;background:#38d889!important;transform:scaleX(var(--hp-ratio,1))!important;transform-origin:left center!important}
@@ -105,7 +107,7 @@
 .mana-card{transition:transform .14s ease,filter .14s ease;cursor:default}
 .mana-card.ob-selected{transform:translateY(calc(-50% - 14px))!important;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))!important;z-index:300!important}
 .mana-card.ob-class-choice{cursor:pointer}
-.ob-pay-button{position:absolute;z-index:960;height:26px;padding:0 11px;border:1px solid #b59127;border-radius:6px;background:#d4ae3a;color:#111;font-size:7px;font-weight:950;cursor:pointer;display:none}
+.ob-pay-button{position:absolute;z-index:960;height:26px;padding:0 11px;border:1px solid #4f8e69;border-radius:6px;background:#164e33;color:#fff;font-size:8px;font-weight:950;-webkit-text-stroke:.35px #b8952f;paint-order:stroke fill;text-shadow:none;cursor:pointer;display:none;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 4px 12px rgba(0,0,0,.38)}
 .ob-pay-button.is-visible{display:block}
 .ob-pay-button:disabled{opacity:.42!important;filter:saturate(.55)!important;cursor:not-allowed!important}
 
@@ -624,7 +626,8 @@
 /* All inspect/search/choice popups share one horizontal size. Height remains
    content-driven until the viewport cap is reached, then only the body scrolls. */
 .ob-vsai-choice-overlay .choice-panel{
-  width:min(760px,92vw)!important;
+  width:min(788px,calc(100vw - 330px))!important;
+  min-width:min(788px,92vw)!important;
   height:auto!important;
   max-height:84vh!important;
 }
@@ -636,7 +639,7 @@
 .ob-vsai-choice-overlay .card-search-choice-grid,
 .ob-vsai-choice-overlay .reorder-choice-grid,
 .ob-vsai-choice-overlay .inspect-card-grid{
-  grid-template-columns:repeat(auto-fill,96px)!important;
+  grid-template-columns:repeat(7,96px)!important;
   grid-auto-columns:96px!important;
   justify-content:start!important;
   align-items:start!important;
@@ -691,4 +694,147 @@
 @media(max-width:760px){
   .ob-result-buttons{width:100%;display:grid;grid-template-columns:1fr 1fr}
   .ob-result-close,.ob-result-back{width:100%}
+}
+
+/* ========================================================================== */
+/* VS AI v6.83 — v6.82 review follow-up / hand, counter, phase, PAY, hover polish. */
+/* VS AI v6.85 — Scouting target metadata + PLAY/PAY polish + contextual Response focus. */
+/* VS AI v6.86 rebuild — v6.85 geometry rollback + isolated Hero scale / Tribute / Defense-arrow fixes. */
+/* ========================================================================== */
+
+/* Main Deck / Discard counters: Riftbound-like compact translucent rectangle. */
+.zone[data-zone-type="Main Deck"] > .count,
+.zone[data-zone-type="Discard Pile"] > .count,
+.zone[data-zone-type="Shard Deck"] > .count,
+.zone[data-zone-type="Legacy Deck"] > .count{
+  min-width:22px!important;
+  height:18px!important;
+  padding:0 5px!important;
+  border:0!important;
+  border-radius:3px!important;
+  background:rgba(3,10,17,.68)!important;
+  color:#fff!important;
+  font-size:12px!important;
+  line-height:18px!important;
+  font-weight:950!important;
+  box-shadow:0 2px 5px rgba(0,0,0,.34)!important;
+}
+/* Shard Pool count uses the same compact counter language. */
+.mana-pool > .count{
+  min-width:22px!important;
+  height:18px!important;
+  padding:0 5px!important;
+  border:0!important;
+  border-radius:3px!important;
+  background:rgba(3,10,17,.68)!important;
+  color:#fff!important;
+  font-size:12px!important;
+  line-height:18px!important;
+  font-weight:950!important;
+  box-shadow:0 2px 5px rgba(0,0,0,.34)!important;
+}
+/* Remove written Deck / Discard zone labels (Main, Shard, Legacy, Discard); card backs/top cards and counters carry identity. */
+.zone > .zone-label{display:none!important}
+
+/* Mana Regen icon grows with the enlarged resource counter language. */
+.ob-regen-counter{width:26px!important;height:26px!important;left:-7px!important;top:-7px!important}
+.zone[data-zone-side="AI"][data-zone-type="Shard Deck"] > .ob-regen-counter{
+  left:auto!important;top:auto!important;right:-7px!important;bottom:-7px!important;
+}
+
+/* Hand size is independent from Standard size. v6.83 uses a small edge-only overlap. */
+.hand-track{gap:0!important}
+.hand.bottom .hand-card,.hand.top .hand-card{margin-left:-5px!important}
+.hand.bottom .hand-card:first-child,.hand.top .hand-card:first-child{margin-left:0!important}
+
+/* v6.87: non-Hero preview stays 115%; Hero preview uses 110%; all floating previews must cover HP/status overlays. */
+.ob-battlefield-hover-preview{
+  position:fixed;left:0;top:0;z-index:24000!important;display:none;
+  width:var(--hover-preview-w);height:var(--hover-preview-h);
+  pointer-events:none;overflow:visible;
+}
+.ob-battlefield-hover-preview.open{display:block}
+.ob-battlefield-hover-preview.is-hero{width:var(--hero-hover-preview-w)!important;height:var(--hero-hover-preview-h)!important}
+.ob-battlefield-hover-preview img{
+  display:block;width:100%;height:100%;object-fit:contain;border-radius:9px;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.64));
+}
+/* Existing popup/sidebar preview cards use the same enlarged card-review footprint. */
+.preview-card,.ob-sidebar-hover-preview,.ob-sidebar-hover-preview img,.ob-modal-hover-preview{
+  width:var(--hover-preview-w)!important;height:var(--hover-preview-h)!important;
+}
+
+/* v6.87: sidebar hover is promoted to a viewport layer so Hero HP/status overlays can never cover it. */
+.ob-sidebar-hover-preview{position:fixed!important;right:auto!important;z-index:26000!important;pointer-events:none!important}
+
+
+/* Active phase: text-width underline + exactly centered diamond. */
+.phase-track{position:relative!important;overflow:visible!important}
+.phase-label{position:relative;z-index:3;transition:color .24s ease,text-shadow .24s ease,filter .24s ease}
+.phase-label.active{color:#f0cf58!important;text-shadow:0 0 9px rgba(240,207,88,.30)!important}
+.ob-phase-tint,.ob-phase-underline,.ob-phase-diamond{position:absolute;pointer-events:none;z-index:1}
+.ob-phase-tint{
+  top:2px;bottom:2px;left:0;width:0;border-radius:6px;background:rgba(232,196,79,.07);
+  transition:left .48s cubic-bezier(.2,.75,.2,1),width .48s cubic-bezier(.2,.75,.2,1);
+}
+.ob-phase-underline{
+  left:0;top:0;width:0;height:2px;border-radius:999px;background:#e8c44f;
+  transition:left .48s cubic-bezier(.2,.75,.2,1),width .48s cubic-bezier(.2,.75,.2,1);
+  box-shadow:0 0 7px rgba(232,196,79,.25);
+}
+.ob-phase-diamond{
+  left:0;top:0;width:7px;height:7px;background:#e8c44f;
+  transform:translateX(-50%) rotate(45deg);
+  transition:left .48s cubic-bezier(.2,.75,.2,1);
+  box-shadow:0 0 7px rgba(232,196,79,.28);
+}
+.phase-label.ob-phase-enter{animation:obPhaseEnter .52s ease-out}
+@keyframes obPhaseEnter{0%{filter:brightness(1)}45%{filter:brightness(1.55)}100%{filter:brightness(1)}}
+
+/* Match timer shares the bottom sidebar control rail. */
+.bottom-actions{grid-template-columns:.82fr 1fr 1fr!important}
+.match-timer{
+  width:100%;height:22px;min-height:22px;display:grid;place-items:center;
+  border:1px solid #334b61;border-radius:6px;background:rgba(11,23,34,.84);
+  color:#dce8f2;font-size:7px;font-weight:950;line-height:1;font-variant-numeric:tabular-nums;
+  letter-spacing:.04em;white-space:nowrap;
+}
+
+/* Payment / Response attention focus. 65% modal-like global dimmer; only the current decision surface stays bright. */
+.ob-focus-dimmer{
+  position:fixed;inset:0;z-index:900;display:none;pointer-events:none;
+  background:rgba(0,0,0,.65);border-radius:0;
+  opacity:0;transition:opacity .18s ease;
+}
+.ob-focus-dimmer.is-visible{display:block;opacity:1}
+.battlefield.ob-focus-payment .player-mana-pool{z-index:940!important;box-shadow:0 0 0 1px rgba(46,199,122,.52),0 0 20px rgba(46,199,122,.18),inset 0 0 0 1px rgba(255,255,255,.02)!important}
+.battlefield.ob-focus-blind-mana .opponent-mana-pool{position:relative;z-index:940!important;box-shadow:0 0 0 1px rgba(244,211,94,.62),0 0 22px rgba(244,211,94,.22),inset 0 0 0 1px rgba(255,255,255,.03)!important}
+.battlefield.ob-focus-blind-mana .opponent-mana-pool::before{content:"CHOOSE SHARD";position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);z-index:3;padding:3px 7px;border-radius:5px;background:rgba(4,13,21,.94);color:#f4d35e;font-size:7px;font-weight:950;letter-spacing:.04em;white-space:nowrap;box-shadow:0 0 0 1px rgba(244,211,94,.55)}
+.battlefield.ob-focus-payment .ob-pay-button{z-index:970!important}
+/* Keep only CANCEL legible in the phase rail during payment. The rest of the rail receives the same local 65% dim treatment. */
+.battlefield.ob-focus-payment .phase,
+.battlefield.ob-focus-response .phase{z-index:940!important}
+.battlefield.ob-focus-payment .phase::after,
+.battlefield.ob-focus-response .phase::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:rgba(0,0,0,.65);border-radius:inherit}
+.battlefield.ob-focus-payment #phasePrimaryAction.ob-cancel,
+.battlefield.ob-focus-response #phasePrimaryAction.ob-pass{position:relative;z-index:4!important;opacity:1!important}
+.battlefield.ob-focus-response .bottom-hud{z-index:940!important}
+/* Response focus keeps the action itself readable: Active Card, source Hero (when any), and target Hero/zone remain above the 65% dimmer. */
+.battlefield.ob-focus-response .ob-focus-lit{z-index:950!important;filter:none!important}
+.sidebar.ob-focus-response-sidebar{z-index:940!important}
+.sidebar.ob-focus-response-sidebar::after{content:"";position:absolute;inset:0;z-index:40;pointer-events:none;background:rgba(0,0,0,.65)}
+.sidebar.ob-focus-response-sidebar .active-card-pane{z-index:50!important}
+.ob-attention-enter{animation:obActionAttention .46s cubic-bezier(.2,.8,.2,1)}
+@keyframes obActionAttention{
+  0%{transform:scale(.94);filter:brightness(1);box-shadow:0 0 0 rgba(244,211,94,0)}
+  48%{transform:scale(1.06);filter:brightness(1.2);box-shadow:0 0 18px rgba(244,211,94,.58)}
+  100%{transform:scale(1);filter:brightness(1);box-shadow:none}
+}
+.ob-pay-button.ob-attention-enter{transform-origin:center center}
+
+/* Selected Shards lift above the pool without clipping. Reserve visible headroom while keeping pool geometry fixed. */
+.player-mana-pool,.opponent-mana-pool,.mana-cards{overflow:visible!important}
+.mana-card.ob-selected{z-index:520!important}
+@media (prefers-reduced-motion:reduce){
+  .ob-phase-tint,.ob-phase-underline,.ob-phase-diamond,.phase-label,.ob-attention-enter{transition:none!important;animation:none!important}
 }

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
-import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
+import { randomBytes, createHash } from 'node:crypto';
 import { WebSocketServer, WebSocket } from 'ws';
 import { createGameplayIntentRouter } from './server/gameplay-intent-router.mjs';
 import { normalizeHeadlessRuntimeMetadata } from './server/headless-runtime-compat.mjs';
@@ -13,22 +13,18 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').trim() || '0.0.0.0';
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
-const VERSION = 'Grandis Legacy PvP v3.70 — Fresh VS AI v6.80 Base — Single Room — 2 Human Players';
-const BUILD_ID = 'gl-pvp-3.70-v680-fresh-r5-battle-feedback-2026-10-02';
+const VERSION = 'Grandis Legacy PvP v3.71 — Stable PvP Network + VS AI v6.88 Battlefield — Single Room';
+const BUILD_ID = 'gl-pvp-3.71-v351-net-v688-battlefield-2026-10-03';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
-const MAX_SPECTATORS = 0;
+const MAX_SPECTATORS = 4;
 const FIXED_ROOM_ID = 'GRANDIS_PVP';
 const GAMEPLAY_INTENT_ROUTER = createGameplayIntentRouter();
-const TEACHING_VIEW_PASSWORD = String(process.env.GL_TEACHING_VIEW_PASSWORD || process.env.PVP_TEACHING_VIEW_PASSWORD || '');
-function teachingViewConfigured() { return TEACHING_VIEW_PASSWORD.length > 0; }
-function teachingPasswordMatches(value) {
-  if (!teachingViewConfigured()) return false;
-  const actual = Buffer.from(TEACHING_VIEW_PASSWORD);
-  const supplied = Buffer.from(String(value || ''));
-  return actual.length === supplied.length && timingSafeEqual(actual, supplied);
-}
+// v3.71 public spectators are permanently hidden-info/card-backs only.
+// Keep no password/both-hands path in production so a shared match URL can never expose private Hands.
+function teachingViewConfigured() { return false; }
+function teachingPasswordMatches() { return false; }
 const PLAYER1_SETUP_RECONNECT_GRACE_MS = Math.max(1000, Number(process.env.PVP_PLAYER1_SETUP_RECONNECT_GRACE_MS || 60 * 1000));
 const LOBBY_NO_DECK_TIMEOUT_MS = Math.max(1000, Number(process.env.PVP_LOBBY_NO_DECK_TIMEOUT_MS || 3 * 60 * 1000));
 const LOBBY_WITH_DECK_TIMEOUT_MS = Math.max(1000, Number(process.env.PVP_LOBBY_WITH_DECK_TIMEOUT_MS || 5 * 60 * 1000));
@@ -39,7 +35,7 @@ const PLAYER_IDLE_RELEASE_MS = Math.max(PLAYER_IDLE_WARNING_MS + 1000, Number(pr
 const PLAYER_IDLE_SWEEP_MS = Math.max(1000, Number(process.env.PVP_PLAYER_IDLE_SWEEP_MS || 5000));
 const FINISHED_MATCH_CLEANUP_MS = 60 * 1000;
 const RUNTIME_SYNC_STATUS = Object.freeze({
-  version: 'v3.70-v680-fresh',
+  version: 'v3.71-v351-network-v688-battlefield',
   authorityVerified: true,
   legacyBridgeSynchronized: true,
   fullIntentOnlyMigrationComplete: true
@@ -837,16 +833,16 @@ function maskCanonicalBoardForRecipient(board, client, revision = 0) {
   if (!board) return board;
   const canonicalState = board?.appState || null;
   const masked = clone(board);
-  const revealBothHands = Boolean(client && client.role === 'spectator' && client.teachingViewUnlocked);
-  masked.appState = maskAppStateForSeat(masked.appState, client && client.role === 'player' ? client.seat : null, revealBothHands);
+  const revealBothHands = false;
+  masked.appState = maskAppStateForSeat(masked.appState, client && client.role === 'player' ? client.seat : null, false);
   maskOpponentShardPendingForRecipient(masked.appState, client, revision, canonicalState);
   masked.pvpPrivateStateMasked = true;
   masked.pvpRecipientSeat = client && client.role === 'player' ? client.seat : null;
-  masked.pvpObserverBothHands = revealBothHands;
-  masked.pvpSpectatorView = revealBothHands ? 'BOTH_HANDS' : 'CARD_BACKS';
+  masked.pvpObserverBothHands = false;
+  masked.pvpSpectatorView = 'CARD_BACKS';
   if (masked.appState) {
-    masked.appState.pvpObserverBothHands = revealBothHands;
-    masked.appState.pvpSpectatorView = masked.pvpSpectatorView;
+    masked.appState.pvpObserverBothHands = false;
+    masked.appState.pvpSpectatorView = 'CARD_BACKS';
   }
   return masked;
 }
@@ -1456,7 +1452,7 @@ function createRoom(id) {
   return {
     id, createdAt: nowIso(), updatedAt: nowIso(), generation: 1, lastCleanupAt: null,
     players: new Map(), spectators: new Map(), logs: [], engine: null,
-    expiredSeat1Authorities: [],
+    expiredSeat1Authorities: [], spectatorBoardCache: null,
     match: freshMatchState()
   };
 }
@@ -1507,24 +1503,42 @@ function snapshotFor(room, client) {
   match.lastAnimationEvents = animationEventsForRecipient(room.match.lastAnimationEvents || [], client);
   match.lastAnimationEvent = match.lastAnimationEvents[0] || null;
   if (room.engine?.board) {
-    const canonicalBoard = room.engine.viewForSeat(client?.seat || 1);
-    match.serverBoard = maskCanonicalBoardForRecipient(canonicalBoard, client, room.engine.revision);
-    match.serverBoardRevision = room.engine.revision;
-    const state = match.serverBoard?.appState;
-    if (state) {
-      const localSeat = Number(client?.seat || 1);
-      state.pvpPlayerNames = localSeat === 2
-        ? { PLAYER: livePlayerNames[2], AI: livePlayerNames[1] }
-        : { PLAYER: livePlayerNames[1], AI: livePlayerNames[2] };
+    const revision = Number(room.engine.revision || 0);
+    const spectator = client?.role === 'spectator';
+    if (spectator) {
+      // All public spectators receive the same Player-1-oriented, hidden-information board.
+      // Cache one sanitized board per revision/name pair instead of deep-cloning the match once
+      // per spectator. This keeps the 256 MB server footprint and event-loop work bounded.
+      const cacheKey = `${revision}|${livePlayerNames[1]}|${livePlayerNames[2]}`;
+      if (!room.spectatorBoardCache || room.spectatorBoardCache.key !== cacheKey) {
+        const publicBoard = maskCanonicalBoardForRecipient(room.engine.viewForSeat(1), { role: 'spectator', seat: null, teachingViewUnlocked: false }, revision);
+        if (publicBoard?.appState) publicBoard.appState.pvpPlayerNames = { PLAYER: livePlayerNames[1], AI: livePlayerNames[2] };
+        room.spectatorBoardCache = { key: cacheKey, revision, board: publicBoard };
+      }
+      match.serverBoard = room.spectatorBoardCache.board;
+    } else {
+      const canonicalBoard = room.engine.viewForSeat(client?.seat || 1);
+      match.serverBoard = maskCanonicalBoardForRecipient(canonicalBoard, client, revision);
+      const state = match.serverBoard?.appState;
+      if (state) {
+        const localSeat = Number(client?.seat || 1);
+        state.pvpPlayerNames = localSeat === 2
+          ? { PLAYER: livePlayerNames[2], AI: livePlayerNames[1] }
+          : { PLAYER: livePlayerNames[1], AI: livePlayerNames[2] };
+      }
     }
+    match.serverBoardRevision = revision;
+    const state = match.serverBoard?.appState;
     if (state?.gameOver && room.match.status !== 'finished') {
       room.match.status = 'finished';
       room.match.finishedAt = nowIso();
-      const winnerSeat = state.winner === 'AI' ? 2 : 1;
+      const viewerSeat = spectator ? 1 : Number(client?.seat || 1);
+      const winnerFromViewer = state.winner === 'AI' ? 2 : 1;
+      const winnerSeat = viewerSeat === 2 ? (winnerFromViewer === 1 ? 2 : 1) : winnerFromViewer;
       const loserSeat = winnerSeat === 1 ? 2 : 1;
       room.match.result = state.pvpGameResult || makePvpResult(room, winnerSeat, loserSeat, humanizeRuntimeText(state.gameEndReason || 'Game ended.'));
       room.match.serverBoard = room.engine.board;
-      room.match.serverBoardRevision = room.engine.revision;
+      room.match.serverBoardRevision = revision;
       match.status = 'finished';
       match.finishedAt = room.match.finishedAt;
       match.result = room.match.result;
@@ -1601,8 +1615,8 @@ function publicDeploymentConfig(req) {
     roomId: FIXED_ROOM_ID,
     roomName: 'Grandis PvP',
     maxPlayers: 2,
-    maxSpectators: 0,
-    spectatorView: null,
+    maxSpectators: MAX_SPECTATORS,
+    spectatorView: 'CARD_BACKS',
     teachingViewAvailable: false,
     playerIdleWarningMs: PLAYER_IDLE_WARNING_MS,
     playerIdleReleaseMs: PLAYER_IDLE_RELEASE_MS
@@ -1621,6 +1635,13 @@ const server = http.createServer(async (req, res) => {
         mode: 'server-authoritative-human-vs-human',
         rooms: rooms.size,
         deckOptions: STARTER_DECK_OPTIONS.length,
+        maxSpectators: MAX_SPECTATORS,
+        spectatorView: 'CARD_BACKS',
+        memoryMB: (() => {
+          const m = process.memoryUsage();
+          const mb = (value) => Math.round((Number(value || 0) / 1024 / 1024) * 10) / 10;
+          return { rss: mb(m.rss), heapUsed: mb(m.heapUsed), heapTotal: mb(m.heapTotal), external: mb(m.external) };
+        })(),
         activeSources: {
           cards: { version: 'v0.16.2', schema: ACTIVE_RUNTIME_SOURCES.cards.schema_version, count: ACTIVE_RUNTIME_SOURCES.cardCount, path: 'data/season1/cards.runtime.v0.16.2.json', canonicalHash: ACTIVE_RUNTIME_SOURCES.cards.canonical_registry_hash },
           effects: { version: 'v0.15.2', schema: ACTIVE_RUNTIME_SOURCES.effects.schema_version, count: ACTIVE_RUNTIME_SOURCES.effectCount, path: 'data/season1/effect-recipes.runtime.v0.15.2.json' },
@@ -1683,7 +1704,7 @@ wss.on('connection', (ws, req) => {
   // so a cached/staggered frontend must never be locked out of the lobby solely because its build id differs.
   // Gameplay authority remains server-side; snapshot buildId is retained for diagnostics/QA.
   const clientBuildId = safeText(url.searchParams.get('buildId') || '', 80);
-  const wantsSpectator = false;
+  const wantsSpectator = ['1', 'true', 'yes', 'spectator', 'host'].includes(String(url.searchParams.get('spectate') || url.searchParams.get('role') || '').toLowerCase());
   if (!clientId) { send(ws, { type: 'fatal', message: 'Missing client identity.' }); ws.close(); return; }
 
   const existingSeat1ById = room.players.get(clientId) || null;
@@ -1700,18 +1721,19 @@ wss.on('connection', (ws, req) => {
     lateSeat1Reconnect = !wantsSpectator ? expiredSeat1Authority(room, clientId, suppliedSeatToken) : null;
     const offlinePlayer = !lateSeat1Reconnect && !wantsSpectator ? [...room.players.values()].sort((a, b) => (a.seat || 99) - (b.seat || 99)).find((c) => c.connected === false && tokenMatches(c, suppliedSeatToken)) : null;
     if (lateSeat1Reconnect) {
-      send(ws, { type: 'fatal', message: 'Player 1 reconnect grace expired. Spectator mode is disabled in PvP v3.70.' });
-      ws.close(1008, 'Reconnect grace expired');
-      return;
+      if (room.spectators.size >= MAX_SPECTATORS) { send(ws, { type: 'fatal', message: 'Player 1 reconnect grace expired and spectator capacity is full.' }); ws.close(); return; }
+      client = { clientId, name, role: 'spectator', observerAuthorized: true, teachingViewUnlocked: false, ready: false, deckKey: null, deckName: null, deckData: null, deckSource: null, formation: null, connectedAt: nowIso() };
+      room.spectators.set(clientId, client);
+      addLog(room, `${client.name} reconnected after the Player 1 grace period and entered as Spectator.`);
     } else if (offlinePlayer) {
       room.players.delete(offlinePlayer.clientId);
       client = { ...offlinePlayer, clientId, name: name || offlinePlayer.name, role: 'player', deckKey: room.match.status === 'setup' && initialDeck ? initialDeck.key : offlinePlayer.deckKey || null, deckName: room.match.status === 'setup' && initialDeck ? initialDeck.label : offlinePlayer.deckName || null, deckData: room.match.status === 'setup' && initialDeck ? null : offlinePlayer.deckData || null, deckSource: room.match.status === 'setup' && initialDeck ? 'starter' : offlinePlayer.deckSource || null, formation: room.match.status === 'setup' && initialDeck ? normalizeStarterFormation(initialDeck.key, null) : offlinePlayer.formation || null, connectedAt: nowIso() };
       room.players.set(clientId, client);
       addLog(room, `${client.name} resumed Player ${client.seat} seat with seat token.`);
-    } else if (room.players.size >= 2) {
-      send(ws, { type: 'fatal', message: 'Grandis PvP is full. This build has exactly 2 player seats and no spectators.' });
-      ws.close(1008, 'Room full');
-      return;
+    } else if (wantsSpectator || room.players.size >= 2) {
+      if (room.spectators.size >= MAX_SPECTATORS) { send(ws, { type: 'fatal', message: 'Spectator capacity reached.' }); ws.close(1008, 'Spectator capacity reached'); return; }
+      client = { clientId, name, role: 'spectator', observerAuthorized: true, teachingViewUnlocked: false, ready: false, deckKey: null, deckName: null, deckData: null, deckSource: null, formation: null, connectedAt: nowIso() };
+      room.spectators.set(clientId, client);
     } else {
       const seatToken = newSeatToken();
       client = { clientId, name, role: 'player', seat: chooseSeat(room), seatToken, seatTokenHash: tokenHash(seatToken), ready: false, deckKey: initialDeck?.key || null, deckName: initialDeck?.label || null, deckData: null, deckSource: initialDeck ? 'starter' : null, formation: initialDeck ? normalizeStarterFormation(initialDeck.key, null) : null, connectedAt: nowIso() };
@@ -1728,13 +1750,14 @@ wss.on('connection', (ws, req) => {
   if (client.role === 'spectator') room.spectators.set(clientId, client); else room.players.set(clientId, client);
   addLog(room, client.role === 'spectator' ? `${client.name} ${isNew ? 'joined' : 'reconnected'} as Spectator.` : `${client.name} ${isNew ? 'joined' : 'reconnected'} as Player ${client.seat}.`);
   broadcast(room);
+  if (lateSeat1Reconnect) send(ws, { type: 'notice', kind: 'info', code: 'PLAYER1_RECONNECT_GRACE_EXPIRED', message: 'Player 1 reconnect grace expired. You rejoined as Spectator.' });
   ws.on('message', (raw) => {
     let msg;
     try { msg = JSON.parse(String(raw)); } catch { return; }
     try {
       let priorityBroadcastClient = null;
       if (msg.type !== 'ping') markPlayerActivity(client);
-      if (client.role === 'spectator' && !['ping', 'activity', 'rename', 'switch-role', 'chat', 'unlock-teaching-view', 'lock-teaching-view'].includes(msg.type)) throw new Error('Spectator mode is read-only.');
+      if (client.role === 'spectator' && !['ping', 'activity', 'rename', 'switch-role', 'chat', 'sync-request'].includes(msg.type)) throw new Error('Spectator mode is read-only.');
       switch (msg.type) {
         case 'ping': {
           const reportedLatency = Number(msg.latencyMs);
@@ -1756,35 +1779,36 @@ wss.on('connection', (ws, req) => {
           break;
         }
         case 'switch-role': {
-          throw new Error('Spectator mode is parked in PvP v3.70.');
-          /*
           if (room.match.status !== 'setup') throw new Error('Role switching is only available in setup lobby.');
           const next = String(msg.role || '').toLowerCase();
           if (next === 'spectator' || next === 'host') {
             if (client.role === 'spectator') break;
             if (room.spectators.size >= MAX_SPECTATORS) throw new Error('Spectator capacity reached.');
-            room.players.delete(clientId); client.role = 'spectator'; client.observerAuthorized = true; client.teachingViewUnlocked = false; delete client.seat; client.ready = false; client.formation = null; room.spectators.set(clientId, client); addLog(room, `${client.name} switched to Spectator and released the player seat.`);
+            room.players.delete(clientId);
+            client.role = 'spectator'; client.observerAuthorized = true; client.teachingViewUnlocked = false;
+            delete client.seat; delete client.seatToken; delete client.seatTokenHash;
+            client.ready = false; client.deckKey = null; client.deckName = null; client.deckData = null; client.deckSource = null; client.formation = null;
+            room.spectators.set(clientId, client);
+            addLog(room, `${client.name} switched to Spectator and released the player seat.`);
           } else if (next === 'player') {
             if (client.role === 'player') break;
             if (room.players.size >= 2) throw new Error('Both player seats are occupied.');
-            room.spectators.delete(clientId); client.role = 'player'; client.observerAuthorized = false; client.teachingViewUnlocked = false; client.seat = chooseSeat(room); markPlayerActivity(client); client.seatToken = newSeatToken(); client.seatTokenHash = tokenHash(client.seatToken); clearExpiredSeat1Authority(room, clientId); client.ready = false; client.formation = null; room.players.set(clientId, client); addLog(room, `${client.name} joined as Player ${client.seat}.`);
+            room.spectators.delete(clientId);
+            client.role = 'player'; client.observerAuthorized = false; client.teachingViewUnlocked = false;
+            client.seat = chooseSeat(room); markPlayerActivity(client);
+            client.seatToken = newSeatToken(); client.seatTokenHash = tokenHash(client.seatToken);
+            clearExpiredSeat1Authority(room, clientId); client.ready = false; client.formation = null;
+            room.players.set(clientId, client);
+            addLog(room, `${client.name} joined as Player ${client.seat}.`);
           } else throw new Error('Choose player or spectator role.');
-          */
           break;
         }
-        case 'unlock-teaching-view': {
-          if (client.role !== 'spectator') throw new Error('Teaching View is only available to spectators.');
-          if (!teachingViewConfigured()) throw new Error('Teaching View password is not configured on this room service.');
-          if (!teachingPasswordMatches(msg.password)) throw new Error('Incorrect Teaching View password.');
-          client.teachingViewUnlocked = true;
-          addLog(room, `${client.name} unlocked Teaching View.`);
-          break;
-        }
-        case 'lock-teaching-view': {
-          if (client.role !== 'spectator') throw new Error('Teaching View is only available to spectators.');
-          client.teachingViewUnlocked = false;
-          addLog(room, `${client.name} returned to normal spectator view.`);
-          break;
+        case 'unlock-teaching-view':
+        case 'lock-teaching-view':
+          throw new Error('Teaching View is disabled. Public spectators always use Card Backs.');
+        case 'sync-request': {
+          send(client.ws, snapshotFor(room, client));
+          return;
         }
         case 'set-deck': {
           if (client.role !== 'player') throw new Error('Only players choose decks.');
@@ -1840,6 +1864,7 @@ wss.on('connection', (ws, req) => {
           if (![p1, p2].every((c) => c.deckKey)) throw new Error('Both players must choose decks before start.');
           const seed = safeText(msg.seed || Math.random().toString(36).slice(2), 32);
           room.engine = createRuntimeEngine();
+          room.spectatorBoardCache = null;
           const startOptions = { player1Name: p1.name, player2Name: p2.name };
           applyClientDeckToStartOptions(startOptions, p1, 'player');
           applyClientDeckToStartOptions(startOptions, p2, 'player2');
@@ -1863,6 +1888,7 @@ wss.on('connection', (ws, req) => {
           if (!p1 || !p2) throw new Error('Player 1 and Player 2 seats are required.');
           if (!room.engine?.board) {
             room.engine = createRuntimeEngine();
+          room.spectatorBoardCache = null;
             const startOptions = { player1Name: p1.name, player2Name: p2.name };
             applyClientDeckToStartOptions(startOptions, p1, 'player');
             applyClientDeckToStartOptions(startOptions, p2, 'player2');
@@ -1929,7 +1955,7 @@ wss.on('connection', (ws, req) => {
         }
         case 'remove-seat': removePlayerSeat(room, client, msg.seat, ws); break;
         case 'kick-seat-2': kickSeat2(room, client, ws); break;
-        case 'reset-room': if (client.role !== 'player') throw new Error('Spectators cannot reset the room.'); if (client.seat !== 1 && room.match.status !== 'finished') throw new Error('Only Player 1 may reset room before the match ends.'); room.engine = null; room.gameplayIntentLedger = new Map(); room.match = freshMatchState(); for (const p of room.players.values()) p.ready = false; addLog(room, `${client.name} reset the room to setup.`); break;
+        case 'reset-room': if (client.role !== 'player') throw new Error('Spectators cannot reset the room.'); if (client.seat !== 1 && room.match.status !== 'finished') throw new Error('Only Player 1 may reset room before the match ends.'); room.engine = null; room.spectatorBoardCache = null; room.gameplayIntentLedger = new Map(); room.match = freshMatchState(); for (const p of room.players.values()) p.ready = false; addLog(room, `${client.name} reset the room to setup.`); break;
         case 'surrender-match': applyServerSurrender(room, client); break;
         case 'chat': addLog(room, `${client.name}: ${safeText(msg.message, 180)}`); break;
         case 'shared-board': throw new Error('Client board publish is disabled. This build is server-authoritative; send runtime-intent instead.');
@@ -2039,6 +2065,8 @@ function cleanupFinishedMatch(room, now = Date.now()) {
   const connectedPlayers = [...room.players.values()]
     .filter((c) => c && c.connected !== false && c.ws?.readyState === WebSocket.OPEN)
     .sort((a, b) => Number(a.seat || 99) - Number(b.seat || 99));
+  const connectedSpectators = [...room.spectators.values()]
+    .filter((c) => c && c.connected !== false && c.ws?.readyState === WebSocket.OPEN);
 
   room.engine = null;
   room.match = freshMatchState();
@@ -2048,10 +2076,10 @@ function cleanupFinishedMatch(room, now = Date.now()) {
   room.spectators = new Map();
   room.expiredSeat1Authorities = [];
   room.gameplayIntentLedger = new Map();
+  room.spectatorBoardCache = null;
 
-  // v3.70 is strictly two-player/no-spectator. After the finished-match TTL, connected
-  // players return directly to their existing seats in the fresh lobby instead of being
-  // parked in a spectator role. New seat tokens invalidate old match reconnect authority.
+  // Connected players retain their seats; connected spectators remain read-only spectators.
+  // New seat tokens invalidate previous-match reconnect authority without keeping stale game state.
   for (const c of connectedPlayers) {
     c.role = 'player';
     c.observerAuthorized = false;
@@ -2069,7 +2097,18 @@ function cleanupFinishedMatch(room, now = Date.now()) {
     if (Number(c.seat) !== 1 && Number(c.seat) !== 2) c.seat = chooseSeat(room);
     room.players.set(c.clientId, c);
   }
-  addLog(room, `FINISHED MATCH CLEANUP: ${result?.winnerName || 'Previous match'} cleared after ${Math.round(FINISHED_MATCH_CLEANUP_MS / 60000)} minutes. Connected players returned to the two-player lobby.`);
+  for (const c of connectedSpectators.slice(0, MAX_SPECTATORS)) {
+    c.role = 'spectator';
+    c.observerAuthorized = true;
+    c.teachingViewUnlocked = false;
+    c.ready = false;
+    c.deckKey = null; c.deckName = null; c.deckData = null; c.deckSource = null; c.formation = null;
+    delete c.seat; delete c.seatToken; delete c.seatTokenHash;
+    clearDisconnectReservation(c);
+    c.lastActivityAt = room.lastCleanupAt;
+    room.spectators.set(c.clientId, c);
+  }
+  addLog(room, `FINISHED MATCH CLEANUP: ${result?.winnerName || 'Previous match'} cleared after ${Math.round(FINISHED_MATCH_CLEANUP_MS / 60000)} minutes. Connected players and spectators returned to the fresh lobby.`);
   return true;
 }
 

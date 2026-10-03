@@ -9,13 +9,13 @@ class ClientSocket extends WebSocket {
   latest(type){ for(let i=this.sent.length-1;i>=0;i--) if(!type||this.sent[i]?.type===type)return this.sent[i]; return null; }
   message(obj){ this.emit('message',Buffer.from(JSON.stringify(obj))); }
 }
-function connect(clientId,name){const ws=new ClientSocket();wss.emit('connection',ws,{url:'/ws?client='+encodeURIComponent(clientId)+'&name='+encodeURIComponent(name),headers:{host:'localhost'}});return ws;}
+function connect(clientId,name,{role='',seatToken=''}={}){const ws=new ClientSocket();const q=new URLSearchParams({client:clientId,name});if(role)q.set('role',role);if(seatToken)q.set('seatToken',seatToken);wss.emit('connection',ws,{url:'/ws?'+q.toString(),headers:{host:'localhost'}});return ws;}
 function snap(ws){const s=ws.latest('snapshot');if(!s)throw new Error('Missing snapshot');return s;}
 let p1=connect('test_p1','Alice');let p2=connect('test_p2','Bob');
 let s1=snap(p1),s2=snap(p2);
 if(s1.local.seat!==1||s2.local.seat!==2)throw new Error('Seat assignment failed');
 if(s1.room.id!=='GRANDIS_PVP'||s2.room.id!=='GRANDIS_PVP')throw new Error('Single fixed room failed');
-if(s1.spectators.length||s2.spectators.length)throw new Error('Spectators must be disabled');
+if(s1.spectators.length||s2.spectators.length)throw new Error('Unexpected spectator before spectator join');
 
 // Lobby seat-control regression: both players may leave themselves; P1 may remove P2;
 // P2 may remove P1 only while P1 is offline.
@@ -106,7 +106,74 @@ const afterSecondTurn=finishCurrentTurn(secondWs,secondSide,'Second human turn')
 assertShardPools(afterSecondTurn,firstSeat===1?5:4,firstSeat===2?5:4,'Return-turn Shard ownership');
 const returned=assertHumanDeployReady(firstSeat===1?snap(p1):snap(p2),'Return to first human');
 if(returned.turn!==actorSide)throw new Error('Second handoff did not return control to the first human side.');
-const p3=connect('test_p3','Charlie'),fatal=p3.latest('fatal');if(!fatal||!/exactly 2 player seats|full/i.test(String(fatal.message||'')))throw new Error('Third client was not rejected from the two-player room.');
-console.log('two-human single-room server simulation: PASS');
-console.log('seats=1/2, coin-flow=PASS, viewer-safe=PASS, P1<->P2 deploy-handoff=PASS, AI-controller=OFF, second-human-action=PASS, no-spectator-capacity=PASS, revision='+afterSecondTurn.match.serverBoardRevision);
+
+function runtimeIntent(ws,intent,args=[],label=intent){
+  const before=snap(ws),baseRevision=Number(before.match.serverBoardRevision||0),id='sim_'+intent+'_'+(++actionN);
+  ws.message({type:'runtime-intent',intent,args,baseRevision,clientActionId:id});
+  const notice=ws.latest('notice');
+  const ack=ws.latest('intent-ack');
+  const after=snap(ws);
+  return {before,after,ack:ack?.clientActionId===id?ack:null,notice:notice?.clientActionId===id?notice:null,id,baseRevision,label};
+}
+function ensureP2Deploy(){
+  let cur=snap(p2),guard=0;
+  while(cur.match.serverBoard?.appState?.turn!=='AI'&&guard++<3){
+    const side=cur.match.serverBoard?.appState?.turn;
+    const owner=side==='PLAYER'?p1:p2;
+    cur=finishCurrentTurn(owner,side,'Advance to Player 2 turn');
+  }
+  const st=assertHumanDeployReady(snap(p2),'Player 2 tribute regression start');
+  if(st.turn!=='AI')throw new Error('Could not reach Player 2 turn for Tribute regression.');
+}
+ensureP2Deploy();
+// Player 2: Deploy -> Battle -> Reform.
+let p2State=snap(p2);
+while(p2State.match.serverBoard.appState.phase!=='Reform'){
+  p2State=phaseIntent(p2);
+  if(p2State.match.serverBoard.appState.turn!=='AI')throw new Error('Player 2 turn ended before reaching Reform.');
+}
+const p2Hand=(p2State.match.serverBoard.appState.aiHand||[]).slice();
+let tributeStarted=null;
+for(let i=0;i<p2Hand.length;i++){
+  const attempt=runtimeIntent(p2,'beginTributeFromHand',[i],'P2 Tribute begin');
+  const pending=attempt.after.match.serverBoard?.appState?.pending;
+  if(attempt.ack&&pending?.type==='tribute_target'){tributeStarted={...attempt,pending,index:i};break}
+}
+if(!tributeStarted)throw new Error('Player 2 had no usable normal Skill for Tribute regression test.');
+const lane=(tributeStarted.pending.legal_targets||[])[0];
+if(!lane)throw new Error('Player 2 Tribute pending had no legal Hero target.');
+const choose=runtimeIntent(p2,'chooseHeroFromBoard',['PLAYER',lane],'P2 Tribute target');
+if(!choose.ack)throw new Error('Player 2 Tribute target did not receive authoritative ACK.');
+const afterTribute=choose.after;
+if(afterTribute.match.serverBoard?.appState?.pending)throw new Error('Player 2 Tribute left a blocking pending state.');
+if(afterTribute.match.serverBoard?.appState?.phase!=='Reform')throw new Error('Player 2 Tribute unexpectedly left Reform phase.');
+const nextAfterTribute=phaseIntent(p2);
+if(nextAfterTribute.match.serverBoard?.appState?.phase==='Reform'&&nextAfterTribute.match.serverBoard?.appState?.turn==='AI')throw new Error('Regression: Player 2 could not leave Reform after Tribute.');
+
+// Third link during an active match becomes a hidden-info spectator instead of being rejected.
+const p3=connect('test_p3','Charlie');
+const sp=snap(p3);
+if(sp.local?.role!=='spectator'||sp.local?.seat!=null||sp.local?.seatToken)throw new Error('Third client did not enter read-only Spectator role.');
+if(sp.match?.serverBoard?.pvpSpectatorView!=='CARD_BACKS'||sp.match?.serverBoard?.pvpObserverBothHands)throw new Error('Spectator board is not locked to CARD_BACKS.');
+const sa=sp.match?.serverBoard?.appState;
+if(!sp.match?.serverBoard?.pvpPrivateStateMasked)throw new Error('Spectator board is not viewer-safe.');
+for(const hand of [sa.playerHand||[],sa.aiHand||[]]) if(hand.some(x=>typeof x==='string'&&!x.startsWith('__HIDDEN')))throw new Error('Spectator received a private Hand card identity.');
+const snapCountBefore=p3.sent.filter(x=>x.type==='snapshot').length;
+p3.message({type:'sync-request',reason:'qa'});
+if(p3.sent.filter(x=>x.type==='snapshot').length<=snapCountBefore)throw new Error('Spectator sync-request did not return an authoritative snapshot.');
+p3.message({type:'runtime-intent',intent:'advancePhase',args:[],baseRevision:Number(sp.match.serverBoardRevision||0),clientActionId:'spectator_illegal'});
+const specNotice=p3.latest('notice');if(!specNotice||specNotice.kind!=='error'||!/read-only/i.test(String(specNotice.message||'')))throw new Error('Spectator gameplay intent was not rejected as read-only.');
+
+// Keep the public viewer count bounded for the 256 MB deployment: four spectators are allowed,
+// while a fifth spectator connection is rejected without disturbing the two player seats.
+const p4=connect('test_p4','Dana'),p5=connect('test_p5','Eli'),p6=connect('test_p6','Faye');
+for(const ws of [p4,p5,p6]) if(snap(ws).local?.role!=='spectator')throw new Error('Configured spectator capacity did not accept four viewers.');
+const p7=connect('test_p7','Gabe');
+const full=p7.latest('fatal');if(!full||!/capacity/i.test(String(full.message||'')))throw new Error('Fifth spectator was not rejected at the configured capacity.');
+if(snap(p1).players.length!==2||snap(p2).players.length!==2)throw new Error('Spectator-capacity check disturbed player seats.');
+
+console.log('v3.71 two-human + spectator server simulation: PASS');
+const mem=process.memoryUsage(),mb=v=>Math.round((Number(v||0)/1024/1024)*10)/10;
+console.log('seats=1/2, coin-flow=PASS, viewer-safe=PASS, P1<->P2 handoff=PASS, P2 tribute->next-phase=PASS, spectator-card-backs=PASS, spectator-read-only=PASS, spectator-cap=4=PASS, revision='+nextAfterTribute.match.serverBoardRevision);
+console.log('active-match-memoryMB rss='+mb(mem.rss)+', heapUsed='+mb(mem.heapUsed)+', heapTotal='+mb(mem.heapTotal)+', external='+mb(mem.external));
 process.exit(0);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-<title>Grandis Legacy — PvP v3.70</title>
+<title>Grandis Legacy — PvP v3.71</title>
 <link rel="icon" type="image/png" href="assets/favicon.png" />
 <script id="pvp370-mobile-orientation-detect">
 (() => {
@@ -33,19 +33,30 @@
 @font-face{font-family:Noto;src:url('assets/fonts/NotoSans-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 :root{
   --sidebar-w:15vw;
-  --hero-w:clamp(84px,7.25vw,112px);
+  --hero-base-w:clamp(84px,7.25vw,112px);
   --hero-ratio:.68;
+  --hero-base-h:calc(var(--hero-base-w) / var(--hero-ratio));
+  /* v6.88: Hero card remains enlarged independently; lane height is aligned to the two-card deck rail while the Hero itself is vertically centered. */
+  --hero-layout-w:calc(var(--hero-base-w) * 1.10);
+  --hero-layout-h:calc(var(--hero-layout-w) / var(--hero-ratio));
+  --hero-w:calc(var(--hero-base-w) * 1.20);
   --hero-h:calc(var(--hero-w) / var(--hero-ratio));
-  --std-w:calc(var(--hero-w) * .65);
-  --std-h:calc(var(--hero-h) * .65);
-  --attach-w:calc(var(--hero-w) * .70);
-  --attach-h:calc(var(--hero-h) * .70);
+  --std-w:calc(var(--hero-base-w) * .65);
+  --std-h:calc(var(--hero-base-h) * .65);
+  --hand-w:calc(var(--hero-base-w) * .75);
+  --hand-h:calc(var(--hero-base-h) * .75);
+  --hover-preview-w:259px;
+  --hover-preview-h:362px;
+  --hero-hover-preview-w:248px;
+  --hero-hover-preview-h:347px;
+  --attach-w:calc(var(--hero-layout-w) * .70);
+  --attach-h:calc(var(--hero-layout-h) * .70);
   --zone-w:calc(var(--std-w) / .90);
   --zone-h:calc(var(--std-h) + 8px);
   --rail-gap:4px;
   --gold:#f3cf58;--gold2:#9d7b1d;--text:#f2f6fb;--muted:#8ca0b5;
 }
-@media(max-height:820px){:root{--hero-w:clamp(77px,6.75vw,98px)}}
+@media(max-height:820px){:root{--hero-base-w:clamp(77px,6.75vw,98px)}}
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07111c;color:var(--text);font-family:Noto,Arial,sans-serif}
 body{background-image:linear-gradient(rgba(3,10,18,.30),rgba(3,10,18,.30)),url('assets/ui/Background.png');background-size:cover;background-position:center}
@@ -65,24 +76,24 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot>.app{width:100%!i
 .battlefield{position:relative;height:100vh;min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr) 39px minmax(0,1fr) auto;overflow:hidden;border-right:1px solid rgba(244,211,94,.20);padding:0 8px}
 
 /* Hands: default 85% visible. */
-.hand{position:relative;display:flex;justify-content:center;overflow:hidden;min-height:calc(var(--std-h) * .85 + 7px);z-index:40}
+.hand{position:relative;display:flex;justify-content:center;overflow:hidden;min-height:calc(var(--hand-h) * .85 + 7px);z-index:40}
 .hand.top{align-items:flex-start}.hand.bottom{align-items:flex-end}
-.hand-track{height:calc(var(--std-h) * .85 + 7px);display:flex;justify-content:center;align-items:flex-end;overflow:visible;min-width:0;padding:0 10px}
+.hand-track{height:calc(var(--hand-h) * .85 + 7px);display:flex;justify-content:center;align-items:flex-end;gap:0;overflow:visible;min-width:0;padding:0 10px}
 .hand.top .hand-track{align-items:flex-start}
 .hand.top .hand-track{transform:translateX(var(--opponent-hand-align-shift,0px))}
-.hand-card{position:relative;width:var(--std-w);height:var(--std-h);flex:0 0 var(--std-w);margin-left:calc(var(--std-w) * -.22);filter:drop-shadow(0 5px 8px rgba(0,0,0,.55));transition:.14s ease;z-index:1}
+.hand-card{position:relative;width:var(--hand-w);height:var(--hand-h);flex:0 0 var(--hand-w);margin-left:-5px;filter:drop-shadow(0 5px 8px rgba(0,0,0,.55));transition:.14s ease;z-index:1}
 .hand-card:first-child{margin-left:0}
 .hand-card>img{display:block;width:100%;height:100%;object-fit:cover;border-radius:5px;border:1px solid rgba(255,255,255,.14)}
-.hand.bottom .hand-card{transform:translateY(calc(var(--std-h) * .15))}
-.hand.top .hand-card{transform:translateY(calc(var(--std-h) * -.15))}
+.hand.bottom .hand-card{transform:translateY(calc(var(--hand-h) * .15))}
+.hand.top .hand-card{transform:translateY(calc(var(--hand-h) * -.15))}
 .hand-card:hover,.hand-card.is-hovered,.hand-card.is-selected{z-index:80}
 .hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected,.hand.top .hand-card:hover{transform:translateY(0) scale(1.04)}
 .hand.bottom .hand-card:after{content:"";position:absolute;left:-4px;right:-4px;top:-34px;bottom:-18px;z-index:-1;pointer-events:auto}
 .hand-title{position:absolute;left:8px;font-size:9px;font-weight:900;letter-spacing:.04em;padding:3px 7px;border:1px solid rgba(244,211,94,.34);border-radius:999px;background:rgba(3,10,17,.88);z-index:90}
 .hand.top .hand-title{top:5px}
 
-/* Option 1 v26: player Hand uses the same light fan as Option 2 (14% overlap). */
-.hand.bottom .hand-card{margin-left:calc(var(--std-w) * -.14);transform-origin:50% 100%;}
+/* v6.83: player Hand keeps the light fan with a small edge-only overlap. */
+.hand.bottom .hand-card{margin-left:-5px;transform-origin:50% 100%;}
 .hand.bottom .hand-card:first-child{margin-left:0}
 .hand.bottom .hand-card:nth-child(1){--fan-rot:-4deg;--fan-lift:3px}
 .hand.bottom .hand-card:nth-child(2){--fan-rot:-3deg;--fan-lift:1px}
@@ -91,13 +102,12 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot>.app{width:100%!i
 .hand.bottom .hand-card:nth-child(5){--fan-rot:1.5deg;--fan-lift:0px}
 .hand.bottom .hand-card:nth-child(6){--fan-rot:3deg;--fan-lift:1px}
 .hand.bottom .hand-card:nth-child(7){--fan-rot:4deg;--fan-lift:3px}
-.hand.bottom .hand-card{transform:translateY(calc(var(--std-h) * .15 + var(--fan-lift,0px))) rotate(var(--fan-rot,0deg));}
+.hand.bottom .hand-card{transform:translateY(calc(var(--hand-h) * .15 + var(--fan-lift,0px))) rotate(var(--fan-rot,0deg));}
 .hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected{transform:translateY(0) rotate(0deg) scale(1.04)}
 
-/* v40: opponent Hand uses the same light 14% fan treatment as player Hand,
-   mirrored vertically for the top side. No other battlefield geometry changes. */
+/* v6.83: opponent Hand mirrors the same small edge-only overlap and fan treatment. */
 .hand.top .hand-card{
-  margin-left:calc(var(--std-w) * -.14);
+  margin-left:-5px;
   transform-origin:50% 0%;
 }
 .hand.top .hand-card:first-child{margin-left:0}
@@ -110,7 +120,7 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot>.app{width:100%!i
 .hand.top .hand-card:nth-child(7){--opp-fan-rot:-3deg;--opp-fan-lift:1px}
 .hand.top .hand-card:nth-child(8){--opp-fan-rot:-4deg;--opp-fan-lift:3px}
 .hand.top .hand-card{
-  transform:translateY(calc(var(--std-h) * -.15 - var(--opp-fan-lift,0px))) rotate(var(--opp-fan-rot,0deg));
+  transform:translateY(calc(var(--hand-h) * -.15 - var(--opp-fan-lift,0px))) rotate(var(--opp-fan-rot,0deg));
 }
 .hand.top .hand-card:hover{
   transform:translateY(0) rotate(0deg) scale(1.04);
@@ -154,11 +164,11 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot>.app{width:100%!i
 .opponent-field .hero-grid,.opponent-field>.rail-pair{height:100%;min-height:0}
 .opponent-field>.rail-pair .zone{flex:0 0 var(--zone-h)}
 /* v18: both fields use the same locked hero-lane height; opponent placement is the 180° positional mirror. */
-.hero-lane{position:relative;min-width:0;height:calc(var(--hero-h) * 1.25 + 16px);max-height:calc(var(--hero-h) * 1.25 + 16px);border:1px solid rgba(88,118,145,.24);border-radius:11px;background:rgba(5,14,23,.58);display:block;overflow:visible}
+.hero-lane{position:relative;min-width:0;height:calc(var(--hero-layout-h) * 1.15 + 10px);max-height:calc(var(--hero-layout-h) * 1.15 + 10px);border:1px solid rgba(88,118,145,.24);border-radius:11px;background:rgba(5,14,23,.58);display:block;overflow:visible}
 .lane-label{position:absolute;top:5px;left:7px;color:#8ea5ba;font-size:7.5px;font-weight:900;letter-spacing:.08em}
-.hero-card{position:absolute;left:50%;top:calc(var(--hero-h) * .05 + 8px);transform:translateX(-50%);width:var(--hero-w);height:var(--hero-h);display:grid;place-items:center;z-index:3}
+.hero-card{position:absolute;left:50%;top:calc(var(--hero-layout-h) * .03 + 5px);transform:translateX(-50%);width:var(--hero-w);height:var(--hero-h);display:grid;place-items:center;z-index:3}
 .hero-card img{display:block;width:100%;height:100%;object-fit:contain;border-radius:7px;filter:drop-shadow(0 7px 10px rgba(0,0,0,.56))}
-.attachment-card{position:absolute;top:calc(var(--hero-h) * .55 + 8px);width:var(--attach-w);height:var(--attach-h);z-index:2;filter:drop-shadow(0 5px 8px rgba(0,0,0,.52));transform-origin:center center}
+.attachment-card{position:absolute;top:calc(var(--hero-layout-h) * .50 + 6px);width:var(--attach-w);height:var(--attach-h);z-index:2;filter:drop-shadow(0 5px 8px rgba(0,0,0,.52));transform-origin:center center}
 .attachment-card.left{left:5%;transform:rotate(-2deg)}.attachment-card.right{right:5%;transform:rotate(2deg)}
 .attachment-card img{display:block;width:100%;height:100%;object-fit:contain;border-radius:5px;border:1px solid rgba(255,255,255,.14)}
 .attachment-turn{position:absolute;right:-4px;top:-4px;z-index:12;min-width:17px;height:17px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:#07131f;border:1px solid var(--gold);color:#ffe16b;font-size:8px;line-height:1;font-weight:950;box-shadow:0 2px 5px rgba(0,0,0,.55);pointer-events:none}
@@ -181,7 +191,7 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot>.app{width:100%!i
 .phase-action.cancel-mode{border-color:#9a4149;background:rgba(56,14,19,.72);color:#ffc0c6}
 
 /* Bottom HUD holds only the centered hand; resource pools are anchored to their battlefield rail so deck -> deck -> pool gaps stay equal. */
-.bottom-hud{position:relative;min-height:calc(var(--std-h) * .85 + 7px);overflow:visible;z-index:60}
+.bottom-hud{position:relative;min-height:calc(var(--hand-h) * .85 + 7px);overflow:visible;z-index:60}
 .bottom-hud .hand{height:100%;min-height:inherit;position:absolute;inset:0;pointer-events:none;overflow:visible;justify-content:center}
 .bottom-hud .hand-track{pointer-events:auto}
 .mana-pool{position:absolute;width:21.5%;height:var(--zone-h);border:1px solid rgba(244,211,94,.28);border-radius:8px;background:linear-gradient(180deg,rgba(9,19,30,.92),rgba(4,10,17,.96));box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);display:flex;align-items:center;padding:3px 6px;z-index:65;overflow:visible}
@@ -230,7 +240,7 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot>.app{width:100%!i
 .preview-overlay{position:absolute;inset:0;display:none;align-items:flex-end;justify-content:flex-end;background:rgba(3,12,20,.998);padding:0 4px 5px;overflow:visible;z-index:8}
 .shared-box.previewing .preview-overlay{display:flex}
 .preview-card{flex:0 0 auto;width:225px;height:315px;max-width:none;max-height:none;aspect-ratio:5/7;object-fit:contain;border-radius:8px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.58));transform:none}
-.ob-sidebar-hover-preview{position:absolute;right:calc(100% + 8px);top:4px;z-index:80;display:none;width:225px;height:315px;pointer-events:none}.ob-sidebar-hover-preview.open{display:block}.ob-sidebar-hover-preview img{display:block;width:225px;height:315px;aspect-ratio:5/7;object-fit:contain;border-radius:8px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.58))}
+.ob-sidebar-hover-preview{position:fixed;left:0;top:0;z-index:26000;display:none;width:225px;height:315px;pointer-events:none}.ob-sidebar-hover-preview.open{display:block}.ob-sidebar-hover-preview img{display:block;width:225px;height:315px;aspect-ratio:5/7;object-fit:contain;border-radius:8px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.58))}
 .bottom-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;height:22px;min-height:22px}.bottom-actions button{width:100%;height:22px;min-height:22px;border:1px solid #334b61;border-radius:6px;background:#0b1722;color:#fff;font-size:6px;font-weight:900;line-height:1;padding:2px;white-space:nowrap}.bottom-actions .danger{border-color:#783a42;background:#241014;color:#ffb7bf}
 .concept{position:absolute;right:calc(15vw + 14px);top:6px;z-index:100;padding:3px 8px;border-radius:999px;border:1px solid rgba(106,139,166,.30);background:rgba(2,8,14,.82);font-size:7.5px;color:#afd0e8;pointer-events:none}
 @media(max-height:820px){
@@ -254,7 +264,7 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot>.app{width:100%!i
   --logical-w:100vw;
   --logical-h:100vh;
   --logical-sidebar-w:15vw;
-  --hero-w-logical:98px;
+  --hero-base-w-logical:98px;
 }
 html,body{width:100%;height:100%;overflow:hidden}
 .app{
@@ -268,7 +278,7 @@ html,body{width:100%;height:100%;overflow:hidden}
 .battlefield,.sidebar{height:100% !important}
 :root{
   --sidebar-w:var(--logical-sidebar-w) !important;
-  --hero-w:var(--hero-w-logical) !important;
+  --hero-base-w:var(--hero-base-w-logical) !important;
 }
 .concept{right:calc(var(--logical-sidebar-w) + 14px) !important}
 
@@ -286,7 +296,7 @@ html,body{width:100%;height:100%;overflow:hidden}
 </style>
 
 <link rel="stylesheet" href="option-b-integration.css">
-<link rel="stylesheet" href="pvp/pvp-v370.css">
+<link rel="stylesheet" href="pvp/pvp-v371.css">
 </head>
 <body class="pvp-booting">
 <div class="app ob-lobby-hidden">
@@ -331,6 +341,9 @@ html,body{width:100%;height:100%;overflow:hidden}
         <span class="phase-label">BATTLE PHASE</span>
         <span class="phase-label">REFORM PHASE</span>
         <span class="phase-label">END PHASE</span>
+        <span class="ob-phase-tint" aria-hidden="true"></span>
+        <span class="ob-phase-underline" aria-hidden="true"></span>
+        <span class="ob-phase-diamond" aria-hidden="true"></span>
       </div>
       <div class="phase-actions">
         <button class="phase-action" id="phasePrimaryAction" type="button">REPOSITION</button>
@@ -481,7 +494,7 @@ html,body{width:100%;height:100%;overflow:hidden}
     root.style.setProperty('--logical-w', logicalW + 'px');
     root.style.setProperty('--logical-h', logicalH + 'px');
     root.style.setProperty('--logical-sidebar-w', (logicalW * 0.15) + 'px');
-    root.style.setProperty('--hero-w-logical', (logicalW * 0.0675) + 'px');
+    root.style.setProperty('--hero-base-w-logical', (logicalW * 0.0675) + 'px');
     root.dataset.uiScale = String(Math.round(scale * 100));
     if(window.syncPlayerManaPoolToHeroLeft){
       requestAnimationFrame(()=>window.syncPlayerManaPoolToHeroLeft());
@@ -518,7 +531,7 @@ html,body{width:100%;height:100%;overflow:hidden}
   <script src="engine/shared-app/app.bundle.js"></script>
   <script src="pvp/pvp-presentation-adapter.js"></script>
   <script src="option-b-runtime.js"></script>
-  <script src="pvp/pvp-v370.js"></script>
+  <script src="pvp/pvp-v371.js"></script>
 
 </body>
 </html>

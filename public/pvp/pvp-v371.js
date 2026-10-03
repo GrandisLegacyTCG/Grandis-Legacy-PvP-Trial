@@ -1,11 +1,11 @@
-/* Grandis Legacy PvP v3.70 — single-room two-human client shell over VS AI v6.80. */
+/* Grandis Legacy PvP v3.71 — v3.51 network/lobby stability + VS AI v6.88 battlefield presentation. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.70';
+const VERSION='Grandis Legacy PvP v3.71';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
-const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck'};
-const state={ws:null,connected:false,snapshot:null,clientId:'',name:'',seatToken:'',deckKey:'',customDeck:null,customDeckName:'',lastRevision:0,lastAppliedRevision:-1,lastAppliedStatus:'',intentQueue:[],intentInFlight:null,actionSeq:0,reconnectTimer:null,reconnectDelay:900,pingAt:0,latencyMs:null,opponentLatencyMs:null,lastPongAt:0,lastCoinKey:'',fatal:'',message:'',messageError:false,rank:1,socketEpoch:0,orientationObserver:null,seatExitHold:false,seenAnimationIds:Object.create(null),seenBattleAudioIds:Object.create(null),seenBattleVfxIds:Object.create(null),battleVfxPending:Object.create(null),battlefieldRevealToken:0};
+const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
+const state={ws:null,connected:false,snapshot:null,clientId:'',name:'',seatToken:'',deckKey:'',customDeck:null,customDeckName:'',preferredRole:'player',spectatorLobbyView:false,lastRevision:0,lastAppliedRevision:-1,lastAppliedStatus:'',intentQueue:[],intentInFlight:null,actionSeq:0,intentTimeoutTimer:null,intentAckRefreshTimer:null,awaitingResync:false,reconnectTimer:null,reconnectDelay:900,pingAt:0,latencyMs:null,opponentLatencyMs:null,lastPongAt:0,lastCoinKey:'',fatal:'',message:'',messageError:false,rank:1,socketEpoch:0,orientationObserver:null,seatExitHold:false,seenAnimationIds:Object.create(null),seenBattleAudioIds:Object.create(null),seenBattleVfxIds:Object.create(null),battleVfxPending:Object.create(null),battlefieldRevealToken:0};
 const $=(id)=>document.getElementById(id);
 const E=()=>window.GL_OPTION_B_ENGINE;
 const B=()=>window.GL_LOCAL_AI_BRIDGE;
@@ -22,10 +22,13 @@ function local(){return state.snapshot?.local||null}
 function match(){return state.snapshot?.match||{}}
 function players(){return state.snapshot?.players||[]}
 function me(){const l=local();return players().find(p=>p.clientId===l?.clientId)||l||null}
-function opponent(){const l=local();return players().find(p=>Number(p.seat)&&Number(p.seat)!==Number(l?.seat))||null}
+function isSpectator(){return local()?.role==='spectator'}
+function playerBySeat(seat){return players().find(p=>Number(p.seat)===Number(seat))||null}
+function viewerSeat(){return isSpectator()?1:(Number(local()?.seat)||1)}
+function opponent(){const l=local();if(isSpectator())return playerBySeat(2);return players().find(p=>Number(p.seat)&&Number(p.seat)!==Number(l?.seat))||null}
 function activeMatch(){return ['coin-flip','coin-result','started','finished'].includes(match().status)}
 function wsBase(){const protocol=location.protocol==='https:'?'wss:':'ws:';return protocol+'//'+location.host+(cfg().wsPath||'/ws')}
-function wsUrl(){const q=new URLSearchParams({room:ROOM,client:state.clientId,name:state.name||'Player',buildId:String(cfg().buildId||'')});if(state.seatToken)q.set('seatToken',state.seatToken);if(state.deckKey&&state.deckKey!=='CUSTOM'&&!state.seatToken)q.set('deck',state.deckKey);return wsBase()+'?'+q.toString()}
+function wsUrl(){const q=new URLSearchParams({room:ROOM,client:state.clientId,name:state.name||'Player',role:state.preferredRole==='spectator'?'spectator':'player',buildId:String(cfg().buildId||'')});if(state.seatToken)q.set('seatToken',state.seatToken);if(state.deckKey&&state.deckKey!=='CUSTOM'&&!state.seatToken&&state.preferredRole!=='spectator')q.set('deck',state.deckKey);return wsBase()+'?'+q.toString()}
 function send(type,payload={}){if(!state.ws||state.ws.readyState!==WebSocket.OPEN)return false;state.ws.send(JSON.stringify({type,...payload}));return true}
 function setMessage(text,error=false){state.message=String(text||'');state.messageError=!!error;renderLobby()}
 function statusText(){if(state.fatal)return state.fatal;if(state.connected)return 'Connected';if(state.ws&&state.ws.readyState===WebSocket.CONNECTING)return 'Connecting…';return 'Disconnected'}
@@ -34,8 +37,8 @@ function signalHtml(cls,title){return '<span class="pvp370-signal '+esc(cls)+'" 
 function fitIdentity(value,max=25){const a=chars(clean(value||'',120));if(a.length<=max)return a.join('');return a.slice(0,Math.max(1,max-1)).join('')+'…'}
 function battlefieldIdentityLimit(){return document.documentElement.classList.contains('pvp-mobile-device')?20:25}
 function identityBoxHtml(kind,name,deck){const limit=battlefieldIdentityLimit(),n=esc(fitIdentity(name||'Player',limit)||'Player'),d=esc(fitIdentity(deck||'Deck',limit)||'Deck');return kind==='opponent'?'<span class="pvp370-identity-box pvp370-identity-box--opponent"><span class="pvp370-id-deck">'+d+'</span><span class="pvp370-id-player">'+n+'</span></span>':'<span class="pvp370-identity-box pvp370-identity-box--player"><span class="pvp370-id-player">'+n+'</span><span class="pvp370-id-deck">'+d+'</span></span>'}
-function localDeckName(){return local()?.deckName||match()?.deckChoices?.[local()?.seat]?.deckName||state.customDeckName||deckLabel(state.deckKey)||'Deck'}
-function opponentDeckName(){const o=opponent();return o?.deckName||match()?.deckChoices?.[o?.seat]?.deckName||'Deck'}
+function localDeckName(){if(isSpectator()){const p=playerBySeat(1);return p?.deckName||match()?.deckChoices?.[1]?.deckName||'Deck'}return local()?.deckName||match()?.deckChoices?.[local()?.seat]?.deckName||state.customDeckName||deckLabel(state.deckKey)||'Deck'}
+function opponentDeckName(){const o=isSpectator()?playerBySeat(2):opponent();return o?.deckName||match()?.deckChoices?.[o?.seat]?.deckName||'Deck'}
 function deckLabel(key){const arr=state.snapshot?.deckOptions||[];const hit=arr.find(x=>x.key===key);if(hit?.label)return hit.label;return window.GL_ACTIVE_STARTER_DECKS?.[key]?.label||key||''}
 function selectedDeckData(){
   if(state.customDeck){const raw=state.customDeck;return raw?.deck&&raw.deck.main_deck?raw.deck:raw}
@@ -46,7 +49,7 @@ function deckDisplayTitle(deck){const label=local()?.deckName||state.customDeckN
 function deckClassLine(deck){const label=local()?.deckName||state.customDeckName||deck?.display_name||deck?.deck_name||deckLabel(state.deckKey)||'';const parts=String(label).split(/[—-]/);if(parts.length>1)return parts.slice(1).join(' ').trim().replace(/\s*\/\s*/g,', ').toUpperCase();const rows=deck?.legacy_deck_expanded||[],packages={};rows.forEach(x=>{if(String(x?.card_type||'').toLowerCase()==='hero'){(packages[x.package_id||'PACKAGE']||(packages[x.package_id||'PACKAGE']=[])).push(x.card_id)}});const out=[];Object.values(packages).forEach(ids=>{let cls='';ids.forEach(id=>{const c=cardLookup(id);if(Number(c?.rank_numeric)===3)cls=c?.display_class||c?.class||''});if(cls)out.push(cls)});return (out.join(', ')||'CUSTOM DECK').toUpperCase()}
 function deckSummary(deck){const stats={heroes:0,legacies:0,skills:0,items:0,events:0,main:0};(deck?.legacy_deck_expanded||deck?.side_deck_expanded||[]).forEach(x=>{const t=String(x?.card_type||'').toLowerCase();if(t==='hero')stats.heroes++;if(t==='legacy')stats.legacies++});(deck?.main_deck||[]).forEach(x=>{const q=Math.max(0,Number(x?.quantity||1)),c=cardLookup(x?.card_id),f=String(c?.family||c?.card_type||'').toLowerCase();stats.main+=q;if(f==='item'||String(x?.card_id||'').includes('-ITM-'))stats.items+=q;else if(f==='event'||String(x?.card_id||'').includes('-EVT-'))stats.events+=q;else stats.skills+=q});return stats}
 function renderDeckSummary(){const deck=selectedDeckData(),title=$('pvp370DeckTitle'),line=$('pvp370DeckClassLine'),statsEl=$('pvp370DeckStats'),loaded=$('pvp370LoadedDeckStatus');if(title)title.textContent=deckDisplayTitle(deck);if(line)line.textContent=deck?deckClassLine(deck):'';const st=deckSummary(deck);if(statsEl)statsEl.innerHTML='<div><dt>HEROES</dt><dd>'+st.heroes+'</dd></div><div><dt>LEGACIES</dt><dd>'+st.legacies+'</dd></div><div class="total"><dt>LEGACY DECK</dt><dd>'+(st.heroes+st.legacies)+'</dd></div><div><dt>SKILLS</dt><dd>'+st.skills+'</dd></div><div><dt>ITEM</dt><dd>'+st.items+'</dd></div><div><dt>EVENT</dt><dd>'+st.events+'</dd></div><div class="total"><dt>MAIN DECK</dt><dd>'+st.main+'</dd></div>';if(loaded)loaded.textContent=(local()?.deckSource==='custom'||state.customDeck)?('Custom Deck Loaded: '+(local()?.deckName||state.customDeckName||'Imported Deck')):''}
-function setGlobals(){const l=local(),o=opponent();window.GL_PVP_LOCAL_SEAT=l?.seat||null;window.GL_PVP_LOCAL_NAME=clean(l?.name||state.name||'Player',25);window.GL_PVP_OPPONENT_NAME=clean(o?.name||'Opponent',25);window.GL_PVP_LOCAL_DECK_NAME=localDeckName();window.GL_PVP_OPPONENT_DECK_NAME=opponentDeckName();window.GL_PVP_SHARED_BOARD_ACTIVE=true;window.GL_PVP_CLIENT_MODE=true}
+function setGlobals(){const l=local(),spectator=isSpectator(),p1=playerBySeat(1),p2=playerBySeat(2),o=opponent();window.GL_PVP_LOCAL_ROLE=l?.role||'player';window.GL_PVP_LOCAL_SEAT=spectator?null:(l?.seat||null);window.GL_PVP_VIEWER_SEAT=viewerSeat();window.GL_PVP_LOCAL_NAME=clean(spectator?(p1?.name||'Player 1'):(l?.name||state.name||'Player'),25);window.GL_PVP_OPPONENT_NAME=clean(spectator?(p2?.name||'Player 2'):(o?.name||'Opponent'),25);window.GL_PVP_LOCAL_DECK_NAME=localDeckName();window.GL_PVP_OPPONENT_DECK_NAME=opponentDeckName();window.GL_PVP_SHARED_BOARD_ACTIVE=true;window.GL_PVP_CLIENT_MODE=true}
 
 function uiScale(){const app=document.querySelector('.app');if(!app)return 1;const r=app.getBoundingClientRect(),w=Number(app.offsetWidth||0);return w>0&&r.width>0?r.width/w:1}
 function alignPortableBattlefieldChrome(){
@@ -64,9 +67,16 @@ function ensureBattlefieldChrome(){
   setGlobals();
   const top=document.querySelector('.hand.top .hand-title')||document.querySelector('.player-name--opponent');
   const bottom=document.querySelector('.player-name--self')||document.querySelector('.player-name:not(.player-name--opponent)')||document.querySelector('.player-name');
-  const o=opponent();
-  if(top){top.innerHTML=identityBoxHtml('opponent',window.GL_PVP_OPPONENT_NAME,window.GL_PVP_OPPONENT_DECK_NAME)+signalHtml(signalClass(state.opponentLatencyMs,o?.connected!==false),'Opponent connection')}
-  if(bottom){bottom.innerHTML=signalHtml(signalClass(state.latencyMs,state.connected),'Your connection')+identityBoxHtml('player',window.GL_PVP_LOCAL_NAME,window.GL_PVP_LOCAL_DECK_NAME)}
+  const spectator=isSpectator(),p1=playerBySeat(1),p2=playerBySeat(2),o=opponent();
+  if(top){
+    const cls=spectator?(p2?.connected===false?'offline':'good'):signalClass(state.opponentLatencyMs,o?.connected!==false);
+    top.innerHTML=identityBoxHtml('opponent',window.GL_PVP_OPPONENT_NAME,window.GL_PVP_OPPONENT_DECK_NAME)+signalHtml(cls,spectator?'Player 2 connection':'Opponent connection');
+  }
+  if(bottom){
+    const cls=spectator?(p1?.connected===false?'offline':'good'):signalClass(state.latencyMs,state.connected);
+    bottom.innerHTML=signalHtml(cls,spectator?'Player 1 connection':'Your connection')+identityBoxHtml('player',window.GL_PVP_LOCAL_NAME,window.GL_PVP_LOCAL_DECK_NAME);
+  }
+  const danger=document.querySelector('.bottom-actions .danger');if(danger)danger.textContent=spectator?'BACK TO LOBBY':'SURRENDER';
   let timer=document.querySelector('.pvp370-match-timer');const actions=document.querySelector('.bottom-actions');if(actions&&!timer){timer=document.createElement('div');timer.className='pvp370-match-timer';timer.setAttribute('aria-label','Match duration');actions.prepend(timer)}
   if(timer)timer.textContent=formatElapsed(match().startedAt,match().finishedAt);
   requestAnimationFrame(alignPortableBattlefieldChrome);setTimeout(alignPortableBattlefieldChrome,80);
@@ -94,18 +104,24 @@ function orientationRoot(){
 
 function installDom(){
   document.documentElement.classList.add('pvp-v370');document.body.classList.add('pvp-booting');
-  const lobby=document.createElement('div');lobby.id='pvp370Lobby';lobby.className='pvp370-lobby';lobby.innerHTML=`<div class="pvp370-page"><header class="pvp370-topbar"><div class="pvp370-logo"><img src="assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"></div><div class="pvp370-heading"><h1>PVP LOBBY</h1><p>Choose your deck, then ready up.</p></div><div id="pvp370Connect" class="pvp370-connect"><i></i><span>Connecting…</span></div></header><main class="pvp370-layout"><section class="pvp370-panel pvp370-deck-panel"><div class="pvp370-picker"><label for="pvp370Deck">Choose a Deck</label><div class="pvp370-select-wrap"><select id="pvp370Deck"></select></div></div><div class="pvp370-title"><h2 id="pvp370DeckTitle">Starter Deck</h2><p id="pvp370DeckClassLine"></p></div><div class="pvp370-showcase"><div class="pvp370-formation-wrap"><div id="pvp370Formation" class="pvp370-formation-host"></div></div><aside class="pvp370-summary"><h3>YOUR DECK</h3><dl id="pvp370DeckStats"></dl></aside></div><div class="pvp370-footer"><input id="pvp370File" type="file" accept="application/json,.json" hidden><button id="pvp370Import" class="pvp370-btn pvp370-gold pvp370-compact" type="button">IMPORT CUSTOM DECK</button><div id="pvp370LoadedDeckStatus" class="pvp370-status"></div></div></section><aside class="pvp370-panel pvp370-room-panel"><h2>ROOM PANEL</h2><label class="pvp370-label" for="pvp370Name">PLAYER NAME</label><div class="pvp370-name"><input id="pvp370Name" maxlength="25" placeholder="Your player name" autocomplete="nickname"></div><div class="pvp370-actions"><button id="pvp370Ready" class="pvp370-btn pvp370-gold" type="button">READY</button></div><div class="pvp370-divider"></div><dl id="pvp370RoomStats" class="pvp370-room-stats"></dl><div id="pvp370Seats" class="pvp370-seats"></div><div id="pvp370Hint" class="pvp370-message"></div><div class="pvp370-room-footer"><button id="pvp370Start" class="pvp370-btn pvp370-gold" type="button">START MATCH</button><button id="pvp370Reconnect" class="pvp370-btn pvp370-outline pvp370-gold-outline" type="button">RECONNECT</button></div><div class="pvp370-version">${esc(VERSION)} · VS AI v6.80 battlefield base</div></aside></main></div>`;orientationRoot().appendChild(lobby);
+  const lobby=document.createElement('div');lobby.id='pvp370Lobby';lobby.className='pvp370-lobby';lobby.innerHTML=`<div class="pvp370-page"><header class="pvp370-topbar"><div class="pvp370-logo"><img src="assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"></div><div class="pvp370-heading"><h1>PVP LOBBY</h1><p>Choose your deck, then ready up or spectate.</p></div><div id="pvp370Connect" class="pvp370-connect"><i></i><span>Connecting…</span></div></header><main class="pvp370-layout"><section class="pvp370-panel pvp370-deck-panel"><div class="pvp370-picker"><label for="pvp370Deck">Choose a Deck</label><div class="pvp370-select-wrap"><select id="pvp370Deck"></select></div></div><div class="pvp370-title"><h2 id="pvp370DeckTitle">Starter Deck</h2><p id="pvp370DeckClassLine"></p></div><div class="pvp370-showcase"><div class="pvp370-formation-wrap"><div id="pvp370Formation" class="pvp370-formation-host"></div></div><aside class="pvp370-summary"><h3>YOUR DECK</h3><dl id="pvp370DeckStats"></dl></aside></div><div class="pvp370-footer"><input id="pvp370File" type="file" accept="application/json,.json" hidden><button id="pvp370Import" class="pvp370-btn pvp370-gold pvp370-compact" type="button">IMPORT CUSTOM DECK</button><div id="pvp370LoadedDeckStatus" class="pvp370-status"></div></div></section><aside class="pvp370-panel pvp370-room-panel"><h2>ROOM PANEL</h2><label class="pvp370-label" for="pvp370Name">PLAYER NAME</label><div class="pvp370-name"><input id="pvp370Name" maxlength="25" placeholder="Your player name" autocomplete="nickname"></div><div class="pvp370-actions"><button id="pvp370Spectate" class="pvp370-btn pvp370-outline pvp370-gold-outline" type="button">SPECTATE</button><button id="pvp370Ready" class="pvp370-btn pvp370-gold" type="button">READY</button></div><div class="pvp370-divider"></div><div id="pvp370Seats" class="pvp370-seats"></div><div id="pvp370Hint" class="pvp370-message"></div><div class="pvp370-room-footer"><button id="pvp370Start" class="pvp370-btn pvp370-gold" type="button">START MATCH</button><button id="pvp370Reconnect" class="pvp370-btn pvp370-outline pvp370-gold-outline" type="button">RECONNECT</button></div><div class="pvp370-version">${esc(VERSION)} · VS AI v6.88 battlefield</div></aside></main></div>`;orientationRoot().appendChild(lobby);
   const coin=document.createElement('div');coin.id='pvp370Coin';coin.className='pvp370-coin';coin.innerHTML='<section class="pvp370-coin-card"><h2>Opening Coin Flip</h2><div id="pvp370CoinBody"></div></section>';orientationRoot().appendChild(coin);
   $('pvp370Name').value=state.name;
   $('pvp370Name').addEventListener('input',()=>{state.name=clean($('pvp370Name').value,25);saveStore(STORE.name,state.name);updateBudget();});
   $('pvp370Name').addEventListener('change',()=>{if(state.name)send('rename',{name:state.name})});
-  $('pvp370Deck').addEventListener('change',()=>selectDeck($('pvp370Deck').value));
-  $('pvp370Import').onclick=()=>$('pvp370File').click();
+  $('pvp370Deck').addEventListener('change',()=>{if(!isSpectator())selectDeck($('pvp370Deck').value)});
+  $('pvp370Import').onclick=()=>{if(!isSpectator())$('pvp370File').click()};
   $('pvp370File').onchange=importDeckFile;
   $('pvp370Ready').onclick=toggleReady;
+  $('pvp370Spectate').onclick=toggleSpectatorRole;
   $('pvp370Start').onclick=()=>send('start-match',{});
-  $('pvp370Reconnect').onclick=()=>connect(true);
-  document.addEventListener('click',e=>{const danger=e.target?.closest?.('.bottom-actions .danger');if(!danger||!window.GL_PVP_CLIENT_MODE)return;e.preventDefault();e.stopImmediatePropagation();if(confirm('Surrender this match?'))sendIntent('executeConfirmedSurrender',[])},true);
+  $('pvp370Reconnect').onclick=()=>{state.seatExitHold=false;connect(true)};
+  document.addEventListener('click',e=>{
+    const danger=e.target?.closest?.('.bottom-actions .danger');if(!danger||!window.GL_PVP_CLIENT_MODE)return;
+    e.preventDefault();e.stopImmediatePropagation();
+    if(isSpectator()){state.spectatorLobbyView=true;renderLobby();return}
+    if(confirm('Surrender this match?'))sendIntent('executeConfirmedSurrender',[]);
+  },true);
 }
 function updateBudget(){}
 function renderDeckOptions(){const sel=$('pvp370Deck');if(!sel)return;let options=state.snapshot?.deckOptions||[];if(!options.length)options=Object.entries(window.GL_ACTIVE_STARTER_DECKS||{}).map(([key,v])=>({key,label:v?.label||key}));const current=local()?.deckSource==='custom'?'CUSTOM':(local()?.deckKey||state.deckKey||DEFAULT_DECK_KEY);let html=options.map(d=>'<option value="'+esc(d.key)+'" '+(current===d.key?'selected':'')+'>'+esc(d.label)+'</option>').join('');if(local()?.deckSource==='custom'||state.customDeck)html+='<option value="CUSTOM" selected>'+esc(local()?.deckName||state.customDeckName||'Imported Custom Deck')+'</option>';sel.innerHTML=html}
@@ -116,6 +132,14 @@ function importDeckFile(){const file=$('pvp370File')?.files?.[0];if(!file)return
 function swapFormation(a,b){const r=E()?.swapOptionBLobbyFormation?.('PLAYER',a,b);if(!r?.ok)return;const formation=currentFormation();if(state.customDeck){state.customDeck=clone(state.customDeck);state.customDeck.default_formation=clone(formation);send('set-deck',{customDeck:state.customDeck,deckName:state.customDeckName})}else if(state.deckKey)send('set-deck',{deckKey:state.deckKey,formation});renderFormation();renderDeckSummary()}
 function cycleRank(delta){E()?.cycleOptionBLobbyRank?.('PLAYER',delta);renderFormation()}
 function renderFormation(){const host=$('pvp370Formation');if(!host||!E())return;const view=E().getOptionBLobbyFormationView?.('PLAYER')||{rank:1,lanes:{}},lanes=['LEFT','CENTER','RIGHT'],parts=[];lanes.forEach((lane,i)=>{const id=view.lanes?.[lane]?.previewId||view.lanes?.[lane]?.rankOneId||'',v=id?E().cardView?.(id):null;parts.push('<div class="pvp370-hero">'+(id?'<img src="card-art/'+encodeURIComponent(id)+'.webp" alt="'+esc(v?.name||id)+'">':'')+'<small>'+lane.charAt(0)+lane.slice(1).toLowerCase()+'</small></div>');if(i<2)parts.push('<button class="pvp370-swap" type="button" data-pvp-swap="'+lane+'|'+lanes[i+1]+'"><img src="assets/lobby/swap.png" alt="Swap"></button>')});host.innerHTML='<div class="pvp370-formation">'+parts.join('')+'</div><div class="pvp370-rank"><button type="button" data-pvp-rank="-1">‹</button><strong>RANK '+['I','II','III'][Math.max(1,Math.min(3,Number(view.rank||1)))-1]+'</strong><button type="button" data-pvp-rank="1">›</button></div>';host.querySelectorAll('[data-pvp-swap]').forEach(b=>b.onclick=()=>{const[a,c]=b.dataset.pvpSwap.split('|');swapFormation(a,c)});host.querySelectorAll('[data-pvp-rank]').forEach(b=>b.onclick=()=>cycleRank(Number(b.dataset.pvpRank||0)))}
+function toggleSpectatorRole(){
+  const l=local();if(!state.connected||!l)return;
+  if(isSpectator()&&activeMatch()){state.spectatorLobbyView=false;renderLobby();forceBattlefieldRender();ensureBattlefieldChrome();return}
+  if(match().status!=='setup'){setMessage('Role switching is only available in setup lobby.',true);return}
+  const next=isSpectator()?'player':'spectator';
+  state.preferredRole=next;saveStore(STORE.role,next);
+  send('switch-role',{role:next});
+}
 function toggleReady(){const l=local();if(!l||!state.connected)return;const n=clean($('pvp370Name')?.value||state.name||l.name,25)||l.seatLabel||'Player';if(n!==state.name){state.name=n;saveStore(STORE.name,n);send('rename',{name:n})}if(!l.deckKey&&!state.deckKey&&!state.customDeck){setMessage('Choose a deck before Ready.',true);return}send('ready',{ready:!l.ready})}
 function playerSeatHtml(seat){
   const p=players().find(x=>Number(x.seat)===seat);
@@ -125,8 +149,38 @@ function playerSeatHtml(seat){
   const title=isSelf?'Leave Seat':(localSeat===2&&seat===1?'Remove Offline Player 1':'Remove Player 2');
   return'<article class="pvp370-seat"><div class="pvp370-seat-top"><span class="pvp370-seat-label">PLAYER '+seat+'</span><span class="pvp370-ready-chip '+(p.ready?'ready':'')+'">'+(p.ready?'READY':'NOT READY')+'</span></div><strong>'+esc(p.name||('Player '+seat))+'</strong><div class="pvp370-seat-state '+(online?'online':'')+'">'+(online?'online':'reconnecting…')+(p.hasDeck?' · Deck loaded':' · No deck')+'</div>'+(canRemove?'<button class="pvp370-kick" type="button" data-target-seat="'+seat+'" data-self="'+(isSelf?'1':'0')+'" title="'+esc(title)+'"><img src="assets/lobby/exit.png" alt="'+esc(title)+'"></button>':'')+'</article>';
 }
-function renderLobby(){if(!$('pvp370Lobby'))return;const m=match(),show=!activeMatch();$('pvp370Lobby').classList.toggle('open',show);document.body.classList.toggle('pvp-lobby-mode',show);if(show)window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(true);const connect=$('pvp370Connect');if(connect){connect.className='pvp370-connect '+(state.connected?'online':(state.ws&&state.ws.readyState===WebSocket.CONNECTING?'connecting':'offline'));connect.querySelector('span').textContent=statusText()}
-  if(!show)return;renderDeckOptions();renderFormation();renderDeckSummary();const l=local();$('pvp370Name').value=state.name||l?.name||'';updateBudget();const roomStats=$('pvp370RoomStats');if(roomStats)roomStats.innerHTML='<div><dt>CONNECTION</dt><dd>'+esc(statusText())+'</dd></div><div><dt>PLAYERS</dt><dd>'+players().filter(p=>p.connected!==false).length+' / 2</dd></div>';$('pvp370Seats').innerHTML=playerSeatHtml(1)+playerSeatHtml(2);$('pvp370Seats').querySelectorAll('.pvp370-kick').forEach(btn=>{btn.onclick=()=>{const targetSeat=Number(btn.dataset.targetSeat||0),self=btn.dataset.self==='1';const prompt=self?('Leave Player '+targetSeat+' seat?'):(targetSeat===1?'Remove offline Player 1 from this lobby?':'Remove Player 2 from this lobby?');if(confirm(prompt))send('remove-seat',{seat:targetSeat})}});const complete=!!(l&&(l.deckKey||state.deckKey||state.customDeck));const ready=$('pvp370Ready');ready.disabled=!state.connected||!complete||m.status!=='setup';ready.textContent=l?.ready?'UNREADY':'READY';ready.classList.toggle('ready',!!l?.ready);const both=players().length===2&&players().every(p=>p.connected!==false&&p.ready&&p.hasDeck);const start=$('pvp370Start');start.disabled=!(Number(l?.seat)===1&&state.connected&&m.status==='setup'&&both);start.style.display=Number(l?.seat)===1?'block':'none';const hint=$('pvp370Hint');let text=state.message;if(!text){if(!state.connected)text='Connecting to the PvP server…';else if(!complete)text='Enter your name and choose a deck.';else if(Number(l?.seat)===1&&!both)text='Waiting for both players to be READY.';else if(Number(l?.seat)===2)text='Ready up and wait for Player 1 to start the match.'}hint.textContent=text||'';hint.classList.toggle('error',state.messageError||!!state.fatal)}
+function renderLobby(){
+  if(!$('pvp370Lobby'))return;
+  const m=match(),spectator=isSpectator(),show=!activeMatch()||(spectator&&state.spectatorLobbyView);
+  $('pvp370Lobby').classList.toggle('open',show);document.body.classList.toggle('pvp-lobby-mode',show);
+  document.body.classList.toggle('pvp-spectator-mode',spectator);
+  if(show)window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(true);else window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);
+  const connect=$('pvp370Connect');if(connect){connect.className='pvp370-connect '+(state.connected?'online':(state.ws&&state.ws.readyState===WebSocket.CONNECTING?'connecting':'offline'));connect.querySelector('span').textContent=statusText()}
+  if(!show)return;
+  renderDeckOptions();renderFormation();renderDeckSummary();
+  const l=local();$('pvp370Name').value=state.name||l?.name||'';updateBudget();
+  $('pvp370Seats').innerHTML=playerSeatHtml(1)+playerSeatHtml(2);
+  $('pvp370Seats').querySelectorAll('.pvp370-kick').forEach(btn=>{btn.onclick=()=>{const targetSeat=Number(btn.dataset.targetSeat||0),self=btn.dataset.self==='1';const prompt=self?('Leave Player '+targetSeat+' seat?'):(targetSeat===1?'Remove offline Player 1 from this lobby?':'Remove Player 2 from this lobby?');if(confirm(prompt))send('remove-seat',{seat:targetSeat})}});
+  const complete=!spectator&&!!(l&&(l.deckKey||state.deckKey||state.customDeck));
+  const ready=$('pvp370Ready');ready.disabled=spectator||!state.connected||!complete||m.status!=='setup';ready.textContent=l?.ready?'UNREADY':'READY';ready.classList.toggle('ready',!!l?.ready);
+  const spectate=$('pvp370Spectate');if(spectate){
+    spectate.textContent=spectator?(activeMatch()?'SPECTATE MATCH':'JOIN AS PLAYER'):'SPECTATE';
+    spectate.disabled=!state.connected||(!spectator&&m.status!=='setup')||(spectator&&!activeMatch()&&m.status!=='setup');
+  }
+  const deckSelect=$('pvp370Deck'),deckImport=$('pvp370Import');if(deckSelect)deckSelect.disabled=spectator||m.status!=='setup';if(deckImport)deckImport.disabled=spectator||m.status!=='setup';
+  document.querySelectorAll('#pvp370Formation button').forEach(btn=>btn.disabled=spectator||m.status!=='setup');
+  const both=players().length===2&&players().every(p=>p.connected!==false&&p.ready&&p.hasDeck);
+  const start=$('pvp370Start');start.disabled=!(Number(l?.seat)===1&&state.connected&&m.status==='setup'&&both);start.style.display=!spectator&&Number(l?.seat)===1?'block':'none';
+  const hint=$('pvp370Hint');let text=state.message;
+  if(!text){
+    if(!state.connected)text='Connecting to the PvP server…';
+    else if(spectator)text=activeMatch()?'Spectator mode is read-only. Both Hands remain hidden. Select SPECTATE MATCH to return to the battlefield.':'Spectator mode is read-only. Both Hands remain hidden.';
+    else if(!complete)text='Enter your name and choose a deck.';
+    else if(Number(l?.seat)===1&&!both)text='Waiting for both players to be READY.';
+    else if(Number(l?.seat)===2)text='Ready up and wait for Player 1 to start the match.';
+  }
+  hint.textContent=text||'';hint.classList.toggle('error',state.messageError||!!state.fatal);
+}
 
 function coinFace(face){return String(face).toUpperCase()==='TAILS'?'assets/ui/Racial-Token-Tail.webp':'assets/ui/Racial-Token-Head.webp'}
 function renderCoin(){
@@ -150,13 +204,13 @@ function renderCoin(){
   }
   const f=m.openingCoinFlip||m.coinFlip||{},winner=clean(f.firstPlayerName||m.firstPlayerName||'Player',25),key=[f.choice,f.outcome,f.firstSeat].join('|');
   if(state.lastCoinKey!==key){state.lastCoinKey=key;try{B()?.playOpeningCoinSound?.()}catch{}}
-  body.innerHTML='<div class="pvp370-coin-winner">'+esc(winner)+' wins the coin flip</div><div class="pvp370-coin-result"><div><span>Player 2 called</span><strong>'+esc(f.choice||'—')+'</strong></div><div><span>Coin result</span><strong>'+esc(f.outcome||'—')+'</strong></div></div><p>'+esc(winner)+' will take the first turn.</p><button class="pvp370-coin-start" type="button">START GAME</button>';
-  body.querySelector('.pvp370-coin-start').onclick=()=>{body.querySelector('.pvp370-coin-start').disabled=true;document.body.classList.add('pvp-booting','pvp-coin-gate');send('confirm-coin-flip',{})};
+  body.innerHTML='<div class="pvp370-coin-winner">'+esc(winner)+' wins the coin flip</div><div class="pvp370-coin-result"><div><span>Player 2 called</span><strong>'+esc(f.choice||'—')+'</strong></div><div><span>Coin result</span><strong>'+esc(f.outcome||'—')+'</strong></div></div><p>'+esc(winner)+' will take the first turn.</p>'+(isSpectator()?'<p>Waiting for a player to start the battlefield…</p>':'<button class="pvp370-coin-start" type="button">START GAME</button>');
+  const start=body.querySelector('.pvp370-coin-start');if(start)start.onclick=()=>{start.disabled=true;document.body.classList.add('pvp-booting','pvp-coin-gate');send('confirm-coin-flip',{})};
 }
 
 function runtimeBoardHydrated(){const s=B()?.getSnapshot?.()?.appState;if(!s)return false;const ph=s.playerHeroes||{},ah=s.aiHeroes||{};const heroes=['LEFT','CENTER','RIGHT'].every(l=>!!ph?.[l]?.card_id)&&['LEFT','CENTER','RIGHT'].every(l=>!!ah?.[l]?.card_id);const decks=Math.max(Number(s.playerDeckCount||0),Array.isArray(s.playerDeck)?s.playerDeck.length:0)>0&&Math.max(Number(s.aiDeckCount||0),Array.isArray(s.aiDeck)?s.aiDeck.length:0)>0;const shards=(Array.isArray(s.playerManaDeck)&&s.playerManaDeck.length>0)&&(Array.isArray(s.aiManaDeck)&&s.aiManaDeck.length>0);return !!(heroes&&decks&&shards)}
 function serverBoardHydrated(board){const s=board?.appState;if(!s)return false;return ['LEFT','CENTER','RIGHT'].every(l=>!!s.playerHeroes?.[l]?.card_id)&&['LEFT','CENTER','RIGHT'].every(l=>!!s.aiHeroes?.[l]?.card_id)&&Math.max(Number(s.playerDeckCount||0),Array.isArray(s.playerDeck)?s.playerDeck.length:0)>0&&Math.max(Number(s.aiDeckCount||0),Array.isArray(s.aiDeck)?s.aiDeck.length:0)>0}
-function forceBattlefieldRender(){try{window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);window.GL_OPTION_B_UI?.render?.()}catch(err){console.error('[PvP v3.70] battlefield render failed',err)}}
+function forceBattlefieldRender(){try{window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);window.GL_OPTION_B_UI?.render?.()}catch(err){console.error('[PvP v3.71] battlefield render failed',err)}}
 function swapSideForSeat(side,seat){if(Number(seat)!==2)return side;return side==='PLAYER'?'AI':(side==='AI'?'PLAYER':side)}
 function localizeAnimationEvent(evt,seat){
   if(!evt)return null;const x=clone(evt);
@@ -231,13 +285,13 @@ function playAuthoritativeAnimations(plans){
       else if(evt.kind==='draw'&&b.queueAuthoritativeDrawMotions)ok=!!b.queueAuthoritativeDrawMotions(evt.actor_side,evt.card_ids||[evt.card_id],evt.count||1,evt.reason||'CARD_EFFECT')||ok;
       else if(evt.kind==='draw'&&b.queueAuthoritativeDrawMotion)ok=!!b.queueAuthoritativeDrawMotion(evt.actor_side,evt.card_id,evt.count||1,evt.reason||'CARD_EFFECT')||ok;
       else if(evt.kind==='legacy_to_field'&&b.queueAuthoritativeLegacyToFieldMotion)ok=!!b.queueAuthoritativeLegacyToFieldMotion(evt.actor_side,evt.lane,evt.card_id)||ok;
-    }catch(err){console.warn('[PvP v3.70] authoritative animation playback failed',evt.kind,err)}
+    }catch(err){console.warn('[PvP v3.71] authoritative animation playback failed',evt.kind,err)}
   });return ok;
 }
 function battleFeedbackFromPlans(plans){return(plans||[]).map(p=>p?.event).filter(evt=>evt?.kind==='battle_feedback').map(evt=>({id:evt.id||null,kind:evt.feedback_kind==='heal'?'heal':'attack',side:evt.side,lane:evt.lane,card_id:evt.card_id||null,outcome:evt.outcome||'hit',attack_kind:evt.attack_kind||'P',defense_kind:evt.defense_kind||null,has_damage:!!evt.has_damage,play_sound:evt.play_sound!==false}))}
 function playBattleAudioNow(events){
   const b=B();if(!b?.playAuthoritativeBattleFeedbackAudio)return false;let ok=false;
-  for(const evt of events||[]){if(!evt?.id||state.seenBattleAudioIds[evt.id])continue;try{ok=!!b.playAuthoritativeBattleFeedbackAudio(evt)||ok}catch(err){console.warn('[PvP v3.70] battle audio failed',err)}state.seenBattleAudioIds[evt.id]=true}
+  for(const evt of events||[]){if(!evt?.id||state.seenBattleAudioIds[evt.id])continue;try{ok=!!b.playAuthoritativeBattleFeedbackAudio(evt)||ok}catch(err){console.warn('[PvP v3.71] battle audio failed',err)}state.seenBattleAudioIds[evt.id]=true}
   pruneSeenMap(state.seenBattleAudioIds);return ok;
 }
 function scheduleBattleVfx(events){
@@ -248,9 +302,9 @@ function scheduleBattleVfx(events){
     const tryPlay=()=>{
       if(state.seenBattleVfxIds[evt.id]){delete state.battleVfxPending[evt.id];return}
       attempt++;let played=false;
-      try{played=!!B()?.playAuthoritativeBattleFeedback?.(evt)}catch(err){console.warn('[PvP v3.70] battle VFX retry failed',err)}
+      try{played=!!B()?.playAuthoritativeBattleFeedback?.(evt)}catch(err){console.warn('[PvP v3.71] battle VFX retry failed',err)}
       if(played){state.seenBattleVfxIds[evt.id]=true;delete state.battleVfxPending[evt.id];pruneSeenMap(state.seenBattleVfxIds);return}
-      if(attempt>=14){delete state.battleVfxPending[evt.id];console.warn('[PvP v3.70] battle VFX anchor never became ready',evt);return}
+      if(attempt>=14){delete state.battleVfxPending[evt.id];console.warn('[PvP v3.71] battle VFX anchor never became ready',evt);return}
       setTimeout(()=>{if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(tryPlay));else tryPlay()},Math.min(180,25+attempt*18));
     };
     if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(tryPlay));else setTimeout(tryPlay,34);
@@ -273,7 +327,7 @@ function revealBattlefieldAfterHydration(callback){
   waitForBattlefieldPaintReady(()=>{document.body.classList.remove('pvp-booting','pvp-coin-gate');renderCoin();ensureBattlefieldChrome();if(typeof callback==='function')callback()});
 }
 function importBoard(msg){
-  const m=msg.match||{},board=m.serverBoard,seat=msg.local?.seat;if(!board||!seat)return;
+  const m=msg.match||{},board=m.serverBoard,seat=msg.local?.role==='spectator'?1:Number(msg.local?.seat||0);if(!board||!seat)return;
   const rev=Number(m.serverBoardRevision||0),status=String(m.status||''),same=rev===state.lastAppliedRevision&&status===state.lastAppliedStatus;
   if(same&&runtimeBoardHydrated())return;
   try{
@@ -286,7 +340,7 @@ function importBoard(msg){
     const animationPlans=prepareAuthoritativeAnimations(m,seat),battleFeedback=battleFeedbackFromPlans(animationPlans);
     if(battleFeedback.length)playBattleAudioNow(battleFeedback);
     const ok=adapter()?.importViewerSafeSnapshot?.(board,seat,{skipImportAnimations:true});
-    if(ok===false||!runtimeBoardHydrated())throw new Error('Viewer-safe board import did not hydrate the local v6.80 runtime.');
+    if(ok===false||!runtimeBoardHydrated())throw new Error('Viewer-safe board import did not hydrate the local shared runtime.');
     state.lastAppliedRevision=rev;state.lastAppliedStatus=status;
     const playImportedPresentation=()=>{
       playAuthoritativeAnimations(animationPlans);
@@ -305,29 +359,81 @@ function importBoard(msg){
       // Card / Shard sound+motion. This is the key PvP v3.51 timing behavior.
       playImportedPresentation();
     }
-  }catch(err){console.error('[PvP v3.70] board import failed',err);state.lastAppliedRevision=-1;state.lastAppliedStatus='';setMessage('Battlefield sync failed: '+String(err?.message||err),true)}
+  }catch(err){console.error('[PvP v3.71] board import failed',err);state.lastAppliedRevision=-1;state.lastAppliedStatus='';setMessage('Battlefield sync failed: '+String(err?.message||err),true)}
 }
 function handleSnapshot(msg){
+  const previousRole=local()?.role||null;
   state.snapshot=msg;const l=msg.local||{},status=String(msg.match?.status||'');
+  state.awaitingResync=false;clearIntentAckRefresh();
   if(status==='setup'){
     state.lastAppliedRevision=-1;state.lastAppliedStatus='';state.seenAnimationIds=Object.create(null);state.seenBattleAudioIds=Object.create(null);state.seenBattleVfxIds=Object.create(null);state.battleVfxPending=Object.create(null);document.body.classList.add('pvp-booting');
   }else if(status==='coin-flip'||status==='coin-result')document.body.classList.add('pvp-booting','pvp-coin-gate');
+  if(l.role){state.preferredRole=l.role==='spectator'?'spectator':'player';saveStore(STORE.role,state.preferredRole)}
+  if(l.role==='spectator'){state.seatToken='';saveStore(STORE.token,'')}
   if(l.seatToken){state.seatToken=l.seatToken;saveStore(STORE.token,state.seatToken)}
   if(l.name){state.name=clean(l.name,25);saveStore(STORE.name,state.name)}
   if(l.deckKey&&l.deckKey!=='CUSTOM'){state.deckKey=l.deckKey;saveStore(STORE.deck,l.deckKey)}
   if(status==='setup'&&l.deckSource==='custom'&&l.deckData){
     const incoming=clone(l.deckData),incomingName=clean(l.deckName||incoming?.display_name||incoming?.deck_name||'Imported Custom Deck',100);
-    if(!state.customDeck||JSON.stringify(state.customDeck)!==JSON.stringify(incoming)){state.customDeck=incoming;state.customDeckName=incomingName;state.deckKey='CUSTOM';saveStore(STORE.deck,'CUSTOM');const r=E()?.importOptionBDeck?.('PLAYER',state.customDeck);if(!r?.ok)console.warn('[PvP v3.70] custom deck reconnect preview could not be restored:',r?.error||r)}
+    if(!state.customDeck||JSON.stringify(state.customDeck)!==JSON.stringify(incoming)){state.customDeck=incoming;state.customDeckName=incomingName;state.deckKey='CUSTOM';saveStore(STORE.deck,'CUSTOM');const r=E()?.importOptionBDeck?.('PLAYER',state.customDeck);if(!r?.ok)console.warn('[PvP v3.71] custom deck reconnect preview could not be restored:',r?.error||r)}
   }
-  state.lastRevision=Number(msg.match?.serverBoardRevision||0);setGlobals();if(status==='setup')syncEngineDeckFromLocal();
-  if(status==='setup'&&!l.deckKey&&!l.deckData&&state.deckKey&&state.deckKey!=='CUSTOM')send('set-deck',{deckKey:state.deckKey,formation:currentFormation()});
+  if(previousRole&&previousRole!==l.role)state.message='';
+  if(l.role==='spectator'&&activeMatch()&&previousRole!=='spectator')state.spectatorLobbyView=false;
+  state.lastRevision=Number(msg.match?.serverBoardRevision||0);setGlobals();if(status==='setup'&&l.role==='player')syncEngineDeckFromLocal();
+  if(status==='setup'&&l.role==='player'&&!l.deckKey&&!l.deckData&&state.deckKey&&state.deckKey!=='CUSTOM')send('set-deck',{deckKey:state.deckKey,formation:currentFormation()});
   if(activeMatch())importBoard(msg);
   resolveIntentFromSnapshot(msg);renderLobby();renderCoin();ensureBattlefieldChrome();
 }
-function resolveIntentFromSnapshot(msg){const inflight=state.intentInFlight;if(!inflight)return;const rev=Number(msg.match?.serverBoardRevision||0),last=msg.match?.lastIntent||{};if(rev>inflight.baseRevision||last.clientActionId===inflight.clientActionId){state.intentInFlight=null;pumpIntent()}}
-function sendIntent(name,args=[]){name=String(name||'');if(!name)return{ok:false,error:'Missing intent'};state.intentQueue.push({name,args:Array.isArray(args)?args:[],clientActionId:'a'+Date.now().toString(36)+'_'+(++state.actionSeq).toString(36)});pumpIntent();return{ok:true,queued:true}}
-function pumpIntent(){if(state.intentInFlight||!state.intentQueue.length||!state.connected||!activeMatch())return;const item=state.intentQueue.shift();item.baseRevision=Number(match().serverBoardRevision||state.lastRevision||0);state.intentInFlight=item;send('runtime-intent',{intent:item.name,args:item.args,baseRevision:item.baseRevision,clientActionId:item.clientActionId})}
-function clearIntentQueue(){state.intentQueue.length=0;state.intentInFlight=null}
+function clearIntentAckRefresh(){if(state.intentAckRefreshTimer){clearTimeout(state.intentAckRefreshTimer);state.intentAckRefreshTimer=null}}
+function clearIntentTimeout(){if(state.intentTimeoutTimer){clearTimeout(state.intentTimeoutTimer);state.intentTimeoutTimer=null}}
+function clearIntentTimers(){clearIntentAckRefresh();clearIntentTimeout()}
+function requestAuthoritativeResync(reason='sync'){
+  if(!state.connected)return false;
+  state.awaitingResync=true;
+  return send('sync-request',{reason,knownRevision:Number(match().serverBoardRevision||state.lastRevision||0)});
+}
+function armIntentTimeout(){
+  clearIntentTimeout();
+  state.intentTimeoutTimer=setTimeout(()=>{
+    const inflight=state.intentInFlight;if(!inflight)return;
+    state.intentQueue.length=0;state.intentInFlight=null;clearIntentTimers();
+    requestAuthoritativeResync('intent-timeout');
+    state.message='Server response delayed. Battlefield resync requested; retry the action after the board refreshes.';
+    state.messageError=true;renderLobby();
+  },12000);
+}
+function handleIntentAck(msg){
+  const inflight=state.intentInFlight;if(!inflight)return;
+  if(msg.clientActionId&&msg.clientActionId!==inflight.clientActionId)return;
+  inflight.ackedAt=Date.now();inflight.committedRevision=Number(msg.committedRevision||0);
+  clearIntentAckRefresh();
+  state.intentAckRefreshTimer=setTimeout(()=>{
+    if(state.intentInFlight===inflight)requestAuthoritativeResync('ack-without-snapshot');
+  },2500);
+}
+function resolveIntentFromSnapshot(msg){
+  const inflight=state.intentInFlight;if(!inflight){clearIntentTimeout();return}
+  const rev=Number(msg.match?.serverBoardRevision||0),last=msg.match?.lastIntent||{};
+  if(rev>inflight.baseRevision||last.clientActionId===inflight.clientActionId){
+    state.intentInFlight=null;clearIntentTimers();state.messageError=false;
+    if(state.message&&state.message.startsWith('Server response delayed.'))state.message='';
+    pumpIntent();
+  }
+}
+function sendIntent(name,args=[]){
+  name=String(name||'');if(!name)return{ok:false,error:'Missing intent'};
+  if(isSpectator())return{ok:false,error:'Spectator is read-only.'};
+  if(state.awaitingResync)return{ok:false,error:'Waiting for authoritative resync.'};
+  state.intentQueue.push({name,args:Array.isArray(args)?args:[],clientActionId:'a'+Date.now().toString(36)+'_'+(++state.actionSeq).toString(36)});
+  pumpIntent();return{ok:true,queued:true};
+}
+function pumpIntent(){
+  if(state.intentInFlight||state.awaitingResync||!state.intentQueue.length||!state.connected||!activeMatch()||isSpectator())return;
+  const item=state.intentQueue.shift();item.baseRevision=Number(match().serverBoardRevision||state.lastRevision||0);item.sentAt=Date.now();state.intentInFlight=item;
+  if(!send('runtime-intent',{intent:item.name,args:item.args,baseRevision:item.baseRevision,clientActionId:item.clientActionId})){state.intentInFlight=null;state.intentQueue.unshift(item);return}
+  armIntentTimeout();
+}
+function clearIntentQueue(){state.intentQueue.length=0;state.intentInFlight=null;state.awaitingResync=false;clearIntentTimers()}
 
 function scheduleReconnect(){
   if(state.fatal||state.seatExitHold||state.reconnectTimer||navigator.onLine===false)return;
@@ -346,7 +452,7 @@ function connect(force=false){
   state.ws=ws;
   const live=()=>state.ws===ws&&state.socketEpoch===epoch;
   ws.onopen=()=>{if(!live())return;state.connected=true;state.fatal='';state.messageError=false;state.reconnectDelay=900;state.lastPongAt=Date.now();send('rename',{name:state.name||'Player'});renderLobby();pumpIntent()};
-  ws.onmessage=(ev)=>{if(!live())return;let msg;try{msg=JSON.parse(ev.data)}catch{return}if(msg.type==='snapshot'){handleSnapshot(msg);return}if(msg.type==='pong'){const now=Date.now(),sent=Number(msg.clientAt||state.pingAt||0);if(sent)state.latencyMs=Math.max(0,now-sent);state.opponentLatencyMs=msg.opponentLatencyMs==null?state.opponentLatencyMs:Number(msg.opponentLatencyMs);state.lastPongAt=now;ensureBattlefieldChrome();return}if(msg.type==='intent-ack')return;if(msg.type==='notice'){if(msg.kind==='error'){clearIntentQueue();state.messageError=true}state.message=msg.message||'Server notice';renderLobby();return}if(msg.type==='seat-kicked'){state.seatToken='';saveStore(STORE.token,'');state.seatExitHold=true;state.message=msg.message||'You left the player seat.';state.messageError=msg.kind!=='left';renderLobby();return}if(msg.type==='fatal'){state.fatal=msg.message||'Connection rejected.';state.messageError=true;renderLobby();try{ws.close()}catch{}}};
+  ws.onmessage=(ev)=>{if(!live())return;let msg;try{msg=JSON.parse(ev.data)}catch{return}if(msg.type==='snapshot'){handleSnapshot(msg);return}if(msg.type==='pong'){const now=Date.now(),sent=Number(msg.clientAt||state.pingAt||0);if(sent)state.latencyMs=Math.max(0,now-sent);state.opponentLatencyMs=msg.opponentLatencyMs==null?state.opponentLatencyMs:Number(msg.opponentLatencyMs);state.lastPongAt=now;ensureBattlefieldChrome();return}if(msg.type==='intent-ack'){handleIntentAck(msg);return}if(msg.type==='notice'){if(msg.kind==='error'){clearIntentQueue();state.messageError=true}state.message=msg.message||'Server notice';renderLobby();return}if(msg.type==='seat-kicked'){state.seatToken='';saveStore(STORE.token,'');state.seatExitHold=true;state.message=msg.message||'You left the player seat.';state.messageError=msg.kind!=='left';renderLobby();return}if(msg.type==='fatal'){state.fatal=msg.message||'Connection rejected.';state.messageError=true;renderLobby();try{ws.close()}catch{}}};
   ws.onclose=()=>{if(!live())return;state.connected=false;state.ws=null;clearIntentQueue();renderLobby();scheduleReconnect()};
   ws.onerror=()=>{if(!live())return;renderLobby()};
 }
@@ -355,6 +461,7 @@ function boot(){
   state.clientId=makeId();
   state.name=clean(loadStore(STORE.name,'Player'),25)||'Player';
   state.seatToken=loadStore(STORE.token,'');
+  state.preferredRole=loadStore(STORE.role,'player')==='spectator'?'spectator':'player';
   const storedDeck=loadStore(STORE.deck,'');
   state.deckKey=storedDeck&&storedDeck!=='CUSTOM'?storedDeck:DEFAULT_DECK_KEY;
   orientationRoot();

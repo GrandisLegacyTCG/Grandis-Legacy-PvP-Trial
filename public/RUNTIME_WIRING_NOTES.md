@@ -1,3 +1,5 @@
+> **PvP v3.71 note (2026-10-03):** These are retained VS AI runtime wiring/history notes. The active PvP release is **v3.71**, with VS AI v6.88 battlefield presentation adapted through the PvP boundary; current release details live in the repository-root `BUILD_NOTES.md`.
+
 # Grandis Legacy — VS AI v6.80 — Runtime Wiring Notes
 
 Promoted from Option B Runtime Wired v6 — New UX Stage 1.5.14 on 2026-10-02. Promotion itself introduces no additional gameplay or UX changes.

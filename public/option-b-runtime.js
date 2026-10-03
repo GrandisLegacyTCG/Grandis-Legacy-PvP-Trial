@@ -22,6 +22,8 @@ const battleLogPanel=document.getElementById('battleLogPanel');
 const appRoot=document.querySelector('.app');
 const soundBtn=document.querySelector('.bottom-actions button:not(.danger)');
 const payBtn=document.createElement('button');payBtn.className='ob-pay-button';payBtn.type='button';payBtn.textContent='PAY';BF.appendChild(payBtn);
+const focusDimmer=document.createElement('div');focusDimmer.className='ob-focus-dimmer';focusDimmer.setAttribute('aria-hidden','true');appRoot.appendChild(focusDimmer);
+const battlefieldHoverPreview=document.createElement('div');battlefieldHoverPreview.className='ob-battlefield-hover-preview';battlefieldHoverPreview.setAttribute('aria-hidden','true');const battlefieldHoverImg=document.createElement('img');battlefieldHoverPreview.appendChild(battlefieldHoverImg);document.body.appendChild(battlefieldHoverPreview);
 const swapLayer=document.createElement('div');swapLayer.className='ob-swap-layer';BF.appendChild(swapLayer);
 const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.id='obVsaiAttackDirectionLayer';svg.classList.add('gl-pending-attack-direction-layer','ob-vsai-attack-direction-layer');svg.setAttribute('aria-hidden','true');
 {
@@ -37,7 +39,7 @@ const playedDetailOverlay=document.createElement('div');playedDetailOverlay.clas
 const cardReviewOverlay=document.createElement('div');cardReviewOverlay.className='ob-card-review-overlay';cardReviewOverlay.innerHTML='<section class="ob-card-review-panel" role="dialog" aria-modal="true" aria-labelledby="obCardReviewTitle"><header class="ob-card-review-head"><h2 id="obCardReviewTitle">Card Review</h2><button type="button" class="ob-card-review-close" aria-label="Close card review">CLOSE</button></header><div class="ob-card-review-body"></div></section>';document.body.appendChild(cardReviewOverlay);
 const animationLayer=document.createElement('div');animationLayer.className='ob-animation-layer';animationLayer.setAttribute('aria-hidden','true');document.body.appendChild(animationLayer);
 const modalHoverPreview=document.createElement('div');modalHoverPreview.className='ob-modal-hover-preview';modalHoverPreview.setAttribute('aria-hidden','true');const modalHoverImg=document.createElement('img');modalHoverPreview.appendChild(modalHoverImg);document.body.appendChild(modalHoverPreview);
-const sidebarHoverPreview=document.createElement('div');sidebarHoverPreview.className='ob-sidebar-hover-preview';sidebarHoverPreview.setAttribute('aria-hidden','true');const sidebarHoverImg=document.createElement('img');sidebarHoverPreview.appendChild(sidebarHoverImg);sidebar.appendChild(sidebarHoverPreview);
+const sidebarHoverPreview=document.createElement('div');sidebarHoverPreview.className='ob-sidebar-hover-preview';sidebarHoverPreview.setAttribute('aria-hidden','true');const sidebarHoverImg=document.createElement('img');sidebarHoverPreview.appendChild(sidebarHoverImg);document.body.appendChild(sidebarHoverPreview);
 const turnBanner=document.createElement('div');turnBanner.className='ob-turn-banner';turnBanner.setAttribute('aria-live','polite');document.body.appendChild(turnBanner);
 const lobbyOverlay=document.createElement('div');lobbyOverlay.className='ob-lobby-overlay';lobbyOverlay.innerHTML='<section class="ob-lobby-panel" role="dialog" aria-modal="true" aria-labelledby="obLobbyTitle"><header class="ob-lobby-head"><img class="ob-lobby-logo" src="engine/assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"><h1 id="obLobbyTitle">VS AI LOBBY</h1></header><div class="ob-lobby-error" id="obLobbyError"></div><div class="ob-lobby-decks" id="obLobbyDecks"></div><footer class="ob-lobby-foot"><button type="button" class="ob-lobby-start" id="obLobbyStart">Start Match</button></footer></section>';document.body.appendChild(lobbyOverlay);
 const coinOverlay=document.createElement('div');coinOverlay.className='ob-coin-overlay';coinOverlay.innerHTML='<section class="ob-coin-card" role="dialog" aria-modal="true" aria-labelledby="obCoinTitle"><h2 id="obCoinTitle">Opening Coin Flip</h2><div class="ob-coin-body"></div></section>';document.body.appendChild(coinOverlay);
@@ -50,8 +52,9 @@ let activeCardHold=null,activeCardPhaseStamp='';
 let inspectState=null,lobbyIsOpen=true,lobbyErrorText='';
 let openingFirstSide='PLAYER',openingChoice='HEADS',openingOutcome='HEADS',openingPresentationActive=false;
 let obOpeningHiddenShardUids=new Set(),resultShown=false,resultCleanupTimer=null;
-let transientConnectorKey='',transientConnectorUntil=0;
+let transientConnectorKey='',transientConnectorUntil=0,transientDefenseConnector=null;
 let presentationPrimed=false,previousVisualState=null,lastTurnBannerKey='';
+let lastPhaseIndicatorKey='',lastInteractionFocusMode='';
 let obPresentationActive=0,obPresentationBusyUntil=0;
 let obAttachmentLastPress={key:'',at:0};
 const seenPresentationEvents=new Set();
@@ -151,6 +154,73 @@ function bindPreview(img){
   img.addEventListener('mouseenter',()=>{if(isPvpMobileDevice())return;showBattlefieldCardPreview(img)});
   img.addEventListener('mouseleave',()=>{if(isPvpMobileDevice())return;hideBattlefieldCardPreview()});
 }
+function hideBattlefieldHoverPreview(){battlefieldHoverPreview.classList.remove('open','is-hero');battlefieldHoverPreview.setAttribute('aria-hidden','true');battlefieldHoverImg.removeAttribute('src')}
+function placeBattlefieldHoverPreview(kind,anchor){
+  if(!anchor||!battlefieldHoverPreview||isPvpMobileDevice())return;
+  const cs=getComputedStyle(battlefieldHoverPreview),w=parseFloat(cs.width)||259,h=parseFloat(cs.height)||362,g=8,vw=window.innerWidth||1200,vh=window.innerHeight||800;
+  let left=g,top=g;
+  if(kind==='hand'){
+    const playerBox=document.querySelector('.player-name')?.getBoundingClientRect();if(!playerBox)return;
+    const centerX=playerBox.left+playerBox.width/2;left=centerX-w/2+68;top=playerBox.top-6-h;
+  }else if(kind==='hero'){
+    const playerBox=document.querySelector('.player-name')?.getBoundingClientRect();
+    if(playerBox){const centerX=playerBox.left+playerBox.width/2;left=centerX-w/2+68}else left=vw-w-g;
+    top=(vh-h)/2;
+  }else if(kind==='shard'){
+    const pool=anchor.closest?.('.mana-pool')||document.querySelector('.player-mana-pool');if(!pool)return;
+    const pr=pool.getBoundingClientRect(),clearance=30;left=pr.left+pr.width/2-w/2;top=pr.top-clearance-h;
+  }else{
+    const ar=anchor.getBoundingClientRect();left=ar.right+12;top=ar.top+ar.height/2-h/2;
+  }
+  left=Math.max(g,Math.min(left,vw-w-g));top=Math.max(g,Math.min(top,vh-h-g));
+  battlefieldHoverPreview.style.left=Math.round(left)+'px';battlefieldHoverPreview.style.top=Math.round(top)+'px';
+}
+function bindBattlefieldPreview(img,kind,anchor){
+  if(!img)return;const key='obBattlefieldPreview'+String(kind||'card');if(img.dataset[key]==='1')return;img.dataset[key]='1';
+  const show=()=>{if(isPvpMobileDevice())return;battlefieldHoverPreview.classList.toggle('is-hero',kind==='hero');battlefieldHoverImg.src=img.src;placeBattlefieldHoverPreview(kind,anchor||img);battlefieldHoverPreview.classList.add('open');battlefieldHoverPreview.setAttribute('aria-hidden','false')};
+  img.addEventListener('mouseenter',show);img.addEventListener('mousemove',()=>placeBattlefieldHoverPreview(kind,anchor||img));img.addEventListener('mouseleave',hideBattlefieldHoverPreview);
+}
+function placePhaseIndicator(activeLabel,animate){
+  const track=document.querySelector('.phase-track'),underline=track?.querySelector('.ob-phase-underline'),diamond=track?.querySelector('.ob-phase-diamond'),tint=track?.querySelector('.ob-phase-tint');if(!track||!activeLabel||!underline||!diamond||!tint)return;
+  const scale=currentUiScale(),tr=track.getBoundingClientRect(),lr=activeLabel.getBoundingClientRect(),left=(lr.left-tr.left)/scale,width=lr.width/scale,center=left+width/2;
+  const labelTop=(lr.top-tr.top)/scale,labelBottom=(lr.bottom-tr.top)/scale,lineTop=labelBottom+6;
+  underline.style.left=left+'px';underline.style.width=width+'px';underline.style.top=lineTop+'px';
+  diamond.style.left=center+'px';diamond.style.top=(lineTop-2.5)+'px';
+  tint.style.left=(left-7)+'px';tint.style.width=(width+14)+'px';tint.style.top=Math.max(0,labelTop-5)+'px';tint.style.bottom='auto';tint.style.height=(lr.height/scale+10)+'px';
+  if(animate){activeLabel.classList.remove('ob-phase-enter');void activeLabel.offsetWidth;activeLabel.classList.add('ob-phase-enter');clearTimeout(placePhaseIndicator.t);placePhaseIndicator.t=setTimeout(()=>activeLabel.classList.remove('ob-phase-enter'),560)}
+}
+function clearResponseFocusLights(){
+  document.querySelectorAll('.ob-focus-lit').forEach(el=>el.classList.remove('ob-focus-lit'));
+  sidebar?.classList.remove('ob-focus-response-sidebar');
+}
+function addResponseFocusLight(el){if(el)el.classList.add('ob-focus-lit')}
+function renderResponseFocusLights(s){
+  clearResponseFocusLights();
+  if(window.GL_PVP_LOCAL_ROLE==='spectator'||s?.responseWindow?.response_owner!=='PLAYER')return;
+  sidebar?.classList.add('ob-focus-response-sidebar');
+  addResponseFocusLight(activeStage?.closest('.active-card-pane')||activeStage);
+  const rw=s.responseWindow,action=normalizeAction(rw.action||rw,rw.card_id);
+  if(action?.source_side&&action?.source_lane)addResponseFocusLight(uiLaneElement(action.source_side,action.source_lane));
+  const contexts=activeTargetContexts(s,chainActions(s));
+  contexts.forEach(ctx=>{
+    if(ctx?.source_kind!=='active-card'&&ctx?.source_side&&ctx?.source_lane)addResponseFocusLight(uiLaneElement(ctx.source_side,ctx.source_lane));
+    addResponseFocusLight(targetElementForContext(ctx));
+  });
+}
+function renderInteractionFocus(s){
+  if(window.GL_PVP_LOCAL_ROLE==='spectator'){BF.classList.remove('ob-focus-payment','ob-focus-response','ob-focus-blind-mana');focusDimmer.classList.remove('is-visible');focusDimmer.setAttribute('aria-hidden','true');clearResponseFocusLights();lastInteractionFocusMode='';return}
+  const p=s?.pending,responseOwned=s?.responseWindow?.response_owner==='PLAYER';
+  const payment=pendingOwner(p)==='PLAYER'&&['mana_shard_payment_choice','mana_spend_choice','response_payment_choice'].includes(p?.type)&&Number(p?.mana_cost??p?.selected_mana??1)>0;
+  const blindMana=pendingOwner(p)==='PLAYER'&&p?.type==='opponent_mana_selection';
+  const mode=payment?'payment':(responseOwned?'response':(blindMana?'blind-mana':''));
+  BF.classList.toggle('ob-focus-payment',mode==='payment');BF.classList.toggle('ob-focus-response',mode==='response');BF.classList.toggle('ob-focus-blind-mana',mode==='blind-mana');
+  focusDimmer.classList.toggle('is-visible',!!mode);focusDimmer.setAttribute('aria-hidden',mode?'false':'true');
+  if(mode==='response')renderResponseFocusLights(s);else clearResponseFocusLights();
+  if(mode!==lastInteractionFocusMode){
+    lastInteractionFocusMode=mode;const el=mode==='payment'?payBtn:(mode==='response'&&primary.classList.contains('ob-pass')?primary:null);
+    if(el){el.classList.remove('ob-attention-enter');void el.offsetWidth;el.classList.add('ob-attention-enter');setTimeout(()=>el.classList.remove('ob-attention-enter'),520)}
+  }
+}
 function mobilePreviewImageFromTarget(target){
   if(!isPvpMobileDevice()||!target?.closest)return null;
   const host=target.closest('.hand-card,.hero-card,.attachment-card,.ob-combat-card,.zone-card,.zoneCard,.played-card,.active-card-visual');
@@ -170,13 +240,13 @@ document.addEventListener('click',e=>{
 function hideSidebarHoverPreview(){sidebarHoverPreview.classList.remove('open');sidebarHoverPreview.setAttribute('aria-hidden','true');sidebarHoverImg.removeAttribute('src')}
 function placeSidebarHoverPreview(anchor){
   if(!anchor||!sidebarHoverPreview||!sidebar)return;
-  const sr=sidebar.getBoundingClientRect(),ar=anchor.getBoundingClientRect();
-  const cssH=parseFloat(getComputedStyle(sidebarHoverPreview).height)||315;
-  const scaleY=sr.height>0&&sidebar.offsetHeight>0?sr.height/sidebar.offsetHeight:1;
-  const anchorTop=(ar.top-sr.top)/Math.max(scaleY,.001),anchorH=ar.height/Math.max(scaleY,.001);
-  const sidebarH=sidebar.offsetHeight||sr.height/Math.max(scaleY,.001);
-  let top=anchorTop+anchorH/2-cssH/2;top=Math.max(4,Math.min(top,Math.max(4,sidebarH-cssH-4)));
-  sidebarHoverPreview.style.top=Math.round(top)+'px';
+  const sr=sidebar.getBoundingClientRect(),ar=anchor.getBoundingClientRect(),cs=getComputedStyle(sidebarHoverPreview);
+  const w=parseFloat(cs.width)||259,h=parseFloat(cs.height)||362,g=10,vw=window.innerWidth||1600,vh=window.innerHeight||900;
+  let left=sr.left-w-g;
+  left=Math.max(g,Math.min(left,vw-w-g));
+  let top=ar.top+ar.height/2-h/2;
+  top=Math.max(g,Math.min(top,vh-h-g));
+  sidebarHoverPreview.style.left=Math.round(left)+'px';sidebarHoverPreview.style.top=Math.round(top)+'px';
 }
 function bindSidebarPreview(img){
   if(!img||img.dataset.obSidebarPreviewBound==='1')return;img.dataset.obSidebarPreviewBound='1';
@@ -194,7 +264,7 @@ function placeModalHoverPreview(anchor){
   // If that side cannot fit the full preview, use the left free space instead rather
   // than changing the established lobby/battlefield/component sizing.
   const rightAvailable=Math.max(0,vw-r.right),leftAvailable=Math.max(0,r.left);
-  const useRight=rightAvailable>=w+2*g || rightAvailable>=leftAvailable;
+  const useRight=rightAvailable>=w+g;
   const centerX=useRight?(r.right+rightAvailable/2):(leftAvailable/2);
   let left=centerX-w/2;
   if(useRight) left=Math.max(r.right+g,left);
@@ -357,7 +427,15 @@ function flyBetween(src,fromEl,toEl,duration=380,onFinish,playSound=true){
   requestAnimationFrame(()=>requestAnimationFrame(()=>{im.style.transition='transform '+duration+'ms cubic-bezier(.2,.75,.2,1),opacity '+duration+'ms ease,width '+duration+'ms ease,height '+duration+'ms ease';im.style.transform='translate('+(tr.left-fr.left)+'px,'+(tr.top-fr.top)+'px)';im.style.width=tr.width+'px';im.style.height=tr.height+'px';im.style.opacity='.72'}));
   setTimeout(()=>{im.remove();obPresentationActive=Math.max(0,obPresentationActive-1);obPresentationBusyUntil=Math.max(obPresentationBusyUntil,Date.now()+60);if(typeof onFinish==='function')onFinish(true)},duration+20);return true;
 }
-function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if(openingPresentationActive||!s.turn||lastTurnBannerKey===key)return;lastTurnBannerKey=key;turnBanner.innerHTML='<strong>'+(s.turn==='PLAYER'?'YOUR TURN':(window.GL_PVP_CLIENT_MODE?'OPPONENT TURN':'AI TURN'))+'</strong><small>ROUND '+Number(s.round||1)+'</small>';turnBanner.classList.remove('show');void turnBanner.offsetWidth;turnBanner.classList.add('show');clearTimeout(showTurnBannerFor.t);showTurnBannerFor.t=setTimeout(()=>turnBanner.classList.remove('show'),900)}
+function queueOptionBTributeMotion(p,lane){
+  if(!p||p.type!=='tribute_target'||!p.card_id||!Number.isInteger(Number(p.hand_index))||!lane)return false;
+  const from=playerHandTrack?.querySelector('.hand-card[data-hand-index="'+Number(p.hand_index)+'"] .hand-art'),to=heroCardEl('PLAYER',lane);
+  if(!from||!to)return false;const fr=from.getBoundingClientRect(),tr=to.getBoundingClientRect();if(fr.width<1||tr.width<1)return false;
+  const im=document.createElement('img');im.className='ob-flying-card';im.src=art(p.card_id);im.style.left=fr.left+'px';im.style.top=fr.top+'px';im.style.width=fr.width+'px';im.style.height=fr.height+'px';animationLayer.appendChild(im);E()?.playCardMotionSound?.();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{im.style.transition='transform 430ms cubic-bezier(.2,.75,.2,1),opacity 430ms ease,width 430ms ease,height 430ms ease';im.style.transform='translate('+(tr.left-fr.left)+'px,'+(tr.top-fr.top)+'px)';im.style.width=tr.width+'px';im.style.height=tr.height+'px';im.style.opacity='.72'}));
+  setTimeout(()=>im.remove(),460);return true;
+}
+function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if(openingPresentationActive||!s.turn||lastTurnBannerKey===key)return;lastTurnBannerKey=key;const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',label=s.turn==='PLAYER'?(spectator?'PLAYER 1 TURN':'YOUR TURN'):(window.GL_PVP_CLIENT_MODE?(spectator?'PLAYER 2 TURN':'OPPONENT TURN'):'AI TURN');turnBanner.innerHTML='<strong>'+label+'</strong><small>ROUND '+Number(s.round||1)+'</small>';turnBanner.classList.remove('show');void turnBanner.offsetWidth;turnBanner.classList.add('show');clearTimeout(showTurnBannerFor.t);showTurnBannerFor.t=setTimeout(()=>turnBanner.classList.remove('show'),900)}
 function buildPresentationPlan(s){
   const cur=visualStateOf(s),prev=previousVisualState,plan={draws:[],shards:[],heroTransitions:[],moved:[]};
   if(openingPresentationActive){(cur.presentation||[]).forEach(e=>{if(e?.id&&e.reason==='OPENING_HAND')seenPresentationEvents.add(e.id)});previousVisualState=cur;return plan;}
@@ -441,6 +519,10 @@ function beginResponseFromHand(handIndex,optionIndices){
 }
 function confirmResponseOption(optionIndex){
   if(!responseRollbackSnapshot)responseRollbackSnapshot=B()?.getSnapshot?.()||null;
+  const before=st(),rw=before?.responseWindow,opt=rw?.options?.[Number(optionIndex)];
+  if(opt?.card_id==='S1-ITM-016'&&rw?.target_side&&rw?.target_lane){
+    transientDefenseConnector={card_id:opt.card_id,target_side:rw.target_side,target_lane:rw.target_lane,until:performance.now()+900};
+  }
   uiResponseSourceChoice=null;
   intent('responseSelectNoStuck',[Number(optionIndex)]);
   intent('confirmSelectedResponse',[]);
@@ -605,7 +687,7 @@ function renderPool(host,countEl,pool,side){
     im.src=blindOpponent?'assets/ui/back-shard.webp':shardArt(sh);
     im.alt=blindOpponent?'Face-down opponent Shard':((sh.class_name||'Mana')+' Shard');
     wrap.appendChild(im);host.appendChild(wrap);cards.push(wrap);
-    if(!blindOpponent) bindPreview(im);
+    if(!blindOpponent){if(side==='PLAYER')bindBattlefieldPreview(im,'shard',wrap);else bindPreview(im);}
     if(blindOpponent){
       wrap.addEventListener('click',()=>{
         const q=st()?.pending,selectedNow=new Set((q?.selected_indices||[]).map(Number)),required=Math.max(1,Number(q?.required_count||1));
@@ -683,7 +765,7 @@ function renderHero(side,lane,h,s){
   laneEl.classList.toggle('ob-casting-target',castingTargetsPosition(s,side,lane));
   const pack=ensureHeroPhysicalStack(laneEl,hc);pack.classList.add('hero-card-anchor');
   const id=heroImageId(h),v=cv(id);let img=hc.querySelector(':scope > img');if(!img){img=document.createElement('img');hc.prepend(img)}
-  if(id&&img.getAttribute('src')!==art(id))img.src=art(id);img.alt=v?.name||'Hero';img.classList.add('heroImg');bindPreview(img);
+  if(id&&img.getAttribute('src')!==art(id))img.src=art(id);img.alt=v?.name||'Hero';img.classList.add('heroImg');bindBattlefieldPreview(img,'hero',hc);
   // HP/state UI belongs to the lane overlay and never rotates with the physical Hero package.
   // Legacy is not a Hero and has no HP. Match the VS AI renderer: never show an HP bar / 0/0 in Legacy Mode.
   hc.querySelector(':scope > .hp')?.remove();
@@ -710,9 +792,10 @@ function renderHero(side,lane,h,s){
   let heroSingleAction=null;
   if(responseSelectable)heroSingleAction=()=>confirmResponseOption(responseLanes.get(lane));
   else if(directTributeHeroReady(p,side,lane))heroSingleAction=()=>intent('handleChoiceConfirm',[]);
+  else if(engineSelectable&&p?.type==='tribute_target')heroSingleAction=()=>{queueOptionBTributeMotion(p,lane);intent('chooseHeroFromBoard',[side,lane])};
   else if(engineSelectable)heroSingleAction=()=>intent('chooseHeroFromBoard',[side,lane]);
   hc.onclick=heroSingleAction?e=>{e.preventDefault();e.stopPropagation();if(e.detail>1){clearTimeout(hc._obSingleClickTimer);hc._obSingleClickTimer=null;return}clearTimeout(hc._obSingleClickTimer);hc._obSingleClickTimer=setTimeout(()=>{hc._obSingleClickTimer=null;heroSingleAction()},210)}:null;
-  hc.ondblclick=e=>{e.preventDefault();e.stopPropagation();clearTimeout(hc._obSingleClickTimer);hc._obSingleClickTimer=null;openCardReview(id)};
+  hc.ondblclick=null;
   img.draggable=false;
   const delayExhaust=heroCombatHeld(side,lane,s),exhaustedVisual=!!(h?.exhausted&&!delayExhaust);
   pack.classList.toggle('is-exhausted',exhaustedVisual);
@@ -862,7 +945,7 @@ function chainActions(s){
   const p=s.pending;
   if(p?.type==='response_payment_choice'&&p.response_option){
     const rw=p.incoming_response_window||{},o=p.response_option;
-    {const responseSide=p.side||rw.target_side||'PLAYER',responseLane=o.source_lane||rw.target_lane||null,responseHero=responseLane?sideHeroes(s,responseSide)?.[responseLane]:null;out.push({card_id:o.card_id,side:responseSide,lane:responseLane,source_card_id:o.source_card_id||heroImageId(responseHero)||null,target_side:rw.source_side,target_lane:rw.source_lane,no_source:!o.source_lane});}
+    {const responseSide=p.side||rw.target_side||'PLAYER',responseLane=o.source_lane||rw.target_lane||null,responseHero=responseLane?sideHeroes(s,responseSide)?.[responseLane]:null,isChainMail=o.card_id==='S1-ITM-016';out.push({card_id:o.card_id,side:responseSide,lane:isChainMail?null:responseLane,source_card_id:isChainMail?null:(o.source_card_id||heroImageId(responseHero)||null),target_side:isChainMail?responseSide:rw.source_side,target_lane:isChainMail?responseLane:rw.source_lane,no_source:isChainMail||!o.source_lane});}
   }
   if(p?.type==='racial_stoneblood'&&p.after_stoneblood_response?.action){
     out.push(normalizeAction(p.after_stoneblood_response.action,p.after_stoneblood_response.action.card_id));
@@ -894,6 +977,8 @@ function renderCombatStacks(s){
   }else heldCombatCards=now.slice();
   const chain=heldCombatCards.slice(),groups={};
   chain.forEach(a=>{
+    // v6.82: Item/Event visual source is the sidebar Active Card, not a Hero duplicate.
+    const family=String(rawCardDef(a.card_id)?.family||cv(a.card_id)?.family||'').toLowerCase();if(family==='item'||family==='event')return;
     // A played card is rendered exactly once on the battlefield.
     // If it has a Hero source (Skill/Attack/Scouting/etc.), keep the card above that source Hero.
     // The target is represented only by the connector line + arrow; never clone the card at the line end.
@@ -911,18 +996,61 @@ function renderCombatStacks(s){
     arr.forEach((a,i)=>{
       const v=cv(a.card_id);if(!v)return;
       const c=document.createElement('div');c.className='ob-combat-card';c.style.setProperty('--ob-stack-y',(i*13)+'px');c.style.setProperty('--ob-stack-i',String(i));
-      const im=document.createElement('img');im.src=art(a.card_id);im.alt=v.name;c.appendChild(im);c.addEventListener('dblclick',e=>{e.preventDefault();e.stopPropagation();openCardReview(a.card_id)});stack.appendChild(c);bindPreview(im);
+      const im=document.createElement('img');im.src=art(a.card_id);im.alt=v.name;c.appendChild(im);stack.appendChild(c);bindPreview(im);
     });
     host.appendChild(stack);
   });
   if(!combatChainStillActive(s))heldCombatCards=[];
   lastChainKey=JSON.stringify(chain);return chain;
 }
+function itemEventArrowContexts(a){
+  if(!a?.card_id)return[];
+  const raw=rawCardDef(a.card_id)||{},family=String(raw.family||cv(a.card_id)?.family||'').toLowerCase();
+  if(family!=='item'&&family!=='event')return[];
+  const lanes=(a.target_lanes&&a.target_lanes.length)?a.target_lanes:(a.target_lane?[a.target_lane]:[]);
+  if(a.target_side&&lanes.length)return lanes.filter(Boolean).map(target_lane=>({source_kind:'active-card',target_kind:'hero',target_side:a.target_side,target_lane,card_id:a.card_id}));
+  // Prefer canonical target metadata over effect prose. This prevents cards such as
+  // Scouting (whose text says "discard" but whose target is a Hero EXP stack) from
+  // being misread as a Discard Pile destination.
+  const rawTarget=String(raw?.resolver?.raw_target_type||raw?.runtime_resolver?.raw_target_type||'').toLowerCase();
+  const fallbackText=rawTarget?'':String(raw?.printed?.text||raw?.card_text||'').toLowerCase();
+  const targetText=rawTarget||fallbackText;
+  if(/hero/.test(rawTarget))return[];
+  let zone='';
+  if(/discard pile|discard/.test(targetText))zone='Discard Pile';
+  else if(/shard pool|mana pool/.test(targetText))zone='Shard Pool';
+  else if(/self deck|your deck|owner deck|\bdeck\b/.test(targetText)&&!/shard deck|legacy deck/.test(targetText))zone='Main Deck';
+  if(!zone)return[];
+  return[{source_kind:'active-card',target_kind:'zone',target_side:a.side||'PLAYER',target_zone:zone,card_id:a.card_id}];
+}
+function targetElementForContext(ctx){
+  if(ctx?.target_kind==='zone'){
+    if(ctx.target_zone==='Shard Pool')return ctx.target_side==='AI'?document.querySelector('.opponent-mana-pool'):document.querySelector('.player-mana-pool');
+    return zoneEl(ctx.target_side,ctx.target_zone);
+  }
+  return heroCardEl(ctx?.target_side,ctx?.target_lane)?.parentElement||heroCardEl(ctx?.target_side,ctx?.target_lane);
+}
+function sourceElementForContext(ctx){
+  if(ctx?.source_kind==='active-card')return activeStage?.querySelector('.active-card-visual')||null;
+  return heroCardEl(ctx?.source_side,ctx?.source_lane)?.parentElement||heroCardEl(ctx?.source_side,ctx?.source_lane);
+}
 function activeTargetContexts(s,chain){
   const p=s?.pending;
+  if(transientDefenseConnector){
+    if(performance.now()<Number(transientDefenseConnector.until||0))return[{source_kind:'active-card',target_kind:'hero',target_side:transientDefenseConnector.target_side,target_lane:transientDefenseConnector.target_lane,card_id:transientDefenseConnector.card_id}];
+    transientDefenseConnector=null;
+  }
   // Pre-commit Mana selection is still the acting player's decision. Do not show a source->target
   // connector until payment is committed and the opponent actually owns a Response/decision window.
   if(['mana_shard_payment_choice','mana_spend_choice'].includes(p?.type)&&!s?.responseWindow)return[];
+  const rw=s?.responseWindow;
+  if(rw?.card_id){
+    const rwFamily=String(rawCardDef(rw.card_id)?.family||cv(rw.card_id)?.family||'').toLowerCase();
+    if(rwFamily==='item'||rwFamily==='event'){
+      const rwAction=normalizeAction(rw.action||rw,rw.card_id),rwContexts=itemEventArrowContexts(rwAction);
+      if(rwContexts.length)return rwContexts;
+    }
+  }
   const attack=findActiveAttackWindow(s);
   if(attack?.source_lane&&attack?.target_side){
     // Area / multi-target Attacks are resolved by the authoritative runtime one Hero at a time.
@@ -939,24 +1067,27 @@ function activeTargetContexts(s,chain){
     return (p.selected_target_lanes||[]).map(target_lane=>({source_side:p.source_side,source_lane:p.source_lane,target_side:p.target_side,target_lane}));
   }
   const candidates=[...(chain||[])].map(a=>resolveActionSourceLane(s,a)).reverse();
+  const activeCardContexts=itemEventArrowContexts(candidates[0]);if(activeCardContexts.length)return activeCardContexts;
   const targeted=candidates.find(a=>a?.lane&&a?.target_side&&(a?.target_lane||(a?.target_lanes||[]).length));
   if(targeted){
     const lanes=(targeted.target_lanes&&targeted.target_lanes.length)?targeted.target_lanes:(targeted.target_lane?[targeted.target_lane]:[]);
     return lanes.map(target_lane=>({source_side:targeted.side,source_lane:targeted.lane,target_side:targeted.target_side,target_lane}));
   }
-  const pa=pendingActionInfo(s,p);
+  const pa=pendingActionInfo(s,p),paActiveCardContexts=itemEventArrowContexts(pa);if(paActiveCardContexts.length)return paActiveCardContexts;
   if(pa?.lane&&pa?.target_side&&(pa?.target_lane||(pa?.target_lanes||[]).length)){
     const lanes=(pa.target_lanes&&pa.target_lanes.length)?pa.target_lanes:[pa.target_lane];
     return lanes.filter(Boolean).map(target_lane=>({source_side:pa.side,source_lane:pa.lane,target_side:pa.target_side,target_lane}));
   }
-  // AI Scouting can resolve its EXP choice immediately, so its pending state may be gone before
-  // Option B gets a paint. While Scouting remains the latest Active Card in this phase, reuse the
-  // authoritative played-event source/target snapshot so the player can still see which Hero was hit.
+  // If an Item/Event has just resolved, briefly preserve its Active Card -> target connector.
+  // This covers fast AI actions (notably Scouting) whose pending selection can disappear before the UI paint.
   const recent=latestResolvedActionThisPhase(s);
-  if(recent?.card_id==='S1-EVT-003'&&recent.source_side&&recent.source_lane&&recent.target_side&&recent.target_lane){
-    const key=String(recent.id||recent.timestamp||'')+'|'+recent.card_id+'|'+recent.source_side+'|'+recent.source_lane+'|'+recent.target_side+'|'+recent.target_lane;
-    if(key!==transientConnectorKey){transientConnectorKey=key;transientConnectorUntil=performance.now()+280}
-    if(performance.now()<transientConnectorUntil){const sourceLane=currentLaneForSourceCard(s,recent.source_side,recent.source_card_id||null,recent.source_lane)||recent.source_lane;return[{source_side:recent.source_side,source_lane:sourceLane,target_side:recent.target_side,target_lane:recent.target_lane}]}
+  if(recent?.card_id){
+    const recentAction=normalizeAction(recent,recent.card_id),recentContexts=itemEventArrowContexts(recentAction);
+    if(recentContexts.length){
+      const key=String(recent.id||recent.timestamp||'')+'|'+recent.card_id+'|'+String(recent.target_side||'')+'|'+String(recent.target_lane||'');
+      if(key!==transientConnectorKey){transientConnectorKey=key;transientConnectorUntil=performance.now()+900}
+      if(performance.now()<transientConnectorUntil)return recentContexts;
+    }
   }
   return [];
 }
@@ -966,9 +1097,8 @@ function renderAttackLine(s,chain){
   svg.setAttribute('viewBox','0 0 '+Math.max(1,window.innerWidth||1)+' '+Math.max(1,window.innerHeight||1));
   const seen=new Set();
   contexts.forEach(ctx=>{
-    const key=[ctx.source_side,ctx.source_lane,ctx.target_side,ctx.target_lane].join('|');if(seen.has(key))return;seen.add(key);
-    const src=heroCardEl(ctx.source_side,ctx.source_lane)?.parentElement||heroCardEl(ctx.source_side,ctx.source_lane);
-    const tar=heroCardEl(ctx.target_side,ctx.target_lane)?.parentElement||heroCardEl(ctx.target_side,ctx.target_lane);
+    const key=[ctx.source_kind||'hero',ctx.source_side||'',ctx.source_lane||'',ctx.target_kind||'hero',ctx.target_side||'',ctx.target_lane||'',ctx.target_zone||''].join('|');if(seen.has(key))return;seen.add(key);
+    const src=sourceElementForContext(ctx),tar=targetElementForContext(ctx);
     if(!src||!tar)return;
     const from=src.getBoundingClientRect(),to=tar.getBoundingClientRect();
     if(from.width<1||to.width<1)return;
@@ -1022,7 +1152,7 @@ function renderHand(s){
       if(m.canTribute){addAction(actions,'TRIBUTE','tribute',()=>intent('beginTributeFromHand',[idx]));actionCount++}
     }
     if(actionCount)card.classList.add('ob-has-action');
-    card.appendChild(actions);const im=document.createElement('img');im.className='hand-art';im.src=art(id);im.alt=v?.name||'Card';im.draggable=false;card.appendChild(im);bindPreview(im);bindOptionBHandHover(card);card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(id)};playerHandTrack.appendChild(card);
+    card.appendChild(actions);const im=document.createElement('img');im.className='hand-art';im.src=art(id);im.alt=v?.name||'Card';im.draggable=false;card.appendChild(im);bindBattlefieldPreview(im,'hand',card);bindOptionBHandHover(card);card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(id)};playerHandTrack.appendChild(card);
   });
   pendingDraws.forEach((r,i)=>{
     const idx=(s.playerHand||[]).length+i,slot=document.createElement('div');slot.className='hand-card ob-draw-reservation-slot ob-presentation-hidden';slot.dataset.handIndex=idx;slot.dataset.drawReservationId=String(r.id||'');
@@ -1077,7 +1207,10 @@ function renderOpponentHand(s){
 }
 function renderPhase(s){
   const labels=[...document.querySelectorAll('.phase-label')];labels.forEach(x=>x.classList.toggle('active',x.textContent.trim().toUpperCase().startsWith(phaseName(s.phase).toUpperCase())));
-  const turn=document.querySelector('.phase-turn .turn');turn.innerHTML=(s.turn==='PLAYER'?'YOUR TURN':(window.GL_PVP_CLIENT_MODE?'OPPONENT TURN':'AI TURN'))+'<small>TURN '+Number(s.round||1)+'</small>';
+  const activeLabel=labels.find(x=>x.classList.contains('active'))||labels[0],phaseIndicatorKey=String(s.turn||'')+'|'+Number(s.round||1)+'|'+String(s.phase||''),phaseChanged=!!lastPhaseIndicatorKey&&phaseIndicatorKey!==lastPhaseIndicatorKey;lastPhaseIndicatorKey=phaseIndicatorKey;
+  requestAnimationFrame(()=>placePhaseIndicator(activeLabel,phaseChanged));
+  const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',turnLabel=s.turn==='PLAYER'?(spectator?'PLAYER 1 TURN':'YOUR TURN'):(window.GL_PVP_CLIENT_MODE?(spectator?'PLAYER 2 TURN':'OPPONENT TURN'):'AI TURN');
+  const turn=document.querySelector('.phase-turn .turn');turn.innerHTML=turnLabel+'<small>TURN '+Number(s.round||1)+'</small>';
   const responseOwned=s.responseWindow?.response_owner==='PLAYER',p=s.pending;
   let mode='',label='REPOSITION';
   if(uiResponseSourceChoice){mode='cancel-response-source';label='CANCEL'}
@@ -1089,6 +1222,7 @@ function renderPhase(s){
     const pairs=E().getRepositionPairs()||[];
     if(s.turn==='PLAYER'&&(s.phase==='Deploy'||s.phase==='Reform')&&!s.pending&&!s.responseWindow&&pairs.length){mode='reposition';label='REPOSITION'}
   }
+  if(spectator){mode='';label=''}
   primary.className='phase-action'+(mode==='pass'?' ob-pass':mode.startsWith('cancel')||mode==='decline-swap'?' ob-cancel':mode?'':' ob-hidden');primary.textContent=label;primary.disabled=!mode;
   primary.onclick=()=>{
     if(mode==='pass'){responseRollbackSnapshot=null;uiResponseSourceChoice=null;intent('responsePassNoStuck',[])}
@@ -1098,7 +1232,7 @@ function renderPhase(s){
     else if(mode==='decline-swap'){if(p?.type==='optional_swap')intent('performOptionalSwapDecision',[false]);else if(p?.type==='optional_target_swap')intent('performOptionalTargetSwapDecision',[false])}
     else if(mode==='reposition')intent('openManualRepositionChoice',[]);
   };
-  const blocked=s.turn!=='PLAYER'||!!s.pending||!!s.responseWindow||!!uiResponseSourceChoice||s.gameOver||s.phase==='Draw';nextBtn.disabled=blocked;nextBtn.textContent=s.phase==='End'?'END TURN':'NEXT PHASE';nextBtn.onclick=()=>intent('advancePhase',[]);renderSwap(s);
+  const blocked=spectator||s.turn!=='PLAYER'||!!s.pending||!!s.responseWindow||!!uiResponseSourceChoice||s.gameOver||s.phase==='Draw';nextBtn.disabled=blocked;nextBtn.textContent=s.phase==='End'?'END TURN':'NEXT PHASE';nextBtn.onclick=()=>intent('advancePhase',[]);renderSwap(s);
 }
 function renderSwap(s){
   const p=s.pending,descriptors=[];
@@ -1168,7 +1302,8 @@ function latestResolvedActionThisPhase(s){
   return allEvents(s).find(e=>[e.turn||'',Number(e.round||1),e.phase||''].join('|')===stamp&&e.card_id)||null;
 }
 function renderSidebar(s,chain){
-  turnBox.innerHTML=`<h3 class="gold">${s.turn==='PLAYER'?'Your Turn':(window.GL_PVP_CLIENT_MODE?'Opponent Turn':'AI Turn')}</h3><div class="tiny">Round ${Number(s.round||1)} · ${s.turn==='PLAYER'?'Player':(window.GL_PVP_CLIENT_MODE?'Opponent':'AI')}<br>Phase: ${esc(phaseName(s.phase))}<br>Mana ${Number(s.mana||0)} / 12 · Regen +${Number(s.manaRegen||0)}<br>${window.GL_PVP_CLIENT_MODE?'Opponent Mana':'AI Mana'} ${Number(s.aiMana||0)} / 12 · Regen +${Number(s.aiManaRegen||0)}</div>`;
+  const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',turnOwner=s.turn==='PLAYER'?(spectator?'Player 1':'Player'):(window.GL_PVP_CLIENT_MODE?(spectator?'Player 2':'Opponent'):'AI'),turnTitle=s.turn==='PLAYER'?(spectator?'Player 1 Turn':'Your Turn'):(window.GL_PVP_CLIENT_MODE?(spectator?'Player 2 Turn':'Opponent Turn'):'AI Turn'),remoteManaLabel=spectator?'Player 2 Mana':(window.GL_PVP_CLIENT_MODE?'Opponent Mana':'AI Mana');
+  turnBox.innerHTML=`<h3 class="gold">${turnTitle}</h3><div class="tiny">Round ${Number(s.round||1)} · ${turnOwner}<br>Phase: ${esc(phaseName(s.phase))}<br>Mana ${Number(s.mana||0)} / 12 · Regen +${Number(s.manaRegen||0)}<br>${remoteManaLabel} ${Number(s.aiMana||0)} / 12 · Regen +${Number(s.aiManaRegen||0)}</div>`;
   const phaseStamp=currentPhaseStamp(s);
   if(activeCardPhaseStamp!==phaseStamp){activeCardPhaseStamp=phaseStamp;activeCardHold=null}
   const live=topActive(s,chain);
@@ -1180,7 +1315,7 @@ function renderSidebar(s,chain){
   const active=live||activeCardHold,activeKey=active?[active.card_id,active.side].join('|'):'empty';
   if(activeStage.dataset.activeKey!==activeKey){
     hideSidebarHoverPreview();activeStage.dataset.activeKey=activeKey;activeStage.innerHTML='';
-    if(active?.card_id){const v=cv(active.card_id),d=document.createElement('div');d.className='active-card-visual';const im=document.createElement('img');im.src=art(active.card_id);im.alt=v?.name||'Active card';d.appendChild(im);const owner=document.createElement('span');owner.className='active-owner';owner.textContent=active.side==='PLAYER'?'YOU':'OPPONENT';d.appendChild(owner);activeStage.appendChild(d);bindSidebarPreview(im)}
+    if(active?.card_id){const v=cv(active.card_id),d=document.createElement('div');d.className='active-card-visual';const im=document.createElement('img');im.src=art(active.card_id);im.alt=v?.name||'Active card';d.appendChild(im);const owner=document.createElement('span');owner.className='active-owner';owner.textContent=window.GL_PVP_LOCAL_ROLE==='spectator'?(active.side==='PLAYER'?'PLAYER 1':'PLAYER 2'):(active.side==='PLAYER'?'YOU':'OPPONENT');d.appendChild(owner);activeStage.appendChild(d);bindSidebarPreview(im)}
     else activeStage.innerHTML='<div class="ob-active-empty">No active card</div>';
   }
   renderHistory(s,chain);renderLog(s);
@@ -1200,7 +1335,7 @@ function renderHistory(s,chain){
   const draw=(host,arr,keepSix=false)=>{
     const sig=JSON.stringify(arr.map(e=>[e.id||'',e.side||'',e.card_id||'',Number(e.timestamp||0)]))+'|six:'+String(!!keepSix);
     if(host.dataset.obHistorySig===sig)return false;hideSidebarHoverPreview();host.dataset.obHistorySig=sig;host.innerHTML='';
-    arr.forEach(e=>{const v=cv(e.card_id);if(!v)return;const d=document.createElement('button');d.type='button';d.className='played-card ob-played-clickable';d.title='View Card Played detail';const im=document.createElement('img');im.src=art(e.card_id);im.alt=v.name;im.draggable=false;d.appendChild(im);const o=document.createElement('span');o.className='played-owner';o.textContent=e.side==='PLAYER'?'YOU':'OPPONENT';d.appendChild(o);d.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();hideSidebarHoverPreview();openPlayedDetail(e.side,e.id)});host.appendChild(d);bindSidebarPreview(im)});
+    arr.forEach(e=>{const v=cv(e.card_id);if(!v)return;const d=document.createElement('button');d.type='button';d.className='played-card ob-played-clickable';d.title='View Card Played detail';const im=document.createElement('img');im.src=art(e.card_id);im.alt=v.name;im.draggable=false;d.appendChild(im);const o=document.createElement('span');o.className='played-owner';o.textContent=window.GL_PVP_LOCAL_ROLE==='spectator'?(e.side==='PLAYER'?'PLAYER 1':'PLAYER 2'):(e.side==='PLAYER'?'YOU':'OPPONENT');d.appendChild(o);d.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();hideSidebarHoverPreview();openPlayedDetail(e.side,e.id)});host.appendChild(d);bindSidebarPreview(im)});
     if(keepSix){for(let i=host.children.length;i<6;i++){const ph=document.createElement('div');ph.className='played-card ob-played-placeholder';host.appendChild(ph)}}
     return true;
   };
@@ -1263,7 +1398,19 @@ function renderAllowedModal(s){
   }
   confirm.onclick=()=>intent('handleChoiceConfirm',[]);
 }
-function autoSpecialChoices(s){const p=s.pending;if(!p||pendingOwner(p)!=='PLAYER')return;/* Scouting no longer has a pre-payment EXP-choice state in New UX. */}
+function autoSpecialChoices(s){
+  const p=s.pending;if(!p||pendingOwner(p)!=='PLAYER')return;
+  /* Scouting no longer has a pre-payment EXP-choice state in New UX. */
+  if(p.type==='opponent_mana_selection'){
+    const candidates=p.candidates||[],required=Math.min(Number(p.required_count||1),candidates.length),selected=p.selected_indices||[];
+    // With exactly one hidden Shard there is no meaningful player decision. Resolve it
+    // automatically so the match cannot appear frozen after connected-hit Mana effects.
+    if(required===1&&candidates.length===1&&selected.length===0){
+      intent('selectOpponentManaChoice',[0]);
+      setTimeout(()=>{const q=st()?.pending;if(q?.type==='opponent_mana_selection'&&(q.selected_indices||[]).length===1)intent('commitOpponentManaSelection',[])},0);
+    }
+  }
+}
 function renderRacialTokens(s){const set=(sel,n)=>{const row=document.querySelector(sel);if(!row)return;row.innerHTML='';for(let i=0;i<2;i++){const im=document.createElement('img');im.className='racial-token';im.src=i<n?'assets/ui/Racial-Token-Head.webp':'assets/ui/Racial-Token-Tail.webp';row.appendChild(im)}};set('.player-right-rail .racial-row',Number(s.racial||0));set('.opponent-left-rail .racial-row',Number(s.aiRacial||0))}
 function renderRegenCounter(side,value){
   const zone=zoneEl(side,'Shard Deck');if(!zone)return;let badge=zone.querySelector(':scope > .ob-regen-counter');if(!badge){badge=document.createElement('span');badge.className='ob-regen-counter';const im=document.createElement('img');badge.appendChild(im);zone.appendChild(badge)}
@@ -1321,7 +1468,7 @@ function renderNow(){
   if(responseRollbackSnapshot&&s.pending?.type!=='response_payment_choice'&&!uiResponseSourceChoice&&s.responseWindow?.response_owner!=='PLAYER')responseRollbackSnapshot=null;
   autoSpecialChoices(s);const chain=renderCombatStacks(s);
   for(const side of ['PLAYER','AI'])for(const lane of laneOrder)renderHero(side,lane,sideHeroes(s,side)?.[lane],s);
-  renderHand(s);renderOpponentHand(s);renderMana();renderPhase(s);renderPay(s);renderDeckActions(s);renderAttackLine(s,chain);renderSidebar(s,chain);renderAllowedModal(s);renderRails(s);syncSoundButton();preparePresentationTargets(presentationPlan);showGameResult(s);
+  renderHand(s);renderOpponentHand(s);renderMana();renderPhase(s);renderPay(s);renderInteractionFocus(s);renderDeckActions(s);renderSidebar(s,chain);renderAttackLine(s,chain);renderAllowedModal(s);renderRails(s);syncSoundButton();preparePresentationTargets(presentationPlan);showGameResult(s);
   requestAnimationFrame(()=>{syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);runPresentationPlan(presentationPlan,s)});
 }
 function clearAuthoredDummyState(){
@@ -1353,25 +1500,19 @@ window.GL_OPTION_B_PRESENTATION={queueReservedMainDeckDraw:queueOptionBReservedD
 
 function initStableBattlefieldReviewGestures(){
   if(!BF||BF.dataset.obStableReviewBound==='1')return;BF.dataset.obStableReviewBound='1';
-  // Attachment nodes are intentionally recreated by the 120 ms renderer. Browser `dblclick`
-  // depends on the same DOM target surviving both complete click cycles, so Firefox can lose it.
-  // Count stable delegated pointer-downs instead: pointerdown fires before a polling rerender can
-  // remove the pressed node, and the logical attachment key survives node replacement.
-  BF.addEventListener('pointerdown',e=>{
-    if(e.button!=null&&e.button!==0)return;
-    const card=e.target?.closest?.('.attachment-card[data-ob-card-id]');
-    if(!card||!BF.contains(card)){obAttachmentLastPress={key:'',at:0};return}
-    const id=card.dataset.obCardId;if(!id)return;
-    const key=[card.dataset.obAttachmentSide||'',card.dataset.obAttachmentLane||'',card.dataset.obAttachmentSlot||'',id].join('|'),now=performance.now();
-    if(obAttachmentLastPress.key===key&&now-obAttachmentLastPress.at<=650){
-      e.preventDefault();e.stopPropagation();obAttachmentLastPress={key:'',at:0};openCardReview(id);return;
-    }
-    obAttachmentLastPress={key,at:now};
+  // v6.88: battlefield double-click is intentionally inert. Keep Hand/sidebar review behavior,
+  // but never open a Card Review popup from either player field. Single-click gameplay remains untouched.
+  BF.addEventListener('dblclick',e=>{
+    const field=e.target?.closest?.('.field-row');
+    if(!field||!BF.contains(field))return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
   },true);
 }
 
 
+
 function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};document.querySelector('.bottom-actions .danger').onclick=()=>{if(confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncSoundButton();}
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
 boot();
 })();

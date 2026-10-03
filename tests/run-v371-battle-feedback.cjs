@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const ROOT=path.resolve(__dirname,'..');
-const TMP=path.join(ROOT,'.tmp-v370-battle-server.mjs');
+const TMP=path.join(ROOT,'.tmp-v371-battle-server.mjs');
 function generic(side,n,prefix){return Array.from({length:n},(_,i)=>({uid:`${prefix}:${i}`,kind:'GENERIC',class_name:'',owner_side:side,bottom_locked:false}));}
 function other(side){return side==='PLAYER'?'AI':'PLAYER';}
 function seatFor(side){return side==='PLAYER'?1:2;}

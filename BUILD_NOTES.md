@@ -1,85 +1,136 @@
-# Grandis Legacy PvP v3.70 — Build Notes
+# Grandis Legacy PvP v3.71 — Build Notes
 
-Build date: 2026-10-02
+Build date: 2026-10-03
 
-## Locked architecture
+## Release goal
 
-- Fresh PvP branch built from the updated **Grandis Legacy VS AI v6.80** package.
-- PvP v3.51 is **not** the gameplay/battlefield base; it is used only as the lobby/server/network reference.
-- One fixed room: `GRANDIS_PVP`.
-- Two human player seats only.
-- Spectator / Teaching View parked (`maxSpectators: 0`).
-- No room switching, `Go To`, or `Switch To` controls.
-- Battlefield identity is two-line: local **Player Name / Deck Name**, opponent **Deck Name / Player Name**. Desktop limit is 25 characters per line; phone/tablet is 20.
-- Connection signal sits outside the identity box: local-left / opponent-right, aligned to Deck Name.
-- Match timer occupies the first slot of the existing bottom action row, matching the PvP timer position.
-- Human-vs-human opening coin flip: Player 2 calls Heads/Tails.
+v3.71 upgrades PvP v3.70 by combining three proven layers without replacing the authoritative PvP engine:
 
-## VS AI v6.80 parity guard
+1. **PvP v3.70** remains the gameplay/server-authority baseline.
+2. **PvP v3.51** is used as the stability reference for multiplayer intent flow, lobby roles, spectator behavior, and presentation orchestration.
+3. **VS AI v6.88** supplies the final battlefield presentation/interaction layer only. AI turn/control logic is not ported into PvP.
 
-The current PvP branch keeps the v6.80 battlefield/runtime as the base and changes only the PvP integration points needed for local assets, two-human state mirroring, and presentation/network wiring. Against the supplied 294-file v6.80 package, all 294 files remain present; 288 are byte-identical and 6 are intentionally changed (`index.html`, `option-b-runtime.js`, `FILE_MANIFEST_SHA256.csv`, `engine/shared-app/app.bundle.js`, `engine/js/app.bundle.js`, `engine/js/static-data.js`).
+This is deliberately a surgical merge rather than a wholesale replacement of the PvP engine with the VS AI engine.
 
-The `engine/shared-app/app.bundle.js` changes are limited to PvP seat mirroring for physical Shard state plus authoritative battle-feedback instrumentation/bridge hooks; they do not enable AI control or replace v6.80 battle presentation. Card art/audio and the normal battlefield presentation remain bundled locally.
+## Network stabilization
+
+### P2 Tribute → Next Phase regression
+
+The v3.70 client could remain locked behind `intentInFlight` if the server committed an action but the matching authoritative snapshot was delayed/missed by the client. `intent-ack` was not being used as a recovery signal, and the old watchdog behavior was absent.
+
+v3.71 adds:
+
+- 12-second intent watchdog.
+- `intent-ack` tracking by `clientActionId`.
+- 2.5-second ACK-without-snapshot recovery path using `sync-request`.
+- Authoritative snapshot resync before new gameplay intents continue.
+- Queue cleanup on hard timeout/error to prevent replaying stale actions.
+- Snapshot/revision-based unlock; ACK alone never mutates gameplay state locally.
+
+Regression test now executes Player 2 through **Deploy → Battle → Reform → Tribute → choose target Hero → Next Phase** and verifies the canonical revision advances out of Reform.
+
+## Spectator restoration
+
+- `MAX_SPECTATORS = 4`.
+- Third visitor becomes Spectator automatically when both seats are occupied.
+- Explicit `SPECTATE` / `JOIN AS PLAYER` role switching is available during setup.
+- Spectator has no seat token and cannot issue gameplay intents.
+- Spectator Hands/private state are always masked as Card Backs.
+- Public Teaching/Both-Hands mode is disabled; no public password/unlock path is retained.
+- `sync-request` is allowed for read-only spectators so late joins/recovery can request the current authoritative snapshot.
+- Spectators receive normal public authoritative presentation events; private Draw identities are masked before delivery.
+
+### Low-memory spectator path
+
+To respect the 256 MB service limit, spectator support does not create an engine or mutable match copy per viewer. `snapshotFor()` builds/caches one sanitized Player-1-oriented spectator battlefield for a canonical revision and reuses it across spectators. Player snapshots remain seat-specific and viewer-safe.
+
+Gameplay broadcasts send player snapshots first; spectator serialization is deferred to the next event-loop turn for latency-sensitive player intents.
+
+## Lobby update
+
+The room panel follows the simpler PvP v3.51 role/button flow:
+
+- SPECTATE / JOIN AS PLAYER
+- READY / UNREADY
+- START MATCH
+- RECONNECT
+
+Removed from the visible lobby:
+
+- CURRENT ROOM
+- room switch control
+- PLAYERS count
+- SPECTATORS count
+- SPECTATORS VIEW / CARD BACKS row
+
+The backend is still one fixed room (`GRANDIS_PVP`). Seat lifecycle, deck import/selection, formation, rank preview, Player 1 start authority, and reconnect remain intact.
+
+## VS AI v6.88 battlefield presentation port
+
+Ported/adapted into the existing PvP Option-B presentation boundary:
+
+- Independent `hero-base`, `hero-layout`, visual Hero 120%, Standard 65%, Hand 75% sizing.
+- Stable Hero lane geometry independent of Hero visual scale.
+- Final Hand sizing + edge-only overlap.
+- Body-level Hero/Hand/Shard/sidebar hover previews.
+- Hidden deck/pile labels + compact rectangular counters.
+- Mana Regen badge presentation while preserving live PvP value.
+- Moving phase underline/diamond/tint.
+- PLAY/PAY green + white/gold text treatment.
+- 65% Payment and Response interaction focus.
+- Item/Event connector source semantics from Active Card.
+- Existing Hero Attack connector/source-card-id/Reposition behavior preserved.
+- Fast targeted Item/Event connector hold (~900 ms presentation window).
+- Fixed seven-column choice/search popup + right-side preview.
+- Blind opponent-Shard single-option auto-commit through authoritative intent.
+- Non-blocking Tribute Hand → Hero motion.
+- Battlefield double-click Card Review suppression.
+
+The PvP canonical match timer was intentionally retained; the VS AI local `Date.now()` match-timer implementation was not imported.
+
+## Sound / animation authority
+
+- Server remains authoritative for gameplay resolution and emits compact one-shot presentation event metadata.
+- Browser clients continue to use the bundled battlefield assets for actual SFX/VFX/card motion.
+- Event IDs are deduplicated so snapshots/reconnects do not replay settled effects.
+- Spectators consume the same public presentation events, with hidden information sanitized first.
+- Tribute presentation is non-blocking and never gates server phase progression.
+
+## 256 MB deployment safeguards
+
+- One fixed room / one authoritative runtime engine at a time.
+- No per-spectator engine/state copy.
+- Shared static runtime/card definitions.
+- Spectator board cache by revision.
+- `perMessageDeflate: false` for WebSocket server.
+- Bounded room/public log history.
+- Finished-match cleanup clears engine, gameplay ledger, one-shot events, and spectator cache.
+- `/health` reports lightweight memory telemetry from `process.memoryUsage()`.
+- The v3.71 server simulation with an active match, 2 players, and the full 4-spectator cap measured about **170 MB RSS** in the test container (environment-dependent, not a hard deployment guarantee).
+- Presentation assets remain static/client-side and are not retained per connection by gameplay state.
 
 ## Verification
 
-`npm test` passes all included checks:
+`npm test` passes the full v3.71 suite:
 
-- JavaScript syntax checks.
-- Static architecture guard.
-- Headless v6.80 human-vs-human shared runtime bridge check.
-- Two-human authoritative server simulation: Player 1 + Player 2 seats, opening coin flow, viewer-safe snapshots, human turn handoff, second-human action, and rejection of a third client.
+- `check:syntax` — PASS
+- `test:static` — PASS
+- `test:runtime` — PASS
+- `test:server-sim` — PASS
+  - Player 1 / Player 2 seat flow
+  - coin flow
+  - viewer-safe snapshots
+  - P1 ↔ P2 human handoff
+  - Shard ownership
+  - **P2 Tribute → Next Phase**
+  - spectator Card Backs / read-only / resync
+- `test:battle-feedback` — PASS
 
-The server simulation intentionally uses a temporary local WebSocket test stub and removes it after testing. The shipped repository contains no `node_modules`. Real deployment/local browser play uses `npm install` to install the `ws` dependency.
+The repository is packaged without `node_modules`; deployment/local browser play installs the normal `ws` dependency with `npm install`.
 
-## Promotion gate
+## Versioning / compatibility
 
-This is the **v3.70 testing branch**. Promote to v3.80 only after live two-browser end-to-end play confirms networking/reconnect and visual parity in the deployed environment.
-
-
-## v3.70 Northflank + mobile landscape patch
-- Removed stale Docker `COPY runtime` / `COPY sync` steps; the current v6.80-based server uses `public/engine` plus `data`.
-- Increased isolated runtime execution ceiling from 2s to 15s for smaller/throttled deployment instances; gameplay logic is unchanged.
-- Phone/tablet use one landscape layout. Physical portrait is rendered as a rotated virtual-landscape canvas; the user does not need to enable auto-rotate.
-- Mobile Card Review popup is disabled. A tap on a battlefield card shows the same sidebar hover preview used on desktop; tapping outside dismisses it. Desktop double-click Card Review remains unchanged.
-- Lobby visual baseline follows PvP v3.51, with no-scroll compact height tiers, transparent swap-button hit areas, fixed logo/favicon paths, Player 1 pre-match Kick for Player 2, and Starter Deck 1 initialized immediately.
-- WebSocket is same-origin `/ws` only; mobile reconnect uses stale-socket guards plus online/pageshow/visibility recovery.
-
-## v3.70 browser first-hydration fix
-- The first authoritative PvP board snapshot is imported state-only (`skipImportAnimations: true`) so the v6.80 animation diff never runs against a missing previous browser state.
-- After the first successful hydration, subsequent snapshots keep the normal v6.80 import-animation path.
-- If an animated import ever fails on an already hydrated board, the client retries that snapshot state-only rather than leaving the battlefield blank.
-- Returning to setup/lobby resets the per-match hydration marker so the next match also receives a safe first import.
-- Verified in headless Chromium: first import uses state-only hydration, second import re-enables animations, all six Hero slots hydrate, and deck/shard state is populated.
-
-## v3.70 combined PvP bug-fix batch
-
-- Fixed Player 2 Shard Draw/Mana Regen cross-wiring by mirroring `playerManaDeck/aiManaDeck`, `playerManaPoolCards/aiManaPoolCards`, `playerManaClasses/aiManaClasses`, and Shard Deck counts with the seat.
-- Added server simulation assertions that Shard Pools advance on the correct seat across P1 → P2 → P1 turn handoffs.
-- Fixed remote pending ownership leak: a Player 2 Tribute/selection may block Player 2 correctly, but Player 1 no longer receives Player 2's `CANCEL` button (and vice versa).
-- Added setup Lobby **Leave Seat** / remove-seat flow: P1 and P2 can leave themselves; P1 can remove P2; P2 can remove P1 only while P1 is offline. Seat exit invalidates the token and suppresses automatic immediate seat reclaim.
-- Retains the earlier anti-stuck Draw→Deploy human progression normalization, first-hydration guard, local asset bundle, Northflank Docker fix, identity layout, opponent resource-label mirroring, compact Shard stacking, fixed Mana Pool container, and mobile/tablet zoom/scroll lock.
-
-
-## v3.70 authoritative battle presentation fix
-
-- Restored the proven PvP v3.51 transport pattern without using v3.51 gameplay or assets: the headless server records the exact resolved v6.80 battle feedback while render suppression is active, publishes it as a one-shot `battle_feedback` event, and strips the internal ledger from viewer snapshots.
-- Browser clients localize the event for seat 1/seat 2, play the approved v6.80 battle SFX immediately on the authoritative revision, import/render the canonical board, then replay the approved v6.80 VFX after two animation frames so Hero anchors are paint-ready.
-- Event IDs are deduplicated client-side so reconnect/resend cannot replay settled battle feedback.
-- Physical/Magical Attack, Physical/Magical Defense, Dodge, and Heal continue to use the original bundled VS AI v6.80 assets; no website dependency or replacement effect was added.
-- Added an authoritative battle-feedback regression test covering attacks from both canonical sides and verifying the server emits exactly one public feedback event originating from the canonical PvP ledger.
-
-## 2026-10-02 — Authoritative presentation parity pass
-- PvP presentation timing now follows the proven v3.51 authoritative orchestration model: capture old geometry, import the authoritative snapshot without heuristic diff animation, then replay explicit server animation events.
-- Actual card motion, Draw, Shard gain, Tribute, Rank Up, Legacy, battle VFX, and SFX continue to use the VS AI v6.80 presentation engine/assets.
-- Battle VFX now retries until the target Hero anchor is paint-ready; battle audio is deduplicated separately.
-- Opening coin flow fully gates the battlefield until first authoritative hydration/paint is ready, preventing Round/Phase information leaks and empty-field flashes on slower tablets.
-- Mobile/tablet Active Card preview is height-constrained with contain scaling so the full card remains visible.
-
-
-## 2026-10-02 — PvP v3.51 timing parity + battle VFX readiness
-- Normal authoritative presentation no longer waits for an extra double-`requestAnimationFrame` after each imported revision. Draw, Shard Draw, Rank Up, Tribute, Legacy, and card motions are queued immediately after the server snapshot import, matching the proven PvP v3.51 orchestration timing.
-- Battle SFX still fires before board import; only battle VFX waits for paint-ready Hero anchors.
-- Added user-gesture audio unlock/warmup and early battle-asset priming so Card/Battle audio starts warm instead of cold on mobile/tablet browsers.
-- Battle VFX PNG animations are paused at frame 0 until image decode completes; the removal timer also starts only after decode. This prevents large Attack/Defense/Heal PNGs from finishing invisibly while `gl-decode-pending` is active.
-- Battle VFX PNGs were losslessly re-optimized (same dimensions/transparency/pixels) to reduce decode/transfer cost where possible.
+- Release version: **v3.71**.
+- Build ID: `gl-pvp-3.71-v351-net-v688-battlefield-2026-10-03`.
+- Runtime files: `public/pvp/pvp-v371.js` and `public/pvp/pvp-v371.css`.
+- Legacy `pvp370` DOM/CSS namespace and `gl_pvp370_*` Local Storage keys are intentionally retained to preserve browser state across the v3.70 → v3.71 upgrade.

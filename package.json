@@ -1,18 +1,18 @@
 {
-  "name": "grandis-legacy-pvp-v370",
-  "version": "3.70.0",
+  "name": "grandis-legacy-pvp-v371",
+  "version": "3.71.0",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.70 \u2014 fresh two-human PvP shell over the VS AI v6.80 battlefield/runtime.",
+  "description": "Grandis Legacy PvP v3.71 — v3.70 gameplay baseline with PvP v3.51 network/lobby stability, hidden-info spectators, and VS AI v6.88 battlefield presentation.",
   "scripts": {
     "start": "node server.js",
-    "check:syntax": "node --check server.js && node --check server/gameplay-intent-router.mjs && node --check public/option-b-runtime.js && node --check public/pvp/pvp-v370.js && node --check public/pvp/pvp-presentation-adapter.js",
-    "test:static": "node tests/run-v370-static.mjs",
-    "test:runtime": "node tests/run-v370-runtime.mjs",
+    "check:syntax": "node --check server.js && node --check server/gameplay-intent-router.mjs && node --check public/option-b-runtime.js && node --check public/pvp/pvp-v371.js && node --check public/pvp/pvp-presentation-adapter.js",
+    "test:static": "node tests/run-v371-static.mjs",
+    "test:runtime": "node tests/run-v371-runtime.mjs",
     "test": "npm run check:syntax && npm run test:static && npm run test:runtime && npm run test:server-sim && npm run test:battle-feedback",
     "check": "npm test",
-    "test:server-sim": "node tests/run-v370-server-sim.mjs",
-    "test:battle-feedback": "node tests/run-v370-battle-feedback.cjs"
+    "test:server-sim": "node tests/run-v371-server-sim.mjs",
+    "test:battle-feedback": "node tests/run-v371-battle-feedback.cjs"
   },
   "engines": {
     "node": ">=18"
@@ -21,7 +21,7 @@
     "ws": "^8.18.0"
   },
   "grandisLegacySourceStack": {
-    "behaviorReference": "VS AI v6.80 (2026-10-02 AI Update) is the gameplay, battlefield, behavior, animation, sound, and presentation base. Its promoted release intentionally preserves the underlying v6.48/shared-runtime implementation identity where present. PvP v3.51 is not used as a gameplay or asset dependency; the tester bundles its gameplay/card/shard assets locally while retaining the fresh VS AI v6.80 runtime/presentation base.",
+    "behaviorReference": "PvP v3.70 remains the gameplay/server-authority baseline. PvP v3.51 is the network/lobby/spectator recovery reference. VS AI v6.88 is the battlefield presentation donor only; AI-control behavior is not imported into PvP.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
@@ -35,7 +35,7 @@
     "runtimeFoundation": "1.94.2",
     "uiLock": "2.53",
     "starter60": "1.6.1",
-    "applicationRuntimeSync": "v3.70-v680-fresh",
+    "applicationRuntimeSync": "v3.71-v351-network-v688-battlefield",
     "activeStarterCount": 5
   },
   "northflankDeployment": {
@@ -46,6 +46,7 @@
     "healthcheckTimeoutSeconds": 120,
     "services": 1,
     "roomPerService": 1,
-    "singleFixedRoom": "GRANDIS_PVP"
+    "singleFixedRoom": "GRANDIS_PVP",
+    "memoryBudgetMB": 256
   }
 }
