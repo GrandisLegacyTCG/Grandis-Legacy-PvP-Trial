@@ -838,3 +838,216 @@
 @media (prefers-reduced-motion:reduce){
   .ob-phase-tint,.ob-phase-underline,.ob-phase-diamond,.phase-label,.ob-attention-enter{transition:none!important;animation:none!important}
 }
+
+
+/* PvP v3.72 / VS AI v6.90.7 center decision layer */
+.ob-center-choice-stage{
+  position:fixed;
+  inset:0;
+  z-index:24500;
+  display:none;
+  grid-template-rows:auto auto auto;
+  align-content:center;
+  justify-items:center;
+  gap:18px;
+  padding:28px 22px;
+  pointer-events:none;
+  color:#f3f7fb;
+}
+.ob-center-choice-stage.open{display:grid}
+.ob-center-choice-copy{
+  display:grid;
+  justify-items:center;
+  gap:5px;
+  text-align:center;
+  pointer-events:none;
+  transition:opacity .16s ease;
+}
+.ob-center-choice-title{
+  margin:0;
+  color:#f4d35e;
+  font-size:clamp(17px,1.55vw,24px);
+  line-height:1.05;
+  font-weight:1000;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+  text-shadow:0 2px 8px rgba(0,0,0,.95);
+}
+.ob-center-choice-helper{
+  margin:0;
+  color:#e4edf5;
+  font-size:clamp(10px,.82vw,13px);
+  line-height:1.25;
+  font-weight:800;
+  text-shadow:0 2px 6px rgba(0,0,0,.95);
+}
+.ob-center-choice-status{
+  display:inline-grid;
+  place-items:center;
+  min-height:24px;
+  margin-top:2px;
+  padding:4px 10px;
+  border-radius:6px;
+  background:rgba(3,10,16,.72);
+  color:#fff;
+  font-size:clamp(10px,.85vw,13px);
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:.04em;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 0 0 1px rgba(244,211,94,.22);
+}
+.ob-center-choice-cards{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:clamp(5px,.58vw,10px);
+  width:min(94vw,1220px);
+  min-height:142px;
+  padding:26px 6px 4px;
+  overflow:visible;
+  pointer-events:auto;
+  perspective:1100px;
+}
+.ob-center-choice-card{
+  position:relative;
+  flex:0 0 auto;
+  width:clamp(54px,5.25vw,76px);
+  aspect-ratio:5/7;
+  padding:0;
+  border:0;
+  outline:0;
+  border-radius:8px;
+  background:transparent;
+  cursor:default;
+  overflow:visible;
+  transform:translateY(0);
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.62));
+  transition:transform .16s ease,filter .16s ease;
+  pointer-events:none;
+}
+.ob-center-mode-opponent-hand .ob-center-choice-card,
+.ob-center-mode-magic-scope .ob-center-choice-card{
+  width:clamp(64px,6vw,88px);
+}
+.ob-center-choice-card.is-clickable{cursor:pointer;pointer-events:auto}
+.ob-center-choice-card.is-clickable:hover{transform:translateY(-8px);filter:drop-shadow(0 10px 17px rgba(0,0,0,.72))}
+.ob-center-choice-card.is-selected{
+  transform:translateY(-20px)!important;
+  filter:drop-shadow(0 0 4px rgba(244,211,94,.95)) drop-shadow(0 11px 18px rgba(0,0,0,.75));
+}
+.ob-center-choice-card.is-selected::after{
+  content:"";
+  position:absolute;
+  inset:-3px;
+  z-index:4;
+  border:2px solid rgba(244,211,94,.95);
+  border-radius:10px;
+  pointer-events:none;
+}
+.ob-center-choice-flip{
+  position:absolute;
+  inset:0;
+  display:block;
+  transform-style:preserve-3d;
+  transition:transform .34s cubic-bezier(.2,.75,.2,1);
+}
+.ob-center-choice-card.is-face-up .ob-center-choice-flip{transform:rotateY(180deg)}
+.ob-center-choice-face{
+  position:absolute;
+  inset:0;
+  display:block;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  border-radius:8px;
+  overflow:hidden;
+  background:#071019;
+}
+.ob-center-choice-front{transform:rotateY(180deg)}
+.ob-center-choice-face img{display:block;width:100%;height:100%;object-fit:contain;border-radius:8px}
+.ob-center-choice-actions{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  min-height:34px;
+  pointer-events:auto;
+  transition:opacity .16s ease;
+}
+.ob-center-choice-actions button{
+  min-width:92px;
+  height:34px;
+  padding:0 16px;
+  border-radius:7px;
+  font-size:11px;
+  font-weight:1000;
+  letter-spacing:.04em;
+  cursor:pointer;
+}
+.ob-center-choice-primary{
+  border:1px solid rgba(244,211,94,.72);
+  background:#16844d;
+  color:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.44);
+}
+.ob-center-choice-primary:hover:not(:disabled){filter:brightness(1.12)}
+.ob-center-choice-primary:disabled{opacity:.42;filter:saturate(.5);cursor:not-allowed}
+.ob-center-choice-cancel{
+  border:1px solid #516a80;
+  background:rgba(13,29,43,.92);
+  color:#e8f1f8;
+}
+.ob-center-choice-cancel:hover{background:#173047}
+.ob-center-choice-stage.is-busy{pointer-events:none}
+.ob-center-choice-stage.is-busy .ob-center-choice-card,
+.ob-center-choice-stage.is-busy .ob-center-choice-actions{pointer-events:none}
+.ob-center-choice-copy.is-fading,.ob-center-choice-actions.is-fading{opacity:0}
+
+/* The original source zones remain part of battlefield layout, but their cards disappear
+   while their visual clones are in the center. This keeps layout stable across browsers. */
+body.ob-center-pay .player-mana-pool .mana-cards,
+body.ob-center-opponent-hand .hand.top .hand-track,
+body.ob-center-magic-scope .hand.top .hand-track{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+body.ob-center-pay .player-mana-pool{
+  z-index:auto!important;
+  box-shadow:none!important;
+}
+/* v6.90.5 root fix: blind-mana focus must NEVER change the opponent pool's positioning mode.
+   .mana-pool is position:absolute by design. Changing it to relative moved the real opponent
+   pool into the first grid cell (upper-left), so every later animation measured the wrong origin.
+   Keep the pool absolute/right-anchored and use only overlay clones for center selection. */
+body.ob-center-opponent-shard .battlefield.ob-focus-blind-mana .opponent-mana-pool::before{display:none!important}
+
+/* Opponent Shard center-choice is clone-only: keep the real opponent pool,
+   cards, counter, width, and battlefield placement untouched. */
+body.ob-center-pay .ob-pay-button{display:none!important}
+body.ob-center-pay #phasePrimaryAction.ob-cancel{visibility:hidden!important}
+body.ob-center-magic-scope .ob-magic-scope-done{display:none!important}
+
+@media(max-width:900px){
+  .ob-center-choice-stage{gap:12px;padding:18px 10px}
+  .ob-center-choice-cards{gap:4px;width:96vw;min-height:116px;padding-top:20px}
+  .ob-center-choice-card{width:clamp(46px,6vw,62px)}
+  .ob-center-mode-opponent-hand .ob-center-choice-card,
+  .ob-center-mode-magic-scope .ob-center-choice-card{width:clamp(52px,7vw,68px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .ob-center-choice-card,.ob-center-choice-flip,.ob-center-choice-copy,.ob-center-choice-actions{transition:none!important}
+}
+
+.ob-center-mode-magic-scope .ob-center-choice-card{pointer-events:auto!important;cursor:default!important}
+.ob-center-mode-opponent-hand .ob-center-choice-card.is-face-up{pointer-events:auto!important}
+/* Context/fixed list previews must also float above the v6.89 center-choice cards. */
+.ob-modal-hover-preview{z-index:25500!important}
+
+/* v6.90 center-choice focus: background previews are suppressed by runtime while
+   the decision layer is active; center-stage cards themselves remain interactive. */
+body.ob-center-choice-active #sharedPreviewBox.previewing{opacity:0!important;pointer-events:none!important}
+
+/* v3.72: keep opponent Mana Pool absolutely positioned behind clone-only center choice. */
+.battlefield.ob-focus-blind-mana .opponent-mana-pool{position:absolute!important}
+.ob-center-travel-clone{will-change:transform,opacity!important}
+.ob-flying-card{will-change:left,top,transform,opacity,width,height}

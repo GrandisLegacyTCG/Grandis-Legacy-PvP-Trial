@@ -13,15 +13,15 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').trim() || '0.0.0.0';
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
-const VERSION = 'Grandis Legacy PvP v3.71 — Stable PvP Network + VS AI v6.88 Battlefield — Single Room';
-const BUILD_ID = 'gl-pvp-3.71-v351-net-v688-battlefield-2026-10-03';
+const VERSION = 'Grandis Legacy PvP v3.72 — PvP v3.51 Network + VS AI v6.90.7 Battlefield — Single Room';
+const BUILD_ID = 'gl-pvp-3.72-v351-net-v6907-battlefield-2026-10-04';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
 const MAX_SPECTATORS = 4;
 const FIXED_ROOM_ID = 'GRANDIS_PVP';
 const GAMEPLAY_INTENT_ROUTER = createGameplayIntentRouter();
-// v3.71 public spectators are permanently hidden-info/card-backs only.
+// v3.72 public spectators are permanently hidden-info/card-backs only.
 // Keep no password/both-hands path in production so a shared match URL can never expose private Hands.
 function teachingViewConfigured() { return false; }
 function teachingPasswordMatches() { return false; }
@@ -35,7 +35,7 @@ const PLAYER_IDLE_RELEASE_MS = Math.max(PLAYER_IDLE_WARNING_MS + 1000, Number(pr
 const PLAYER_IDLE_SWEEP_MS = Math.max(1000, Number(process.env.PVP_PLAYER_IDLE_SWEEP_MS || 5000));
 const FINISHED_MATCH_CLEANUP_MS = 60 * 1000;
 const RUNTIME_SYNC_STATUS = Object.freeze({
-  version: 'v3.71-v351-network-v688-battlefield',
+  version: 'v3.72-v351-network-v6907-battlefield',
   authorityVerified: true,
   legacyBridgeSynchronized: true,
   fullIntentOnlyMigrationComplete: true

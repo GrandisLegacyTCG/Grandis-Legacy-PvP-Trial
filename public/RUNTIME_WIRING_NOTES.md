@@ -1,4 +1,4 @@
-> **PvP v3.71 note (2026-10-03):** These are retained VS AI runtime wiring/history notes. The active PvP release is **v3.71**, with VS AI v6.88 battlefield presentation adapted through the PvP boundary; current release details live in the repository-root `BUILD_NOTES.md`.
+> **PvP v3.72 note (2026-10-04):** These are retained VS AI runtime wiring/history notes. The active PvP release is **v3.72**, with VS AI v6.90.7 battlefield/decision presentation selectively adapted through the PvP boundary while the server remains authoritative; current release details live in the repository-root `BUILD_NOTES.md`.
 
 # Grandis Legacy — VS AI v6.80 — Runtime Wiring Notes
 

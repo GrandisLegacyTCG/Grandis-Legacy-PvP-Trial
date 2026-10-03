@@ -1,4 +1,4 @@
-/* Grandis Legacy PvP v3.71 — PvP v3.51 lobby/network baseline + VS AI v6.88 battlefield presentation. */
+/* Grandis Legacy PvP v3.72 — PvP v3.51 lobby/network baseline + VS AI v6.90.7 battlefield presentation. */
 html.pvp-v370 .ob-lobby-overlay,
 html.pvp-v370 .ob-coin-overlay{display:none!important}
 html.pvp-v370 body.pvp-lobby-mode .app{visibility:hidden}
@@ -198,7 +198,7 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot .ob-card-review-o
 
 @media(max-width:760px){html.pvp-v370 .hand-title,html.pvp-v370 .player-name{max-width:58vw}}
 
-/* v3.71 PvP identity lock: two lines, no extra labels. */
+/* v3.72 PvP identity lock: two lines, no extra labels. */
 html.pvp-v370 .hand-title,
 html.pvp-v370 .player-name{
   display:flex!important;
@@ -271,7 +271,7 @@ html.pvp-mobile-device.pvp-v370 .active-card-visual img{
 }
 
 
-/* v3.71 spectator: same authoritative battlefield, strictly read-only. */
+/* v3.72 spectator: same authoritative battlefield, strictly read-only. */
 body.pvp-spectator-mode .phase-actions,
 body.pvp-spectator-mode .card-actions,
 body.pvp-spectator-mode .ob-pay-button,

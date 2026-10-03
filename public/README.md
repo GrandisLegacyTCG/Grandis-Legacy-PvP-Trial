@@ -1,4 +1,4 @@
-> **PvP v3.71 note (2026-10-03):** This file is retained as donor/runtime history from the VS AI branch. The active application release is **Grandis Legacy PvP v3.71**; see the repository-root `README.md` and `BUILD_NOTES.md` for current PvP behavior.
+> **PvP v3.72 note (2026-10-04):** This file is retained as donor/runtime history from the VS AI branch. The active application release is **Grandis Legacy PvP v3.72** with the VS AI v6.90.7 battlefield/decision presentation selectively adapted through the PvP network boundary; see the repository-root `README.md` and `BUILD_NOTES.md` for current behavior.
 
 # Grandis Legacy — VS AI v6.80
 

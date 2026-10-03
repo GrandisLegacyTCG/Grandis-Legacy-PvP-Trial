@@ -1,136 +1,138 @@
-# Grandis Legacy PvP v3.71 — Build Notes
+# Grandis Legacy PvP v3.72 — Build Notes
 
-Build date: 2026-10-03
+Build date: 2026-10-04
 
 ## Release goal
 
-v3.71 upgrades PvP v3.70 by combining three proven layers without replacing the authoritative PvP engine:
+v3.72 combines three layers without replacing the authoritative PvP architecture:
 
 1. **PvP v3.70** remains the gameplay/server-authority baseline.
-2. **PvP v3.51** is used as the stability reference for multiplayer intent flow, lobby roles, spectator behavior, and presentation orchestration.
-3. **VS AI v6.88** supplies the final battlefield presentation/interaction layer only. AI turn/control logic is not ported into PvP.
+2. **PvP v3.51** is the multiplayer reliability reference for intent lifecycle, ACK/snapshot recovery, role/lobby flow, spectator behavior, and human-vs-human orchestration.
+3. **VS AI v6.90.7** supplies the current battlefield/decision UX and exact Mana-payment semantics that are safe to port to PvP.
 
-This is deliberately a surgical merge rather than a wholesale replacement of the PvP engine with the VS AI engine.
+AI control is not imported. Known-broken donor implementations are not treated as approved just because they exist in v6.90.7.
+
+## Opening Draw / Card Sound fix
+
+### Root cause addressed
+
+The server opening event was already correct. The regression lived in presentation ownership:
+
+- authoritative opening Draws could be queued into `#glAnimationLayer` inside the hidden shared-engine host;
+- that hidden engine DOM did not share the visible Option-B Hand anchors;
+- the first sequence also waited on Hero-image hydration that was unrelated to Draw anchors;
+- animation IDs could be consumed before the visible presentation actually started;
+- first Card Sound playback relied on a weak muted HTMLAudio warm-up path.
+
+### v3.72 implementation
+
+- Opening presentation is routed to `window.GL_OPTION_B_PRESENTATION.queueAuthoritativeOpeningSequence()`.
+- Visible Option-B Main Deck/Hand/Shard Deck/Pool are the animation anchors.
+- Only required Draw/Shard anchors are awaited; there is no six-Hero / ~1100 ms gate.
+- `claimedAnimationIds` separates claimed events from completed/seen events.
+- Draw/Shard/rank events handled by Option-B are not also replayed through the hidden shared-engine presentation path.
+- Web Audio assets are primed client-side; the AudioContext is resumed and a zero-gain source is started during a real user gesture. HTMLAudio remains fallback.
+- Gameplay progression never waits for the presentation queue.
+
+## Exact Mana payment / center decision UX
+
+The shared runtime now includes the v6.90.7 exact-payment semantics:
+
+- `computeExactManaPayment()`
+- `recommendedExactManaShardUids()`
+- `manaSelectionAfterToggle()`
+- `spendExactManaPayment()`
+
+Normal and paid Response pending state uses exact `selected_shard_uids`. Payment is legal only when selected value equals cost. FIFO replacement keeps the newly clicked Shard while dropping oldest selected Shards as needed; a manual unselect remains underpaid until the player fills it manually.
+
+The same `public/engine/shared-app/app.bundle.js` is loaded by the Node headless runtime, so these are server-authoritative rules, not client-only decoration.
+
+### Center UI
+
+The selective v6.90.7 center decision layer was adapted to PvP ownership:
+
+- only the local decision owner gets interactive controls;
+- spectator mode never becomes a decision owner;
+- normal/Response PAY buttons send PvP intents rather than applying local gameplay mutations;
+- hidden opponent Shard choices use server-provided opaque handles rather than revealing private Shard UIDs;
+- background hover is suppressed while the center decision is active;
+- session/busy state is reset between repeated payment decisions.
+
+The reported broken donor selected-Shard → Shard Deck animation was **not copied as trusted code**. PvP uses a detached fixed-position presentation clone so selected cards remain visible during travel while authoritative counts still change only from server snapshots.
 
 ## Network stabilization
 
-### P2 Tribute → Next Phase regression
-
-The v3.70 client could remain locked behind `intentInFlight` if the server committed an action but the matching authoritative snapshot was delayed/missed by the client. `intent-ack` was not being used as a recovery signal, and the old watchdog behavior was absent.
-
-v3.71 adds:
-
 - 12-second intent watchdog.
-- `intent-ack` tracking by `clientActionId`.
-- 2.5-second ACK-without-snapshot recovery path using `sync-request`.
-- Authoritative snapshot resync before new gameplay intents continue.
-- Queue cleanup on hard timeout/error to prevent replaying stale actions.
-- Snapshot/revision-based unlock; ACK alone never mutates gameplay state locally.
+- `intent-ack` tracking via `clientActionId`.
+- 2.5-second ACK-without-snapshot recovery via `sync-request`.
+- Revision/snapshot unlock remains authoritative.
+- Regression test verifies Player 2 **Reform → Tribute → Hero target → Next Phase**.
 
-Regression test now executes Player 2 through **Deploy → Battle → Reform → Tribute → choose target Hero → Next Phase** and verifies the canonical revision advances out of Reform.
-
-## Spectator restoration
+## Spectator / lobby
 
 - `MAX_SPECTATORS = 4`.
-- Third visitor becomes Spectator automatically when both seats are occupied.
-- Explicit `SPECTATE` / `JOIN AS PLAYER` role switching is available during setup.
-- Spectator has no seat token and cannot issue gameplay intents.
-- Spectator Hands/private state are always masked as Card Backs.
-- Public Teaching/Both-Hands mode is disabled; no public password/unlock path is retained.
-- `sync-request` is allowed for read-only spectators so late joins/recovery can request the current authoritative snapshot.
-- Spectators receive normal public authoritative presentation events; private Draw identities are masked before delivery.
+- Full seats automatically route additional visitors to read-only spectator mode.
+- Spectator private information is masked; public Both-Hands/Teaching mode is disabled.
+- One sanitized spectator board cache is reused per revision/view rather than creating a per-spectator engine.
+- Lobby visible controls follow the simpler PvP v3.51-style SPECTATE/JOIN, READY/UNREADY, START MATCH, RECONNECT flow.
+- Current Room / Switch Room / counts / Spectator View block remains removed.
 
-### Low-memory spectator path
+## v6.90.7 selective port boundaries
 
-To respect the 256 MB service limit, spectator support does not create an engine or mutable match copy per viewer. `snapshotFor()` builds/caches one sanitized Player-1-oriented spectator battlefield for a canonical revision and reuses it across spectators. Player snapshots remain seat-specific and viewer-safe.
+Kept/adapted:
 
-Gameplay broadcasts send player snapshots first; spectator serialization is deferred to the next event-loop turn for latency-sensitive player intents.
+- center choice layer and exact-payment UX;
+- canonical Shard visual order;
+- current battlefield sizing/hover/focus/phase presentation inherited from the previous parity work;
+- Card Review on relevant battlefield surfaces;
+- updated client-side card-motion capability where safe.
 
-## Lobby update
+Intentionally not treated as validated donor code:
 
-The room panel follows the simpler PvP v3.51 role/button flow:
+- known-broken selected Shard → Shard Deck implementation (reimplemented in PvP presentation instead);
+- unresolved Chain Mail defensive connector patch;
+- rejected Legacy/Discard popup hover placement.
 
-- SPECTATE / JOIN AS PLAYER
-- READY / UNREADY
-- START MATCH
-- RECONNECT
-
-Removed from the visible lobby:
-
-- CURRENT ROOM
-- room switch control
-- PLAYERS count
-- SPECTATORS count
-- SPECTATORS VIEW / CARD BACKS row
-
-The backend is still one fixed room (`GRANDIS_PVP`). Seat lifecycle, deck import/selection, formation, rank preview, Player 1 start authority, and reconnect remain intact.
-
-## VS AI v6.88 battlefield presentation port
-
-Ported/adapted into the existing PvP Option-B presentation boundary:
-
-- Independent `hero-base`, `hero-layout`, visual Hero 120%, Standard 65%, Hand 75% sizing.
-- Stable Hero lane geometry independent of Hero visual scale.
-- Final Hand sizing + edge-only overlap.
-- Body-level Hero/Hand/Shard/sidebar hover previews.
-- Hidden deck/pile labels + compact rectangular counters.
-- Mana Regen badge presentation while preserving live PvP value.
-- Moving phase underline/diamond/tint.
-- PLAY/PAY green + white/gold text treatment.
-- 65% Payment and Response interaction focus.
-- Item/Event connector source semantics from Active Card.
-- Existing Hero Attack connector/source-card-id/Reposition behavior preserved.
-- Fast targeted Item/Event connector hold (~900 ms presentation window).
-- Fixed seven-column choice/search popup + right-side preview.
-- Blind opponent-Shard single-option auto-commit through authoritative intent.
-- Non-blocking Tribute Hand → Hero motion.
-- Battlefield double-click Card Review suppression.
-
-The PvP canonical match timer was intentionally retained; the VS AI local `Date.now()` match-timer implementation was not imported.
-
-## Sound / animation authority
-
-- Server remains authoritative for gameplay resolution and emits compact one-shot presentation event metadata.
-- Browser clients continue to use the bundled battlefield assets for actual SFX/VFX/card motion.
-- Event IDs are deduplicated so snapshots/reconnects do not replay settled effects.
-- Spectators consume the same public presentation events, with hidden information sanitized first.
-- Tribute presentation is non-blocking and never gates server phase progression.
+PvP timer, hidden-information rules, turn ownership, room/seat lifecycle, reconnect, and network protocol remain PvP-owned.
 
 ## 256 MB deployment safeguards
 
-- One fixed room / one authoritative runtime engine at a time.
-- No per-spectator engine/state copy.
+- One fixed room / one authoritative runtime engine.
+- No per-spectator engine.
 - Shared static runtime/card definitions.
 - Spectator board cache by revision.
-- `perMessageDeflate: false` for WebSocket server.
-- Bounded room/public log history.
-- Finished-match cleanup clears engine, gameplay ledger, one-shot events, and spectator cache.
-- `/health` reports lightweight memory telemetry from `process.memoryUsage()`.
-- The v3.71 server simulation with an active match, 2 players, and the full 4-spectator cap measured about **170 MB RSS** in the test container (environment-dependent, not a hard deployment guarantee).
-- Presentation assets remain static/client-side and are not retained per connection by gameplay state.
+- `perMessageDeflate: false`.
+- Bounded room/public logs.
+- Client-side animation/audio/VFX.
+- `/health` memory telemetry.
+- Latest server simulation: roughly **170 MB RSS** for an active match with 2 players + 4 spectators in the test container (environment-dependent).
 
 ## Verification
 
-`npm test` passes the full v3.71 suite:
+`npm test` passes:
 
 - `check:syntax` — PASS
 - `test:static` — PASS
 - `test:runtime` — PASS
+  - human-vs-human shared runtime
+  - exact payment / FIFO internal QA
 - `test:server-sim` — PASS
-  - Player 1 / Player 2 seat flow
+  - Player 1 / Player 2 lifecycle
   - coin flow
-  - viewer-safe snapshots
+  - authoritative `opening_sequence`
+  - viewer-safe state
   - P1 ↔ P2 human handoff
   - Shard ownership
   - **P2 Tribute → Next Phase**
-  - spectator Card Backs / read-only / resync
+  - spectator Card Backs / read-only / cap 4
 - `test:battle-feedback` — PASS
+  - authoritative Class Shard toggle
+  - exact PAY commit
+  - battle-feedback transport
 
-The repository is packaged without `node_modules`; deployment/local browser play installs the normal `ws` dependency with `npm install`.
+## Version / compatibility
 
-## Versioning / compatibility
-
-- Release version: **v3.71**.
-- Build ID: `gl-pvp-3.71-v351-net-v688-battlefield-2026-10-03`.
-- Runtime files: `public/pvp/pvp-v371.js` and `public/pvp/pvp-v371.css`.
-- Legacy `pvp370` DOM/CSS namespace and `gl_pvp370_*` Local Storage keys are intentionally retained to preserve browser state across the v3.70 → v3.71 upgrade.
+- Release: **v3.72**
+- Build ID: `gl-pvp-3.72-v351-net-v6907-battlefield-2026-10-04`
+- Runtime files: `public/pvp/pvp-v372.js`, `public/pvp/pvp-v372.css`
+- Legacy `pvp370` DOM/CSS namespace and `gl_pvp370_*` Local Storage keys remain intentionally for browser-state compatibility.

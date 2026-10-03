@@ -46,6 +46,7 @@ p1.message({type:'start-match'});s1=snap(p1);s2=snap(p2);if(s1.match.status!=='c
 if(!s1.match.serverBoard?.pvpPrivateStateMasked||!s2.match.serverBoard?.pvpPrivateStateMasked)throw new Error('Viewer-safe board mask missing');
 p2.message({type:'choose-coin-flip',choice:'HEADS'});s1=snap(p1);s2=snap(p2);if(s1.match.status!=='coin-result')throw new Error('Coin result failed');
 p1.message({type:'confirm-coin-flip'});s1=snap(p1);s2=snap(p2);if(s1.match.status!=='started'||s2.match.status!=='started')throw new Error('Match confirmation failed');
+const openingEvents=s1.match.lastAnimationEvents||[];const openingEvent=openingEvents.find(x=>x?.kind==='opening_sequence');if(!openingEvent)throw new Error('Authoritative opening_sequence transport missing after match start.');if(!(openingEvent.opening_draw_events||[]).length||!(openingEvent.starting_shard_entries||[]).length)throw new Error('Opening sequence is missing Draw/Shard presentation data.');
 const a1=s1.match.serverBoard?.appState,a2=s2.match.serverBoard?.appState;if(!a1?.pvpHumanVsHuman||!a2?.pvpHumanVsHuman)throw new Error('Human-vs-human runtime flag missing');
 if(!Array.isArray(a1.playerHand)||a1.playerHand.length<1||!Array.isArray(a2.aiHand)||a2.aiHand.length<1)throw new Error('Seat-owned hand data missing');
 if((a1.aiHand||[]).some(x=>typeof x==='string'&&!x.startsWith('__HIDDEN')))throw new Error('P1 received opponent private hand identity');
@@ -172,8 +173,8 @@ const p7=connect('test_p7','Gabe');
 const full=p7.latest('fatal');if(!full||!/capacity/i.test(String(full.message||'')))throw new Error('Fifth spectator was not rejected at the configured capacity.');
 if(snap(p1).players.length!==2||snap(p2).players.length!==2)throw new Error('Spectator-capacity check disturbed player seats.');
 
-console.log('v3.71 two-human + spectator server simulation: PASS');
+console.log('v3.72 two-human + spectator server simulation: PASS');
 const mem=process.memoryUsage(),mb=v=>Math.round((Number(v||0)/1024/1024)*10)/10;
-console.log('seats=1/2, coin-flow=PASS, viewer-safe=PASS, P1<->P2 handoff=PASS, P2 tribute->next-phase=PASS, spectator-card-backs=PASS, spectator-read-only=PASS, spectator-cap=4=PASS, revision='+nextAfterTribute.match.serverBoardRevision);
+console.log('seats=1/2, coin-flow=PASS, viewer-safe=PASS, P1<->P2 handoff=PASS, P2 tribute->next-phase=PASS, spectator-card-backs=PASS, spectator-read-only=PASS, opening-sequence=PASS, spectator-cap=4=PASS, revision='+nextAfterTribute.match.serverBoardRevision);
 console.log('active-match-memoryMB rss='+mb(mem.rss)+', heapUsed='+mb(mem.heapUsed)+', heapTotal='+mb(mem.heapTotal)+', external='+mb(mem.external));
 process.exit(0);

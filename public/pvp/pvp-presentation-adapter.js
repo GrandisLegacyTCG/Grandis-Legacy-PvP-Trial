@@ -40,9 +40,9 @@
   }
 
   window.GL_PVP_PRESENTATION_ADAPTER={
-    version:'PvP v3.71 VS AI v6.88 Presentation Boundary',
-    visualAuthority:'VS AI v6.88',
-    sourceContract:'viewer-safe authoritative PvP board -> seat orientation -> shared VS AI v6.88 battlefield presentation',
+    version:'PvP v3.72 VS AI v6.90.7 Presentation Boundary',
+    visualAuthority:'VS AI v6.90.7',
+    sourceContract:'viewer-safe authoritative PvP board -> seat orientation -> shared VS AI v6.90.7 battlefield presentation',
     isViewerSafeSnapshot:isViewerSafeSnapshot,
     importViewerSafeSnapshot:importViewerSafeSnapshot,
     setSharedBoardMode:setSharedBoardMode
