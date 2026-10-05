@@ -555,13 +555,16 @@ function queueOptionBSourceExpMotion(p,lane){
 }
 function runTributeLikeHeroAction(p,side,lane){
   if(side!=='PLAYER'||!lane)return false;
+  // PvP: the authoritative server 'tribute' event plays the visible motion via
+  // GL_PVP_ANIMATOR. Playing the local motion here too would double it.
+  const pvp=!!window.GL_PVP_CLIENT_MODE;
   if(p?.type==='tribute_target'){
-    queueOptionBTributeMotion(p,lane);
+    if(!pvp)queueOptionBTributeMotion(p,lane);
     intent('chooseHeroFromBoard',[side,lane]);
     return true;
   }
   if(directTributeHeroReady(p,side,lane)){
-    queueOptionBSourceExpMotion(p,lane);
+    if(!pvp)queueOptionBSourceExpMotion(p,lane);
     intent('handleChoiceConfirm',[]);
     return true;
   }
@@ -1824,13 +1827,26 @@ function authoritativeOpeningAnchorReady(kind,event){
   }
   const fr=(from?.querySelector?.('.zoneCard')||from)?.getBoundingClientRect?.(),tr=to?.getBoundingClientRect?.();return !!(fr&&tr&&fr.width>1&&fr.height>1&&tr.width>1&&tr.height>1);
 }
-function queueAuthoritativeOpeningSequenceVisible(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
+/* PvP fresh: opening sequence di-split jadi dua fase agar kartu TIDAK PERNAH
+ * terlihat full sebelum animasi. primeAuthoritativeOpeningSequence() menyembunyikan
+ * semua kartu opening dan me-render tangan/kolam kosong — dipanggil SEBELUM board
+ * di-reveal. playPrimedOpeningSequence() menganimasikan reveal kartu satu per satu —
+ * dipanggil SESUDAH board di-reveal. */
+let primedOpeningData=null;
+function primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
   const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean),draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean),shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
   const allDraw=[...draw1,...draw2],allShard=[...shard1,...shard2];if(!allDraw.length&&!allShard.length)return false;
   openingPresentationActive=true;presentationPrimed=false;
   allDraw.forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e?.side==='AI'?'AI':'PLAYER',idx=Number(e?.hand_index);if(Number.isInteger(idx)&&idx>=0)obHiddenCommittedDrawSlots[side].set(idx,String(e?.id||('opening-'+side+'-'+idx)))});
   allShard.forEach(e=>{if(e?.uid!=null)obOpeningHiddenShardUids.add((e?.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid))});
+  primedOpeningData={draw1,shard1,draw2,shard2};
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
+  return true;
+}
+function playPrimedOpeningSequence(){
+  const data=primedOpeningData;primedOpeningData=null;
+  if(!data)return false;
+  const{draw1,shard1,draw2,shard2}=data;
   const stages=[['draw',draw1],['shard',shard1],['draw',draw2],['shard',shard2]];
   const clearGroup=(kind,group)=>{
     if(kind==='draw'){group.forEach(e=>obHiddenCommittedDrawSlots[e?.side==='AI'?'AI':'PLAYER'].delete(Number(e?.hand_index)));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st())}
@@ -1840,10 +1856,15 @@ function queueAuthoritativeOpeningSequenceVisible(openingDrawEvents,startingShar
   const finishAll=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;setTimeout(renderNow,0)};
   const runStages=(si=0)=>{if(si>=stages.length){finishAll();return}const [kind,events]=stages[si];if(!events.length){runStages(si+1);return}const groups=authoritativeOpeningGroups(events);let gi=0;const next=()=>{if(gi>=groups.length){runStages(si+1);return}const group=groups[gi++],parts=motionParts(kind,group);runPairMotions(parts,kind==='draw'?250:260,()=>{clearGroup(kind,group);requestAnimationFrame(()=>setTimeout(next,22))})};next()};
   const required=[...draw1.map(e=>['draw',e]),...shard1.map(e=>['shard',e]),...draw2.map(e=>['draw',e]),...shard2.map(e=>['shard',e])];let attempts=0;
-  const startWhenReady=()=>{renderNow();const ready=required.every(([kind,e])=>authoritativeOpeningAnchorReady(kind,e));if(ready){runStages(0);return}if(++attempts>=18){console.warn('[PvP v3.72] opening presentation anchors timed out; revealing authoritative state without blocking play.');finishAll();return}setTimeout(()=>requestAnimationFrame(startWhenReady),35)};
+  const startWhenReady=()=>{renderNow();const ready=required.every(([kind,e])=>authoritativeOpeningAnchorReady(kind,e));if(ready){runStages(0);return}if(++attempts>=18){console.warn('[PvP fresh] opening presentation anchors timed out; revealing authoritative state without blocking play.');finishAll();return}setTimeout(()=>requestAnimationFrame(startWhenReady),35)};
   requestAnimationFrame(()=>requestAnimationFrame(startWhenReady));return true;
 }
-window.GL_OPTION_B_PRESENTATION={queueReservedMainDeckDraw:queueOptionBReservedDraw,queueAuthoritativeOpeningSequence:queueAuthoritativeOpeningSequenceVisible,isBusy:optionBPresentationBusy};
+function queueAuthoritativeOpeningSequenceVisible(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
+  // Backward-compatible wrapper: prime + play immediately (board already visible).
+  if(!primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries))return false;
+  return playPrimedOpeningSequence();
+}
+window.GL_OPTION_B_PRESENTATION={queueReservedMainDeckDraw:queueOptionBReservedDraw,queueAuthoritativeOpeningSequence:queueAuthoritativeOpeningSequenceVisible,primeAuthoritativeOpeningSequence:primeAuthoritativeOpeningSequence,playPrimedOpeningSequence:playPrimedOpeningSequence,isBusy:optionBPresentationBusy};
 
 function initStableBattlefieldReviewGestures(){
   if(!BF||BF.dataset.obStableReviewBound==='1')return;BF.dataset.obStableReviewBound='1';

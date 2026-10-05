@@ -1,7 +1,7 @@
-/* Grandis Legacy PvP v3.73-fresh — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
+/* Grandis Legacy PvP v3.73.1 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.73-fresh';
+const VERSION='Grandis Legacy PvP v3.73.1';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
@@ -247,7 +247,7 @@ function renderCoin(){
   }
   const f=m.openingCoinFlip||m.coinFlip||{},winner=clean(f.firstPlayerName||m.firstPlayerName||'Player',25),key=[f.choice,f.outcome,f.firstSeat].join('|');
   if(state.lastCoinKey!==key){state.lastCoinKey=key;try{B()?.playOpeningCoinSound?.()}catch{}}
-  body.innerHTML='<div class="pvp-lobby-coin-winner">'+esc(winner)+' wins the coin flip</div><div class="pvp-lobby-coin-result"><div><span>Player 2 called</span><strong>'+esc(f.choice||'—')+'</strong></div><div><span>Coin result</span><strong>'+esc(f.outcome||'—')+'</strong></div></div><p>'+esc(winner)+' will take the first turn.</p>'+(isSpectator()?'<p>Waiting for a player to start the battlefield…</p>':'<button class="pvp-lobby-coin-start" type="button">START GAME</button>');
+  body.innerHTML='<div class="pvp-lobby-coin-winner">'+esc(winner)+' wins the coin flip</div><div class="pvp-lobby-coin-result"><img class="pvp-lobby-coin-face" src="'+coinFace(f.outcome||'HEADS')+'" alt="'+esc(f.outcome||'Coin')+'"><div><span>Player 2 called</span><strong>'+esc(f.choice||'—')+'</strong></div><div><span>Coin result</span><strong>'+esc(f.outcome||'—')+'</strong></div></div><p>'+esc(winner)+' will take the first turn.</p>'+(isSpectator()?'<p>Waiting for a player to start the battlefield…</p>':'<button class="pvp-lobby-coin-start" type="button">START GAME</button>');
   const start=body.querySelector('.pvp-lobby-coin-start');if(start)start.onclick=()=>{start.disabled=true;document.body.classList.add('pvp-booting','pvp-coin-gate');send('confirm-coin-flip',{})};
 }
 
@@ -296,6 +296,7 @@ function playAuthoritativeAnimations(plans){
   (plans||[]).forEach(plan=>{
     const evt=plan?.event;if(!evt){finish(plan,false);return}
     if(evt.kind==='battle_feedback'){finish(plan,true);return}
+    if(plan.primed){finish(plan,true);return} // opening sudah di-prime; animasi via playPrimedOpeningSequence
     let handled=false;
     try{
       if(evt.kind==='opening_sequence'&&plan.captured&&ob?.queueAuthoritativeOpeningSequence){
@@ -358,13 +359,33 @@ function importBoard(msg){
     const ok=adapter()?.importViewerSafeSnapshot?.(board,seat,{skipImportAnimations:true});
     if(ok===false||!runtimeBoardHydrated())throw new Error('Viewer-safe board import did not hydrate the local shared runtime.');
     state.lastAppliedRevision=rev;state.lastAppliedStatus=status;
+    const ob=window.GL_OPTION_B_PRESENTATION;
+    const openingPlan=(animationPlans||[]).find(p=>p?.event?.kind==='opening_sequence');
+    const firstStartedReveal=status==='started'&&document.body.classList.contains('pvp-booting');
+    // PvP fresh: opening draw harus dari 0. Prime (sembunyikan kartu) SEBELUM board
+    // di-reveal, agar user tidak pernah melihat full hand sebelum animasi.
+    let openingPrimed=false;
+    if(firstStartedReveal&&openingPlan?.captured&&ob?.primeAuthoritativeOpeningSequence){
+      openingPrimed=!!ob.primeAuthoritativeOpeningSequence(
+        openingPlan.captured.opening_draw_events||[],
+        openingPlan.captured.starting_shard_entries||[],
+        openingPlan.captured.post_opening_draw_events||[],
+        openingPlan.captured.post_opening_shard_entries||[]
+      );
+      if(openingPrimed){
+        // Tandai sudah di-prime agar playAuthoritativeAnimations melewatinya.
+        openingPlan.primed=true;
+        const id=openingPlan.rawId||openingPlan.event?.id;
+        if(id){delete state.claimedAnimationIds[id];state.seenAnimationIds[id]=true;}
+      }
+    }
     const playImportedPresentation=()=>{
-      forceBattlefieldRender();
+      if(!openingPrimed)forceBattlefieldRender();
       playAuthoritativeAnimations(animationPlans);
+      if(openingPrimed&&ob?.playPrimedOpeningSequence)ob.playPrimedOpeningSequence();
       ensureBattlefieldChrome();
       if(battleFeedback.length)scheduleBattleVfx(battleFeedback);
     };
-    const firstStartedReveal=status==='started'&&document.body.classList.contains('pvp-booting');
     if(firstStartedReveal){
       // Reveal after the visible Option-B DOM has had two paint frames. The opening
       // presentation itself waits only for its Main/Shard Deck + Hand/Pool anchors.
