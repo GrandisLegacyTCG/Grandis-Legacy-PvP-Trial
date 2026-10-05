@@ -166,9 +166,11 @@ function placeBattlefieldHoverPreview(kind,anchor){
     const playerBox=document.querySelector('.player-name')?.getBoundingClientRect();if(!playerBox)return;
     const centerX=playerBox.left+playerBox.width/2;left=centerX-w/2+68;top=playerBox.top-6-h;
   }else if(kind==='hero'){
-    const playerBox=document.querySelector('.player-name')?.getBoundingClientRect();
-    if(playerBox){const centerX=playerBox.left+playerBox.width/2;left=centerX-w/2+68}else left=vw-w-g;
-    top=(vh-h)/2;
+    // v6.89: restore the v6.83 contextual Hero/Legacy hover. Keep the preview close
+    // to the hovered card and choose the side with more free battlefield space.
+    const ar=anchor.getBoundingClientRect(),br=BF.getBoundingClientRect(),gap=12;
+    const leftSpace=Math.max(0,ar.left-br.left),rightSpace=Math.max(0,br.right-ar.right),useRight=rightSpace>=leftSpace;
+    left=useRight?ar.right+gap:ar.left-gap-w;top=ar.top+ar.height/2-h/2;
   }else if(kind==='shard'){
     const pool=anchor.closest?.('.mana-pool')||document.querySelector('.player-mana-pool');if(!pool)return;
     const pr=pool.getBoundingClientRect(),clearance=30;left=pr.left+pr.width/2-w/2;top=pr.top-clearance-h;
@@ -280,9 +282,92 @@ function placeModalHoverPreview(anchor){
 }
 function bindModalPreview(img){
   if(!img||img.dataset.obModalPreviewBound==='1')return;img.dataset.obModalPreviewBound='1';
-  img.addEventListener('mouseenter',()=>{if(backgroundPreviewSuppressed(img))return;modalHoverImg.src=img.src;placeModalHoverPreview(img);modalHoverPreview.classList.add('open');modalHoverPreview.setAttribute('aria-hidden','false')});
+  img.addEventListener('mouseenter',()=>{if(backgroundPreviewSuppressed(img))return;modalHoverPreview.classList.remove('is-context-hero');modalHoverImg.src=img.src;placeModalHoverPreview(img);modalHoverPreview.classList.add('open');modalHoverPreview.setAttribute('aria-hidden','false')});
   img.addEventListener('mousemove',()=>{if(!backgroundPreviewSuppressed(img))placeModalHoverPreview(img)});
   img.addEventListener('mouseleave',hideModalHoverPreview);
+}
+// ---- restored from v6.90.7: choice popup preview system (fixed + contextual) ----
+function fixedChoicePreviewSlot(){return choiceOverlay.querySelector('.ob-choice-fixed-preview-slot')}
+function setFixedChoicePreview(src,alt){
+  const slot=fixedChoicePreviewSlot();if(!slot)return false;
+  const im=slot.querySelector('img');if(!im)return false;
+  im.src=src||'';im.alt=alt||'Card preview';slot.classList.toggle('has-card',!!src);return true;
+}
+function bindFixedChoicePreview(img,cardId){
+  if(!img||img.dataset.obFixedChoicePreviewBound==='1')return;img.dataset.obFixedChoicePreviewBound='1';
+  const show=()=>{if(backgroundPreviewSuppressed(img))return;hideModalHoverPreview();const v=cv(cardId);setFixedChoicePreview(art(cardId),v?.name||img.alt)};
+  img.addEventListener('mouseenter',show);img.addEventListener('focus',show);
+}
+function placeModalHoverPreview(anchor){
+  const panel=choiceOverlay.querySelector('.choice-panel');
+  const r=(panel||anchor)?.getBoundingClientRect?.();if(!r)return;
+  const cs=getComputedStyle(modalHoverPreview),w=parseFloat(cs.width)||225,h=parseFloat(cs.height)||315,g=12,vw=window.innerWidth||1200,vh=window.innerHeight||800;
+  // Popup preview uses the exact same card size as the battlefield hover preview.
+  // X is centered in the free space between the popup and the right viewport edge.
+  // If that side cannot fit the full preview, use the left free space instead rather
+  // than changing the established lobby/battlefield/component sizing.
+  const rightAvailable=Math.max(0,vw-r.right),leftAvailable=Math.max(0,r.left);
+  const useRight=rightAvailable>=w+g;
+  const centerX=useRight?(r.right+rightAvailable/2):(leftAvailable/2);
+  let left=centerX-w/2;
+  if(useRight) left=Math.max(r.right+g,left);
+  else left=Math.min(r.left-g-w,left);
+  left=Math.max(g,Math.min(left,vw-w-g));
+  let top=r.top+(r.height-h)/2;
+  top=Math.max(g,Math.min(top,vh-h-g));
+  modalHoverPreview.style.left=Math.round(left)+'px';modalHoverPreview.style.top=Math.round(top)+'px';
+}
+function bindModalPreview(img){
+  if(!img||img.dataset.obModalPreviewBound==='1')return;img.dataset.obModalPreviewBound='1';
+  img.addEventListener('mouseenter',()=>{if(backgroundPreviewSuppressed(img))return;modalHoverPreview.classList.remove('is-context-hero');modalHoverImg.src=img.src;placeModalHoverPreview(img);modalHoverPreview.classList.add('open');modalHoverPreview.setAttribute('aria-hidden','false')});
+  img.addEventListener('mousemove',()=>{if(!backgroundPreviewSuppressed(img))placeModalHoverPreview(img)});
+  img.addEventListener('mouseleave',hideModalHoverPreview);
+}
+function placeContextualModalHoverPreview(anchor,compactHero){
+  if(!anchor||!modalHoverPreview)return;
+  modalHoverPreview.classList.toggle('is-context-hero',!!compactHero);
+  const cs=getComputedStyle(modalHoverPreview),w=parseFloat(cs.width)||259,h=parseFloat(cs.height)||362,g=10,vw=window.innerWidth||1200,vh=window.innerHeight||800,ar=anchor.getBoundingClientRect();
+  // Contextual popup previews belong to the hovered card, but should not cover the
+  // popup grid. Pick the outside edge that corresponds to the hovered card's half
+  // of the popup, then fall back to whichever outside edge actually fits.
+  const panel=anchor.closest?.('.choice-panel')||choiceOverlay.querySelector('.choice-panel'),pr=panel?.getBoundingClientRect?.();
+  let useRight;
+  if(pr){
+    useRight=(ar.left+ar.width/2)>=(pr.left+pr.width/2);
+    const canRight=(vw-pr.right)>=w+g,canLeft=pr.left>=w+g;
+    if(useRight&&!canRight&&canLeft)useRight=false;
+    else if(!useRight&&!canLeft&&canRight)useRight=true;
+  }else{
+    useRight=Math.max(0,vw-ar.right)>=Math.max(0,ar.left);
+  }
+  let left=pr?(useRight?pr.right+g:pr.left-g-w):(useRight?ar.right+g:ar.left-g-w),top=ar.top+ar.height/2-h/2;
+  left=Math.max(g,Math.min(left,vw-w-g));top=Math.max(g,Math.min(top,vh-h-g));
+  modalHoverPreview.style.left=Math.round(left)+'px';modalHoverPreview.style.top=Math.round(top)+'px';
+}
+function bindContextualModalPreview(img,cardId){
+  if(!img||img.dataset.obContextModalPreviewBound==='1')return;img.dataset.obContextModalPreviewBound='1';
+  const v=cv(cardId),family=String(v?.family||v?.type||'').toLowerCase(),compactHero=/hero|legacy/.test(family)||/-(H\d{3}|L\d{3}|LEG)/i.test(String(cardId||''));
+  const show=()=>{if(backgroundPreviewSuppressed(img))return;modalHoverImg.src=img.src;placeContextualModalHoverPreview(img,compactHero);modalHoverPreview.classList.add('open');modalHoverPreview.setAttribute('aria-hidden','false')};
+  img.addEventListener('mouseenter',show);img.addEventListener('mousemove',()=>{if(!backgroundPreviewSuppressed(img))placeContextualModalHoverPreview(img,compactHero)});img.addEventListener('mouseleave',()=>{modalHoverPreview.classList.remove('is-context-hero');hideModalHoverPreview()});
+}
+function bindChoicePreview(img,cardId,mode){
+  // Preview behavior follows the candidate zone, never the action/caller type.
+  // Main Deck candidates restore the v6.88 floating fixed preview outside the popup.
+  // Legacy Deck / Discard candidates remain contextual to the hovered card.
+  if(mode==='fixed')bindModalPreview(img);else bindContextualModalPreview(img,cardId)
+}
+function candidateSourceZone(p){
+  if(!p)return'';
+  const explicit=String(p.choice_zone||p.zone||p.candidate_zone||p.source_zone||p.from_zone||'').trim().toLowerCase();
+  if(explicit)return explicit;
+  // These are source-zone fallbacks only when the pending object omits its zone.
+  if(p.type==='legacy_defeat_choice')return'legacy_deck';
+  if(p.type==='crystal_ball_reorder')return'deck_top';
+  return'';
+}
+function choicePreviewModeFromCandidateZone(p){
+  const z=candidateSourceZone(p);
+  return /(^|_|\b)(deck|deck_search|deck_top|main|main_deck)(_|\b|$)/.test(z)&&!/discard|legacy_deck/.test(z)?'fixed':'contextual';
 }
 function closeCardReview(){cardReviewOverlay.classList.remove('open');const body=cardReviewOverlay.querySelector('.ob-card-review-body');if(body)body.innerHTML='';}
 function openCardReview(cardId){
@@ -356,7 +441,7 @@ function renderInspectModal(){
   const title=choiceOverlay.querySelector('.ob-choice-title'),body=choiceOverlay.querySelector('.ob-choice-body'),confirm=choiceOverlay.querySelector('.ob-choice-confirm');
   title.textContent=inspectState.title;body.innerHTML='';
   if(inspectState.instruction){const p=document.createElement('p');p.className='choice-instruction';p.textContent=inspectState.instruction;body.appendChild(p)}
-  if(inspectState.ids.length){const grid=document.createElement('div');grid.className='choice-grid inspect-card-grid';inspectState.ids.forEach(id=>{const v=cv(id),b=document.createElement('button');b.type='button';b.className='ob-inspect-card';const im=document.createElement('img');im.src=art(id);im.alt=v?.name||id;im.draggable=false;const sp=document.createElement('span');sp.textContent=v?.name||id;b.append(im,sp);grid.appendChild(b);bindModalPreview(im)});body.appendChild(grid)}
+  if(inspectState.ids.length){const grid=document.createElement('div');grid.className='choice-grid inspect-card-grid';inspectState.ids.forEach(id=>{const v=cv(id),b=document.createElement('button');b.type='button';b.className='ob-inspect-card';const im=document.createElement('img');im.src=art(id);im.alt=v?.name||id;im.draggable=false;const sp=document.createElement('span');sp.textContent=v?.name||id;b.append(im,sp);grid.appendChild(b);bindChoicePreview(im,id,inspectState.previewMode||'contextual')});body.appendChild(grid)}
   else{const e=document.createElement('div');e.className='ob-inspect-empty';e.textContent='This pile is empty.';body.appendChild(e)}
   confirm.textContent='CLOSE';confirm.disabled=false;confirm.onclick=closeInspectModal;
 }
@@ -431,13 +516,56 @@ function flyBetween(src,fromEl,toEl,duration=380,onFinish,playSound=true){
   requestAnimationFrame(()=>requestAnimationFrame(()=>{im.style.transition='transform '+duration+'ms cubic-bezier(.2,.75,.2,1),opacity '+duration+'ms ease,width '+duration+'ms ease,height '+duration+'ms ease';im.style.transform='translate('+(tr.left-fr.left)+'px,'+(tr.top-fr.top)+'px)';im.style.width=tr.width+'px';im.style.height=tr.height+'px';im.style.opacity='.72'}));
   setTimeout(()=>{im.remove();obPresentationActive=Math.max(0,obPresentationActive-1);obPresentationBusyUntil=Math.max(obPresentationBusyUntil,Date.now()+60);if(typeof onFinish==='function')onFinish(true)},duration+20);return true;
 }
+// ---- restored from v6.90.7: hero-orientation flight + tribute/source-exp motions ----
+function flyToHeroOrientation(src,fromEl,toEl,side,lane,duration=390,onFinish,playSound=true){
+  if(!src||!fromEl||!toEl)return false;
+  const fr=fromEl.getBoundingClientRect(),tr=toEl.getBoundingClientRect();
+  if(fr.width<1||fr.height<1||tr.width<1||tr.height<1)return false;
+  const h=sideHeroes(st(),side)?.[lane],exhausted=!!h?.exhausted;
+  const tcx=tr.left+tr.width/2,tcy=tr.top+tr.height/2;
+  // The flying card remains the moving object.  For an Exhausted Hero the card
+  // rotates smoothly to landscape while preserving the destination's visual box.
+  // Using final left/top (rather than a center delta while width/height change)
+  // prevents the clone from jumping off-target or disappearing on landscape Heroes.
+  const targetW=exhausted?Math.max(1,tr.height):Math.max(1,tr.width);
+  const targetH=exhausted?Math.max(1,tr.width):Math.max(1,tr.height);
+  const targetLeft=tcx-targetW/2,targetTop=tcy-targetH/2,rot=exhausted?-90:0;
+  obPresentationActive++;obPresentationBusyUntil=Math.max(obPresentationBusyUntil,Date.now()+60);
+  const im=document.createElement('img');
+  im.className='ob-flying-card';im.src=src;im.style.left=fr.left+'px';im.style.top=fr.top+'px';im.style.width=fr.width+'px';im.style.height=fr.height+'px';im.style.transform='rotate(0deg)';im.style.transformOrigin='center center';
+  animationLayer.appendChild(im);if(playSound)E()?.playCardMotionSound?.();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    im.style.transition='left '+duration+'ms cubic-bezier(.2,.75,.2,1),top '+duration+'ms cubic-bezier(.2,.75,.2,1),transform '+duration+'ms cubic-bezier(.2,.75,.2,1),opacity '+duration+'ms ease,width '+duration+'ms ease,height '+duration+'ms ease';
+    im.style.left=targetLeft+'px';im.style.top=targetTop+'px';im.style.width=targetW+'px';im.style.height=targetH+'px';im.style.transform='rotate('+rot+'deg)';im.style.opacity='.78';
+  }));
+  setTimeout(()=>{im.remove();obPresentationActive=Math.max(0,obPresentationActive-1);obPresentationBusyUntil=Math.max(obPresentationBusyUntil,Date.now()+60);if(typeof onFinish==='function')onFinish(true)},duration+24);return true;
+}
 function queueOptionBTributeMotion(p,lane){
   if(!p||p.type!=='tribute_target'||!p.card_id||!Number.isInteger(Number(p.hand_index))||!lane)return false;
   const from=playerHandTrack?.querySelector('.hand-card[data-hand-index="'+Number(p.hand_index)+'"] .hand-art'),to=heroCardEl('PLAYER',lane);
-  if(!from||!to)return false;const fr=from.getBoundingClientRect(),tr=to.getBoundingClientRect();if(fr.width<1||tr.width<1)return false;
-  const im=document.createElement('img');im.className='ob-flying-card';im.src=art(p.card_id);im.style.left=fr.left+'px';im.style.top=fr.top+'px';im.style.width=fr.width+'px';im.style.height=fr.height+'px';animationLayer.appendChild(im);E()?.playCardMotionSound?.();
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{im.style.transition='transform 430ms cubic-bezier(.2,.75,.2,1),opacity 430ms ease,width 430ms ease,height 430ms ease';im.style.transform='translate('+(tr.left-fr.left)+'px,'+(tr.top-fr.top)+'px)';im.style.width=tr.width+'px';im.style.height=tr.height+'px';im.style.opacity='.72'}));
-  setTimeout(()=>im.remove(),460);return true;
+  return flyToHeroOrientation(art(p.card_id),from,to,'PLAYER',lane,430,null,true);
+}
+function queueOptionBSourceExpMotion(p,lane){
+  if(!p||p.type!=='card_search_choice'||p.resolve_to!=='source_exp'||!lane)return false;
+  const idx=selectedChoiceIndex(p);if(idx==null)return false;
+  const cand=(p.candidates||[])[Number(idx)]||{},handIndex=Number(cand.hand_index),cardId=cand.card_id||cand.id||'';
+  if(!cardId||!Number.isInteger(handIndex))return false;
+  const from=playerHandTrack?.querySelector('.hand-card[data-hand-index="'+handIndex+'"] .hand-art'),to=heroCardEl('PLAYER',lane);
+  return flyToHeroOrientation(art(cardId),from,to,'PLAYER',lane,430,null,true);
+}
+function runTributeLikeHeroAction(p,side,lane){
+  if(side!=='PLAYER'||!lane)return false;
+  if(p?.type==='tribute_target'){
+    queueOptionBTributeMotion(p,lane);
+    intent('chooseHeroFromBoard',[side,lane]);
+    return true;
+  }
+  if(directTributeHeroReady(p,side,lane)){
+    queueOptionBSourceExpMotion(p,lane);
+    intent('handleChoiceConfirm',[]);
+    return true;
+  }
+  return false;
 }
 function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if(openingPresentationActive||!s.turn||lastTurnBannerKey===key)return;lastTurnBannerKey=key;const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',label=s.turn==='PLAYER'?(spectator?'PLAYER 1 TURN':'YOUR TURN'):(window.GL_PVP_CLIENT_MODE?(spectator?'PLAYER 2 TURN':'OPPONENT TURN'):'AI TURN');turnBanner.innerHTML='<strong>'+label+'</strong><small>ROUND '+Number(s.round||1)+'</small>';turnBanner.classList.remove('show');void turnBanner.offsetWidth;turnBanner.classList.add('show');clearTimeout(showTurnBannerFor.t);showTurnBannerFor.t=setTimeout(()=>turnBanner.classList.remove('show'),900)}
 function buildPresentationPlan(s){
@@ -969,11 +1097,16 @@ function renderHero(side,lane,h,s){
   if(p&&pendingOwner(p)==='PLAYER'&&!selectable&&!selected&&['warp_scroll_selection','source_selection','target_selection','tribute_target','racial_target_selection','hero_ability_target_selection','legacy_hero_target_selection','exact_two_target_selection','double_casting_target_selection','scouting_target_selection'].includes(p.type))laneEl.classList.add('ob-invalid');
   let heroSingleAction=null;
   if(responseSelectable)heroSingleAction=()=>confirmResponseOption(responseLanes.get(lane));
-  else if(directTributeHeroReady(p,side,lane))heroSingleAction=()=>intent('handleChoiceConfirm',[]);
-  else if(engineSelectable&&p?.type==='tribute_target')heroSingleAction=()=>{queueOptionBTributeMotion(p,lane);intent('chooseHeroFromBoard',[side,lane])};
+  else if(directTributeHeroReady(p,side,lane))heroSingleAction=()=>runTributeLikeHeroAction(p,side,lane);
+  else if(engineSelectable&&p?.type==='tribute_target')heroSingleAction=()=>runTributeLikeHeroAction(p,side,lane);
   else if(engineSelectable)heroSingleAction=()=>intent('chooseHeroFromBoard',[side,lane]);
   hc.onclick=heroSingleAction?e=>{e.preventDefault();e.stopPropagation();if(e.detail>1){clearTimeout(hc._obSingleClickTimer);hc._obSingleClickTimer=null;return}clearTimeout(hc._obSingleClickTimer);hc._obSingleClickTimer=setTimeout(()=>{hc._obSingleClickTimer=null;heroSingleAction()},210)}:null;
   hc.ondblclick=e=>{e.preventDefault();e.stopPropagation();clearTimeout(hc._obSingleClickTimer);hc._obSingleClickTimer=null;openCardReview(id)};
+  // Tribute-like targeting uses one presentation path whether the player clicks the
+  // Hero card itself or empty space in the legal Hero panel. This prevents EXP from
+  // committing without the Hand -> Hero motion on normal Tribute or Relentless Leveling.
+  const tributePanelAction=(engineSelectable&&p?.type==='tribute_target')||directTributeHeroReady(p,side,lane);
+  laneEl.onclick=tributePanelAction?e=>{if(e.target.closest('.hero-card,.attachment-card,.ob-legacy-under-hero,button'))return;e.preventDefault();e.stopPropagation();runTributeLikeHeroAction(p,side,lane)}:null;
   img.draggable=false;
   const delayExhaust=heroCombatHeld(side,lane,s),exhaustedVisual=!!(h?.exhausted&&!delayExhaust);
   pack.classList.toggle('is-exhausted',exhaustedVisual);
@@ -1521,11 +1654,11 @@ function renderHistory(s,chain){
 }
 
 function renderLog(s){battleLogPanel.querySelectorAll('.logline').forEach(x=>x.remove());(s.log||[]).forEach(line=>{const d=document.createElement('div');d.className='logline';d.textContent=line;battleLogPanel.appendChild(d)})}
-function choiceCardTile(id,idx,selected,selectHandler){
+function choiceCardTile(id,idx,selected,selectHandler,previewMode='contextual'){
   const v=cv(id),article=document.createElement('article');article.className='card-search-choice'+(selected?' selected':'');
   const previewBtn=document.createElement('button');previewBtn.type='button';previewBtn.className='discard-preview';
   const im=document.createElement('img');im.src=v?.thumb||art(id);im.alt=(v?.name||id)+' thumbnail';previewBtn.appendChild(im);
-  const name=document.createElement('span');name.textContent=v?.name||id;previewBtn.appendChild(name);bindModalPreview(im);
+  const name=document.createElement('span');name.textContent=v?.name||id;previewBtn.appendChild(name);bindChoicePreview(im,id,previewMode);
   const select=document.createElement('button');select.type='button';select.className='discard-select';select.textContent=selected?'Selected':'Select';select.onclick=selectHandler;
   article.append(previewBtn,select);return article;
 }
@@ -1545,29 +1678,34 @@ function renderAllowedModal(s){
   hideModalHoverPreview();
   modalRenderKey=modalSig;
   const title=choiceOverlay.querySelector('.ob-choice-title'),body=choiceOverlay.querySelector('.ob-choice-body'),confirm=choiceOverlay.querySelector('.ob-choice-confirm');
+  const choicePreviewMode=choicePreviewModeFromCandidateZone(p),mainDeckPreview=choicePreviewMode==='fixed';
+  choiceOverlay.classList.toggle('ob-choice-main-deck-preview',mainDeckPreview);
   title.textContent=p.title||({card_search_choice:'Choose Card',legacy_defeat_choice:'Choose Legacy',legacy_card_choice:'Legacy Choice',crystal_ball_reorder:'Crystal Ball — Reorder Top Deck'}[p.type]);
-  body.innerHTML='';
+  body.innerHTML='';body.classList.remove('ob-choice-body-main-deck');
+  // v6.90.7: Main Deck preview is the v6.88 floating preview OUTSIDE the popup.
+  // Do not reserve an internal preview column. The popup keeps all seven card columns.
+  const listHost=body;
   const instruction=document.createElement('p');instruction.className='choice-instruction';
   if(p.type==='legacy_defeat_choice')instruction.textContent=(cv(p.defeated_card_id)?.name||'Hero')+' was defeated. Choose which Legacy card will replace this Hero.';
   else if(p.type==='card_search_choice')instruction.textContent=p.instruction||'Select the required card choice.';
   else if(p.type==='legacy_card_choice')instruction.textContent='Choose exactly '+Number(p.required_choices||1)+' card(s).';
   else instruction.textContent='Reorder the revealed top cards. The first card shown will be the next card drawn.';
-  body.appendChild(instruction);
-  const grid=document.createElement('div');grid.className='choice-grid '+(p.type==='crystal_ball_reorder'?'reorder-choice-grid':'card-search-choice-grid');body.appendChild(grid);
+  listHost.appendChild(instruction);
+  const grid=document.createElement('div');grid.className='choice-grid '+(p.type==='crystal_ball_reorder'?'reorder-choice-grid':'card-search-choice-grid');listHost.appendChild(grid);
   if(p.type==='legacy_defeat_choice'){
-    (p.candidates||[]).forEach((raw,i)=>{const id=typeof raw==='string'?raw:(raw.card_id||raw.id);grid.appendChild(choiceCardTile(id,i,selectedChoiceIndex(p)===i,()=>intent('selectLegacyDefeatChoice',[i])))});
+    (p.candidates||[]).forEach((raw,i)=>{const id=typeof raw==='string'?raw:(raw.card_id||raw.id);grid.appendChild(choiceCardTile(id,i,selectedChoiceIndex(p)===i,()=>intent('selectLegacyDefeatChoice',[i]),'contextual'))});
     const legacySelected=selectedChoiceIndex(p);confirm.textContent=p.committing?'Entering Legacy Mode…':'Enter Legacy Mode';confirm.disabled=!!p.committing||legacySelected==null||!(p.candidates||[])[legacySelected];
   }else if(p.type==='card_search_choice'){
     const req=p.multi_select?Math.min(Number(p.required_count||p.max_count||1),(p.candidates||[]).length):1;
-    (p.candidates||[]).forEach((raw,i)=>{const id=typeof raw==='string'?raw:raw.card_id,sel=p.multi_select?(p.selected_indices||[]).includes(i):selectedChoiceIndex(p)===i;grid.appendChild(choiceCardTile(id,i,sel,()=>intent('selectCardSearchChoice',[i])))});
+    (p.candidates||[]).forEach((raw,i)=>{const id=typeof raw==='string'?raw:raw.card_id,sel=p.multi_select?(p.selected_indices||[]).includes(i):selectedChoiceIndex(p)===i;grid.appendChild(choiceCardTile(id,i,sel,()=>intent('selectCardSearchChoice',[i]),choicePreviewMode))});
     const count=p.multi_select?(p.selected_indices||[]).length:(typeof p.selected_index==='number'?1:0);confirm.textContent=p.confirm_text||'Add Selected';confirm.disabled=count<req;
   }else if(p.type==='legacy_card_choice'){
     const req=Number(p.required_choices||1);
-    (p.candidates||[]).forEach((raw,i)=>{const id=typeof raw==='string'?raw:raw.card_id,sel=(p.selected_indices||[]).includes(i)||selectedChoiceIndex(p)===i;grid.appendChild(choiceCardTile(id,i,sel,()=>intent('selectLegacyCardChoice',[i])))});
+    (p.candidates||[]).forEach((raw,i)=>{const id=typeof raw==='string'?raw:raw.card_id,sel=(p.selected_indices||[]).includes(i)||selectedChoiceIndex(p)===i;grid.appendChild(choiceCardTile(id,i,sel,()=>intent('selectLegacyCardChoice',[i]),choicePreviewMode))});
     confirm.textContent='Confirm Legacy Choice';confirm.disabled=(p.selected_indices||[]).length!==req && !(req===1&&typeof p.selected_index==='number');
   }else{
     (p.selected_order||[]).forEach((raw,i)=>{const id=typeof raw==='string'?raw:raw.card_id,v=cv(id),article=document.createElement('article');article.className='discard-choice';
-      const pb=document.createElement('button');pb.type='button';pb.className='discard-preview';const im=document.createElement('img');im.src=v?.thumb||art(id);im.alt=(v?.name||id)+' thumbnail';pb.appendChild(im);const sp=document.createElement('span');sp.textContent='#'+(i+1)+' '+(v?.name||id);pb.appendChild(sp);bindModalPreview(im);
+      const pb=document.createElement('button');pb.type='button';pb.className='discard-preview';const im=document.createElement('img');im.src=v?.thumb||art(id);im.alt=(v?.name||id)+' thumbnail';pb.appendChild(im);const sp=document.createElement('span');sp.textContent='#'+(i+1)+' '+(v?.name||id);pb.appendChild(sp);bindChoicePreview(im,id,'fixed');
       const buttons=document.createElement('div');buttons.className='choice-footer-buttons';
       const up=document.createElement('button');up.type='button';up.textContent='Up';up.disabled=i===0;up.onclick=()=>intent('moveCrystalBallOrder',[i+':up']);
       const down=document.createElement('button');down.type='button';down.textContent='Down';down.disabled=i===(p.selected_order||[]).length-1;down.onclick=()=>intent('moveCrystalBallOrder',[i+':down']);

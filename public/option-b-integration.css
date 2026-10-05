@@ -840,6 +840,74 @@
 }
 
 
+/* ==========================================================================
+   v6.89 CENTER CHOICE UX + v6.83 CONTEXTUAL HOVER RESTORE
+   ========================================================================== */
+
+/* Hero/Legacy contextual popup previews use the v6.83 Hero footprint (110%).
+   Main Deck-derived search previews keep the fixed 115% preview. */
+.ob-modal-hover-preview.is-context-hero{
+  width:var(--hero-hover-preview-w)!important;
+  height:var(--hero-hover-preview-h)!important;
+}
+
+/* v6.90.7 — Main Deck candidate lists use a REAL reserved preview column.
+   Preview layout is selected by the candidate source zone, never by the caller/effect.
+   This replaces the old floating/body-level preview that could cover the card grid. */
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{
+  width:min(1068px,calc(100vw - 36px))!important;
+  min-width:0!important;
+  transform:none!important;
+}
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) var(--hover-preview-w)!important;
+  gap:16px!important;
+  align-items:start!important;
+  overflow:hidden!important;
+}
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .ob-choice-list-pane{
+  min-width:0!important;
+  min-height:0!important;
+  max-height:calc(84vh - 112px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:3px;
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{
+  width:var(--hover-preview-w);
+  height:var(--hover-preview-h);
+  align-self:start;
+  position:sticky;
+  top:0;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:rgba(5,12,18,.42);
+  overflow:hidden;
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot img{
+  width:100%;
+  height:100%;
+  display:none;
+  object-fit:contain;
+  border-radius:8px;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.64));
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot.has-card img{display:block}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-placeholder{
+  color:#7890a5;
+  font-size:10px;
+  font-weight:800;
+  text-align:center;
+  padding:18px;
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot.has-card .ob-choice-fixed-preview-placeholder{display:none}
+@media(max-width:1120px){
+  .ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{width:calc(100vw - 24px)!important}
+  .ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{grid-template-columns:minmax(0,1fr) min(28vw,var(--hover-preview-w))!important}
+  .ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{width:min(28vw,var(--hover-preview-w));height:auto;aspect-ratio:5/7}
+}
 /* PvP v3.72 / VS AI v6.90.7 center decision layer */
 .ob-center-choice-stage{
   position:fixed;

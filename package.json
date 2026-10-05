@@ -1,12 +1,12 @@
 {
-  "name": "grandis-legacy-pvp-v372",
-  "version": "3.72.0",
+  "name": "grandis-legacy-pvp-fresh",
+  "version": "3.73.0",
   "private": true,
   "type": "module",
   "description": "Grandis Legacy PvP v3.72 — PvP v3.70 gameplay authority with PvP v3.51-style network recovery/spectators and selectively ported VS AI v6.90.7 battlefield + center decision UX.",
   "scripts": {
     "start": "node server.js",
-    "check:syntax": "node --check server.js && node --check server/gameplay-intent-router.mjs && node --check public/option-b-runtime.js && node --check public/pvp/pvp-v372.js && node --check public/pvp/pvp-presentation-adapter.js",
+    "check:syntax": "node --check server.js && node --check server/gameplay-intent-router.mjs && node --check public/option-b-runtime.js && node --check public/pvp/pvp-net.js && node --check public/pvp/pvp-animator.js && node --check public/pvp/pvp-presentation-adapter.js",
     "test:static": "node tests/run-v372-static.mjs",
     "test:runtime": "node tests/run-v372-runtime.mjs",
     "test": "npm run check:syntax && npm run test:static && npm run test:runtime && npm run test:server-sim && npm run test:battle-feedback",

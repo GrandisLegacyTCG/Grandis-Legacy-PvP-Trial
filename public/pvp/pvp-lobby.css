@@ -1,0 +1,324 @@
+/* Grandis Legacy PvP fresh — PvP v3.51 lobby/network baseline + VS AI v6.90.7 battlefield presentation. */
+html.pvp-fresh-app .ob-lobby-overlay,
+html.pvp-fresh-app .ob-coin-overlay{display:none!important}
+html.pvp-fresh-app body.pvp-lobby-mode .app{visibility:hidden}
+
+:root{
+  --pvp-lobby-bg:#07111f;
+  --pvp-lobby-panel:rgba(5,10,17,.82);
+  --pvp-lobby-card:rgba(23,39,53,.92);
+  --pvp-lobby-gold:#f1d481;
+  --pvp-lobby-line:rgba(229,234,243,.20);
+  --pvp-lobby-line-strong:rgba(229,234,243,.38);
+  --pvp-lobby-white:#f5f7fb;
+  --pvp-lobby-muted:#a9acb3;
+  --pvp-lobby-success:#20df6f;
+  --pvp-lobby-offline:#66707d;
+}
+
+/* Lobby is always a single viewport: no page scroll on desktop, phone, or tablet. */
+.pvp-lobby{
+  position:fixed;inset:0;z-index:9000;display:none;overflow:hidden;
+  color:var(--pvp-lobby-white);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,rgba(3,8,14,.60),rgba(6,13,23,.32)),url('../assets/lobby/background.webp') center/cover no-repeat;
+  font-weight:650;letter-spacing:.01em;
+}
+.pvp-lobby.open{display:block}
+.pvp-lobby *{box-sizing:border-box}
+.pvp-lobby button,.pvp-lobby input,.pvp-lobby select{font:inherit}
+.pvp-lobby button{cursor:pointer}
+.pvp-lobby button:disabled{cursor:not-allowed}
+
+.pvp-lobby-page{
+  width:100%;height:100%;min-height:0;overflow:hidden;
+  padding:20px 42px 22px;
+  display:grid;grid-template-rows:58px minmax(0,1fr);gap:12px;
+}
+.pvp-lobby-topbar{
+  min-height:58px;display:grid;grid-template-columns:194px minmax(280px,1fr) auto;
+  align-items:start;gap:20px;min-width:0;
+}
+.pvp-lobby-logo{display:block;width:190px;height:58px;overflow:hidden}
+.pvp-lobby-logo img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(0 3px 8px rgba(0,0,0,.38))}
+.pvp-lobby-heading{padding-top:6px;min-width:0}
+.pvp-lobby-heading h1{margin:0;font-size:17px;line-height:1;font-weight:900;letter-spacing:.02em}
+.pvp-lobby-heading p{margin:7px 0 0;color:#989ca4;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pvp-lobby-connect{align-self:start;margin-top:5px;display:flex;align-items:center;gap:8px;color:#aeb7c3;font-size:11px;font-weight:850;white-space:nowrap}
+.pvp-lobby-connect i{width:7px;height:7px;border-radius:50%;background:var(--pvp-lobby-offline)}
+.pvp-lobby-connect.online i{background:var(--pvp-lobby-success);box-shadow:0 0 9px rgba(32,223,111,.32)}
+.pvp-lobby-connect.connecting i{background:#e8c450}
+.pvp-lobby-connect.offline i{background:#df626c}
+
+.pvp-lobby-btn{
+  border:1px solid transparent;border-radius:11px;min-height:40px;padding:0 19px;
+  color:var(--pvp-lobby-white);background:transparent;font-size:13px;font-weight:900;
+  text-transform:uppercase;letter-spacing:.015em;transition:filter .15s ease,transform .15s ease,opacity .15s ease;
+  text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
+}
+.pvp-lobby-btn:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+.pvp-lobby-outline{border-color:rgba(236,240,248,.42);background:rgba(4,9,16,.35)}
+.pvp-lobby-gold{color:#11151c;border-color:#f4d87e;background:linear-gradient(180deg,#f5dc91 0%,#c49b43 100%);box-shadow:inset 0 1px rgba(255,255,255,.42)}
+.pvp-lobby-gold:disabled{border-color:#6e6249;background:linear-gradient(180deg,rgba(146,128,82,.60),rgba(87,73,44,.58));box-shadow:none;opacity:.68}
+.pvp-lobby-gold-outline{color:var(--pvp-lobby-gold);border-color:#dcbf68}
+.pvp-lobby-compact{min-height:39px;padding:0 21px;font-family:Georgia,"Times New Roman",serif;font-size:12px}
+
+.pvp-lobby-layout{
+  min-width:0;min-height:0;height:100%;overflow:hidden;
+  display:grid;grid-template-columns:minmax(0,1fr) clamp(250px,27.3vw,372px);gap:16px;align-items:stretch;
+}
+.pvp-lobby-panel{
+  min-width:0;min-height:0;overflow:hidden;
+  background:linear-gradient(180deg,rgba(4,9,16,.84),rgba(5,10,17,.78));
+  border:1px solid rgba(255,255,255,.025);border-radius:16px;box-shadow:0 18px 48px rgba(0,0,0,.26);backdrop-filter:blur(2px);
+}
+.pvp-lobby-deck-panel{padding:22px 25px 20px;display:flex;flex-direction:column}
+.pvp-lobby-picker{display:grid;grid-template-columns:142px minmax(0,1fr);gap:13px;align-items:center}
+.pvp-lobby-picker>label{color:var(--pvp-lobby-gold);font-size:17px;font-weight:900;white-space:nowrap}
+.pvp-lobby-select-wrap{position:relative}
+.pvp-lobby-select-wrap:after{content:"";position:absolute;right:13px;top:50%;width:16px;height:16px;transform:translateY(-50%);background:url('../assets/lobby/chevron-down.png') center/16px 16px no-repeat;pointer-events:none}
+.pvp-lobby select,.pvp-lobby input{width:100%;border:1px solid var(--pvp-lobby-line-strong);border-radius:12px;color:var(--pvp-lobby-white);background:rgba(4,8,14,.55);outline:none}
+.pvp-lobby select{height:48px;padding:0 46px 0 17px;appearance:none;font-size:15px;font-weight:750}
+.pvp-lobby input{height:46px;padding:0 14px;font-size:15px;font-weight:760}
+.pvp-lobby select:focus,.pvp-lobby input:focus{border-color:rgba(241,212,129,.85);box-shadow:0 0 0 3px rgba(241,212,129,.09)}
+
+.pvp-lobby-title{display:flex;align-items:baseline;gap:16px;margin-top:24px;min-width:0}
+.pvp-lobby-title h2{font-size:28px;line-height:1;margin:0;font-weight:900;letter-spacing:-.02em;white-space:nowrap}
+.pvp-lobby-title p{margin:0;color:#a9abb1;font-size:13px;font-weight:650;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pvp-lobby-showcase{display:grid;grid-template-columns:minmax(0,1fr) minmax(154px,228px);gap:12px;margin-top:16px;align-items:stretch;min-height:0}
+.pvp-lobby-formation-wrap{min-width:0;min-height:0}
+.pvp-lobby-formation{display:grid;grid-template-columns:minmax(0,1fr) 27px minmax(0,1fr) 27px minmax(0,1fr);gap:6px;align-items:center;justify-content:start;min-width:0}
+.pvp-lobby-hero{min-width:0;border-radius:13px;background:linear-gradient(180deg,#1c3040,#1a2b39);padding:10px 10px 9px;box-shadow:0 10px 20px rgba(0,0,0,.18);display:flex;flex-direction:column;text-align:center}
+.pvp-lobby-hero img{display:block;width:100%;height:auto;aspect-ratio:320/448;object-fit:cover;border-radius:9px;background:#0d141d;box-shadow:0 8px 15px rgba(0,0,0,.42)}
+.pvp-lobby-hero small{display:block;text-align:center;color:var(--pvp-lobby-gold);font-size:15px;font-weight:900;margin:auto 0 0;padding-top:9px}
+/* v3.51 final behavior: the asset is the visible blue circle; the button itself has no extra background. */
+.pvp-lobby-swap{width:27px;height:27px;min-width:27px;min-height:27px;padding:0;display:grid;place-items:center;border:0;border-radius:50%;background:transparent!important;color:#fff;box-shadow:none!important;overflow:visible}
+.pvp-lobby-swap img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.pvp-lobby-swap:hover{filter:brightness(1.08)}
+.pvp-lobby-rank{width:max-content;margin:17px auto 0;display:grid;grid-template-columns:31px 74px 31px;align-items:center;border:1px solid #40424c;border-radius:7px;background:#121318;overflow:hidden}
+.pvp-lobby-rank button{height:31px;border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer}
+.pvp-lobby-rank button:hover{background:#24262e}
+.pvp-lobby-rank strong{text-align:center;color:var(--pvp-lobby-gold);font-size:10px}
+.pvp-lobby-summary{align-self:stretch;border-radius:13px;background:linear-gradient(180deg,rgba(5,11,18,.96),rgba(5,10,17,.92));border:1px solid rgba(255,255,255,.035);padding:12px 14px 10px;box-shadow:0 10px 20px rgba(0,0,0,.28);display:flex;flex-direction:column;min-height:0}
+.pvp-lobby-summary h3{margin:0 0 8px;color:var(--pvp-lobby-gold);font-size:13px;font-weight:900}
+.pvp-lobby-summary dl{margin:0;flex:1;display:flex;flex-direction:column;justify-content:space-between;min-height:0}
+.pvp-lobby-summary dl>div,.pvp-lobby-room-stats>div{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.pvp-lobby-summary dl>div{min-height:25px;color:#aaadb3;font-size:12px}
+.pvp-lobby-summary dt,.pvp-lobby-summary dd,.pvp-lobby-room-stats dt,.pvp-lobby-room-stats dd{margin:0}
+.pvp-lobby-summary dd{color:#f4f5f8;font-weight:900;text-align:right}
+.pvp-lobby-summary .total{border-top:1px solid var(--pvp-lobby-line);border-bottom:1px solid var(--pvp-lobby-line);min-height:37px;margin:2px 0 6px}
+.pvp-lobby-footer{margin-top:auto;display:flex;align-items:center;gap:14px;padding-top:14px;min-height:53px}
+.pvp-lobby-status{min-width:0;color:#9ca1aa;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.pvp-lobby-room-panel{padding:22px 23px 20px;display:flex;flex-direction:column}
+.pvp-lobby-room-panel>h2{font-size:17px;margin:0 0 16px;font-weight:900}
+.pvp-lobby-label{font-size:12px;font-weight:900;margin:0 0 7px}
+.pvp-lobby-name{position:relative}
+.pvp-lobby-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.pvp-lobby-divider{height:1px;background:var(--pvp-lobby-line);margin:17px 0 16px}
+.pvp-lobby-room-stats{display:grid;gap:6px;margin:0 0 10px}
+.pvp-lobby-room-stats>div{font-size:12px;color:#a9adb4}
+.pvp-lobby-room-stats dd{color:#f5f6f8;font-weight:900}
+.pvp-lobby-seats{display:grid;gap:6px}
+.pvp-lobby-seat{position:relative;min-height:64px;border-radius:10px;background:linear-gradient(90deg,rgba(4,9,15,.70),rgba(8,14,23,.84));padding:8px 44px 8px 12px}
+.pvp-lobby-seat-top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.pvp-lobby-seat-label{display:block;color:var(--pvp-lobby-gold);font-size:12px;font-weight:900}
+.pvp-lobby-seat strong{display:block;color:#f5f6f8;font-size:15px;line-height:1.15;margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pvp-lobby-seat-state{margin-top:4px;color:#cbd0d6;font-size:11px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pvp-lobby-seat-state.online:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;background:var(--pvp-lobby-success);box-shadow:0 0 9px rgba(32,223,111,.32)}
+.pvp-lobby-ready-chip{padding:3px 6px;border-radius:999px;background:#27313a;color:#a8b5c0;font-size:8px;font-weight:950;white-space:nowrap}
+.pvp-lobby-ready-chip.ready{background:#173d29;color:#70e9a8;border:1px solid #2f7450}
+/* Player 1-only pre-match Kick, copied from the v3.51 final visual treatment. */
+.pvp-lobby-kick{position:absolute;right:9px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:28px;height:28px;min-width:28px;min-height:28px;padding:0;border:1px solid #a82b40;border-radius:50%;background:#5f1320;color:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.pvp-lobby-kick img{display:block;width:16px;height:16px;object-fit:contain;pointer-events:none}
+.pvp-lobby-kick:hover,.pvp-lobby-kick:focus-visible{background:#7b192a;border-color:#d94a61;outline:2px solid rgba(217,74,97,.35);outline-offset:2px}
+.pvp-lobby-message{min-height:28px;padding:8px 0 0;color:#d7b96c;font-size:11px;line-height:1.3;text-align:center;overflow:hidden}
+.pvp-lobby-message.error{color:#ff989e}
+.pvp-lobby-room-footer{display:grid;gap:8px;margin-top:auto;padding-top:10px}
+.pvp-lobby-room-footer .pvp-lobby-btn{width:100%}
+.pvp-lobby-version{margin-top:8px;text-align:right;color:#697887;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Compact no-scroll tiers. Geometry stays the v3.51 layout; only spacing/sizing compresses. */
+@media(max-height:700px){
+  .pvp-lobby-page{padding:12px 20px 12px;grid-template-rows:48px minmax(0,1fr);gap:8px}
+  .pvp-lobby-topbar{min-height:48px;grid-template-columns:164px minmax(220px,1fr) auto;gap:14px}
+  .pvp-lobby-logo{width:158px;height:46px}
+  .pvp-lobby-heading{padding-top:5px}.pvp-lobby-heading h1{font-size:16px}.pvp-lobby-heading p{margin-top:5px;font-size:11px}
+  .pvp-lobby-layout{grid-template-columns:minmax(0,1fr) clamp(238px,27vw,330px);gap:10px}
+  .pvp-lobby-deck-panel{padding:14px 16px 12px}.pvp-lobby-room-panel{padding:14px 15px 12px}
+  .pvp-lobby-picker{grid-template-columns:118px minmax(0,1fr);gap:9px}.pvp-lobby-picker>label{font-size:14px}.pvp-lobby select{height:38px;font-size:13px}.pvp-lobby input{height:38px;font-size:13px}
+  .pvp-lobby-title{margin-top:11px;gap:11px}.pvp-lobby-title h2{font-size:22px}.pvp-lobby-title p{font-size:11px}
+  .pvp-lobby-showcase{margin-top:9px;grid-template-columns:minmax(0,1fr) minmax(136px,205px);gap:9px}
+  .pvp-lobby-hero{padding:7px 7px 6px;border-radius:10px}.pvp-lobby-hero small{font-size:12px;padding-top:6px}
+  .pvp-lobby-rank{margin-top:9px;grid-template-columns:28px 68px 28px}.pvp-lobby-rank button{height:27px}.pvp-lobby-summary{padding:9px 11px 8px}.pvp-lobby-summary h3{font-size:11px;margin-bottom:5px}.pvp-lobby-summary dl>div{min-height:20px;font-size:10px}.pvp-lobby-summary .total{min-height:29px;margin:1px 0 3px}
+  .pvp-lobby-footer{padding-top:8px;min-height:42px}.pvp-lobby-compact{min-height:34px;padding:0 16px;font-size:10px}.pvp-lobby-status{font-size:10px}
+  .pvp-lobby-room-panel>h2{font-size:15px;margin-bottom:10px}.pvp-lobby-label{font-size:10px;margin-bottom:5px}.pvp-lobby-actions{margin-top:7px}.pvp-lobby-btn{min-height:34px;font-size:11px}.pvp-lobby-divider{margin:10px 0}.pvp-lobby-room-stats{gap:3px;margin-bottom:6px}.pvp-lobby-room-stats>div{font-size:10px}.pvp-lobby-seats{gap:4px}.pvp-lobby-seat{min-height:52px;padding:6px 40px 6px 9px}.pvp-lobby-seat-label{font-size:10px}.pvp-lobby-seat strong{font-size:12px}.pvp-lobby-seat-state{font-size:9px;margin-top:2px}.pvp-lobby-ready-chip{font-size:7px;padding:2px 5px}.pvp-lobby-kick{width:25px;height:25px;min-width:25px;min-height:25px}.pvp-lobby-kick img{width:14px;height:14px}.pvp-lobby-message{min-height:21px;padding-top:5px;font-size:9px}.pvp-lobby-room-footer{gap:5px;padding-top:6px}.pvp-lobby-version{font-size:7px;margin-top:5px}
+}
+
+@media(max-height:520px){
+  .pvp-lobby-page{padding:6px 9px 7px;grid-template-rows:38px minmax(0,1fr);gap:5px}
+  .pvp-lobby-topbar{min-height:38px;grid-template-columns:132px minmax(150px,1fr) auto;gap:9px;align-items:center}
+  .pvp-lobby-logo{width:126px;height:36px}.pvp-lobby-heading{padding:0}.pvp-lobby-heading h1{font-size:13px}.pvp-lobby-heading p{display:none}.pvp-lobby-connect{margin:0;font-size:9px;gap:5px}
+  .pvp-lobby-layout{grid-template-columns:minmax(0,1fr) clamp(205px,27vw,270px);gap:6px}
+  .pvp-lobby-panel{border-radius:11px}
+  .pvp-lobby-deck-panel{padding:8px 10px 7px}.pvp-lobby-room-panel{padding:8px 10px 7px}
+  .pvp-lobby-picker{grid-template-columns:88px minmax(0,1fr);gap:6px}.pvp-lobby-picker>label{font-size:11px}.pvp-lobby select{height:29px;border-radius:8px;padding:0 31px 0 9px;font-size:10px}.pvp-lobby-select-wrap:after{right:8px;width:12px;height:12px;background-size:12px 12px}
+  .pvp-lobby-title{margin-top:6px;gap:7px}.pvp-lobby-title h2{font-size:16px}.pvp-lobby-title p{font-size:8px}
+  .pvp-lobby-showcase{margin-top:5px;grid-template-columns:minmax(0,1fr) minmax(108px,155px);gap:6px}
+  .pvp-lobby-formation{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr) 20px minmax(0,1fr);gap:3px}.pvp-lobby-swap{width:20px;height:20px;min-width:20px;min-height:20px}
+  .pvp-lobby-hero{padding:4px 4px 4px;border-radius:7px}.pvp-lobby-hero img{border-radius:5px}.pvp-lobby-hero small{font-size:9px;padding-top:3px}
+  .pvp-lobby-rank{margin-top:5px;grid-template-columns:22px 54px 22px;border-radius:5px}.pvp-lobby-rank button{height:22px;font-size:16px}.pvp-lobby-rank strong{font-size:7px}
+  .pvp-lobby-summary{border-radius:8px;padding:6px 8px 5px}.pvp-lobby-summary h3{font-size:8px;margin-bottom:2px}.pvp-lobby-summary dl>div{min-height:15px;font-size:7.8px;gap:6px}.pvp-lobby-summary .total{min-height:21px;margin:0 0 1px}
+  .pvp-lobby-footer{padding-top:4px;min-height:30px;gap:7px}.pvp-lobby-compact{min-height:27px;border-radius:7px;padding:0 11px;font-size:8px}.pvp-lobby-status{font-size:7px}
+  .pvp-lobby-room-panel>h2{font-size:12px;margin-bottom:5px}.pvp-lobby-label{font-size:8px;margin-bottom:3px}.pvp-lobby input{height:29px;border-radius:8px;padding:0 8px;font-size:10px}.pvp-lobby-actions{margin-top:4px}.pvp-lobby-btn{min-height:28px;border-radius:7px;font-size:8px;padding:0 9px}.pvp-lobby-divider{margin:5px 0}.pvp-lobby-room-stats{gap:1px;margin-bottom:3px}.pvp-lobby-room-stats>div{font-size:7.5px}.pvp-lobby-seats{gap:3px}.pvp-lobby-seat{min-height:39px;border-radius:7px;padding:4px 32px 4px 7px}.pvp-lobby-seat-top{gap:4px}.pvp-lobby-seat-label{font-size:8px}.pvp-lobby-seat strong{font-size:9px;margin-top:1px}.pvp-lobby-seat-state{font-size:7px;margin-top:1px}.pvp-lobby-ready-chip{font-size:6px;padding:1px 4px}.pvp-lobby-kick{right:5px;width:21px;height:21px;min-width:21px;min-height:21px}.pvp-lobby-kick img{width:12px;height:12px}.pvp-lobby-message{min-height:13px;padding-top:2px;font-size:7px;line-height:1.15}.pvp-lobby-room-footer{gap:3px;padding-top:3px}.pvp-lobby-version{font-size:5.8px;margin-top:3px}
+}
+
+/* Coin flow: PvP-only shell over v6.80 presentation/audio. */
+.pvp-lobby-coin{position:fixed;inset:0;z-index:9100;display:none;place-items:center;padding:20px;background:rgba(2,8,14,.68);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.pvp-lobby-coin.open{display:grid}
+.pvp-lobby-coin-card{width:min(480px,92vw);border:1px solid rgba(243,207,88,.45);border-radius:15px;background:linear-gradient(180deg,#0a1c2b,#050f18);box-shadow:0 24px 75px rgba(0,0,0,.6);padding:20px;text-align:center;color:#eef5fb}
+.pvp-lobby-coin-card h2{margin:0 0 6px;color:#f3cf58;font-size:18px}.pvp-lobby-coin-card p{margin:6px 0 15px;color:#9eb1c1;font-size:11px}
+.pvp-lobby-coin-actions{display:flex;justify-content:center;gap:12px}.pvp-lobby-coin-actions button{width:132px;border:1px solid #45627a;border-radius:10px;background:#0c2233;color:#fff;padding:11px;cursor:pointer;font-weight:950}.pvp-lobby-coin-actions img{display:block;width:66px;height:66px;object-fit:contain;margin:0 auto 8px}.pvp-lobby-coin-actions button:hover{border-color:#c4a540;filter:brightness(1.12)}
+.pvp-lobby-coin-result{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.pvp-lobby-coin-result div{border:1px solid rgba(104,139,166,.25);border-radius:9px;padding:9px}.pvp-lobby-coin-result span{display:block;color:#8298aa;font-size:9px;margin-bottom:5px}.pvp-lobby-coin-result strong{display:block;font-size:13px}.pvp-lobby-coin-winner{font-size:14px;font-weight:950;color:#ffe780}.pvp-lobby-coin-start{height:38px;width:100%;border:1px solid #b79531;border-radius:9px;background:linear-gradient(180deg,#745b16,#493708);color:#ffe889;font-weight:950;cursor:pointer}.pvp-lobby-coin-start:disabled{opacity:.4}
+
+/* Battlefield PvP chrome: keep v6.80 positions, add only connection + identity + timer. */
+html.pvp-fresh-app .hand-title,html.pvp-fresh-app .player-name{display:flex;align-items:center;gap:6px;max-width:min(360px,42vw);width:auto!important;text-align:left!important;text-transform:none;letter-spacing:.025em}
+.pvp-lobby-identity-text{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pvp-lobby-signal{flex:0 0 29px;width:29px;height:16px;padding:2px 3px;display:flex;align-items:flex-end;justify-content:center;gap:2px;border-radius:5px;background:rgba(1,7,12,.64);border:1px solid rgba(113,142,165,.26)}
+.pvp-lobby-signal span{width:3px;border-radius:1px;background:#657685}.pvp-lobby-signal span:nth-child(1){height:3px}.pvp-lobby-signal span:nth-child(2){height:6px}.pvp-lobby-signal span:nth-child(3){height:9px}.pvp-lobby-signal span:nth-child(4){height:12px}.pvp-lobby-signal.excellent span,.pvp-lobby-signal.good span{background:#59d78c}.pvp-lobby-signal.fair span:nth-child(-n+3){background:#e7c653}.pvp-lobby-signal.fair span:nth-child(4){background:#455764}.pvp-lobby-signal.poor span:nth-child(-n+2){background:#df686f}.pvp-lobby-signal.poor span:nth-child(n+3){background:#455764}.pvp-lobby-signal.offline span,.pvp-lobby-signal.connecting span{background:#596975}
+html.pvp-fresh-app .bottom-actions{grid-template-columns:1fr 1fr 1fr!important}
+.pvp-lobby-match-timer{height:22px;min-height:22px;border:1px solid #334b61;border-radius:6px;background:#08141e;color:#dbe7f1;display:flex;align-items:center;justify-content:center;font-size:6.6px;font-weight:950;letter-spacing:.08em;white-space:nowrap}
+
+/* The virtual-landscape root becomes the containing block for all fixed PvP/game overlays. */
+html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot .pvp-lobby,
+html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot .pvp-lobby-coin,
+html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot .ob-vsai-choice-overlay,
+html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot .ob-played-detail-overlay,
+html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot .ob-card-review-overlay{width:100%!important;height:100%!important}
+
+@media(max-width:760px){html.pvp-fresh-app .hand-title,html.pvp-fresh-app .player-name{max-width:58vw}}
+
+/* v3.72 PvP identity lock: two lines, no extra labels. */
+html.pvp-fresh-app .hand-title,
+html.pvp-fresh-app .player-name{
+  display:flex!important;
+  gap:5px!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:none!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  text-transform:none!important;
+  letter-spacing:.025em!important;
+  overflow:visible!important;
+  white-space:normal!important;
+}
+html.pvp-fresh-app .hand-title{align-items:flex-start!important;justify-content:flex-start!important}
+html.pvp-fresh-app .player-name{align-items:flex-end!important;justify-content:flex-end!important}
+.pvp-lobby-identity-box{
+  min-width:0;max-width:220px;
+  padding:3px 8px 4px;
+  border:1px solid rgba(244,211,94,.34);
+  border-radius:8px;
+  background:rgba(3,10,17,.88);
+  color:#dbe7f1;
+  display:flex;flex-direction:column;gap:1px;
+  line-height:1.05;
+  box-shadow:0 2px 7px rgba(0,0,0,.22);
+}
+.pvp-lobby-id-player,.pvp-lobby-id-deck{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pvp-lobby-id-player{font-size:9px;font-weight:950;color:#f1f5f9}
+.pvp-lobby-id-deck{font-size:7.5px;font-weight:800;color:#b8c5d0}
+html.pvp-fresh-app .hand-title>.pvp-lobby-signal{align-self:flex-start!important;margin-top:2px!important;order:2}
+html.pvp-fresh-app .hand-title>.pvp-lobby-identity-box{order:1}
+html.pvp-fresh-app .player-name>.pvp-lobby-signal{align-self:flex-end!important;margin-bottom:2px!important;order:1}
+html.pvp-fresh-app .player-name>.pvp-lobby-identity-box{order:2}
+
+/* Opponent resources are the positional 180-degree mirror: labels sit above cards. */
+html.pvp-fresh-app .opponent-field .zone-label{top:1px!important;bottom:auto!important}
+
+/* Touch phone/tablet keeps one landscape battlefield geometry.
+   Keep the v6.80 Mana Pool rail fixed (never chase the Hand vertically).
+   The Hand only reserves horizontal room for the Shard Pool and identity. */
+html.pvp-mobile-device.pvp-fresh-app .bottom-hud .hand.bottom{
+  left:var(--pvp-lobby-hand-left,22%)!important;
+  right:var(--pvp-lobby-hand-right,180px)!important;
+  width:auto!important;
+  transform:none!important;
+}
+html.pvp-mobile-device.pvp-fresh-app .pvp-lobby-identity-box{max-width:180px;padding:3px 6px 4px}
+html.pvp-mobile-device.pvp-fresh-app .pvp-lobby-id-player{font-size:8px}
+html.pvp-mobile-device.pvp-fresh-app .pvp-lobby-id-deck{font-size:7px}
+html.pvp-mobile-device.pvp-fresh-app .pvp-lobby-signal{flex-basis:26px;width:26px;height:15px}
+
+/* PvP first-paint gate: never expose placeholder/empty battlefield during coin/opening hydration. */
+body.pvp-booting .app{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+.pvp-lobby-coin{z-index:30050!important;background:#02080e!important}
+body.pvp-coin-gate .pvp-lobby-coin{display:grid!important}
+
+/* Portable Active Card is height-constrained so the complete card remains visible on short tablet/phone landscapes. */
+html.pvp-mobile-device.pvp-fresh-app .active-card-stage{align-items:stretch!important;min-height:0!important;overflow:hidden!important}
+html.pvp-mobile-device.pvp-fresh-app .active-card-visual{
+  width:auto!important;height:100%!important;max-width:100%!important;max-height:100%!important;
+  aspect-ratio:5/7!important;flex:0 1 auto!important;margin:0 auto!important;
+}
+html.pvp-mobile-device.pvp-fresh-app .active-card-visual img{
+  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;
+}
+
+
+/* v3.72 spectator: same authoritative battlefield, strictly read-only. */
+body.pvp-spectator-mode .phase-actions,
+body.pvp-spectator-mode .card-actions,
+body.pvp-spectator-mode .ob-pay-button,
+body.pvp-spectator-mode .ob-swap-button,
+body.pvp-spectator-mode .ob-magic-scope-done{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+body.pvp-spectator-mode .hero-card.ob-selectable,
+body.pvp-spectator-mode .hand-card.ob-selectable,
+body.pvp-spectator-mode .mana-card.ob-selectable{
+  cursor:default!important;
+}
+body.pvp-spectator-mode .bottom-actions .danger{
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+
+/* ---- Fresh build additions: hidden top-actions, room id, hidden stats ---- */
+.pvp-lobby-top-actions{display:flex;gap:10px;align-items:center;margin-left:auto}
+.pvp-lobby-top-actions[hidden]{display:none!important}
+.pvp-lobby-room-id{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 4px}
+.pvp-lobby-room-copy{display:flex;flex-direction:column;gap:2px}
+.pvp-lobby-room-copy span{font-size:10px;letter-spacing:.12em;color:var(--pvp-lobby-muted)}
+.pvp-lobby-room-copy strong{font-size:15px;color:var(--pvp-lobby-gold)}
+.pvp-lobby-room-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.pvp-lobby-room-stats[hidden]{display:none!important}
+.pvp-lobby-room-stats>div{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.04);border:1px solid var(--pvp-lobby-line);border-radius:8px;padding:6px 10px}
+.pvp-lobby-room-stats dt{font-size:10px;letter-spacing:.1em;color:var(--pvp-lobby-muted)}
+.pvp-lobby-room-stats dd{margin:0;font-weight:800;font-size:13px}
+
+/* ---- Hero progression modal (v3.51 lobby spec) ---- */
+.pvp-progression-modal{position:fixed;inset:0;z-index:9500;display:flex;align-items:center;justify-content:center;background:rgba(2,6,10,.72);backdrop-filter:blur(3px)}
+.pvp-progression-card{background:linear-gradient(180deg,#101c2a,#0a1420);border:1px solid rgba(241,212,129,.25);border-radius:16px;padding:22px 26px;max-width:min(92vw,640px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.pvp-progression-card header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.pvp-progression-card header span{font-size:11px;letter-spacing:.14em;color:var(--pvp-lobby-gold)}
+.pvp-progression-card header h2{margin:4px 0 0;font-size:22px;color:#fff}
+.pvp-progression-close{background:rgba(255,255,255,.08);border:1px solid var(--pvp-lobby-line-strong);color:#fff;border-radius:8px;padding:8px 14px;font-weight:700}
+.pvp-progression-close:hover{background:rgba(255,255,255,.14)}
+.pvp-progression-row{display:flex;align-items:center;justify-content:center;gap:10px}
+.pvp-progression-hero{display:flex;flex-direction:column;align-items:center;gap:8px}
+.pvp-progression-hero.current .pvp-progression-static-card{outline:2px solid var(--pvp-lobby-gold)}
+.pvp-progression-static-card{background:none;border:0;padding:0;cursor:pointer;border-radius:10px;overflow:hidden}
+.pvp-progression-static-card img{display:block;width:120px;height:auto;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.45)}
+.pvp-progression-static-card:hover img{transform:scale(1.04)}
+.pvp-progression-arrow{font-size:24px;color:var(--pvp-lobby-gold)}
+.pvp-progression-card>p{text-align:center;color:var(--pvp-lobby-muted);font-size:12px;margin:14px 0 0}
+.pvp-progression-large{display:block;max-width:min(78vw,340px);height:auto;margin:0 auto;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.pvp-lobby-hero[data-pvp-progression]{cursor:pointer}
+.pvp-lobby-hero[data-pvp-progression]:hover img{filter:brightness(1.12)}

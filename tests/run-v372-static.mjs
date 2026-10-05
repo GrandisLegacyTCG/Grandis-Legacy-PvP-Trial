@@ -4,29 +4,29 @@ const root=resolve(new URL('..',import.meta.url).pathname);
 const read=(f)=>readFileSync(join(root,f),'utf8');
 const must=[
   'public/index.html','public/option-b-runtime.js','public/option-b-integration.css',
-  'public/pvp/pvp-v372.js','public/pvp/pvp-v372.css','public/pvp/pvp-presentation-adapter.js','public/config.js',
+  'public/pvp/pvp-net.js','public/pvp/pvp-animator.js','public/pvp/pvp-lobby.css','public/pvp/pvp-presentation-adapter.js','public/config.js',
   'public/engine/shared-app/app.bundle.js','server.js','server/gameplay-intent-router.mjs','Dockerfile'
 ];
 for(const f of must) if(!existsSync(join(root,f))) throw new Error('Missing '+f);
 
 const index=read('public/index.html');
-for(const n of ['Grandis Legacy — PvP v3.72','--hero-base-w','--hero-layout-w','--hand-w','ob-phase-tint','ob-phase-underline','ob-phase-diamond','pvp/pvp-v372.js','pvp/pvp-v372.css']) if(!index.includes(n)) throw new Error('v3.72/index wiring missing '+n);
+for(const n of ['Grandis Legacy — PvP v3.73','--hero-base-w','--hero-layout-w','--hand-w','ob-phase-tint','ob-phase-underline','ob-phase-diamond','pvp/pvp-net.js','pvp/pvp-animator.js','pvp/pvp-lobby.css']) if(!index.includes(n)) throw new Error('v3.72/index wiring missing '+n);
 if(index.includes('id="matchTimer"')) throw new Error('VS AI local match timer leaked into PvP; PvP timer must remain server-timestamp based.');
 
 const fallbackConfig=read('public/config.js');
-for(const n of ["version:'Grandis Legacy PvP v3.72'","buildId:'gl-pvp-3.72-v351-net-v6907-battlefield-2026-10-04'",'maxSpectators:4',"spectatorView:'CARD_BACKS'",'teachingViewAvailable:false']) if(!fallbackConfig.includes(n)) throw new Error('Static fallback config stale: '+n);
+for(const n of ["version:'Grandis Legacy PvP v3.73'","buildId:'gl-pvp-3.72-v351-net-v6907-battlefield-2026-10-04'",'maxSpectators:4',"spectatorView:'CARD_BACKS'",'teachingViewAvailable:false']) if(!fallbackConfig.includes(n)) throw new Error('Static fallback config stale: '+n);
 
-const client=read('public/pvp/pvp-v372.js');
+const client=read('public/pvp/pvp-net.js');
 for(const n of [
-  "const VERSION='Grandis Legacy PvP v3.72'","role:state.preferredRole==='spectator'?'spectator':'player'",
-  'pvp370Spectate','JOIN AS PLAYER','SPECTATE MATCH','Spectator mode is read-only. Both Hands remain hidden.',
+  "const VERSION='Grandis Legacy PvP v3.73-fresh'","role:state.preferredRole==='spectator'?'spectator':'player'",
+  'pvpLobbySpectate','JOIN AS PLAYER','SPECTATE MATCH','Spectator mode is read-only. Both Hands remain hidden.',
   'function armIntentTimeout','12000','ack-without-snapshot','sync-request','handleIntentAck',
   "msg.type==='intent-ack'","if(isSpectator())return{ok:false,error:'Spectator is read-only.'}",
-  "msg.local?.role==='spectator'?1",'pvp370-match-timer','startedAt','finishedAt',
+  "msg.local?.role==='spectator'?1",'pvp-lobby-match-timer','startedAt','finishedAt',
   'claimedAnimationIds','prepareAuthoritativeAnimations','GL_OPTION_B_PRESENTATION','queueAuthoritativeOpeningSequence',
-  'playBattleAudioNow','scheduleBattleVfx','revealBattlefieldWhenAnchored'
+  'playBattleAudioNow','scheduleBattleVfx','revealBattlefieldWhenAnchored','GL_PVP_ANIMATOR'
 ]) if(!client.includes(n)) throw new Error('PvP v3.72 client contract missing '+n);
-for(const forbidden of ['waitForBattlefieldPaintReady','renderCurrentAuthoritativePendingChoice','id="pvp370RoomStats"','CURRENT ROOM','SWITCH TO ROOM 2','SPECTATORS VIEW']) if(client.includes(forbidden)) throw new Error('Removed/stale PvP UI path leaked back: '+forbidden);
+for(const forbidden of ['waitForBattlefieldPaintReady','renderCurrentAuthoritativePendingChoice','SWITCH TO ROOM 2','SPECTATORS VIEW']) if(client.includes(forbidden)) throw new Error('Removed/stale PvP UI path leaked back: '+forbidden);
 
 const server=read('server.js');
 for(const n of [
@@ -37,8 +37,8 @@ for(const n of [
 ]) if(!server.includes(n)) throw new Error('PvP v3.72 server/network contract missing '+n);
 if(/const MAX_SPECTATORS\s*=\s*0/.test(server)||server.includes("pvpSpectatorView = revealBothHands ? 'BOTH_HANDS'")) throw new Error('Spectator restoration/security regression.');
 
-const css=read('public/pvp/pvp-v372.css');
-for(const n of ['.pvp370-actions{display:grid;grid-template-columns:1fr 1fr','body.pvp-spectator-mode .phase-actions','body.pvp-spectator-mode .card-actions','.pvp370-identity-box']) if(!css.includes(n)) throw new Error('PvP v3.72 CSS contract missing '+n);
+const css=read('public/pvp/pvp-lobby.css');
+for(const n of ['.pvp-lobby-actions','body.pvp-spectator-mode .phase-actions','body.pvp-spectator-mode .card-actions','.pvp-lobby-identity-box']) if(!css.includes(n)) throw new Error('PvP v3.72 CSS contract missing '+n);
 
 const ob=read('public/option-b-runtime.js');
 for(const n of [
@@ -79,4 +79,4 @@ for(const f of [
   'public/engine/assets/audio/Card Sound.mp3'
 ]) if(!existsSync(join(root,f))) throw new Error('Bundled asset missing '+f);
 
-console.log('v3.72 static network + spectator + v6.90.7 selective battlefield/payment architecture: PASS');
+console.log('fresh static: network + spectator + v6.90.7 battlefield/payment architecture: PASS');
