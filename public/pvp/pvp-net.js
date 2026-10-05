@@ -1,7 +1,7 @@
-/* Grandis Legacy PvP v3.73.2 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
+/* Grandis Legacy PvP v3.73.3 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.73.2';
+const VERSION='Grandis Legacy PvP v3.73.3';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
@@ -246,9 +246,19 @@ function renderCoin(){
     return;
   }
   const f=m.openingCoinFlip||m.coinFlip||{},winner=clean(f.firstPlayerName||m.firstPlayerName||'Player',25),key=[f.choice,f.outcome,f.firstSeat].join('|');
-  if(state.lastCoinKey!==key){state.lastCoinKey=key;try{B()?.playOpeningCoinSound?.()}catch{}}
-  body.innerHTML='<div class="pvp-lobby-coin-winner">'+esc(winner)+' wins the coin flip</div><div class="pvp-lobby-coin-result"><img class="pvp-lobby-coin-face" src="'+coinFace(f.outcome||'HEADS')+'" alt="'+esc(f.outcome||'Coin')+'"><div><span>Player 2 called</span><strong>'+esc(f.choice||'—')+'</strong></div><div><span>Coin result</span><strong>'+esc(f.outcome||'—')+'</strong></div></div><p>'+esc(winner)+' will take the first turn.</p>'+(isSpectator()?'<p>Waiting for a player to start the battlefield…</p>':'<button class="pvp-lobby-coin-start" type="button">START GAME</button>');
-  const start=body.querySelector('.pvp-lobby-coin-start');if(start)start.onclick=()=>{start.disabled=true;document.body.classList.add('pvp-booting','pvp-coin-gate');send('confirm-coin-flip',{})};
+  const outcome=String(f.outcome||'HEADS'),choice=String(f.choice||'—');
+  const finalHtml=()=>'<div class="pvp-lobby-coin-winner">'+esc(winner)+' wins the coin flip</div><div class="pvp-lobby-coin-result"><img class="pvp-lobby-coin-face" src="'+coinFace(outcome)+'" alt="'+esc(outcome)+'"><div><span>Player 2 called</span><strong>'+esc(choice)+'</strong></div><div><span>Coin result</span><strong>'+esc(outcome)+'</strong></div></div><p>'+esc(winner)+' will take the first turn.</p>'+(isSpectator()?'<p>Waiting for a player to start the battlefield…</p>':'<button class="pvp-lobby-coin-start" type="button">START GAME</button>');
+  const wireStart=()=>{const start=body.querySelector('.pvp-lobby-coin-start');if(start)start.onclick=()=>{start.disabled=true;document.body.classList.add('pvp-booting','pvp-coin-gate');send('confirm-coin-flip',{})}};
+  if(state.lastCoinKey!==key){
+    // Phase 1: coin spins, winner stays hidden until it lands.
+    state.lastCoinKey=key;state.coinSpinKey=key;
+    try{B()?.playOpeningCoinSound?.()}catch{}
+    body.innerHTML='<div class="pvp-lobby-coin-flipping"><div class="pvp-lobby-coin-spinner"><img src="'+coinFace('HEADS')+'" alt="Heads"><img src="'+coinFace('TAILS')+'" alt="Tails"></div><p>Flipping the coin…</p></div>';
+    setTimeout(()=>{if(state.coinSpinKey!==key)return;state.coinSpinKey=null;body.innerHTML=finalHtml();wireStart()},1400);
+    return;
+  }
+  if(state.coinSpinKey===key)return; // spin in progress — don't disturb it
+  body.innerHTML=finalHtml();wireStart();
 }
 
 function runtimeBoardHydrated(){const s=B()?.getSnapshot?.()?.appState;if(!s)return false;const ph=s.playerHeroes||{},ah=s.aiHeroes||{};const heroes=['LEFT','CENTER','RIGHT'].every(l=>!!ph?.[l]?.card_id)&&['LEFT','CENTER','RIGHT'].every(l=>!!ah?.[l]?.card_id);const decks=Math.max(Number(s.playerDeckCount||0),Array.isArray(s.playerDeck)?s.playerDeck.length:0)>0&&Math.max(Number(s.aiDeckCount||0),Array.isArray(s.aiDeck)?s.aiDeck.length:0)>0;const shards=(Array.isArray(s.playerManaDeck)&&s.playerManaDeck.length>0)&&(Array.isArray(s.aiManaDeck)&&s.aiManaDeck.length>0);return !!(heroes&&decks&&shards)}
@@ -340,7 +350,11 @@ function scheduleBattleVfx(events){
 function revealBattlefieldWhenAnchored(callback){
   const token=++state.battlefieldRevealToken;
   forceBattlefieldRender();
-  const done=()=>{if(token!==state.battlefieldRevealToken)return;document.body.classList.remove('pvp-booting','pvp-coin-gate');renderCoin();ensureBattlefieldChrome();if(typeof callback==='function')callback()};
+  const done=()=>{if(token!==state.battlefieldRevealToken)return;document.body.classList.remove('pvp-booting','pvp-coin-gate');renderCoin();ensureBattlefieldChrome();if(typeof callback==='function'){
+    // PvP fresh: biarkan board kosong terlihat sejenak ("from 0") sebelum kartu
+    // di-deal satu-satu, agar sensasi draw kelihatan jelas.
+    setTimeout(()=>{if(token!==state.battlefieldRevealToken)return;callback()},380);
+  }};
   if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(done));else setTimeout(done,32);
 }
 function importBoard(msg){
