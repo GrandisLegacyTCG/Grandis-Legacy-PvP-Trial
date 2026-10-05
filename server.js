@@ -1961,6 +1961,17 @@ wss.on('connection', (ws, req) => {
         case 'shared-board': throw new Error('Client board publish is disabled. This build is server-authoritative; send runtime-intent instead.');
         case 'runtime-intent': {
           const intentStartedAt = Date.now();
+          // PvP fresh: client sends executeConfirmedSurrender via runtime-intent.
+          // The shared engine's executeConfirmedSurrender is the VS AI local version;
+          // route to the server surrender handler instead (same as 'surrender-match').
+          if (String(msg.intent || '') === 'executeConfirmedSurrender') {
+            try {
+              applyServerSurrender(room, client);
+            } catch (err) {
+              send(client.ws, { type: 'notice', kind: 'error', message: String(err?.message || err) });
+            }
+            break;
+          }
           let routedMessage = msg;
           if (String(msg.intent || '') === 'selectOpponentManaChoiceHandle') {
             const requestedRevision = Number((msg.args || [])[1]);

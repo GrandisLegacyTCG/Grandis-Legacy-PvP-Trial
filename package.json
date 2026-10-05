@@ -1,6 +1,6 @@
 {
   "name": "grandis-legacy-pvp-fresh",
-  "version": "3.73.1",
+  "version": "3.73.2",
   "private": true,
   "type": "module",
   "description": "Grandis Legacy PvP v3.72 — PvP v3.70 gameplay authority with PvP v3.51-style network recovery/spectators and selectively ported VS AI v6.90.7 battlefield + center decision UX.",
