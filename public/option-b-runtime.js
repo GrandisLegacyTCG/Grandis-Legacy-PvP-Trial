@@ -1863,19 +1863,40 @@ function playPrimedOpeningSequence(){
   const data=primedOpeningData;primedOpeningData=null;
   if(!data)return false;
   const{draw1,shard1,draw2,shard2}=data;
-  // Urutan: draw1 (6x hand), shard1 (3x shard), draw2 (1x hand untuk starter),
-  // shard2 (1x shard untuk starter). Semua di-animasi.
-  const stages=[['draw',draw1],['shard',shard1],['draw',draw2],['shard',shard2]];
+  // v3.51 logic: strict sequential, grouping by group_id (fallback: one-by-one).
+  // Urutan: draw1 → shard1 → draw2 → shard2. Tiap event animasi satu-satu,
+  // SELESAI baru lanjut. Nggak ada overlap.
+  const v351Group=(events)=>{
+    const groups=[],byKey={};
+    (events||[]).forEach(e=>{
+      const key=(e?.reason==='OPENING_HAND'&&e?.group_id)?String(e.group_id):('SEQ:'+String(e?.id||Math.random()));
+      if(!byKey[key]){byKey[key]=[];groups.push(byKey[key]);}
+      byKey[key].push(e);
+    });
+    return groups;
+  };
   const clearGroup=(kind,group)=>{
     if(kind==='draw'){group.forEach(e=>obHiddenCommittedDrawSlots[e?.side==='AI'?'AI':'PLAYER'].delete(Number(e?.hand_index)));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st())}
     else{const s=st();group.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return;const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const uid=pool[pi]?.uid;if(uid!=null)obOpeningHiddenShardUids.delete(side+'|'+String(uid))});manaRenderKey='';renderMana()}
   };
-  const motionParts=(kind,group)=>group.map(e=>{const side=e?.side==='AI'?'AI':'PLAYER';if(kind==='draw'){const hand=side==='PLAYER'?playerHandTrack:oppHandTrack,to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]'),from=zoneEl(side,'Main Deck');return{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to}}const pi=Number(e?.pool_index);let uid=null;if(Number.isInteger(pi)&&pi>=0){const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);uid=pool[pi]?.uid;}const host=side==='PLAYER'?playerManaHost:aiManaHost,to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(uid))+'"]'):null,from=zoneEl(side,'Shard Deck');return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}});
+  const motionParts=(kind,group)=>group.map(e=>{const side=e?.side==='AI'?'AI':'PLAYER';if(kind==='draw'){const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;let to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]');if(!to)to=hand;const from=zoneEl(side,'Main Deck');return{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to}}const pi=Number(e?.pool_index);let uid=null;if(Number.isInteger(pi)&&pi>=0){const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);uid=pool[pi]?.uid;}const host=side==='PLAYER'?playerManaHost:aiManaHost;let to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(uid))+'"]'):null;if(!to)to=host;const from=zoneEl(side,'Shard Deck');return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}});
   const finishAll=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;setTimeout(renderNow,0)};
-  const runStages=(si=0)=>{if(si>=stages.length){finishAll();return}const [kind,events]=stages[si];if(!events.length){runStages(si+1);return}const groups=authoritativeOpeningGroups(events);let gi=0;const next=()=>{if(gi>=groups.length){runStages(si+1);return}const group=groups[gi++],parts=motionParts(kind,group);runPairMotions(parts,160,()=>{clearGroup(kind,group);requestAnimationFrame(()=>setTimeout(next,15))})};next()};
-  const required=[...draw1.map(e=>['draw',e]),...shard1.map(e=>['shard',e])];let attempts=0;
-  const startWhenReady=()=>{renderNow();const ready=required.every(([kind,e])=>authoritativeOpeningAnchorReady(kind,e));if(ready){console.log('[PvP fresh] opening deal starting, cards:',required.length);runStages(0);return}if(++attempts>=40){console.warn('[PvP fresh] opening presentation anchors timed out; revealing authoritative state without blocking play.');finishAll();return}setTimeout(()=>requestAnimationFrame(startWhenReady),50)};
-  requestAnimationFrame(()=>requestAnimationFrame(startWhenReady));return true;
+  // v3.51 sequential chain: draw1 → shard1 → draw2 → shard2
+  const runGroups=(kind,groups,gi,onComplete)=>{
+    if(gi>=groups.length){onComplete();return}
+    const group=groups[gi],parts=motionParts(kind,group);
+    runPairMotions(parts,220,()=>{
+      clearGroup(kind,group);
+      requestAnimationFrame(()=>setTimeout(()=>runGroups(kind,groups,gi+1,onComplete),50));
+    });
+  };
+  const runDraw1=()=>{const g=v351Group(draw1);if(!g.length)return runShard1();runGroups('draw',g,0,runShard1)};
+  const runShard1=()=>{const g=v351Group(shard1);if(!g.length)return runDraw2();runGroups('shard',g,0,runDraw2)};
+  const runDraw2=()=>{const g=v351Group(draw2);if(!g.length)return runShard2();runGroups('draw',g,0,runShard2)};
+  const runShard2=()=>{const g=v351Group(shard2);if(!g.length)return finishAll();runGroups('shard',g,0,finishAll)};
+  console.log('[PvP fresh] opening deal starting (v3.51 sequential)');
+  runDraw1();
+  return true;
 }
 function queueAuthoritativeOpeningSequenceVisible(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
   // Backward-compatible wrapper: prime + play immediately (board already visible).
