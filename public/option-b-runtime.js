@@ -1835,11 +1835,13 @@ function authoritativeOpeningAnchorReady(kind,event){
 let primedOpeningData=null;
 function primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
   const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean),draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean),shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
-  const allDraw=[...draw1,...draw2],allShard=[...shard1,...shard2];if(!allDraw.length&&!allShard.length)return false;
+  // PvP fresh: hanya opening cards (draw1/shard1) yang di-prime. Post-opening
+  // (draw2/shard2) tidak punya slot anchor sehingga menggagalkan anchor check.
+  const allDraw=[...draw1],allShard=[...shard1];if(!allDraw.length&&!allShard.length)return false;
   openingPresentationActive=true;presentationPrimed=false;
   allDraw.forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e?.side==='AI'?'AI':'PLAYER',idx=Number(e?.hand_index);if(Number.isInteger(idx)&&idx>=0)obHiddenCommittedDrawSlots[side].set(idx,String(e?.id||('opening-'+side+'-'+idx)))});
   allShard.forEach(e=>{if(e?.uid!=null)obOpeningHiddenShardUids.add((e?.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid))});
-  primedOpeningData={draw1,shard1,draw2,shard2};
+  primedOpeningData={draw1,shard1,draw2:[],shard2:[]};
   console.log('[PvP fresh] opening primed: hidden',allDraw.length,'draws +',allShard.length,'shards from 0');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
