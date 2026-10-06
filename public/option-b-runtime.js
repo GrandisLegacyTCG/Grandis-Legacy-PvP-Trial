@@ -1820,13 +1820,21 @@ function authoritativeOpeningGroups(events){
   const by=new Map();(events||[]).forEach((e,i)=>{const k=Number.isFinite(Number(e?.group_index))?Number(e.group_index):i;if(!by.has(k))by.set(k,[]);by.get(k).push(e)});return [...by.keys()].sort((a,b)=>a-b).map(k=>by.get(k));
 }
 function authoritativeOpeningAnchorReady(kind,event){
-  const side=event?.side==='AI'?'AI':'PLAYER';let from=null,to=null;
+  const side=event?.side==='AI'?'AI':'PLAYER';let from=null,to=null,dbg={kind,side,hand_index:event?.hand_index,pool_index:event?.pool_index};
   if(kind==='draw'){
     const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;from=zoneEl(side,'Main Deck');to=hand?.querySelector('.hand-card[data-hand-index="'+Number(event?.hand_index)+'"]');
+    dbg.handNull=!hand;dbg.toNull=!to;
   }else{
-    const host=side==='PLAYER'?playerManaHost:aiManaHost;from=zoneEl(side,'Shard Deck');to=host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(event?.uid||''))+'"]');
+    // Shard entries tidak punya uid (face-safety). Bridge via pool_index.
+    const pi=Number(event?.pool_index);let uid=null;
+    if(Number.isInteger(pi)&&pi>=0){const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);uid=pool[pi]?.uid;}
+    const host=side==='PLAYER'?playerManaHost:aiManaHost;from=zoneEl(side,'Shard Deck');to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(uid))+'"]'):null;
+    dbg.uid=uid;dbg.hostNull=!host;dbg.toNull=!to;
   }
-  const fr=(from?.querySelector?.('.zoneCard')||from)?.getBoundingClientRect?.(),tr=to?.getBoundingClientRect?.();return !!(fr&&tr&&fr.width>1&&fr.height>1&&tr.width>1&&tr.height>1);
+  const fr=(from?.querySelector?.('.zoneCard')||from)?.getBoundingClientRect?.(),tr=to?.getBoundingClientRect?.();
+  const ok=!!(fr&&tr&&fr.width>1&&fr.height>1&&tr.width>1&&tr.height>1);
+  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP fresh] anchor FAIL:',JSON.stringify(dbg));}
+  return ok;
 }
 /* PvP fresh: opening sequence di-split jadi dua fase agar kartu TIDAK PERNAH
  * terlihat full sebelum animasi. primeAuthoritativeOpeningSequence() menyembunyikan
@@ -1855,14 +1863,14 @@ function playPrimedOpeningSequence(){
   const data=primedOpeningData;primedOpeningData=null;
   if(!data)return false;
   const{draw1,shard1,draw2,shard2}=data;
-  // Hanya draw1/shard1 yang di-animasi (punya anchor). draw2/shard2 sudah di-hide
-  // di prime, di-reveal via finishAll setelah animasi selesai.
-  const stages=[['draw',draw1],['shard',shard1]];
+  // Urutan: draw1 (6x hand), shard1 (3x shard), draw2 (1x hand untuk starter),
+  // shard2 (1x shard untuk starter). Semua di-animasi.
+  const stages=[['draw',draw1],['shard',shard1],['draw',draw2],['shard',shard2]];
   const clearGroup=(kind,group)=>{
     if(kind==='draw'){group.forEach(e=>obHiddenCommittedDrawSlots[e?.side==='AI'?'AI':'PLAYER'].delete(Number(e?.hand_index)));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st())}
     else{const s=st();group.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return;const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const uid=pool[pi]?.uid;if(uid!=null)obOpeningHiddenShardUids.delete(side+'|'+String(uid))});manaRenderKey='';renderMana()}
   };
-  const motionParts=(kind,group)=>group.map(e=>{const side=e?.side==='AI'?'AI':'PLAYER';if(kind==='draw'){const hand=side==='PLAYER'?playerHandTrack:oppHandTrack,to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]'),from=zoneEl(side,'Main Deck');return{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to}}const host=side==='PLAYER'?playerManaHost:aiManaHost,to=host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(e?.uid||''))+'"]'),from=zoneEl(side,'Shard Deck');return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}});
+  const motionParts=(kind,group)=>group.map(e=>{const side=e?.side==='AI'?'AI':'PLAYER';if(kind==='draw'){const hand=side==='PLAYER'?playerHandTrack:oppHandTrack,to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]'),from=zoneEl(side,'Main Deck');return{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to}}const pi=Number(e?.pool_index);let uid=null;if(Number.isInteger(pi)&&pi>=0){const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);uid=pool[pi]?.uid;}const host=side==='PLAYER'?playerManaHost:aiManaHost,to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(uid))+'"]'):null,from=zoneEl(side,'Shard Deck');return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}});
   const finishAll=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;setTimeout(renderNow,0)};
   const runStages=(si=0)=>{if(si>=stages.length){finishAll();return}const [kind,events]=stages[si];if(!events.length){runStages(si+1);return}const groups=authoritativeOpeningGroups(events);let gi=0;const next=()=>{if(gi>=groups.length){runStages(si+1);return}const group=groups[gi++],parts=motionParts(kind,group);runPairMotions(parts,160,()=>{clearGroup(kind,group);requestAnimationFrame(()=>setTimeout(next,15))})};next()};
   const required=[...draw1.map(e=>['draw',e]),...shard1.map(e=>['shard',e])];let attempts=0;
