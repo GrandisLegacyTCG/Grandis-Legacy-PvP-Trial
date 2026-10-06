@@ -1842,70 +1842,81 @@ function authoritativeOpeningAnchorReady(kind,event){
  * di-reveal. playPrimedOpeningSequence() menganimasikan reveal kartu satu per satu —
  * dipanggil SESUDAH board di-reveal. */
 let primedOpeningData=null;
-function primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
+// v3.51 pattern: HIDE dulu (synchronous, sebelum board direveal), terus SINGLE CALL animasi.
+// hideAuthoritativeOpeningCards: sembunyikan SEMUA kartu opening. Dipanggil sekali dari pvp-net.js.
+function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
   const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean),draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean),shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
-  // Opsi 2: battlefield KOSONG. Hide semua opening cards (draw1+shard1).
-  // draw2/shard2 (starter) juga di-hide, di-animasi setelahnya.
   const allDraw=[...draw1,...draw2],allShard=[...shard1,...shard2];
-  if(!allDraw.length&&!allShard.length){openingPresentationActive=false;presentationPrimed=true;return false;}
+  if(!allDraw.length&&!allShard.length){return false;}
   openingPresentationActive=true;presentationPrimed=false;
   allDraw.forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e?.side==='AI'?'AI':'PLAYER',idx=Number(e?.hand_index);if(Number.isInteger(idx)&&idx>=0)obHiddenCommittedDrawSlots[side].set(idx,String(e?.id||('opening-'+side+'-'+idx)))});
   const s=st();allShard.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return;const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const sh=pool[pi];if(sh?.uid!=null)obOpeningHiddenShardUids.add(side+'|'+String(sh.uid))});
-  primedOpeningData={draw1,shard1,draw2,shard2};
-  console.log('[PvP fresh] opening primed: hidden',allDraw.length,'draws +',allShard.length,'shards (from blank)');
+  console.log('[PvP fresh] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
-let openingPlayInProgress=false;
-function playPrimedOpeningSequence(){
-  if(openingPlayInProgress)return false; // Sudah jalan, jangan double
-  const data=primedOpeningData;primedOpeningData=null;
-  if(!data){return false;}
-  openingPlayInProgress=true;
-  const{draw1,shard1,draw2,shard2}=data;
-  // Opsi 2: dari KOSONG, animasi satu-satu berurutan.
-  // draw1 (6 hand) → shard1 (3 shard) → draw2 (1 hand starter) → shard2 (1 shard starter).
-  const clearOne=(kind,e)=>{
-    if(kind==='draw'){obHiddenCommittedDrawSlots[e?.side==='AI'?'AI':'PLAYER'].delete(Number(e?.hand_index));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());}
-    else{const s=st(),side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(Number.isInteger(pi)&&pi>=0){const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const uid=pool[pi]?.uid;if(uid!=null)obOpeningHiddenShardUids.delete(side+'|'+String(uid));}manaRenderKey='';renderMana();}
-  };
-  const motionOne=(kind,e)=>{
-    const side=e?.side==='AI'?'AI':'PLAYER';
-    if(kind==='draw'){
+// v3.51 pattern: SINGLE CALL animasi opening. Kartu SUDAH di-hide via hideAuthoritativeOpeningCards.
+// Chain via onComplete: draw1 → shard1 → draw2 → shard2. Tiap stage nunggu sebelumnya selesai.
+function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
+  const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean),draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean),shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
+  if(!draw1.length&&!shard1.length&&!draw2.length&&!shard2.length){openingPresentationActive=false;presentationPrimed=true;return false;}
+  openingPresentationActive=true;
+  const shardUidFor=e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return null;const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);return pool[pi]?.uid!=null?String(pool[pi].uid):null};
+  // v3.51 chain: draw1 → shard1 → draw2 → shard2. Dipisah per fase.
+  // Fase 1 (opening, kedua pemain): 6 draw + 3 shard
+  // Fase 2 (starter, hanya 1st turn): 1 draw + 1 shard
+  const animateDraws=(list,done)=>{
+    let i=0;
+    const next=()=>{
+      if(i>=list.length){done();return;}
+      const e=list[i++],side=e?.side==='AI'?'AI':'PLAYER';
       const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;
-      let to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]');
-      if(!to)to=hand;
+      const to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]')||hand;
       const from=zoneEl(side,'Main Deck');
-      return{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to,event:e};
-    }else{
-      const pi=Number(e?.pool_index);let uid=null;
-      if(Number.isInteger(pi)&&pi>=0){const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);uid=pool[pi]?.uid;}
+      runPairMotions([{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to}],180,()=>{
+        obHiddenCommittedDrawSlots[side].delete(Number(e?.hand_index));
+        handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());
+        setTimeout(next,40);
+      });
+    };
+    next();
+  };
+  const animateShards=(list,done)=>{
+    let i=0;
+    const next=()=>{
+      if(i>=list.length){done();return;}
+      const e=list[i++],side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);
       const host=side==='PLAYER'?playerManaHost:aiManaHost;
-      let to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(uid))+'"]'):null;
-      if(!to)to=host;
+      const to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(uid)+'"]'):host;
       const from=zoneEl(side,'Shard Deck');
-      return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to,event:e};
-    }
+      runPairMotions([{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}],180,()=>{
+        if(uid)obOpeningHiddenShardUids.delete(side+'|'+uid);
+        manaRenderKey='';renderMana();
+        setTimeout(next,40);
+      });
+    };
+    next();
   };
-  const finishAll=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;openingPlayInProgress=false;setTimeout(renderNow,0);};
-  // Animasi satu-satu: tiap event terbang, SELESAI baru lanjut ke event berikutnya.
-  const runList=(kind,list,idx,onComplete)=>{
-    if(idx>=list.length){onComplete();return;}
-    const e=list[idx],part=motionOne(kind,e);
-    let doneCalled=false; // Guard: done() cuma boleh jalan sekali per kartu
-    const done=()=>{if(doneCalled)return;doneCalled=true;clearOne(kind,e);setTimeout(()=>runList(kind,list,idx+1,onComplete),80);};
-    if(!flyBetween(part.src,part.from,part.to,260,done,true))done();
+  const finishAll=()=>{
+    obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();
+    handRenderKey='';opponentHandRenderKey='';manaRenderKey='';
+    renderHand(st());renderOpponentHand(st());renderMana();
+    previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;
+    setTimeout(renderNow,0);
   };
-  console.log('[PvP fresh] opening from blank: animating one by one');
-  runList('draw',draw1,0,()=>runList('shard',shard1,0,()=>runList('draw',draw2,0,()=>runList('shard',shard2,0,finishAll))));
+  console.log('[PvP fresh] opening (v3.51): draw1['+draw1.length+'] → shard1['+shard1.length+'] → draw2['+draw2.length+'] → shard2['+shard2.length+']');
+  // Chain: draw1 → shard1 → draw2 → shard2
+  animateDraws(draw1,()=>animateShards(shard1,()=>animateDraws(draw2,()=>animateShards(shard2,finishAll))));
   return true;
 }
+// DEPRECATED: prime/play split dihapus, ikut pola v3.51 (hide + single call).
+function primeAuthoritativeOpeningSequence(){return hideAuthoritativeOpeningCards.apply(null,arguments);}
+function playPrimedOpeningSequence(){return false;}
 function queueAuthoritativeOpeningSequenceVisible(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
-  // Backward-compatible wrapper: prime + play immediately (board already visible).
-  if(!primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries))return false;
-  return playPrimedOpeningSequence();
+  // v3.51 pattern: single call langsung ke queueAuthoritativeOpeningSequence.
+  return queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries);
 }
-window.GL_OPTION_B_PRESENTATION={queueReservedMainDeckDraw:queueOptionBReservedDraw,queueAuthoritativeOpeningSequence:queueAuthoritativeOpeningSequenceVisible,primeAuthoritativeOpeningSequence:primeAuthoritativeOpeningSequence,playPrimedOpeningSequence:playPrimedOpeningSequence,isBusy:optionBPresentationBusy};
+window.GL_OPTION_B_PRESENTATION={queueReservedMainDeckDraw:queueOptionBReservedDraw,queueAuthoritativeOpeningSequence:queueAuthoritativeOpeningSequenceVisible,primeAuthoritativeOpeningSequence:primeAuthoritativeOpeningSequence,playPrimedOpeningSequence:playPrimedOpeningSequence,hideAuthoritativeOpeningCards:hideAuthoritativeOpeningCards,isBusy:optionBPresentationBusy};
 
 function initStableBattlefieldReviewGestures(){
   if(!BF||BF.dataset.obStableReviewBound==='1')return;BF.dataset.obStableReviewBound='1';

@@ -378,7 +378,7 @@ function revealBattlefieldWhenAnchored(callback){
   const done=()=>{if(token!==state.battlefieldRevealToken)return;document.body.classList.remove('pvp-coin-gate');renderCoin();ensureBattlefieldChrome();if(typeof callback==='function'){
     // PvP fresh: biarkan board kosong terlihat sejenak ("from 0") sebelum kartu
     // di-deal satu-satu, agar sensasi draw kelihatan jelas.
-    setTimeout(()=>{if(token!==state.battlefieldRevealToken)return;callback()},380);
+    setTimeout(()=>{if(token!==state.battlefieldRevealToken)return;callback()},150);
   }};
   if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(done));else setTimeout(done,32);
 }
@@ -399,31 +399,49 @@ function importBoard(msg){
     if(ok===false||!runtimeBoardHydrated())throw new Error('Viewer-safe board import did not hydrate the local shared runtime.');
     state.lastAppliedRevision=rev;state.lastAppliedStatus=status;
     const ob=window.GL_OPTION_B_PRESENTATION;
-    const openingPlan=(animationPlans||[]).find(p=>p?.event?.kind==='opening_sequence');
+    const openingPlans=(animationPlans||[]).filter(p=>p?.event?.kind==='opening_sequence');
+    const openingPlan=openingPlans[0];
     // PvP fresh: first reveal dideteksi dari transisi state (coin-result -> started),
     // bukan dari class DOM lokal pvp-booting (hanya ada di browser yang klik START GAME).
     const firstStartedReveal=status==='started'&&['coin-flip','coin-result','setup'].includes(state.lastAppliedStatus);
-    // PvP fresh: opening draw harus dari 0. Prime (sembunyikan kartu) SEBELUM board
-    // di-reveal, agar user tidak pernah melihat full hand sebelum animasi.
-    let openingPrimed=false;
-    if(firstStartedReveal&&openingPlan?.captured&&ob?.primeAuthoritativeOpeningSequence){
-      openingPrimed=!!ob.primeAuthoritativeOpeningSequence(
-        openingPlan.captured.opening_draw_events||[],
-        openingPlan.captured.starting_shard_entries||[],
-        openingPlan.captured.post_opening_draw_events||[],
-        openingPlan.captured.post_opening_shard_entries||[]
+    // v3.51 pattern: HIDE dulu (sebelum board direveal), terus SINGLE CALL animasi.
+    // Nggak ada prime/play split. Hide synchronous di sini, animasi dipanggil sekali di playImportedPresentation.
+    let openingCaptured=null;
+    if(firstStartedReveal&&openingPlan?.captured&&ob?.hideAuthoritativeOpeningCards){
+      openingCaptured={
+        opening_draw_events:openingPlan.captured.opening_draw_events||[],
+        starting_shard_entries:openingPlan.captured.starting_shard_entries||[],
+        post_opening_draw_events:openingPlan.captured.post_opening_draw_events||[],
+        post_opening_shard_entries:openingPlan.captured.post_opening_shard_entries||[]
+      };
+      // Hide SEMUA kartu opening SEBELUM board direveal (from blank).
+      ob.hideAuthoritativeOpeningCards(
+        openingCaptured.opening_draw_events,
+        openingCaptured.starting_shard_entries,
+        openingCaptured.post_opening_draw_events,
+        openingCaptured.post_opening_shard_entries
       );
-      if(openingPrimed){
-        // Tandai sudah di-prime agar playAuthoritativeAnimations melewatinya.
-        openingPlan.primed=true;
-        const id=openingPlan.rawId||openingPlan.event?.id;
+      // Mark SEMUA opening plan sebagai seen (bukan cuma yang pertama) biar nggak double.
+      openingPlans.forEach(p=>{
+        const id=p?.rawId||p?.event?.id;
         if(id){delete state.claimedAnimationIds[id];state.seenAnimationIds[id]=true;}
-      }
+      });
     }
     const playImportedPresentation=()=>{
-      if(!openingPrimed)forceBattlefieldRender();
-      playAuthoritativeAnimations(animationPlans);
-      if(openingPrimed&&ob?.playPrimedOpeningSequence)ob.playPrimedOpeningSequence();
+      if(!openingCaptured)forceBattlefieldRender();
+      // v3.51: opening di-handle via single call, bukan via playAuthoritativeAnimations.
+      // Filter opening_sequence dari plans biar nggak double.
+      const nonOpeningPlans=(animationPlans||[]).filter(p=>p?.event?.kind!=='opening_sequence');
+      playAuthoritativeAnimations(nonOpeningPlans);
+      // SINGLE CALL: animasi opening (kartu sudah di-hide di atas).
+      if(openingCaptured&&ob?.queueAuthoritativeOpeningSequence){
+        ob.queueAuthoritativeOpeningSequence(
+          openingCaptured.opening_draw_events,
+          openingCaptured.starting_shard_entries,
+          openingCaptured.post_opening_draw_events,
+          openingCaptured.post_opening_shard_entries
+        );
+      }
       ensureBattlefieldChrome();
       if(battleFeedback.length)scheduleBattleVfx(battleFeedback);
     };
