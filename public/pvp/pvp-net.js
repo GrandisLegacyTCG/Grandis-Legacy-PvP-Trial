@@ -1,7 +1,7 @@
-/* Grandis Legacy PvP v3.73.8 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
+/* Grandis Legacy PvP v3.73.9 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.73.8';
+const VERSION='Grandis Legacy PvP v3.73.9';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
@@ -238,10 +238,11 @@ function renderCoin(){
   if(!open)return;
   window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);document.body.classList.remove('pvp-lobby-mode');
   if(m.status==='coin-flip'){
+    const coinBtns='<div class="pvp-lobby-coin-actions"><button data-coin="HEADS" disabled><img src="'+coinFace('HEADS')+'"><strong>HEADS</strong></button><button data-coin="TAILS" disabled><img src="'+coinFace('TAILS')+'"><strong>TAILS</strong></button></div>';
     if(Number(l?.seat)===2){
       body.innerHTML='<p>You call the opening coin. Choose Heads or Tails.</p><div class="pvp-lobby-coin-actions"><button data-coin="HEADS"><img src="'+coinFace('HEADS')+'"><strong>HEADS</strong></button><button data-coin="TAILS"><img src="'+coinFace('TAILS')+'"><strong>TAILS</strong></button></div>';
       body.querySelectorAll('[data-coin]').forEach(b=>b.onclick=()=>{b.disabled=true;send('choose-coin-flip',{choice:b.dataset.coin})});
-    }else body.innerHTML='<p>Waiting for '+esc(opponent()?.name||'Player 2')+' to choose Heads or Tails…</p>';
+    }else body.innerHTML='<p>'+esc(opponent()?.name||'Player 2')+' is choosing Heads or Tails…</p>'+coinBtns;
     return;
   }
   const f=m.openingCoinFlip||m.coinFlip||{},winner=clean(f.firstPlayerName||m.firstPlayerName||'Player',25),key=[f.choice,f.outcome,f.firstSeat].join('|');

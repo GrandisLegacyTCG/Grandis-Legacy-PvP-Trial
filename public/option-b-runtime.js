@@ -501,7 +501,8 @@ function runOpeningHandGroups(events,manaEvents){
 }
 function runOpeningShardGroups(events){
   const groups=[];for(let i=0;i<3;i++)groups.push((events||[]).filter(e=>Number(e.group_index)===i));let gi=0;
-  const next=()=>{if(gi>=groups.length){obOpeningHiddenShardUids.clear();manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(()=>{previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;E().beginOptionBFirstTurn?.(openingFirstSide);setTimeout(renderNow,0)},180));return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',host=side==='PLAYER'?playerManaHost:aiManaHost,to=host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(e.uid))+'"]'),from=zoneEl(side,'Shard Deck');parts.push({src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{group.forEach(e=>obOpeningHiddenShardUids.delete((e.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid)));manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(next,20))})};next();
+  const shardUidFor=e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return null;const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);return pool[pi]?.uid!=null?String(pool[pi].uid):null};
+  const next=()=>{if(gi>=groups.length){obOpeningHiddenShardUids.clear();manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(()=>{previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;E().beginOptionBFirstTurn?.(openingFirstSide);setTimeout(renderNow,0)},180));return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e),host=side==='PLAYER'?playerManaHost:aiManaHost,to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(uid)+'"]'):null,from=zoneEl(side,'Shard Deck');parts.push({src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{group.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);if(uid)obOpeningHiddenShardUids.delete(side+'|'+uid)});manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(next,20))})};next();
 }
 function visualStateOf(s){
   const hero={};for(const side of ['PLAYER','AI']){hero[side]={};for(const lane of laneOrder){const h=sideHeroes(s,side)?.[lane];hero[side][lane]={card_id:h?.card_id||'',image_id:heroImageId(h)||'',legacy:!!h?.legacy_mode,hp:Number(h?.hp||0),exp_cards:Array.isArray(h?.exp_cards)?h.exp_cards.slice():[]}}}
@@ -1840,7 +1841,9 @@ function primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntrie
   const allDraw=[...draw1],allShard=[...shard1];if(!allDraw.length&&!allShard.length)return false;
   openingPresentationActive=true;presentationPrimed=false;
   allDraw.forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e?.side==='AI'?'AI':'PLAYER',idx=Number(e?.hand_index);if(Number.isInteger(idx)&&idx>=0)obHiddenCommittedDrawSlots[side].set(idx,String(e?.id||('opening-'+side+'-'+idx)))});
-  allShard.forEach(e=>{if(e?.uid!=null)obOpeningHiddenShardUids.add((e?.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid))});
+  // Shard entries dari server tidak punya uid (face-safety). Bridge via pool_index
+  // ke physical pool untuk dapat uid, supaya logikanya sama kayak hand (hide by id).
+  const s=st();allShard.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return;const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const sh=pool[pi];if(sh?.uid!=null)obOpeningHiddenShardUids.add(side+'|'+String(sh.uid))});
   primedOpeningData={draw1,shard1,draw2:[],shard2:[]};
   console.log('[PvP fresh] opening primed: hidden',allDraw.length,'draws +',allShard.length,'shards from 0');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
