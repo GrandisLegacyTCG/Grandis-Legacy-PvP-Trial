@@ -510,7 +510,9 @@ function handleIntentAck(msg){
 function resolveIntentFromSnapshot(msg){
   const inflight=state.intentInFlight;if(!inflight){clearIntentTimeout();return}
   const rev=Number(msg.match?.serverBoardRevision||0),last=msg.match?.lastIntent||{};
+  console.log('[PvP DEBUG] snapshot received, rev:',rev,'| inflight:',inflight.name,'baseRev:',inflight.baseRevision,'| lastIntent:',last.intent);
   if(rev>inflight.baseRevision||last.clientActionId===inflight.clientActionId){
+    console.log('[PvP DEBUG] → intent ACKED:',inflight.name);
     state.intentInFlight=null;clearIntentTimers();state.messageError=false;
     if(state.message&&state.message.startsWith('Server response delayed.'))state.message='';
     pumpIntent();
@@ -518,15 +520,21 @@ function resolveIntentFromSnapshot(msg){
 }
 function sendIntent(name,args=[]){
   name=String(name||'');if(!name)return{ok:false,error:'Missing intent'};
-  if(isSpectator())return{ok:false,error:'Spectator is read-only.'};
-  if(state.awaitingResync)return{ok:false,error:'Waiting for authoritative resync.'};
+  console.log('[PvP DEBUG] sendIntent:',name,JSON.stringify(args));
+  if(isSpectator()){console.log('[PvP DEBUG] → rejected: spectator');return{ok:false,error:'Spectator is read-only.'};}
+  if(state.awaitingResync){console.log('[PvP DEBUG] → rejected: awaitingResync');return{ok:false,error:'Waiting for authoritative resync.'};}
   state.intentQueue.push({name,args:Array.isArray(args)?args:[],clientActionId:'a'+Date.now().toString(36)+'_'+(++state.actionSeq).toString(36)});
+  console.log('[PvP DEBUG] → queued, queue len:',state.intentQueue.length);
   pumpIntent();return{ok:true,queued:true};
 }
 function pumpIntent(){
-  if(state.intentInFlight||state.awaitingResync||!state.intentQueue.length||!state.connected||!activeMatch()||isSpectator())return;
+  if(state.intentInFlight||state.awaitingResync||!state.intentQueue.length||!state.connected||!activeMatch()||isSpectator()){
+    if(state.intentQueue.length)console.log('[PvP DEBUG] pumpIntent blocked:',{inFlight:!!state.intentInFlight,awaitingResync:state.awaitingResync,queueLen:state.intentQueue.length,connected:state.connected,activeMatch:activeMatch(),spectator:isSpectator()});
+    return;
+  }
   const item=state.intentQueue.shift();item.baseRevision=Number(match().serverBoardRevision||state.lastRevision||0);item.sentAt=Date.now();state.intentInFlight=item;
-  if(!send('runtime-intent',{intent:item.name,args:item.args,baseRevision:item.baseRevision,clientActionId:item.clientActionId})){state.intentInFlight=null;state.intentQueue.unshift(item);return}
+  console.log('[PvP DEBUG] → sending to server:',item.name,'baseRev:',item.baseRevision);
+  if(!send('runtime-intent',{intent:item.name,args:item.args,baseRevision:item.baseRevision,clientActionId:item.clientActionId})){console.log('[PvP DEBUG] → send FAILED (ws not open)');state.intentInFlight=null;state.intentQueue.unshift(item);return}
   armIntentTimeout();
 }
 function clearIntentQueue(){state.intentQueue.length=0;state.intentInFlight=null;state.awaitingResync=false;clearIntentTimers()}
