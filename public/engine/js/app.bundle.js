@@ -1808,6 +1808,7 @@
   }
   function shouldPromptManaPayment(state,side,c,cost){
     if(side!=='PLAYER'||Number(cost||0)<=0||!isSkillCard(c))return false;
+    if(isArrowBarrageCard(c))return false;
     return manaClassShardsInPool(state,side).length>0;
   }
   function spendManaPayment(state,side,c,cost,selectedClassUids,context){

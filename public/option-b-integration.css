@@ -1119,3 +1119,19 @@ body.ob-center-choice-active #sharedPreviewBox.previewing{opacity:0!important;po
 .battlefield.ob-focus-blind-mana .opponent-mana-pool{position:absolute!important}
 .ob-center-travel-clone{will-change:transform,opacity!important}
 .ob-flying-card{will-change:left,top,transform,opacity,width,height}
+
+/* PvP v3.73.20 FIX: Force payment modal to be visible and interactive */
+.ob-center-choice-stage.open .ob-center-choice-actions {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+.ob-center-choice-stage.open .ob-center-choice-actions.is-fading {
+  opacity: 1 !important;
+}
+.ob-center-choice-stage.open .ob-center-choice-copy.is-fading {
+  opacity: 1 !important;
+}
+.ob-center-choice-stage.open .ob-center-choice-card.is-clickable {
+  pointer-events: auto !important;
+}

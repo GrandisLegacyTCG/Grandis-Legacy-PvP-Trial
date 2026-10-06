@@ -74,7 +74,7 @@ function art(id){return id?'card-art/'+encodeURIComponent(id)+'.webp':'';}
 function shardArt(sh){if(!sh||sh.kind!=='CLASS')return 'assets/shards/Generic.webp';const n=String(sh.class_name||'').trim();return 'assets/shards/'+(n||'Generic')+'.webp';}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cloneLite(v){try{return JSON.parse(JSON.stringify(v))}catch{return null}}
-function intent(name,args=[]){const net=window.GL_PVP_NETWORK;const pvpMode=!!window.GL_PVP_CLIENT_MODE;console.log('[PvP DEBUG] intent:',name,JSON.stringify(args),'| pvpMode:',pvpMode,'| net:',!!net,'| sendIntent:',typeof net?.sendIntent);if(pvpMode&&net&&typeof net.sendIntent==='function'){const r=net.sendIntent(name,args);console.log('[PvP DEBUG] → sent via network:',JSON.stringify(r));setTimeout(renderNow,0);return r}console.log('[PvP DEBUG] → LOCAL engine (NOT PvP!)');const r=E().intent(name,args);setTimeout(renderNow,0);return r;}
+function intent(name,args=[]){const net=window.GL_PVP_NETWORK;if(window.GL_PVP_CLIENT_MODE&&net&&typeof net.sendIntent==='function'){const r=net.sendIntent(name,args);setTimeout(renderNow,0);return r}const r=E().intent(name,args);setTimeout(renderNow,0);return r;}
 function flash(msg){feedback.textContent=msg;feedback.classList.add('show');clearTimeout(flash.t);flash.t=setTimeout(()=>feedback.classList.remove('show'),700);}
 function sideHeroes(s,side){return side==='AI'?s.aiHeroes:s.playerHeroes;}
 function sideHand(s,side){return side==='AI'?s.aiHand:s.playerHand;}
@@ -1599,7 +1599,13 @@ function renderPay(s){
   payBtn.style.left=((pr.right-br.left)/currentUiScale()+8)+'px';
   payBtn.style.top=((pr.top+pr.height/2-br.top)/currentUiScale()-13)+'px';
   let ready=true;
-  if(p.type==='mana_shard_payment_choice')ready=!!E().getManaPlan()?.plan?.ok;
+  if(p.type==='mana_shard_payment_choice'){
+    if(window.GL_PVP_CLIENT_MODE){
+      ready=true;
+    }else{
+      ready=!!E().getManaPlan()?.plan?.ok;
+    }
+  }
   else if(p.type==='response_payment_choice')ready=responsePaymentReady(s,p);
   payBtn.disabled=!ready;
   payBtn.title=ready?'Pay selected Mana':'Select a valid Mana payment first';
