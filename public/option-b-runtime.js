@@ -1844,6 +1844,7 @@ function authoritativeOpeningAnchorReady(kind,event){
 let primedOpeningData=null;
 // v3.51 pattern: HIDE dulu (synchronous, sebelum board direveal), terus SINGLE CALL animasi.
 // hideAuthoritativeOpeningCards: sembunyikan SEMUA kartu opening. Dipanggil sekali dari pvp-net.js.
+let syntheticOpeningDraw2=[];
 function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
   const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean),draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean),shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
   const allDraw=[...draw1,...draw2],allShard=[...shard1,...shard2];
@@ -1851,6 +1852,17 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
   openingPresentationActive=true;presentationPrimed=false;
   allDraw.forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e?.side==='AI'?'AI':'PLAYER',idx=Number(e?.hand_index);if(Number.isInteger(idx)&&idx>=0)obHiddenCommittedDrawSlots[side].set(idx,String(e?.id||('opening-'+side+'-'+idx)))});
   const s=st();allShard.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return;const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const sh=pool[pi];if(sh?.uid!=null)obOpeningHiddenShardUids.add(side+'|'+String(sh.uid))});
+  // Fix draw2: kalau server nggak kirim event tapi hand ada 7 kartu, synthesize hide untuk index 6+.
+  syntheticOpeningDraw2=[];
+  for(const side of ['PLAYER','AI']){
+    const hand=side==='PLAYER'?(s?.playerHand||[]):(s?.aiHand||[]);
+    const hiddenCount=[...obHiddenCommittedDrawSlots[side].keys()].length;
+    for(let idx=hiddenCount;idx<hand.length;idx++){
+      obHiddenCommittedDrawSlots[side].set(idx,'synthetic-draw2-'+side+'-'+idx);
+      syntheticOpeningDraw2.push({side,hand_index:idx,id:'synthetic-draw2-'+side+'-'+idx});
+    }
+  }
+  if(syntheticOpeningDraw2.length)console.log('[PvP fresh] synthesized draw2:',syntheticOpeningDraw2.length,'events');
   console.log('[PvP fresh] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
@@ -1858,44 +1870,83 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
 // v3.51 pattern: SINGLE CALL animasi opening. Kartu SUDAH di-hide via hideAuthoritativeOpeningCards.
 // Chain via onComplete: draw1 → shard1 → draw2 → shard2. Tiap stage nunggu sebelumnya selesai.
 function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
-  const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean),draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean),shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
+  const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean);
+  let draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean);
+  const shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
+  // Pakai synthetic draw2 kalau server nggak kirim event.
+  if(!draw2.length&&syntheticOpeningDraw2.length)draw2=syntheticOpeningDraw2.map(cloneLite);
+  syntheticOpeningDraw2=[];
   if(!draw1.length&&!shard1.length&&!draw2.length&&!shard2.length){openingPresentationActive=false;presentationPrimed=true;return false;}
   openingPresentationActive=true;
   const shardUidFor=e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return null;const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);return pool[pi]?.uid!=null?String(pool[pi].uid):null};
   // v3.51 chain: draw1 → shard1 → draw2 → shard2. Dipisah per fase.
   // Fase 1 (opening, kedua pemain): 6 draw + 3 shard
   // Fase 2 (starter, hanya 1st turn): 1 draw + 1 shard
-  const animateDraws=(list,done)=>{
-    let i=0;
-    const next=()=>{
-      if(i>=list.length){done();return;}
-      const e=list[i++],side=e?.side==='AI'?'AI':'PLAYER';
-      const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;
-      const to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]')||hand;
-      const from=zoneEl(side,'Main Deck');
-      runPairMotions([{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to}],180,()=>{
-        obHiddenCommittedDrawSlots[side].delete(Number(e?.hand_index));
+  // Draw BARENGAN: pair P1+P2 per hand_index, animasi paralel via runPairMotions.
+  const animateDrawsPaired=(list,done)=>{
+    // Group by hand_index: {0:[P1,P2], 1:[P1,P2], ...}
+    const byIdx={};
+    list.forEach(e=>{const idx=Number(e?.hand_index);if(!Number.isInteger(idx))return;if(!byIdx[idx])byIdx[idx]=[];byIdx[idx].push(e);});
+    const indices=Object.keys(byIdx).map(Number).sort((a,b)=>a-b);
+    let gi=0;
+    const nextGroup=()=>{
+      if(gi>=indices.length){done();return;}
+      const group=byIdx[indices[gi++]];
+      const parts=group.map(e=>{
+        const side=e?.side==='AI'?'AI':'PLAYER';
+        const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;
+        const to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]')||hand;
+        const from=zoneEl(side,'Main Deck');
+        return{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to,event:e};
+      });
+      runPairMotions(parts,180,()=>{
+        group.forEach(e=>{
+          const side=e?.side==='AI'?'AI':'PLAYER';
+          obHiddenCommittedDrawSlots[side].delete(Number(e?.hand_index));
+        });
         handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());
-        setTimeout(next,40);
+        setTimeout(nextGroup,40);
       });
     };
-    next();
+    nextGroup();
   };
   const animateShards=(list,done)=>{
-    let i=0;
-    const next=()=>{
-      if(i>=list.length){done();return;}
-      const e=list[i++],side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);
+    // Pair P1+P2 per pool_index, animasi paralel.
+    const byIdx={};
+    list.forEach(e=>{const idx=Number(e?.pool_index);if(!Number.isInteger(idx))return;if(!byIdx[idx])byIdx[idx]=[];byIdx[idx].push(e);});
+    const indices=Object.keys(byIdx).map(Number).sort((a,b)=>a-b);
+    // Fallback: kalau nggak ada pool_index, animasi sequential satu-satu.
+    const usePaired=indices.length>0;
+    let gi=0,si=0;
+    const nextGroup=()=>{
+      if(gi>=indices.length){done();return;}
+      const group=byIdx[indices[gi++]];
+      const parts=group.map(e=>{
+        const side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);
+        const host=side==='PLAYER'?playerManaHost:aiManaHost;
+        const to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(uid)+'"]'):host;
+        const from=zoneEl(side,'Shard Deck');
+        return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to,event:e,uid,side};
+      });
+      runPairMotions(parts,180,()=>{
+        parts.forEach(p=>{if(p.uid)obOpeningHiddenShardUids.delete(p.side+'|'+p.uid);});
+        manaRenderKey='';renderMana();
+        setTimeout(nextGroup,40);
+      });
+    };
+    const nextSingle=()=>{
+      if(si>=list.length){done();return;}
+      const e=list[si++],side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);
       const host=side==='PLAYER'?playerManaHost:aiManaHost;
       const to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(uid)+'"]'):host;
       const from=zoneEl(side,'Shard Deck');
       runPairMotions([{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}],180,()=>{
         if(uid)obOpeningHiddenShardUids.delete(side+'|'+uid);
         manaRenderKey='';renderMana();
-        setTimeout(next,40);
+        setTimeout(nextSingle,40);
       });
     };
-    next();
+    if(usePaired)nextGroup();else nextSingle();
   };
   const finishAll=()=>{
     obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();
@@ -1906,7 +1957,7 @@ function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntrie
   };
   console.log('[PvP fresh] opening (v3.51): draw1['+draw1.length+'] → shard1['+shard1.length+'] → draw2['+draw2.length+'] → shard2['+shard2.length+']');
   // Chain: draw1 → shard1 → draw2 → shard2
-  animateDraws(draw1,()=>animateShards(shard1,()=>animateDraws(draw2,()=>animateShards(shard2,finishAll))));
+  animateDrawsPaired(draw1,()=>animateShards(shard1,()=>animateDrawsPaired(draw2,()=>animateShards(shard2,finishAll))));
   return true;
 }
 // DEPRECATED: prime/play split dihapus, ikut pola v3.51 (hide + single call).
