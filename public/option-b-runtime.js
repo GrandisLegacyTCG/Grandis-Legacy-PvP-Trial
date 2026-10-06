@@ -1844,58 +1844,37 @@ function authoritativeOpeningAnchorReady(kind,event){
 let primedOpeningData=null;
 function primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
   const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean),draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean),shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
-  // PvP fresh: hide SEMUA kartu (draw1+draw2, shard1+shard2) dari awal supaya tidak
-  // bocor. Tapi yang di-animasi hanya draw1/shard1 (punya anchor valid). draw2/shard2
-  // di-reveal setelah animasi opening selesai.
-  const allDraw=[...draw1,...draw2],allShard=[...shard1,...shard2];if(!allDraw.length&&!allShard.length)return false;
+  // Simplified: opening (draw1+shard1) langsung muncul tanpa animasi (kayak v3.51).
+  // Hanya draw2/shard2 (starter bonus) yang di-hide dan di-animasi terbang.
+  if(!draw2.length&&!shard2.length){// Nggak ada starter bonus, langsung reveal semua
+    openingPresentationActive=false;presentationPrimed=true;return false;
+  }
   openingPresentationActive=true;presentationPrimed=false;
-  allDraw.forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e?.side==='AI'?'AI':'PLAYER',idx=Number(e?.hand_index);if(Number.isInteger(idx)&&idx>=0)obHiddenCommittedDrawSlots[side].set(idx,String(e?.id||('opening-'+side+'-'+idx)))});
-  // Shard entries dari server tidak punya uid (face-safety). Bridge via pool_index
-  // ke physical pool untuk dapat uid, supaya logikanya sama kayak hand (hide by id).
-  const s=st();allShard.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return;const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const sh=pool[pi];if(sh?.uid!=null)obOpeningHiddenShardUids.add(side+'|'+String(sh.uid))});
-  primedOpeningData={draw1,shard1,draw2,shard2};
-  console.log('[PvP fresh] opening primed: hidden',allDraw.length,'draws +',allShard.length,'shards from 0');
-  console.log('[PvP fresh] draw2 debug:',JSON.stringify(draw2.map(e=>({side:e?.side,hand_index:e?.hand_index,group_index:e?.group_index,reason:e?.reason}))));
+  // Hanya hide draw2/shard2 (starter). draw1/shard1 langsung visible.
+  draw2.forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e?.side==='AI'?'AI':'PLAYER',idx=Number(e?.hand_index);if(Number.isInteger(idx)&&idx>=0)obHiddenCommittedDrawSlots[side].set(idx,String(e?.id||('opening-'+side+'-'+idx)))});
+  const s=st();shard2.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return;const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const sh=pool[pi];if(sh?.uid!=null)obOpeningHiddenShardUids.add(side+'|'+String(sh.uid))});
+  primedOpeningData={draw2,shard2};
+  console.log('[PvP fresh] opening primed: hidden',draw2.length,'draws +',shard2.length,'shards (starter bonus only)');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
 function playPrimedOpeningSequence(){
   const data=primedOpeningData;primedOpeningData=null;
   if(!data)return false;
-  const{draw1,shard1,draw2,shard2}=data;
-  // v3.51 logic: strict sequential, grouping by group_id (fallback: one-by-one).
-  // Urutan: draw1 → shard1 → draw2 → shard2. Tiap event animasi satu-satu,
-  // SELESAI baru lanjut. Nggak ada overlap.
-  const v351Group=(events)=>{
-    const groups=[],byKey={};
-    (events||[]).forEach(e=>{
-      const key=(e?.reason==='OPENING_HAND'&&e?.group_id)?String(e.group_id):('SEQ:'+String(e?.id||Math.random()));
-      if(!byKey[key]){byKey[key]=[];groups.push(byKey[key]);}
-      byKey[key].push(e);
-    });
-    return groups;
-  };
+  const{draw2,shard2}=data;
+  // Simplified: hanya starter bonus (draw2+shard2) yang di-animasi.
+  // draw1/shard1 langsung visible tanpa animasi (kayak v3.51).
   const clearGroup=(kind,group)=>{
     if(kind==='draw'){group.forEach(e=>obHiddenCommittedDrawSlots[e?.side==='AI'?'AI':'PLAYER'].delete(Number(e?.hand_index)));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st())}
     else{const s=st();group.forEach(e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return;const pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);const uid=pool[pi]?.uid;if(uid!=null)obOpeningHiddenShardUids.delete(side+'|'+String(uid))});manaRenderKey='';renderMana()}
   };
   const motionParts=(kind,group)=>group.map(e=>{const side=e?.side==='AI'?'AI':'PLAYER';if(kind==='draw'){const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;let to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]');if(!to)to=hand;const from=zoneEl(side,'Main Deck');return{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to}}const pi=Number(e?.pool_index);let uid=null;if(Number.isInteger(pi)&&pi>=0){const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);uid=pool[pi]?.uid;}const host=side==='PLAYER'?playerManaHost:aiManaHost;let to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(uid))+'"]'):null;if(!to)to=host;const from=zoneEl(side,'Shard Deck');return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}});
   const finishAll=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;setTimeout(renderNow,0)};
-  // v3.51 sequential chain: draw1 → shard1 → draw2 → shard2
-  const runGroups=(kind,groups,gi,onComplete)=>{
-    if(gi>=groups.length){onComplete();return}
-    const group=groups[gi],parts=motionParts(kind,group);
-    runPairMotions(parts,220,()=>{
-      clearGroup(kind,group);
-      requestAnimationFrame(()=>setTimeout(()=>runGroups(kind,groups,gi+1,onComplete),50));
-    });
-  };
-  const runDraw1=()=>{const g=v351Group(draw1);if(!g.length)return runShard1();runGroups('draw',g,0,runShard1)};
-  const runShard1=()=>{const g=v351Group(shard1);if(!g.length)return runDraw2();runGroups('shard',g,0,runDraw2)};
-  const runDraw2=()=>{const g=v351Group(draw2);if(!g.length)return runShard2();runGroups('draw',g,0,runShard2)};
-  const runShard2=()=>{const g=v351Group(shard2);if(!g.length)return finishAll();runGroups('shard',g,0,finishAll)};
-  console.log('[PvP fresh] opening deal starting (v3.51 sequential)');
-  runDraw1();
+  // Urutan: draw2 (1 hand starter) → shard2 (1 shard starter). Satu-satu.
+  const runDraw2=()=>{if(!draw2.length)return runShard2();const parts=motionParts('draw',draw2);runPairMotions(parts,220,()=>{clearGroup('draw',draw2);requestAnimationFrame(()=>setTimeout(runShard2,100))})};
+  const runShard2=()=>{if(!shard2.length)return finishAll();const parts=motionParts('shard',shard2);runPairMotions(parts,220,()=>{clearGroup('shard',shard2);requestAnimationFrame(()=>setTimeout(finishAll,100))})};
+  console.log('[PvP fresh] starter bonus animation starting');
+  runDraw2();
   return true;
 }
 function queueAuthoritativeOpeningSequenceVisible(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
