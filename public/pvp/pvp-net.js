@@ -1,7 +1,7 @@
-/* Grandis Legacy PvP v3.73.7 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
+/* Grandis Legacy PvP v3.73.8 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.73.7';
+const VERSION='Grandis Legacy PvP v3.73.8';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
@@ -193,6 +193,7 @@ function renderLobby(){
   if(!$('pvpLobby'))return;
   const m=match(),spectator=isSpectator(),show=!activeMatch()||(spectator&&state.spectatorLobbyView);
   $('pvpLobby').classList.toggle('open',show);document.body.classList.toggle('pvp-lobby-mode',show);
+  document.body.classList.toggle('pvp-booting',show);
   document.body.classList.toggle('pvp-spectator-mode',spectator);
   if(show)window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(true);else window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);
   const connect=$('pvpLobbyConnect');if(connect){connect.className='pvp-lobby-connect '+(state.connected?'online':(state.ws&&state.ws.readyState===WebSocket.CONNECTING?'connecting':'offline'));connect.querySelector('span').textContent=statusText()}
@@ -251,15 +252,15 @@ function renderCoin(){
     if(match().status==='started'){
       // Match sudah di-start pemain lain; server akan reject confirm baru.
       // Langsung tutup modal saja.
-      document.body.classList.remove('pvp-booting','pvp-coin-gate');renderCoin();return;
+      document.body.classList.remove('pvp-coin-gate');renderCoin();return;
     }
     start.disabled=true;start.textContent='STARTING…';
-    document.body.classList.add('pvp-booting','pvp-coin-gate');
+    document.body.classList.add('pvp-coin-gate');
     console.log('[PvP fresh] sending confirm-coin-flip');
     if(!send('confirm-coin-flip',{})){
       console.warn('[PvP fresh] WebSocket not open; cannot send confirm-coin-flip');
       start.disabled=false;start.textContent='START GAME';
-      document.body.classList.remove('pvp-booting','pvp-coin-gate');
+      document.body.classList.remove('pvp-coin-gate');
       return;
     }
     // Anti-stuck: kalau server tidak merespon dalam 6 detik, aktifkan lagi tombolnya.
@@ -268,7 +269,7 @@ function renderCoin(){
       if(match().status!=='started'){
         console.warn('[PvP fresh] confirm-coin-flip timed out; re-enabling START GAME');
         start.disabled=false;start.textContent='START GAME';
-        document.body.classList.remove('pvp-booting','pvp-coin-gate');
+        document.body.classList.remove('pvp-coin-gate');
       }
     },6000);
   }};
@@ -373,7 +374,7 @@ function scheduleBattleVfx(events){
 function revealBattlefieldWhenAnchored(callback){
   const token=++state.battlefieldRevealToken;
   forceBattlefieldRender();
-  const done=()=>{if(token!==state.battlefieldRevealToken)return;document.body.classList.remove('pvp-booting','pvp-coin-gate');renderCoin();ensureBattlefieldChrome();if(typeof callback==='function'){
+  const done=()=>{if(token!==state.battlefieldRevealToken)return;document.body.classList.remove('pvp-coin-gate');renderCoin();ensureBattlefieldChrome();if(typeof callback==='function'){
     // PvP fresh: biarkan board kosong terlihat sejenak ("from 0") sebelum kartu
     // di-deal satu-satu, agar sensasi draw kelihatan jelas.
     setTimeout(()=>{if(token!==state.battlefieldRevealToken)return;callback()},380);
@@ -441,8 +442,9 @@ function handleSnapshot(msg){
   state.snapshot=msg;const l=msg.local||{},status=String(msg.match?.status||'');
   state.awaitingResync=false;clearIntentAckRefresh();
   if(status==='setup'){
-    state.lastAppliedRevision=-1;state.lastAppliedStatus='';state.seenAnimationIds=Object.create(null);state.claimedAnimationIds=Object.create(null);state.seenBattleAudioIds=Object.create(null);state.seenBattleVfxIds=Object.create(null);state.battleVfxPending=Object.create(null);document.body.classList.add('pvp-booting');
-  }else if(status==='coin-flip'||status==='coin-result')document.body.classList.add('pvp-booting','pvp-coin-gate');
+    state.lastAppliedRevision=-1;state.lastAppliedStatus='';state.seenAnimationIds=Object.create(null);state.claimedAnimationIds=Object.create(null);state.seenBattleAudioIds=Object.create(null);state.seenBattleVfxIds=Object.create(null);state.battleVfxPending=Object.create(null);
+  }else if(status==='coin-flip'||status==='coin-result')document.body.classList.add('pvp-coin-gate');
+  else document.body.classList.remove('pvp-coin-gate');
   if(l.role){state.preferredRole=l.role==='spectator'?'spectator':'player';saveStore(STORE.role,state.preferredRole)}
   if(l.role==='spectator'){state.seatToken='';saveStore(STORE.token,'')}
   if(l.seatToken){state.seatToken=l.seatToken;saveStore(STORE.token,state.seatToken)}
