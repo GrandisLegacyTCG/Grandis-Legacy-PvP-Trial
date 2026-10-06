@@ -14,11 +14,11 @@ for(const n of ['Grandis Legacy — PvP v3.73','--hero-base-w','--hero-layout-w'
 if(index.includes('id="matchTimer"')) throw new Error('VS AI local match timer leaked into PvP; PvP timer must remain server-timestamp based.');
 
 const fallbackConfig=read('public/config.js');
-for(const n of ["version:'Grandis Legacy PvP v3.73.4'","buildId:'gl-pvp-3.72-v351-net-v6907-battlefield-2026-10-04'",'maxSpectators:4',"spectatorView:'CARD_BACKS'",'teachingViewAvailable:false']) if(!fallbackConfig.includes(n)) throw new Error('Static fallback config stale: '+n);
+for(const n of ["version:'Grandis Legacy PvP v3.73.5'","buildId:'gl-pvp-3.72-v351-net-v6907-battlefield-2026-10-04'",'maxSpectators:4',"spectatorView:'CARD_BACKS'",'teachingViewAvailable:false']) if(!fallbackConfig.includes(n)) throw new Error('Static fallback config stale: '+n);
 
 const client=read('public/pvp/pvp-net.js');
 for(const n of [
-  "const VERSION='Grandis Legacy PvP v3.73.4'","role:state.preferredRole==='spectator'?'spectator':'player'",
+  "const VERSION='Grandis Legacy PvP v3.73.5'","role:state.preferredRole==='spectator'?'spectator':'player'",
   'pvpLobbySpectate','JOIN AS PLAYER','SPECTATE MATCH','Spectator mode is read-only. Both Hands remain hidden.',
   'function armIntentTimeout','12000','ack-without-snapshot','sync-request','handleIntentAck',
   "msg.type==='intent-ack'","if(isSpectator())return{ok:false,error:'Spectator is read-only.'}",

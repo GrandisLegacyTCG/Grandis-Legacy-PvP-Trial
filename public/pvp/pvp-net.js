@@ -1,7 +1,7 @@
-/* Grandis Legacy PvP v3.73.4 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
+/* Grandis Legacy PvP v3.73.5 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.73.4';
+const VERSION='Grandis Legacy PvP v3.73.5';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
@@ -229,15 +229,13 @@ function coinFace(face){return String(face).toUpperCase()==='TAILS'?'assets/ui/R
 function renderCoin(){
   const modal=$('pvpLobbyCoin'),body=$('pvpLobbyCoinBody'),m=match(),l=local();if(!modal||!body)return;
   const coinState=m.status==='coin-flip'||m.status==='coin-result';
-  const hydrationGate=m.status==='started'&&document.body.classList.contains('pvp-booting');
-  const open=coinState||hydrationGate;
+  // Modal tutup segera setelah match start. Animasi deal jalan di board yang
+  // terlihat (prime sembunyikan kartu + 380ms jeda), jadi tidak ada flash.
+  const open=coinState;
   modal.classList.toggle('open',open);
   document.body.classList.toggle('pvp-coin-gate',open);
   if(!open)return;
   window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);document.body.classList.remove('pvp-lobby-mode');
-  // After START GAME keep the last coin result fully covering the board until
-  // the first authoritative battlefield is imported, painted, and ready.
-  if(hydrationGate&&!coinState)return;
   if(m.status==='coin-flip'){
     if(Number(l?.seat)===2){
       body.innerHTML='<p>You call the opening coin. Choose Heads or Tails.</p><div class="pvp-lobby-coin-actions"><button data-coin="HEADS"><img src="'+coinFace('HEADS')+'"><strong>HEADS</strong></button><button data-coin="TAILS"><img src="'+coinFace('TAILS')+'"><strong>TAILS</strong></button></div>';
@@ -249,7 +247,15 @@ function renderCoin(){
   const outcome=String(f.outcome||'HEADS'),choice=String(f.choice||'—');
   const caller=clean(playerBySeat(2)?.name||'Player 2',25);
   const finalHtml=()=>'<div class="pvp-lobby-coin-winner"><span>WINNER</span><strong>'+esc(winner)+'</strong></div><p class="pvp-lobby-coin-first">'+esc(winner)+' takes the first Draw Phase.</p><div class="pvp-lobby-coin-faces"><div><span>'+esc(caller)+' chose</span><img src="'+coinFace(choice)+'" alt="'+esc(choice)+'"></div><div><span>Coin result</span><img src="'+coinFace(outcome)+'" alt="'+esc(outcome)+'"></div></div>'+(isSpectator()?'<p>Waiting for a player to start the battlefield…</p>':'<button class="pvp-lobby-coin-start" type="button">START GAME</button>');
-  const wireStart=()=>{const start=body.querySelector('.pvp-lobby-coin-start');if(start)start.onclick=()=>{start.disabled=true;document.body.classList.add('pvp-booting','pvp-coin-gate');send('confirm-coin-flip',{})}};
+  const wireStart=()=>{const start=body.querySelector('.pvp-lobby-coin-start');if(start)start.onclick=()=>{
+    start.disabled=true;
+    if(match().status==='started'){
+      // Match sudah di-start pemain lain; server akan reject confirm baru.
+      // Langsung tutup modal saja.
+      document.body.classList.remove('pvp-booting','pvp-coin-gate');renderCoin();return;
+    }
+    document.body.classList.add('pvp-booting','pvp-coin-gate');send('confirm-coin-flip',{});
+  }};
   if(state.lastCoinKey!==key){
     // Phase 1: coin spins, winner stays hidden until it lands.
     state.lastCoinKey=key;state.coinSpinKey=key;
