@@ -115,6 +115,7 @@ html.pvp-fresh-app body.pvp-lobby-mode .app{visibility:hidden}
 .pvp-lobby-label{font-size:12px;font-weight:900;margin:0 0 7px}
 .pvp-lobby-name{position:relative}
 .pvp-lobby-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.pvp-lobby-actions .pvp-lobby-btn{white-space:nowrap}
 .pvp-lobby-divider{height:1px;background:var(--pvp-lobby-line);margin:17px 0 16px}
 .pvp-lobby-room-stats{display:grid;gap:6px;margin:0 0 10px}
 .pvp-lobby-room-stats>div{font-size:12px;color:#a9adb4}
@@ -179,7 +180,14 @@ html.pvp-fresh-app body.pvp-lobby-mode .app{visibility:hidden}
 .pvp-lobby-coin-card{width:min(480px,92vw);border:1px solid rgba(243,207,88,.45);border-radius:15px;background:linear-gradient(180deg,#0a1c2b,#050f18);box-shadow:0 24px 75px rgba(0,0,0,.6);padding:20px;text-align:center;color:#eef5fb}
 .pvp-lobby-coin-card h2{margin:0 0 6px;color:#f3cf58;font-size:18px}.pvp-lobby-coin-card p{margin:6px 0 15px;color:#9eb1c1;font-size:11px}
 .pvp-lobby-coin-actions{display:flex;justify-content:center;gap:12px}.pvp-lobby-coin-actions button{width:132px;border:1px solid #45627a;border-radius:10px;background:#0c2233;color:#fff;padding:11px;cursor:pointer;font-weight:950}.pvp-lobby-coin-actions img{display:block;width:66px;height:66px;object-fit:contain;margin:0 auto 8px}.pvp-lobby-coin-actions button:hover{border-color:#c4a540;filter:brightness(1.12)}
-.pvp-lobby-coin-result{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.pvp-lobby-coin-result div{border:1px solid rgba(104,139,166,.25);border-radius:9px;padding:9px}.pvp-lobby-coin-result span{display:block;color:#8298aa;font-size:9px;margin-bottom:5px}.pvp-lobby-coin-result strong{display:block;font-size:13px}.pvp-lobby-coin-winner{font-size:14px;font-weight:950;color:#ffe780}.pvp-lobby-coin-start{height:38px;width:100%;border:1px solid #b79531;border-radius:9px;background:linear-gradient(180deg,#745b16,#493708);color:#ffe889;font-weight:950;cursor:pointer}.pvp-lobby-coin-start:disabled{opacity:.4}
+.pvp-lobby-coin-winner span{display:block;font-size:10px;letter-spacing:.22em;color:#8298aa}
+.pvp-lobby-coin-winner strong{display:block;font-size:22px;font-weight:950;color:#f3cf58;margin:4px 0 2px}
+.pvp-lobby-coin-first{color:#9eb1c1;font-size:11px;margin:6px 0 2px}
+.pvp-lobby-coin-faces{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.pvp-lobby-coin-faces div{border:1px solid rgba(104,139,166,.25);border-radius:9px;padding:12px 9px}
+.pvp-lobby-coin-faces span{display:block;color:#8298aa;font-size:10px;margin-bottom:8px}
+.pvp-lobby-coin-faces img{display:block;width:84px;height:84px;object-fit:contain;margin:0 auto}
+.pvp-lobby-coin-start{height:38px;width:100%;border:1px solid #b79531;border-radius:9px;background:linear-gradient(180deg,#745b16,#493708);color:#ffe889;font-weight:950;cursor:pointer}.pvp-lobby-coin-start:disabled{opacity:.4}
 .pvp-lobby-coin-flipping{padding:12px 0 6px}.pvp-lobby-coin-flipping p{color:#9eb1c1;font-size:11px;margin:12px 0 4px}
 .pvp-lobby-coin-spinner{width:110px;height:110px;margin:0 auto;position:relative;transform-style:preserve-3d;animation:pvp-coin-flip-spin .16s linear infinite}
 .pvp-lobby-coin-spinner img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backface-visibility:hidden;-webkit-backface-visibility:hidden}

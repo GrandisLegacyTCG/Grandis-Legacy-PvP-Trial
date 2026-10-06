@@ -1840,6 +1840,7 @@ function primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntrie
   allDraw.forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e?.side==='AI'?'AI':'PLAYER',idx=Number(e?.hand_index);if(Number.isInteger(idx)&&idx>=0)obHiddenCommittedDrawSlots[side].set(idx,String(e?.id||('opening-'+side+'-'+idx)))});
   allShard.forEach(e=>{if(e?.uid!=null)obOpeningHiddenShardUids.add((e?.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid))});
   primedOpeningData={draw1,shard1,draw2,shard2};
+  console.log('[PvP fresh] opening primed: hidden',allDraw.length,'draws +',allShard.length,'shards from 0');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
@@ -1856,7 +1857,7 @@ function playPrimedOpeningSequence(){
   const finishAll=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;setTimeout(renderNow,0)};
   const runStages=(si=0)=>{if(si>=stages.length){finishAll();return}const [kind,events]=stages[si];if(!events.length){runStages(si+1);return}const groups=authoritativeOpeningGroups(events);let gi=0;const next=()=>{if(gi>=groups.length){runStages(si+1);return}const group=groups[gi++],parts=motionParts(kind,group);runPairMotions(parts,160,()=>{clearGroup(kind,group);requestAnimationFrame(()=>setTimeout(next,15))})};next()};
   const required=[...draw1.map(e=>['draw',e]),...shard1.map(e=>['shard',e]),...draw2.map(e=>['draw',e]),...shard2.map(e=>['shard',e])];let attempts=0;
-  const startWhenReady=()=>{renderNow();const ready=required.every(([kind,e])=>authoritativeOpeningAnchorReady(kind,e));if(ready){runStages(0);return}if(++attempts>=18){console.warn('[PvP fresh] opening presentation anchors timed out; revealing authoritative state without blocking play.');finishAll();return}setTimeout(()=>requestAnimationFrame(startWhenReady),35)};
+  const startWhenReady=()=>{renderNow();const ready=required.every(([kind,e])=>authoritativeOpeningAnchorReady(kind,e));if(ready){console.log('[PvP fresh] opening deal starting, cards:',required.length);runStages(0);return}if(++attempts>=40){console.warn('[PvP fresh] opening presentation anchors timed out; revealing authoritative state without blocking play.');finishAll();return}setTimeout(()=>requestAnimationFrame(startWhenReady),50)};
   requestAnimationFrame(()=>requestAnimationFrame(startWhenReady));return true;
 }
 function queueAuthoritativeOpeningSequenceVisible(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){

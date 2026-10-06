@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-<title>Grandis Legacy — PvP v3.73.3</title>
+<title>Grandis Legacy — PvP v3.73.4</title>
 <link rel="icon" type="image/png" href="assets/favicon.png" />
 <script id="pvp-mobile-orientation-detect">
 (() => {
@@ -472,8 +472,11 @@ html,body{width:100%;height:100%;overflow:hidden}
 
   function updateResponsiveScale(){
     const dpr = Math.max(1, window.devicePixelRatio || 1);
-    const cssW = Math.max(1, window.innerWidth);
-    const cssH = Math.max(1, window.innerHeight);
+    // Mobile portrait rotates the app 90° via CSS; use the rotated (visual)
+    // dimensions so the scale matches what the user actually sees.
+    const rotated = root.classList.contains('pvp-mobile-device') && root.classList.contains('pvp-mobile-portrait');
+    const cssW = Math.max(1, rotated ? window.innerHeight : window.innerWidth);
+    const cssH = Math.max(1, rotated ? window.innerWidth : window.innerHeight);
     const physicalW = cssW * dpr;
     const physicalH = cssH * dpr;
 
