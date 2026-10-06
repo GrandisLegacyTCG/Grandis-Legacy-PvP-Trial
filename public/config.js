@@ -6,7 +6,7 @@
   window.GL_PVP_CLIENT_MODE=true;
   window.GL_PVP_SHARED_BOARD_ACTIVE=true;
   window.GL_CONFIG={
-    version:'Grandis Legacy PvP v3.73.15',
+    version:'Grandis Legacy PvP v3.73.16',
     buildId:'gl-pvp-3.72-v351-net-v6907-battlefield-2026-10-04',
     mode:'server-authoritative-human-vs-human',
     singleRoom:true,

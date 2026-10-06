@@ -1856,9 +1856,12 @@ function primeAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntrie
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
+let openingPlayInProgress=false;
 function playPrimedOpeningSequence(){
+  if(openingPlayInProgress)return false; // Sudah jalan, jangan double
   const data=primedOpeningData;primedOpeningData=null;
-  if(!data)return false;
+  if(!data){return false;}
+  openingPlayInProgress=true;
   const{draw1,shard1,draw2,shard2}=data;
   // Opsi 2: dari KOSONG, animasi satu-satu berurutan.
   // draw1 (6 hand) → shard1 (3 shard) → draw2 (1 hand starter) → shard2 (1 shard starter).
@@ -1884,12 +1887,13 @@ function playPrimedOpeningSequence(){
       return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to,event:e};
     }
   };
-  const finishAll=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;setTimeout(renderNow,0);};
+  const finishAll=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;openingPlayInProgress=false;setTimeout(renderNow,0);};
   // Animasi satu-satu: tiap event terbang, SELESAI baru lanjut ke event berikutnya.
   const runList=(kind,list,idx,onComplete)=>{
     if(idx>=list.length){onComplete();return;}
     const e=list[idx],part=motionOne(kind,e);
-    const done=()=>{clearOne(kind,e);setTimeout(()=>runList(kind,list,idx+1,onComplete),80);};
+    let doneCalled=false; // Guard: done() cuma boleh jalan sekali per kartu
+    const done=()=>{if(doneCalled)return;doneCalled=true;clearOne(kind,e);setTimeout(()=>runList(kind,list,idx+1,onComplete),80);};
     if(!flyBetween(part.src,part.from,part.to,260,done,true))done();
   };
   console.log('[PvP fresh] opening from blank: animating one by one');
