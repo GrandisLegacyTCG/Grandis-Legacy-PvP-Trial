@@ -1,7 +1,7 @@
-/* Grandis Legacy PvP v3.73.5 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
+/* Grandis Legacy PvP v3.73.6 — v3.51 network/lobby stability + VS AI v6.90.7 battlefield presentation. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.73.5';
+const VERSION='Grandis Legacy PvP v3.73.6';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
@@ -248,13 +248,29 @@ function renderCoin(){
   const caller=clean(playerBySeat(2)?.name||'Player 2',25);
   const finalHtml=()=>'<div class="pvp-lobby-coin-winner"><span>WINNER</span><strong>'+esc(winner)+'</strong></div><p class="pvp-lobby-coin-first">'+esc(winner)+' takes the first Draw Phase.</p><div class="pvp-lobby-coin-faces"><div><span>'+esc(caller)+' chose</span><img src="'+coinFace(choice)+'" alt="'+esc(choice)+'"></div><div><span>Coin result</span><img src="'+coinFace(outcome)+'" alt="'+esc(outcome)+'"></div></div>'+(isSpectator()?'<p>Waiting for a player to start the battlefield…</p>':'<button class="pvp-lobby-coin-start" type="button">START GAME</button>');
   const wireStart=()=>{const start=body.querySelector('.pvp-lobby-coin-start');if(start)start.onclick=()=>{
-    start.disabled=true;
     if(match().status==='started'){
       // Match sudah di-start pemain lain; server akan reject confirm baru.
       // Langsung tutup modal saja.
       document.body.classList.remove('pvp-booting','pvp-coin-gate');renderCoin();return;
     }
-    document.body.classList.add('pvp-booting','pvp-coin-gate');send('confirm-coin-flip',{});
+    start.disabled=true;start.textContent='STARTING…';
+    document.body.classList.add('pvp-booting','pvp-coin-gate');
+    console.log('[PvP fresh] sending confirm-coin-flip');
+    if(!send('confirm-coin-flip',{})){
+      console.warn('[PvP fresh] WebSocket not open; cannot send confirm-coin-flip');
+      start.disabled=false;start.textContent='START GAME';
+      document.body.classList.remove('pvp-booting','pvp-coin-gate');
+      return;
+    }
+    // Anti-stuck: kalau server tidak merespon dalam 6 detik, aktifkan lagi tombolnya.
+    clearTimeout(wireStart._t);
+    wireStart._t=setTimeout(()=>{
+      if(match().status!=='started'){
+        console.warn('[PvP fresh] confirm-coin-flip timed out; re-enabling START GAME');
+        start.disabled=false;start.textContent='START GAME';
+        document.body.classList.remove('pvp-booting','pvp-coin-gate');
+      }
+    },6000);
   }};
   if(state.lastCoinKey!==key){
     // Phase 1: coin spins, winner stays hidden until it lands.
