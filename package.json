@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.75.6",
+  "version": "3.75.7",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.75.6 — PvP v3.51 authoritative gameplay/network with VS AI v6.90.7 UI/UX and v3.73.20 lobby/start presentation donor.",
+  "description": "Grandis Legacy PvP v3.75.7 — PvP v3.51 authoritative gameplay/network with VS AI v6.90.7 UI/UX and v3.73.20 lobby/start presentation donor.",
   "scripts": {
     "start": "node server.js",
     "check": "npm run build:data && npm run sync-lock && npm run check:syntax && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v343-candidate1-authority.cjs && node tests/run-v343-candidate1-assets.cjs && node tests/run-runtime-bridge-test.cjs && npm run test:architecture",
@@ -79,7 +79,7 @@
     "ws": "^8.18.0"
   },
   "grandisLegacySourceStack": {
-    "behaviorReference": "PvP v3.75.6: PvP v3.51 is the authoritative gameplay/network/browser contract; VS AI v6.90.7 is UI/UX presentation donor; pvp-fresh v3.73.20 is lobby/start/opening presentation donor only.",
+    "behaviorReference": "PvP v3.75.7: PvP v3.51 is the authoritative gameplay/network/browser contract; VS AI v6.90.7 is UI/UX presentation donor; pvp-fresh v3.73.20 is lobby/start/opening presentation donor only.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
@@ -106,6 +106,6 @@
     "roomPerService": 1
   },
   "grandisLegacy": {
-    "behaviorReference": "v3.75.6 donor architecture: PvP v3.51 is authoritative gameplay/network baseline; VS AI v6.90.7 is presentation/UI donor; pvp-fresh v3.73.20 is limited to lobby/start/opening presentation concepts and is not a gameplay transaction donor."
+    "behaviorReference": "v3.75.7 donor architecture: PvP v3.51 is authoritative gameplay/network baseline; VS AI v6.90.7 is presentation/UI donor; pvp-fresh v3.73.20 is limited to lobby/start/opening presentation concepts and is not a gameplay transaction donor."
   }
 }

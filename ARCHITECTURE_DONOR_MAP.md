@@ -1,4 +1,4 @@
-# Grandis Legacy PvP v3.75.6 — Architecture Donor Map
+# Grandis Legacy PvP v3.75.7 — Architecture Donor Map
 
 | Area | Active donor | Notes |
 |---|---|---|
@@ -15,7 +15,7 @@
 
 ## Explicitly excluded from v3.73.20 gameplay
 
-The following experimental systems are not allowed to become gameplay authority in v3.75.6:
+The following experimental systems are not allowed to become gameplay authority in v3.75.7:
 
 - queued gameplay intents (`intentQueue` / `pumpIntent` model),
 - immediate local gameplay render after sending a network intent,

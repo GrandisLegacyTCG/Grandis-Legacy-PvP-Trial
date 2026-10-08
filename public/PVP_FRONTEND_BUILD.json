@@ -1,13 +1,13 @@
 {
-  "pvp_version": "v3.75.6",
+  "pvp_version": "v3.75.7",
   "date": "2026-10-09",
-  "build_id": "gl-pvp-3.75.6-v351-core-v6907-ui-2026-10-09",
+  "build_id": "gl-pvp-3.75.7-v351-core-v6907-ui-2026-10-09",
   "architecture": {
     "gameplay_network_authority": "Grandis Legacy PvP v3.51",
     "ui_ux_presentation": "Grandis Legacy VS AI v6.90.7",
     "lobby_start_presentation": "pvp-fresh v3.73.20 (presentation donor only)"
   },
-  "source_directory": "Grandis_Legacy_PvP_v3.75.6_GitHub_Repository_2026-10-09/public/",
+  "source_directory": "Grandis_Legacy_PvP_v3.75.7_GitHub_Repository_2026-10-09/public/",
   "notes": [
     "v3.73.20 gameplay intent queue/exact-payment backend is intentionally excluded.",
     "Browser and server gameplay contracts use the v3.51 runtime/payment model.",

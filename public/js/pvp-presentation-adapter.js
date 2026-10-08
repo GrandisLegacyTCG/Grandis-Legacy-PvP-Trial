@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  // v3.75.6 presentation boundary. This file translates viewer-safe PvP v3.51 server boards
+  // v3.75.7 presentation boundary. This file translates viewer-safe PvP v3.51 server boards
   // into the latest VS AI presentation contract. It owns compatibility aliases and seat orientation
   // only; gameplay authority, payment rules, hidden information, and network protocol stay in PvP v3.51.
   var stack=window.GL_SOURCE_STACK||{};

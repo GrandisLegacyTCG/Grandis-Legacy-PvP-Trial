@@ -1,8 +1,8 @@
-# Grandis Legacy PvP v3.75.6 — Build Notes
+# Grandis Legacy PvP v3.75.7 — Build Notes
 
 ## Why this build exists
 
-v3.75.6 stops patching the v3.73.20 gameplay synchronization model. Earlier diagnostic builds showed the same family of failure across Meditation, Steal, and paid Skills: one client could enter a local/transient step while the opponent waited for a different authoritative step.
+v3.75.7 stops patching the v3.73.20 gameplay synchronization model. Earlier diagnostic builds showed the same family of failure across Meditation, Steal, and paid Skills: one client could enter a local/transient step while the opponent waited for a different authoritative step.
 
 ## What was rebuilt
 
@@ -30,3 +30,9 @@ Opening Hand and Starting Shards are presented alternately Player/Opponent. The 
 ## Release gate
 
 This package is a **candidate**, not a live-ready declaration. Promote only after two-browser manual verification of Opening, Round-1 Event, Meditation, paid Skill, Steal, and Card Played privacy.
+
+## v3.75.7 deployment integrity correction
+- Root cause of `no healthy upstream`: the fail-closed runtime sync lock in v3.75.6 was stale after final donor/UI edits.
+- `server.js` calls `verifyRuntimeSyncOrThrow(BASE)` during process boot; the stale lock rejected `package.json`, `server.js`, `public/index.html`, `public/js/app.bundle.js`, and `public/js/pvp-network.js` before the HTTP listener started.
+- v3.75.7 regenerates the runtime sync lock only after all source/version edits are complete.
+- Gameplay/network/UI donor architecture is unchanged from v3.75.6.

@@ -1,15 +1,15 @@
-# Grandis Legacy PvP — v3.75.6
+# Grandis Legacy PvP — v3.75.7
 
 ## Release identity
 
-- PvP Version: **v3.75.6**
-- Package Version: **3.75.6**
+- PvP Version: **v3.75.7**
+- Package Version: **3.75.7**
 - Date: **2026-10-09**
 - Status: **two-browser candidate; not yet promoted to live**
 
 ## Donor architecture
 
-v3.75.6 is rebuilt from the proven **PvP v3.51** gameplay/network contract instead of continuing to patch the experimental v3.73.20 gameplay bridge.
+v3.75.7 is rebuilt from the proven **PvP v3.51** gameplay/network contract instead of continuing to patch the experimental v3.73.20 gameplay bridge.
 
 - **PvP v3.51** — authoritative server/runtime, browser gameplay contract, one-intent-in-flight network lifecycle, pending-choice lifecycle, hidden-information protocol, payment rules, reconnect/spectator behavior.
 - **VS AI v6.90.7** — battlefield UI/UX, interaction presentation, center-choice visuals, card/shard presentation, animation/audio presentation.
@@ -49,4 +49,4 @@ Before live promotion, test with two real browser clients in this order:
 5. Steal/opponent Shard selection — hidden selection and resolution on both clients.
 6. Card Played privacy — opponent opening/normal draws must never reveal card identity in history.
 
-See `ARCHITECTURE_DONOR_MAP.md` and `BUILD_NOTES_v3.75.6.md`.
+See `ARCHITECTURE_DONOR_MAP.md` and `BUILD_NOTES_v3.75.7.md`.

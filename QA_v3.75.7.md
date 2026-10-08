@@ -1,4 +1,4 @@
-# QA — Grandis Legacy PvP v3.75.6
+# QA — Grandis Legacy PvP v3.75.7
 
 Automated checks completed for this candidate:
 

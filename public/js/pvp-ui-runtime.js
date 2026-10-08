@@ -1,4 +1,4 @@
-/* Grandis Legacy PvP v3.75.6 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
+/* Grandis Legacy PvP v3.75.7 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
 (()=>{
 'use strict';
 const E=()=>window.GL_OPTION_B_ENGINE;

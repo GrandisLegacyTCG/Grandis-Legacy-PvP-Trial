@@ -9,14 +9,14 @@ const app=read('public/js/app.bundle.js');
 const ui=read('public/js/pvp-ui-runtime.js');
 const router=read('server/gameplay-intent-router.mjs');
 const index=read('public/index.html');
-ok(pkg.version==='3.75.6','package version must be 3.75.6');
-ok(index.includes('js/app.bundle.js?v=3.75.6')&&index.includes('js/pvp-ui-runtime.js?v=3.75.6')&&index.includes('js/pvp-network.js?v=3.75.6'),'v3.51-style public/js load order missing');
-ok(net.includes('intentInFlight')&&!net.includes('intentQueue=[]')&&!net.includes('pumpIntent'),'v3.73 intent queue leaked into v3.75.6');
+ok(pkg.version==='3.75.7','package version must be 3.75.7');
+ok(index.includes('js/app.bundle.js?v=3.75.7')&&index.includes('js/pvp-ui-runtime.js?v=3.75.7')&&index.includes('js/pvp-network.js?v=3.75.7'),'v3.51-style public/js load order missing');
+ok(net.includes('intentInFlight')&&!net.includes('intentQueue=[]')&&!net.includes('pumpIntent'),'v3.73 intent queue leaked into v3.75.7');
 ok(net.includes('function syncAuthoritativePendingChoice()')&&net.includes('syncAuthoritativePendingChoice();'),'v3.51 authoritative pending lifecycle missing');
 ok(router.includes('toggleManaShardPaymentChoice')&&router.includes('toggleResponseManaShardChoice'),'v3.51 Class Shard payment intents missing');
 ok(router.includes('selectOpponentManaChoice'),'v3.51 hidden Shard canonical intent missing');
 ok(app.includes('function computeManaPayment(')&&!app.includes('function computeExactManaPayment('),'v6 exact-payment gameplay engine leaked into browser core');
-ok(app.includes('GL_PVP_V3756_OPTION_B_ADAPTER'),'v6.90.7 UI adapter missing');
+ok(app.includes('GL_PVP_V3757_OPTION_B_ADAPTER'),'v6.90.7 UI adapter missing');
 ok(ui.includes("intent('handleChoiceConfirm',[])")&&!ui.includes("intent('commitManaShardPaymentChoice',[])") ,'normal payment UI is not committed through v3.51 handleChoiceConfirm');
 ok(ui.includes('selectOpponentManaChoiceHandle'),'opaque opponent Shard handle path missing from latest UI');
 ok(router.includes('selectOpponentManaChoiceHandle')||router.includes('selectOpponentManaChoice'),'authoritative opponent Shard selection route missing');
@@ -31,7 +31,7 @@ ok(ui.includes('resetForMatch:resetPresentationState')&&net.includes("incomingSt
 const files=[];(function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,ent.name);if(ent.isDirectory())walk(full);else files.push(path.relative(root,full).replace(/\\/g,'/'));}})(path.join(root,'public'));
 const seen=new Map();for(const rel of files){const key=rel.toLowerCase();ok(!seen.has(key),'case-insensitive public path collision: '+seen.get(key)+' <-> '+rel);seen.set(key,rel);}
 // Strip the presentation-only adapter and lock the remaining browser gameplay core to the exact v3.51 app bundle hash.
-const a=app.indexOf('  /* GL_PVP_V3756_OPTION_B_ADAPTER'),b=app.indexOf('  var __glPvpBaseRender=render;',a);
+const a=app.indexOf('  /* GL_PVP_V3757_OPTION_B_ADAPTER'),b=app.indexOf('  var __glPvpBaseRender=render;',a);
 ok(a>=0&&b>a,'adapter boundaries not found');
 const core=app.slice(0,a)+app.slice(b);
 const coreHash=crypto.createHash('sha256').update(core).digest('hex');

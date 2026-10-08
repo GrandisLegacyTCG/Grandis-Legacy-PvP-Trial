@@ -1,10 +1,10 @@
-/* Grandis Legacy PvP v3.75.6 network client.
+/* Grandis Legacy PvP v3.75.7 network client.
    PvP v3.51 is the authoritative transaction/lifecycle donor: one gameplay intent in flight,
    server commit, viewer-safe snapshot import, authoritative pending sync. VS AI v6.90.7 is
    presentation only; pvp-fresh v3.73.20 gameplay queue/local-first behavior is not used here. */
 (function(){
   'use strict';
-  var VERSION='Grandis Legacy PvP v3.75.6 · v3.51 Authoritative Core · VS AI v6.90.7 UI · 2 Players + 4 Spectators';
+  var VERSION='Grandis Legacy PvP v3.75.7 · v3.51 Authoritative Core · VS AI v6.90.7 UI · 2 Players + 4 Spectators';
   var STORE_KEY='grandis_legacy_pvp_v20_client_id';
   var ROOM_KEY='grandis_legacy_pvp_v20_room';
   var NAME_KEY='grandis_legacy_pvp_v20_name';
@@ -12,7 +12,7 @@
   var ws=null,reconnectTimer=null,reconnectDelay=1200,intentTimeoutTimer=null,connectTimeoutTimer=null,matchTimerInterval=null;
   var state={connected:false,connectionState:'idle',connectionMessage:'',connectionUrl:'',snapshot:null,room:'LOBBY',name:'',role:'player',deckKey:'',loadedDeckKey:'',customDeck:null,customDeckName:'',clientId:'',lobbyRankPreview:1,lobbyFormation:null,lastAppliedRevision:0,applyingServer:false,intentInFlight:false,intentBaseRevision:0,intentName:'',intentActionId:'',intentSentAt:0,actionSequence:0,seatToken:'',lastMatchStatus:'setup',seenAnimationIds:{},lastCoinAnimationKey:'',coinResultReadyKey:'',mobileHandScrollLeft:0,mobileHandMode:'preserve',mobileHandApplyToken:0,mobileHandHooksInstalled:false,spectatorLobbyView:false,spectatorBattlefieldEntered:false,nameDraft:'',roomGeneration:0,reloadAfterRoomReset:false,latencyMs:null,opponentLatencyMs:null,lastPingSentAt:0,lastPongAt:0};
   var DEPLOY_CONFIG=window.GL_PVP_CONFIG||window.GL_CONFIG||{};
-  var CLIENT_BUILD_ID=String(DEPLOY_CONFIG.buildId||'gl-pvp-3.75.6-v351-core-v6907-ui-2026-10-09');
+  var CLIENT_BUILD_ID=String(DEPLOY_CONFIG.buildId||'gl-pvp-3.75.7-v351-core-v6907-ui-2026-10-09');
   function fixedDeploymentRoom(){var n=Number(DEPLOY_CONFIG.roomId||0);return n===1||n===2?n:0;}
   function roomNumber(){var fixed=fixedDeploymentRoom();if(fixed)return fixed;try{return Number(new URL(location.href).searchParams.get('server'))===2?2:1;}catch(e){return 1;}}
   function roomDisplayName(){return DEPLOY_CONFIG.roomName||('PvP Room '+roomNumber());}

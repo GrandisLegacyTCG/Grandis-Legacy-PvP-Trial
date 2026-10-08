@@ -15,7 +15,7 @@
   "canonicalRegistryHash": "7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389",
   "heroComponentRegistryHash": "f36f1cc83eb9845743176c3af71f7823125353eae73e832588e9d8b42c6818be",
   "requiredSourceStack": {
-    "behaviorReference": "PvP v3.51 same-version correction preserves the completed v3.51 server-authoritative gameplay/runtime while correcting only Hero EXP Ready/Exhausted physical-size parity and invalid custom Deck Import interaction/retry. VS AI v6.48/v0.71 is presentation/interaction reference only.",
+    "behaviorReference": "PvP v3.75.7: PvP v3.51 is the authoritative gameplay/network/browser contract; VS AI v6.90.7 is UI/UX presentation donor; pvp-fresh v3.73.20 is lobby/start/opening presentation donor only.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
@@ -91,7 +91,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "7704d7223ffb18b656d44f73b3f210de21d35c3cd10355ddb7711caec9855169"
+      "sha256": "7f4e0d0a173d62a6bc881c66658c9af1448c842a5a90ed2b4f53fd800183a624"
     },
     {
       "path": "public/css/app.css",
@@ -99,11 +99,11 @@
     },
     {
       "path": "public/index.html",
-      "sha256": "f38b24c3678d53e3610442309caa43d4ec23892cd2d46b34ca179c72a9726834"
+      "sha256": "ba350c4185457b812d266006c7429074bb505168c5f3be1253486e52b311c0d7"
     },
     {
       "path": "public/js/app.bundle.js",
-      "sha256": "ff42da9f22fedb80dda944df28699a6d3eeae9d1fa8fb5aa05321abd766713e7"
+      "sha256": "e18061553ead3930670a202122410d89be842737221c929b43af556e653567ac"
     },
     {
       "path": "public/js/mobile-app-nav.js",
@@ -111,7 +111,7 @@
     },
     {
       "path": "public/js/pvp-network.js",
-      "sha256": "9f4e9b0897a0b1268cc8ae8d45236ba44cee09077ef2a8993720802e0c4a7d31"
+      "sha256": "617f734c5f34bd96d99fb6b88a9683340f09b614e3d84d0d6da67c386bee1c3e"
     },
     {
       "path": "public/js/runtime-authority.js",
@@ -395,7 +395,7 @@
     },
     {
       "path": "server.js",
-      "sha256": "080678887b5197a2306c6479d3ce150ad7798d09ea737c5c65faa5330e6aa9f8"
+      "sha256": "937331994c183c3a1b21b0ade1acc4b3b20f97c46f5b12af44bf122b8cd002a0"
     },
     {
       "path": "server/gameplay-intent-router.mjs",
