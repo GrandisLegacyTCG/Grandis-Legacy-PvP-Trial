@@ -1,28 +1,30 @@
-# Grandis Legacy PvP v3.75.7 — Architecture Donor Map
+# Grandis Legacy PvP v3.75.8 — Active Donor Map
 
-| Area | Active donor | Notes |
-|---|---|---|
-| Authoritative gameplay/runtime | PvP v3.51 | Canonical gameplay contract on server and browser. |
-| WebSocket/gameplay transaction lifecycle | PvP v3.51 | Single in-flight intent; authoritative snapshot before next step. |
-| Pending choice lifecycle | PvP v3.51 | Rehydrate/close from authoritative snapshot. |
-| Mana payment rules/backend | PvP v3.51 | `selected_class_uids` + automatic Mana Shards; no v6/.73 exact-payment authority. |
-| Hidden opponent Shard selection | PvP v3.51 | Opaque choice handle + revision. |
-| Private/public information boundary | PvP v3.51 | Private Hand/draw state never becomes public merely because it was drawn. |
-| Battlefield UI/UX | VS AI v6.90.7 | Latest presentation and interaction skin. |
-| Payment/choice visual presentation | VS AI v6.90.7 | Visual only; commits v3.51 authoritative intents. |
-| Lobby/start/opening presentation | pvp-fresh v3.73.20 + latest UI assets | Presentation donor only; room/ready/start authority stays on v3.51 network flow. |
-| Repository naming/layout | PvP v3.51 | `public/js`, `public/css`, `public/shared-ui`, `public/assets`. |
+This build intentionally uses **two active sources only**.
 
-## Explicitly excluded from v3.73.20 gameplay
+## 1. PvP v3.51 — authoritative application foundation
 
-The following experimental systems are not allowed to become gameplay authority in v3.75.7:
+PvP v3.51 owns multiplayer state and rules execution: lobby/session lifecycle, single-in-flight intent handling, WebSocket snapshots, coin flip/start, opening authority, Mana payment, pending choices, Response, hidden-opponent-Shard choices, privacy, reconnect, spectator, surrender, and server-side validation.
 
-- queued gameplay intents (`intentQueue` / `pumpIntent` model),
-- immediate local gameplay render after sending a network intent,
-- universal exact-Shard payment as the PvP gameplay contract,
-- client-index based hidden opponent Shard selection,
-- any gameplay step that advances one client before an authoritative board revision is received.
+The browser gameplay contract and the server gameplay contract remain on the same v3.51 model. The VS AI exact-payment engine is not used as PvP authority.
 
-## Presentation adapter boundary
+## 2. VS AI v6.90.7 — presentation/UX donor
 
-The v6.90.7 UI may present the v3.51 state in newer controls, but it must not create a second gameplay engine. For example, the PAY MANA screen may visually show which Mana Shards will be auto-used, but only v3.51 Class Shard selections are interactive and the authoritative commit remains `handleChoiceConfirm` / v3.51 payment resolution.
+VS AI v6.90.7 supplies the visual language: battlefield layout, Hand/Shard presentation, phase tracker, side panels, Active Card/Card Played/Battle Log presentation, choice/payment surfaces, card movement, VFX/SFX, and interaction styling.
+
+The v6.90.7 layer is a renderer/controller adapter over authoritative PvP snapshots. It does not publish its own game state.
+
+## Product adjustments locked for v3.75.8
+
+- One visible PvP lobby; room switching UI is removed.
+- Desktop lobby targets one viewport without scrolling; the existing header is not compressed.
+- Deck Builder / VS AI navigation buttons are hidden for now.
+- Player names are capped at 20 characters without explanatory UI text.
+- During setup, Seat 1 may remove Seat 2 at any time. Seat 2 may remove Seat 1 only while Seat 1 is offline.
+- Opponent identity stays top-left: player name, deck name, connection bars on the right.
+- Local player identity uses the existing bottom-right slot: connection bars on the left, then player name and deck name.
+- Start sequence uses PvP v3.51 authority: lobby -> coin flip -> opening -> gameplay.
+- Opening presentation is Hand P1/P2 alternating x6, then Starting Shards P1/P2 alternating x3, then first-player normal Draw + Regen.
+- Private opening/draw information never enters Card Played history.
+
+No other integration repository is an active runtime donor for this build.

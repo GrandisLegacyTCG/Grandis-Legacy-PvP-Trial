@@ -1,17 +1,33 @@
 {
-  "pvp_version": "v3.75.7",
-  "date": "2026-10-09",
-  "build_id": "gl-pvp-3.75.7-v351-core-v6907-ui-2026-10-09",
-  "architecture": {
-    "gameplay_network_authority": "Grandis Legacy PvP v3.51",
-    "ui_ux_presentation": "Grandis Legacy VS AI v6.90.7",
-    "lobby_start_presentation": "pvp-fresh v3.73.20 (presentation donor only)"
-  },
-  "source_directory": "Grandis_Legacy_PvP_v3.75.7_GitHub_Repository_2026-10-09/public/",
-  "notes": [
-    "v3.73.20 gameplay intent queue/exact-payment backend is intentionally excluded.",
-    "Browser and server gameplay contracts use the v3.51 runtime/payment model.",
-    "VS AI v6.90.7 Option-B battlefield UI is adapted as a presentation/controller skin.",
-    "Opening presentation: alternating Player/Opponent hand x6, alternating Player/Opponent Shard x3, then first-player normal Draw Phase."
-  ]
+  "schema_version": "1.0.0",
+  "pvp_version": "v3.75.8",
+  "package_version": "3.75.8",
+  "build_id": "gl-pvp-3.75.8-v351-authority-v6907-ui-2026-10-09",
+  "release_ready": false,
+  "release_status": "two-browser candidate",
+  "source_directory": "PvP v3.75.8 repository public/",
+  "deployment_mode": "single-lobby-server-authoritative-pvp",
+  "northflank_services": 1,
+  "room1_ws_base": "wss://p01--grandis-legacy-pvp--2kwws8nzlcc2.code.run",
+  "ws_path": "/ws",
+  "source_authority": "v1.9.5",
+  "shared_runtime": "v1.94.2",
+  "runtime_data": "v0.16.2",
+  "effect_recipe": "v0.15.2",
+  "effect_checkpoint": "v0.15.2",
+  "hero_components": "v1.1.0",
+  "starter_authority": "v1.6.1",
+  "application_runtime_sync": "v2.63",
+  "active_starters": 5,
+  "canonical_cards": 200,
+  "authority_donor": "Grandis Legacy PvP v3.51",
+  "presentation_donor": "Grandis Legacy VS AI v6.90.7",
+  "active_donor_count": 2,
+  "lobby": "single visible lobby; no room switching UI; desktop one-screen layout",
+  "opening": "v3.51 coin/start authority; presentation: 6 alternating hand draws, 3 alternating starting Shards, then first-player normal Draw + Regen",
+  "player_name_max": 20,
+  "kick_policy": "Seat 1 may remove Seat 2 during setup; Seat 2 may remove Seat 1 during setup only while Seat 1 is offline",
+  "gameplay_ui": "VS AI v6.90.7 presentation on top of PvP v3.51 gameplay contract",
+  "hidden_information": "PvP v3.51 viewer-safe snapshots; opening/draw events are not Card Played history",
+  "note": "Fresh two-donor rebuild. No third integration donor is active. Candidate requires real two-browser acceptance testing before live promotion."
 }

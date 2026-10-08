@@ -1,4 +1,4 @@
-/* Grandis Legacy PvP v3.75.7 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
+/* Grandis Legacy PvP v3.75.8 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
 (()=>{
 'use strict';
 const E=()=>window.GL_OPTION_B_ENGINE;
@@ -1841,10 +1841,10 @@ function authoritativeOpeningAnchorReady(kind,event){
   }
   const fr=(from?.querySelector?.('.zoneCard')||from)?.getBoundingClientRect?.(),tr=to?.getBoundingClientRect?.();
   const ok=!!(fr&&tr&&fr.width>1&&fr.height>1&&tr.width>1&&tr.height>1);
-  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP fresh] anchor FAIL:',JSON.stringify(dbg));}
+  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP v3.75.8] anchor FAIL:',JSON.stringify(dbg));}
   return ok;
 }
-/* PvP fresh: opening sequence di-split jadi dua fase agar kartu TIDAK PERNAH
+/* PvP v3.75.8: authoritative opening sequence hides cards before presentation so they never
  * terlihat full sebelum animasi. primeAuthoritativeOpeningSequence() menyembunyikan
  * semua kartu opening dan me-render tangan/kolam kosong — dipanggil SEBELUM board
  * di-reveal. playPrimedOpeningSequence() menganimasikan reveal kartu satu per satu —
@@ -1870,8 +1870,8 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
       syntheticOpeningDraw2.push({side,hand_index:idx,id:'synthetic-draw2-'+side+'-'+idx});
     }
   }
-  if(syntheticOpeningDraw2.length)console.log('[PvP fresh] synthesized draw2:',syntheticOpeningDraw2.length,'events');
-  console.log('[PvP fresh] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
+  if(syntheticOpeningDraw2.length)console.log('[PvP v3.75.8] synthesized draw2:',syntheticOpeningDraw2.length,'events');
+  console.log('[PvP v3.75.8] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }

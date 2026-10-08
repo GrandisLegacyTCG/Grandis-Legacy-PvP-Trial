@@ -14,8 +14,8 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').trim() || '0.0.0.0';
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
-const VERSION = 'Grandis Legacy PvP v3.75.7 — PvP v3.51 Authoritative Core + VS AI v6.90.7 Presentation';
-const BUILD_ID = 'gl-pvp-3.75.7-v351-core-v6907-ui-2026-10-09';
+const VERSION = 'Grandis Legacy PvP v3.75.8 — PvP v3.51 server-authoritative gameplay + VS AI v6.90.7 presentation';
+const BUILD_ID = 'gl-pvp-3.75.8-v351-authority-v6907-ui-2026-10-09';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
@@ -1296,6 +1296,25 @@ function kickSeat2(room, requester, requestWs = null) {
   return true;
 }
 
+
+function kickSeat1IfOffline(room, requester, requestWs = null) {
+  if (!requester || requester.role !== 'player' || Number(requester.seat) !== 2) throw new Error('Only the current Player 2 may remove an offline Player 1.');
+  const liveSeat2 = [...room.players.values()].find((p) => Number(p.seat) === 2);
+  if (!liveSeat2 || liveSeat2.clientId !== requester.clientId || liveSeat2.ws !== requester.ws || (requestWs && requestWs !== requester.ws)) throw new Error('Stale Player 2 session cannot remove Player 1.');
+  if (room.match.status !== 'setup') throw new Error('Player 1 can only be removed before the match starts.');
+  const target = [...room.players.values()].find((p) => Number(p.seat) === 1);
+  if (!target) throw new Error('Player 1 seat is already empty.');
+  if (target.connected !== false) throw new Error('Player 2 may remove Player 1 only while Player 1 is offline.');
+  const name = target.name || 'Player 1';
+  target.ready = false; target.deckKey = null; target.deckName = null; target.deckData = null; target.deckSource = null; target.formation = null;
+  clearDisconnectReservation(target);
+  rememberExpiredSeat1Authority(room, target, 'removed by Player 2 while offline');
+  room.players.delete(target.clientId);
+  delete target.seat; delete target.seatToken; delete target.seatTokenHash;
+  addLog(room, `${requester.name || 'Player 2'} removed offline ${name} from Player 1 seat.`);
+  return true;
+}
+
 function expireDisconnectedPlayers(room, now = Date.now()) {
   let changed = false;
   for (const client of [...room.players.values()]) {
@@ -1524,22 +1543,14 @@ function safePath(pathname) {
 
 
 function publicDeploymentConfig(req) {
-  const host = String(req?.headers?.host || '').toLowerCase();
-  const explicit = Number(process.env.GL_PVP_ROOM_ID || process.env.PVP_ROOM_ID || process.env.ROOM_ID || 0);
-  const roomId = explicit === 2 || (!explicit && /room[-_]?2|room2/.test(host)) ? 2 : 1;
-  const roomName = process.env.GL_PVP_ROOM_NAME || `PvP Room ${roomId}`;
-  // Room navigation is intentionally canonical here. Deployment-specific environment values must not
-  // override the current public room URLs and send players back to retired deployments.
-  const room1Url = CANONICAL_ROOM_1_URL;
-  const room2Url = CANONICAL_ROOM_2_URL;
   return {
     version: VERSION,
     buildId: BUILD_ID,
     wsPath: '/ws',
     mode: 'server-authoritative-human-vs-human',
-    roomId,
-    roomName,
-    otherRoomUrl: roomId === 1 ? room2Url : room1Url,
+    roomId: 1,
+    roomName: 'PvP Lobby',
+    otherRoomUrl: '',
     publicFrontendUrl: 'https://grandislegacytcg.github.io/pvp/',
     homeUrl: 'https://grandislegacytcg.github.io/',
     deckBuilderUrl: process.env.GL_DECK_BUILDER_URL || 'https://grandislegacytcg.github.io/Grandis-Legacy-Deck-Builder/style-1/',
@@ -1612,12 +1623,8 @@ wss.on('connection', (ws, req) => {
   // PvP favors interaction latency over bulk throughput; keep tiny intent/ack frames off Nagle queues.
   try { ws._socket?.setNoDelay?.(true); } catch {}
   const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-  const requestedRoom = safeText(url.searchParams.get('room') || '', 48).toUpperCase();
-  if (!/^[A-Z0-9_-]{1,48}$/.test(requestedRoom)) {
-    send(ws, { type: 'fatal', message: 'Invalid room id. Use 1-48 letters, numbers, underscore, or hyphen.' });
-    ws.close(1008, 'Invalid room id');
-    return;
-  }
+  // v3.75.8 product policy: one public PvP lobby/room only. Ignore legacy room query values.
+  const requestedRoom = 'LOBBY';
   const room = roomState(requestedRoom);
   // A visitor arriving after the finished-match TTL must never receive the stale battlefield.
   // Perform strict cleanup synchronously before client identity / seat-token recovery.
@@ -1626,7 +1633,7 @@ wss.on('connection', (ws, req) => {
   // released synchronously before any seat-token recovery decision is made.
   expireDisconnectedPlayers(room, Date.now());
   const clientId = safeClient(url.searchParams.get('client'));
-  const name = safeText(url.searchParams.get('name') || 'Player', 48) || 'Player';
+  const name = safeText(url.searchParams.get('name') || 'Player', 20) || 'Player';
   const initialDeck = deckOption(url.searchParams.get('deck'));
   const suppliedSeatToken = safeClient(url.searchParams.get('seatToken'));
   // Build ids are diagnostic only. Static frontend and room services may deploy independently,
@@ -1701,7 +1708,7 @@ wss.on('connection', (ws, req) => {
         }
         case 'activity': send(ws, { type: 'activity-ack', at: nowIso() }); return;
         case 'rename': {
-          const nextName = safeText(msg.name || client.name, 48) || client.name;
+          const nextName = safeText(msg.name || client.name, 20) || client.name;
           const changed = nextName !== client.name;
           client.name = nextName;
           if (changed && room.match.status === 'setup') client.ready = false;
@@ -1878,6 +1885,7 @@ wss.on('connection', (ws, req) => {
           break;
         }
         case 'kick-seat-2': kickSeat2(room, client, ws); break;
+        case 'kick-seat-1': kickSeat1IfOffline(room, client, ws); break;
         case 'reset-room': if (client.role !== 'player') throw new Error('Spectators cannot reset the room.'); if (client.seat !== 1 && room.match.status !== 'finished') throw new Error('Only Player 1 may reset room before the match ends.'); room.engine = null; room.gameplayIntentLedger = new Map(); room.match = freshMatchState(); for (const p of room.players.values()) p.ready = false; addLog(room, `${client.name} reset the room to setup.`); break;
         case 'surrender-match': applyServerSurrender(room, client); break;
         case 'chat': addLog(room, `${client.name}: ${safeText(msg.message, 180)}`); break;
@@ -2075,5 +2083,5 @@ server.listen(PORT, HOST, () => {
   console.log(VERSION);
   console.log(`Listening on http://${HOST}:${PORT}`);
   console.log('Health check: /health');
-  console.log('WebSocket endpoint: /ws?room=ROOM&client=CLIENT&name=PLAYER&deck=STARTER_KEY');
+  console.log('WebSocket endpoint: /ws?client=CLIENT&name=PLAYER&deck=STARTER_KEY (single PvP Lobby)');
 });

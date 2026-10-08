@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en" class="pvp-fresh-app">
+<html lang="en" class="pvp-v6907-ui">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-<title>Grandis Legacy — PvP v3.75.7</title>
+<title>Grandis Legacy — PvP v3.75.8</title>
 <link rel="icon" type="image/png" href="assets/favicon.png" />
 <script id="pvp-mobile-orientation-detect">
 (() => {
@@ -295,8 +295,8 @@ html,body{width:100%;height:100%;overflow:hidden}
 
 </style>
 
-<link rel="stylesheet" href="css/pvp-ui.css?v=3.75.7">
-<link rel="stylesheet" href="css/pvp-lobby.css?v=3.75.7">
+<link rel="stylesheet" href="css/pvp-ui.css?v=3.75.8">
+<link rel="stylesheet" href="css/pvp-lobby.css?v=3.75.8">
 </head>
 <body class="pvp-booting">
 <div class="app ob-lobby-hidden">
@@ -304,7 +304,10 @@ html,body{width:100%;height:100%;overflow:hidden}
     <div class="concept" aria-hidden="true"></div>
 
     <section class="hand top">
-      <div class="hand-title">OPPONENT</div>
+      <div class="hand-title pvp-identity pvp-identity-opponent" data-pvp-identity-side="AI">
+        <div class="pvp-identity-copy"><strong class="pvp-player-display-name">Opponent</strong><small class="pvp-player-deck-name">Opponent Deck</small></div>
+        <span class="pvp-connection-bars connecting" data-pvp-signal-side="AI" aria-label="Connecting"><i></i><i></i><i></i><i></i></span>
+      </div>
       <div class="hand-track">
         <div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div>
       </div>
@@ -408,7 +411,10 @@ html,body{width:100%;height:100%;overflow:hidden}
         </div>
       </section>
     </section>
-    <div class="player-name">PLAYER</div>
+    <div class="player-name pvp-identity pvp-identity-local" data-pvp-identity-side="PLAYER">
+      <span class="pvp-connection-bars connecting" data-pvp-signal-side="PLAYER" aria-label="Connecting"><i></i><i></i><i></i><i></i></span>
+      <div class="pvp-identity-copy"><strong class="pvp-player-display-name">Player</strong><small class="pvp-player-deck-name">Your Deck</small></div>
+    </div>
   </main>
 
   <aside class="sidebar">
@@ -526,15 +532,15 @@ html,body{width:100%;height:100%;overflow:hidden}
     <div id="glAnimationLayer"></div>
   </div>
   <script>window.GL_APP_MODE="PVP";window.GL_PVP_CLIENT_MODE=true;window.GL_PVP_SHARED_BOARD_ACTIVE=true;</script>
-  <script src="config.js?v=3.75.7"></script>
-  <script src="shared-ui/battlefield-ui.js?v=3.75.7"></script>
-  <script src="js/static-data.js?v=3.75.7"></script>
-  <script src="js/pvp-presentation-adapter.js?v=3.75.7"></script>
-  <script src="js/runtime-authority.js?v=3.75.7"></script>
-  <script src="js/app.bundle.js?v=3.75.7"></script>
-  <script src="js/pvp-ui-runtime.js?v=3.75.7"></script>
-  <script src="js/pvp-network.js?v=3.75.7"></script>
-  <script src="js/mobile-app-nav.js?v=3.75.7"></script>
+  <script src="config.js?v=3.75.8"></script>
+  <script src="shared-ui/battlefield-ui.js?v=3.75.8"></script>
+  <script src="js/static-data.js?v=3.75.8"></script>
+  <script src="js/pvp-presentation-adapter.js?v=3.75.8"></script>
+  <script src="js/runtime-authority.js?v=3.75.8"></script>
+  <script src="js/app.bundle.js?v=3.75.8"></script>
+  <script src="js/pvp-ui-runtime.js?v=3.75.8"></script>
+  <script src="js/pvp-network.js?v=3.75.8"></script>
+  <script src="js/mobile-app-nav.js?v=3.75.8"></script>
 
 </body>
 </html>

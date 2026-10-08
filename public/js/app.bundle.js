@@ -10543,12 +10543,12 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
       }
     }
   };
-  /* GL_PVP_V3757_OPTION_B_ADAPTER
-     v3.75.7 donor boundary: v3.51 remains the browser/server gameplay contract.
+  /* GL_PVP_V3758_OPTION_B_ADAPTER
+     v3.75.8 donor boundary: PvP v3.51 remains the browser/server gameplay contract; VS AI v6.90.7 is presentation only.
      This adapter exposes read models and presentation controls required by the
      VS AI v6.90.7 Option-B UI without importing the v6 exact-payment engine. */
   window.GL_OPTION_B_ENGINE={
-    version:'Grandis Legacy PvP v3.75.7',
+    version:'Grandis Legacy PvP v3.75.8',
     getSnapshot:glPvpBridgeSnapshot,
     intent:function(name,args){
       args=args||[];
