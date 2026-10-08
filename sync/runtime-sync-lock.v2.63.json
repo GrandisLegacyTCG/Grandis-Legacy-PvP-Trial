@@ -1,0 +1,419 @@
+{
+  "version": "v2.63",
+  "schema_version": "2.63-pvp-v351-consumer",
+  "policy": "RUNTIME_FIRST_FAIL_CLOSED_SYNC",
+  "application": "PvP v3.51 Final Stability Release 2026-09-28",
+  "releaseReady": true,
+  "sourceAuthority": "v1.9.5",
+  "sharedRuntime": "v1.94.2",
+  "runtimeData": "v0.16.2",
+  "effectRecipe": "v0.15.2",
+  "effectCheckpoint": "v0.15.2",
+  "heroComponents": "v1.1.0",
+  "starterAuthority": "v1.6.1",
+  "uiContract": "v2.53",
+  "canonicalRegistryHash": "7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389",
+  "heroComponentRegistryHash": "f36f1cc83eb9845743176c3af71f7823125353eae73e832588e9d8b42c6818be",
+  "requiredSourceStack": {
+    "behaviorReference": "PvP v3.51 same-version correction preserves the completed v3.51 server-authoritative gameplay/runtime while correcting only Hero EXP Ready/Exhausted physical-size parity and invalid custom Deck Import interaction/retry. VS AI v6.48/v0.71 is presentation/interaction reference only.",
+    "sourceAuthorityStackBundle": "1.9.5",
+    "oneSourceAuthority": "1.9.5",
+    "canonicalCardAuthority": "1.6.0",
+    "runtimeData": "0.16.2",
+    "effectCheckpoint": "0.15.2",
+    "effectRecipe": "0.15.2",
+    "legalityMap": "1.5.0",
+    "heroComponentAuthority": "1.1.0",
+    "canonicalRegistryHash": "7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389",
+    "heroComponentRegistryHash": "f36f1cc83eb9845743176c3af71f7823125353eae73e832588e9d8b42c6818be",
+    "runtimeFoundation": "1.94.2",
+    "uiLock": "2.53",
+    "starter60": "1.6.1",
+    "applicationRuntimeSync": "2.63",
+    "activeStarterCount": 5
+  },
+  "runtimeFiles": [
+    {
+      "path": "data/config/active-runtime-source-stack.v1.94.2.json",
+      "sha256": "ae9a5b3d586c32531e6934559a0ea271eed1242e6767fe77b095bfe87edc88c2"
+    },
+    {
+      "path": "data/season1/card-preview.generated.v0.16.2.json",
+      "sha256": "f94d45cc43aec39723219db56419b0649e7ada48d3236fccf68a3b689b7b79d1"
+    },
+    {
+      "path": "data/season1/cards.runtime.v0.16.2.json",
+      "sha256": "79f090fb78fb45b6fc48646c664438d5d5d4c3bab67f72aa36bc89bbccbd89f0"
+    },
+    {
+      "path": "data/season1/effect-checkpoint.v0.15.2.json",
+      "sha256": "c76b681025136f39d4600871f3240a599abd4e015477889d2123fc8dc9ff9918"
+    },
+    {
+      "path": "data/season1/effect-recipes.runtime.v0.15.2.json",
+      "sha256": "173728d564f93d95afda938426492ce853f88179e67ca4147a5fb9c530255b3d"
+    },
+    {
+      "path": "data/season1/hero-components.runtime.v1.1.0.json",
+      "sha256": "dd9214ff354b42a644c98d0b30d1b3535db404a36f12c1550a181bf51b505a45"
+    },
+    {
+      "path": "data/season1/legality-map.runtime.v1.5.0.json",
+      "sha256": "cb2ec172077efe3a52f6fc4b89e0556215348b97d9b773e63a0997499e49f955"
+    },
+    {
+      "path": "data/starter-decks/ACTIVE_STARTERS_v1.6.1.json",
+      "sha256": "d818646d13bf41414d81aedeb14495e8308b2882c7f9bd2e50215be5e615dd10"
+    },
+    {
+      "path": "data/starter-decks/Grandis_Legacy_Starter_Deck_Presets_v1.6.1_LocalAI_PvP.json",
+      "sha256": "c3314691accc56089e04bb95bd2f9987f2c90aec48907ff6104c04d6d0d0fc28"
+    },
+    {
+      "path": "data/starter-decks/active/starter_01_elemental_lord_conqueror_renegade_GL_DECK_1_0.json",
+      "sha256": "7dd79899df1e392f6e20dcea9c37ec5cc0fd4bc4f1518e24189dc47834900906"
+    },
+    {
+      "path": "data/starter-decks/active/starter_02_saint_crusader_grand_ranger_GL_DECK_1_0.json",
+      "sha256": "6a8cf81226a2c6eceedb0e787d997500785516c2e39dfadce1c4aa7e5f2a7016"
+    },
+    {
+      "path": "data/starter-decks/active/starter_03_arcane_duelist_elemental_lord_saint_GL_DECK_1_0.json",
+      "sha256": "654235085752ca52cf42dc5df94bfa5551c2edb068e6b54c0b61c1d99bea3481"
+    },
+    {
+      "path": "data/starter-decks/active/starter_04_grand_ranger_grand_arbalest_renegade_GL_DECK_1_0.json",
+      "sha256": "a92148153a57ef1fdc96f6582424c47251fb8b39fa235c5660323a6bde0fbdda"
+    },
+    {
+      "path": "data/starter-decks/active/starter_05_renegade_arcane_duelist_elemental_lord_GL_DECK_1_0.json",
+      "sha256": "2367b595bd74c546ee83ecdfe39b16d594deaada89afa08d0232ad19b9640324"
+    },
+    {
+      "path": "package.json",
+      "sha256": "7704d7223ffb18b656d44f73b3f210de21d35c3cd10355ddb7711caec9855169"
+    },
+    {
+      "path": "public/css/app.css",
+      "sha256": "9a18121ba0cf3644207a7f8bc8e2073413ae6f08aa987effb077ea110ba739a8"
+    },
+    {
+      "path": "public/index.html",
+      "sha256": "f38b24c3678d53e3610442309caa43d4ec23892cd2d46b34ca179c72a9726834"
+    },
+    {
+      "path": "public/js/app.bundle.js",
+      "sha256": "ff42da9f22fedb80dda944df28699a6d3eeae9d1fa8fb5aa05321abd766713e7"
+    },
+    {
+      "path": "public/js/mobile-app-nav.js",
+      "sha256": "91f1d8cd4d860bf76587f3da03481c3e8016be282265a1d4c966904b36bf3d20"
+    },
+    {
+      "path": "public/js/pvp-network.js",
+      "sha256": "9f4e9b0897a0b1268cc8ae8d45236ba44cee09077ef2a8993720802e0c4a7d31"
+    },
+    {
+      "path": "public/js/runtime-authority.js",
+      "sha256": "bacafbe720fa83ddb68267114ba7a718f16c44a4b20453decc86ed63b190c8f4"
+    },
+    {
+      "path": "public/js/static-data.js",
+      "sha256": "ce80a5cf5e8fd78a3b2d5b9b02a1076ce2bbb584a7cd93522b29f49da2010fc6"
+    },
+    {
+      "path": "public/starter_deck_examples/Grandis_Legacy_Starter_Deck_Presets_v1.6.1_PvP.json",
+      "sha256": "13e51f25b90e39264997ef1379611c1053e9990a6cf34dcb4750be80c80ad97e"
+    },
+    {
+      "path": "runtime/adapters/local-ai-adapter.js",
+      "sha256": "d0b5b4f9d39eb96dbe371d8bd87bd8e3c05d73d9ef4fa98cdb921fe2ec74c50d"
+    },
+    {
+      "path": "runtime/adapters/pvp-adapter.js",
+      "sha256": "f5775dbbd2c4cc53b8bfab954bcaa1c15f0c6963880bb79f0e959dd3b0384fed"
+    },
+    {
+      "path": "runtime/browser/runtime-authority.browser.js",
+      "sha256": "bacafbe720fa83ddb68267114ba7a718f16c44a4b20453decc86ed63b190c8f4"
+    },
+    {
+      "path": "runtime/contracts/intent-contract.js",
+      "sha256": "50b812c2f53408ab1a059976b357e5ea3ff89903bba86e7464823d2f7d4411a9"
+    },
+    {
+      "path": "runtime/contracts/pending-contract.js",
+      "sha256": "c5a02252bc41bfad20bb4f959bfb932447c84605e174ce2109eae93597f39895"
+    },
+    {
+      "path": "runtime/contracts/runtime-api-contract.js",
+      "sha256": "1279db4f19afa85fa62154a66b94a66c0c2e9313544af3f748606703e21b6055"
+    },
+    {
+      "path": "runtime/core/attachment-lifecycle-policy.js",
+      "sha256": "76d00ac5b5051e626c9921a79d612a2df31e075adc4bbb7e4b28833accbfa1d7"
+    },
+    {
+      "path": "runtime/core/attack-damage-classification-policy.js",
+      "sha256": "0454ee0d6c772f9b58843330b1a43ac1bfb686ba8746c1cd37aa5fa1e6bc444e"
+    },
+    {
+      "path": "runtime/core/card-instance-finalization-policy.js",
+      "sha256": "d476411b02078658bfc2cd3029f983826aa87072a6c1f58d09f1b75314887d3e"
+    },
+    {
+      "path": "runtime/core/constants.js",
+      "sha256": "25ffbddf9d6dbc6c9215c11c268244f43cb78941e982888695ccf478d3fc5669"
+    },
+    {
+      "path": "runtime/core/deckout-policy.js",
+      "sha256": "e4232f6a00decb0af264a61325f850a6a46130cd433c95941b6cfbf3f3d1d71d"
+    },
+    {
+      "path": "runtime/core/draw-policy.js",
+      "sha256": "0334cf7f5eb02e3a9fea504e91e8e75823d283e53887b3eaf9dd67c81990af8e"
+    },
+    {
+      "path": "runtime/core/event-log.js",
+      "sha256": "b7ebef7477017b9b62277998922a78aa37e29ad83bafbb6ce9b73c2877079d95"
+    },
+    {
+      "path": "runtime/core/exhaust-policy.js",
+      "sha256": "9f7cf64d96e25143099d3e33b9d0d16d9b1dec3479b9595905a2d82cbca30877"
+    },
+    {
+      "path": "runtime/core/heal-policy.js",
+      "sha256": "d545e16d05941e15bbcc8bcd0dff3d4fdf8ce9617a2d5419eff0d7df8f1a32dd"
+    },
+    {
+      "path": "runtime/core/hero-defeat-lifecycle.js",
+      "sha256": "763bad45e1e4e9854857087e0158fdc7505dad115bd10ef3e22c82c85ae9b246"
+    },
+    {
+      "path": "runtime/core/index.js",
+      "sha256": "deebef6b1365fdfc0543a0d17588e23b71e85e73f20d13d7f1398e60acc14a21"
+    },
+    {
+      "path": "runtime/core/legacy-defeat-policy.js",
+      "sha256": "c2ed3920e750c487dfeee44a82358a3a40ccab1d7db62cd98ad493c94f9e9334"
+    },
+    {
+      "path": "runtime/core/legacy-racial-taunt-policy.js",
+      "sha256": "f3a0bc635701a4aa191a5a9364041c825483cfda61c8ccf68b9ca333240a2303"
+    },
+    {
+      "path": "runtime/core/local-ai-integration-policy.js",
+      "sha256": "8b563730a129a59e4d7fa5ca126bd215661f5c40a52943d4e615276e3e2bc958"
+    },
+    {
+      "path": "runtime/core/mana-deck-policy.js",
+      "sha256": "b7049c3e6a5e096e8ead8f3e7637a77b17a324f4c30941b72e9a50a0f788bab6"
+    },
+    {
+      "path": "runtime/core/pending-close-policy.js",
+      "sha256": "0ba0185d4f6badf319e699b08d6db24b87905f5f6a3504e990232b80d383b095"
+    },
+    {
+      "path": "runtime/core/positioning-policy.js",
+      "sha256": "172775cd0ad640c2719989929ed085c16f4a2c9f8562f12fe551590c841df7d0"
+    },
+    {
+      "path": "runtime/core/reducer.js",
+      "sha256": "68732c3ef75c13f32c3c89feab4d735ec0afddbf75b18662712a8641cdc93875"
+    },
+    {
+      "path": "runtime/core/response-availability-policy.js",
+      "sha256": "9da5d3bdfe4c6b16f53e1751b61e6430f2327c58a158fdd867bc6375e6cd8542"
+    },
+    {
+      "path": "runtime/core/rules.js",
+      "sha256": "8ef3110d2b256909e4e0436b3f4fbc4d9aaa98fa0f585c63432ec5ec6ec80f59"
+    },
+    {
+      "path": "runtime/core/source-sync-rules.js",
+      "sha256": "61e424da79508e28a094b317166206eb80c932a1319519f7245d0c9033428e4f"
+    },
+    {
+      "path": "runtime/core/swap-reposition-policy.js",
+      "sha256": "0596b9bcde3899f74d82080cfc8e2df47cdd56db07e9f86e4b98630912411f0a"
+    },
+    {
+      "path": "runtime/core/tribute-policy.js",
+      "sha256": "bae32ff5cb0a05fb28b9010031ec6a473efef1c1cc7504063fcb831eeedb66aa"
+    },
+    {
+      "path": "runtime/core/triple-shot-policy.js",
+      "sha256": "fdbd30a3c01b01e92fd9510014c6aaaac1ea4df33dac512fe199793e4636e981"
+    },
+    {
+      "path": "runtime/data/hero-component-resolver.js",
+      "sha256": "491682a354b5118a1ebb46ab607fa452b8a3f38226a874cf00a434725085ddff"
+    },
+    {
+      "path": "runtime/data/one-source-loader.js",
+      "sha256": "2836c8026e3a4887b55511775bb99a07109a498a0dc2c34f8637d3bc52046947"
+    },
+    {
+      "path": "runtime/effects/conditional-follow-up.js",
+      "sha256": "ae8d38442a3d11f2791e63bd318285011a995043b499f04715f53f79ed90f0a9"
+    },
+    {
+      "path": "runtime/effects/effect-registry.js",
+      "sha256": "d18de865b0af7b388ef664bcc9d0213e27db3d4c093c10e70cad5ff03b4ff0c5"
+    },
+    {
+      "path": "runtime/effects/recipe-bucket-engine.js",
+      "sha256": "20c40b5ee41cab55ae73ae201fbdcde51a7c87fb6570f3eaff556bd76567fe72"
+    },
+    {
+      "path": "runtime/effects/recipe-dispatcher.js",
+      "sha256": "b375ef4db791eb6a4f2dfac0f3adba3803bcdc66e40a19df425a2d5b1e9db105"
+    },
+    {
+      "path": "runtime/engines/attachment-engine.js",
+      "sha256": "115a32c957fdba85360c7b0b1f486e2a9b376e3710e7491f68699b2e2169976e"
+    },
+    {
+      "path": "runtime/engines/attack-engine.js",
+      "sha256": "b23a6404fad3f8187e1e89e2235f2b5c0c843c11f17c4f54465adc2a9557d3f1"
+    },
+    {
+      "path": "runtime/engines/casting-engine.js",
+      "sha256": "1274e4a4343c3252f6ec253cc074576dc6d4604fbd1b06bce84d1f744c0560ba"
+    },
+    {
+      "path": "runtime/engines/damage-engine.js",
+      "sha256": "208678ea4f006bdf5e3517735e35ec4015287f705f8afcc870d1c3eb296a0f17"
+    },
+    {
+      "path": "runtime/engines/def-engine.js",
+      "sha256": "d2595c4d71ae5b67f965e0f2d2b591d49e1ce453597c423203fc918780fdfd66"
+    },
+    {
+      "path": "runtime/engines/fixture-rules-engine.js",
+      "sha256": "7984ee1c14453b0dd8c07bd23665093eb2807d266d1482d76609a55eef5cf540"
+    },
+    {
+      "path": "runtime/engines/legacy-engine.js",
+      "sha256": "7fffc69d78c20c0bf63b7dd6498a6df512318a7b8df3ce57b40c1c70495fee05"
+    },
+    {
+      "path": "runtime/engines/response-engine.js",
+      "sha256": "62e3ac8569218332a423c5cb13a4a299c2901b978b56504ec8d17c0538f9b369"
+    },
+    {
+      "path": "runtime/engines/status-engine.js",
+      "sha256": "ab76ec163fcc42f32ec5f4836d65b046cae0a5f1eb67b9252529417ebd428f2d"
+    },
+    {
+      "path": "runtime/index.js",
+      "sha256": "0586219765fb2084ac6848b322266dea93e6882af3db2a4f6988476f11847e83"
+    },
+    {
+      "path": "runtime/package.json",
+      "sha256": "11b53c7eff3c5fbc3db4fd1282271b78deef2fee114324c7da0ab471668ac89d"
+    },
+    {
+      "path": "runtime/rankup/rankup-policy.js",
+      "sha256": "1a5b36523ade616e09015f5409003130db52335b93b249d195444e2e0296c923"
+    },
+    {
+      "path": "runtime/schemas/card.schema.json",
+      "sha256": "daeba71e0dbeb48217162038ab944a562bc8205d15000049a245e67f7791e88e"
+    },
+    {
+      "path": "runtime/schemas/conditional-follow-up.schema.json",
+      "sha256": "6ceb37d6af6f427ac7603cb0aa3faedb8456528d652b33930485d4b6f76ae88b"
+    },
+    {
+      "path": "runtime/schemas/deck.schema.json",
+      "sha256": "6040465ea9b5ad36e371b66e2513c20de7d46360efcb8e5cb0088e49879d9576"
+    },
+    {
+      "path": "runtime/schemas/effect-recipe.schema.json",
+      "sha256": "bea57a0988f8afe40b9b87ba850f97f3ef0a25bb529c92998ecff5a39950bca1"
+    },
+    {
+      "path": "runtime/templates/card-database.example.json",
+      "sha256": "4e2aefb95152155fc6f9722431c29be025e79efa0a3f9b5d5313740f22f69ad6"
+    },
+    {
+      "path": "runtime/templates/card.schema.template.json",
+      "sha256": "b407f3c13129a5a374e3369eb91c277175de55f894c4543a0d1fc5b7130b6192"
+    },
+    {
+      "path": "runtime/templates/deck.schema.template.json",
+      "sha256": "f11869a81058c1cce55eeae73d5a18fa3d182361ef567e1b22bac56a4891c46e"
+    },
+    {
+      "path": "runtime/templates/effect-recipe.template.json",
+      "sha256": "1a7bed70d6d312eac39ba665fd26904823cf1cfe510bb3c19ef9497f225ed7a0"
+    },
+    {
+      "path": "runtime/tools/audit-assets.js",
+      "sha256": "0998eeed4ef70b58ebfc0171a08b8e251c470fc621020092a1200f682443957e"
+    },
+    {
+      "path": "runtime/tools/basic-schema-check.js",
+      "sha256": "5c320dddb5557fb2b57f989ebc8102d6dd1a554936972577b9a770edc76abb2b"
+    },
+    {
+      "path": "runtime/tools/convert-starter60-decks.js",
+      "sha256": "d5fe45218aa792e779c326a0d31afb582f64325e2b8dfdc3d3270456cb5205de"
+    },
+    {
+      "path": "runtime/tools/generate-season1-coverage-matrix.js",
+      "sha256": "f290a6fd2fff0e10d12bf4144164cceba22f8c5073a377ed362bdcc4c51233ec"
+    },
+    {
+      "path": "runtime/tools/import-card-database.js",
+      "sha256": "d997827127fb2d3caf86f3a71916b27fb492fab83f0b1a9ffef0208421b45604"
+    },
+    {
+      "path": "runtime/tools/validate-card-database.js",
+      "sha256": "8da0984bce3259401f26dd8931c0ec1bdb7304d236a642123447791baa97e9d8"
+    },
+    {
+      "path": "runtime/tools/validate-effect-recipes.js",
+      "sha256": "d44a6624d86752aaebbdadd3538ba5ec702d6df2b06bab2967aecf030f060371"
+    },
+    {
+      "path": "runtime/validators/cost-validator.js",
+      "sha256": "7f0a9ead3f175c33839796910da2b8ad14b5063bfefc429296402549b3caac5f"
+    },
+    {
+      "path": "runtime/validators/source-validator.js",
+      "sha256": "44e3da80d664173b8ec86dc3ce333a21ec522bbd0549db57d80097c225b7fc8c"
+    },
+    {
+      "path": "runtime/validators/target-validator.js",
+      "sha256": "cab2bcad1d66931cb862a7de050cd971118a03fe970a83ae00d1d00c5de3d94b"
+    },
+    {
+      "path": "runtime/validators/timing-validator.js",
+      "sha256": "4318e180e87489f52c5327fe14a115e298e40ea162b0eabc800b31b34f1e54ed"
+    },
+    {
+      "path": "server.js",
+      "sha256": "080678887b5197a2306c6479d3ce150ad7798d09ea737c5c65faa5330e6aa9f8"
+    },
+    {
+      "path": "server/gameplay-intent-router.mjs",
+      "sha256": "7ac076d8909ae909d80398728bad09dfbe57a8b21524b694705412386503c55a"
+    },
+    {
+      "path": "server/headless-runtime-compat.mjs",
+      "sha256": "8fdf32801f2ea1646ec3231cea60dbdf81da46c7eba8dcdffc529cf20bf6f13d"
+    },
+    {
+      "path": "sync/runtime-sync-verifier.mjs",
+      "sha256": "d88e3eb49f5bc578c6b55cf10ee0b93adf5b8529cd22c74be59e63f6051073a4"
+    }
+  ],
+  "authorityVerified": true,
+  "heroComponentsVerified": true,
+  "season1CardCount": 200,
+  "activeStarterCount": 5,
+  "networkArchitecture": "SERVER_AUTHORITATIVE_GAMEPLAY_INTENT_ROUTER",
+  "hiddenInformationContract": "VIEWER_SAFE_STATE_PRESERVED"
+}

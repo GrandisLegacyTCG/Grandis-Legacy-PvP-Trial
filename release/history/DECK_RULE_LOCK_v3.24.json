@@ -1,0 +1,8 @@
+{
+  "version": "v3.24",
+  "date": "2026-09-03",
+  "main_deck_valid_sizes": [50, 60],
+  "normal_card_max_copies": 3,
+  "ultimate_max_copies": 1,
+  "note": "Unchanged from v3.23. PvP v3.24 changes only authoritative Draw Review / Aura Infusion Bolt draw-counter handling."
+}

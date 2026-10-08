@@ -1,0 +1,19 @@
+
+> grandis-legacy-pvp@3.0.43-candidate.3c verify:manifest
+> node tools/verify-package.cjs
+
+{
+  "ok": true,
+  "rootManifest": {
+    "files": 415,
+    "missing": 0,
+    "hashMismatch": 0,
+    "sizeMismatch": 0
+  },
+  "frontendManifest": {
+    "files": 61,
+    "missing": 0,
+    "hashMismatch": 0,
+    "sizeMismatch": 0
+  }
+}

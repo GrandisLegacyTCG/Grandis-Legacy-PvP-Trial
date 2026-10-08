@@ -1,11 +1,17 @@
 {
-  "version": "Grandis Legacy PvP v3.75.5",
-  "buildId": "gl-pvp-3.75.5-v351-gameplay-v6907-ui-2026-10-08",
-  "networkModel": "Grandis Legacy PvP v3.51",
-  "uiModel": "Grandis Legacy VS AI v6.90.7",
-  "integrationDonor": "pvp-fresh v3.73.20 — lobby/start-game/opening only; gameplay sync/payment excluded",
-  "canonicalLayout": "PvP v3.51-style public/js + public/css + public/shared-ui",
-  "generated": "2026-10-08",
-  "networkTransactionModel": "PvP v3.51 one intent -> authoritative commit/snapshot -> next intent",
-  "gameplayAuthority": "Grandis Legacy PvP v3.51 canonical runtime"
+  "pvp_version": "v3.75.6",
+  "date": "2026-10-09",
+  "build_id": "gl-pvp-3.75.6-v351-core-v6907-ui-2026-10-09",
+  "architecture": {
+    "gameplay_network_authority": "Grandis Legacy PvP v3.51",
+    "ui_ux_presentation": "Grandis Legacy VS AI v6.90.7",
+    "lobby_start_presentation": "pvp-fresh v3.73.20 (presentation donor only)"
+  },
+  "source_directory": "Grandis_Legacy_PvP_v3.75.6_GitHub_Repository_2026-10-09/public/",
+  "notes": [
+    "v3.73.20 gameplay intent queue/exact-payment backend is intentionally excluded.",
+    "Browser and server gameplay contracts use the v3.51 runtime/payment model.",
+    "VS AI v6.90.7 Option-B battlefield UI is adapted as a presentation/controller skin.",
+    "Opening presentation: alternating Player/Opponent hand x6, alternating Player/Opponent Shard x3, then first-player normal Draw Phase."
+  ]
 }

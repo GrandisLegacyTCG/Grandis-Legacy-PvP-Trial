@@ -1,0 +1,14 @@
+{
+  "version": "v3.31",
+  "date": "2026-09-04",
+  "main_deck_required_count": 60,
+  "normal_copy_limit": 3,
+  "ultimate_copy_limit": 1,
+  "validation_layers": [
+    "lobby import",
+    "runtime deck validator",
+    "server authoritative validator"
+  ],
+  "source_stack": "v1.7.3",
+  "change_from_v3_30": "none"
+}

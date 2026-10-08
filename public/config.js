@@ -1,23 +1,24 @@
-/* Grandis Legacy PvP v3.75.5 — static fallback config.
-   The Node server serves its own /config.js dynamically for same-origin deployments. */
+/* Grandis Legacy PvP v3.75.6 — static GitHub Pages frontend config.
+   The Website /pvp/ frontend connects to the two remote Northflank-compatible WebSocket room services. */
 (function(){
   'use strict';
   window.GL_APP_MODE='PVP';
-  window.GL_PVP_CLIENT_MODE=true;
-  window.GL_PVP_SHARED_BOARD_ACTIVE=true;
   window.GL_CONFIG={
-    version:'Grandis Legacy PvP v3.75.5',
-    buildId:'gl-pvp-3.75.5-v351-gameplay-v6907-ui-2026-10-08',
+    version:'Grandis Legacy PvP v3.75.6 — v3.51 Core / v6.90.7 UI' ,
+    buildId:'gl-pvp-3.75.6-v351-core-v6907-ui-2026-10-09',
     mode:'server-authoritative-human-vs-human',
-    singleRoom:true,
-    roomId:'GRANDIS_PVP',
-    roomName:'Grandis PvP',
     wsPath:'/ws',
-    wsBase:'',
+    connectionTimeoutMs:10000,
+    publicFrontendUrl:'https://grandislegacytcg.github.io/pvp/',
+    homeUrl:'https://grandislegacytcg.github.io/',
+    room1WsBase:'wss://p01--grandis-legacy-pvp--2kwws8nzlcc2.code.run',
+    room2WsBase:'wss://p01--grandis-legacy-pvp-room2--2kwws8nzlcc2.code.run',
+    deckBuilderUrl:'https://grandislegacytcg.github.io/Grandis-Legacy-Deck-Builder/style-1/',
+    mobileDeckBuilderUrl:'https://grandislegacytcg.github.io/Grandis-Legacy-Deck-Builder/style-2/',
+    aiLobbyUrl:'https://grandislegacytcg.github.io/Grandis-Legacy-VS-AI/',
     maxPlayers:2,
     maxSpectators:4,
-    spectatorView:'CARD_BACKS',
-    teachingViewAvailable:false
+    spectatorView:'CARD_BACKS'
   };
   window.GL_PVP_CONFIG=window.GL_CONFIG;
 })();

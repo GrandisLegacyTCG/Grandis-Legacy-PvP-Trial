@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const app=fs.readFileSync(path.join(root,'public/js/app.bundle.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'public/css/app.css'),'utf8');
+assert(app.includes("else if(state.phase==='Reform'){ pushLog(state,'PLAYER enters End Phase and ends the turn automatically.'"),'Reform does not enter automatic End handoff');
+assert(app.includes('function continueAutomaticPlayerEndTurn(state)'),'automatic End continuation missing');
+assert(app.includes('state.endPhaseCleanupProgress={key:cleanupKey,status_ticks_done:false}'),'resumable End cleanup missing');
+assert(app.includes('scheduleAutomaticPlayerEndResume(appState)'),'mandatory End choice resume missing');
+for(const name of ['NotoSans-Variable.woff2','NotoSans-Italic-Variable.woff2'])assert(fs.existsSync(path.join(root,'public/assets/fonts/noto-sans',name)),name+' missing');
+assert(css.includes('../assets/fonts/noto-sans/NotoSans-Variable.woff2')&&css.includes('../assets/fonts/noto-sans/NotoSans-Italic-Variable.woff2'),'font-face paths missing');
+console.log('PASS PvP v2.6.18 automatic End handoff, resumable cleanup, and Noto Sans binaries');

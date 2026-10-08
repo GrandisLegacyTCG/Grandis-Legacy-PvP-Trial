@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "authority": "Deck Builder v1.31 Style 1",
+  "expectedComponent": "31px | 74px | 31px; outer 138x33 CSS px",
+  "viewports": [
+    {
+      "viewport": "1366x768",
+      "kind": "desktop",
+      "rankControlRect": {
+        "x": 292,
+        "y": 504.046875,
+        "width": 138,
+        "height": 33
+      },
+      "style1ComputedParity": true,
+      "rankI": true,
+      "rankII": true,
+      "rankIII": true,
+      "rankPreviewNetworkMutation": false,
+      "heroSwapPreserved": true
+    },
+    {
+      "viewport": "1024x768",
+      "kind": "tablet-landscape",
+      "rankControlRect": {
+        "x": 312.265625,
+        "y": 605.78125,
+        "width": 138,
+        "height": 33
+      },
+      "style1ComputedParity": true,
+      "rankI": true,
+      "rankII": true,
+      "rankIII": true,
+      "rankPreviewNetworkMutation": false,
+      "heroSwapPreserved": true
+    },
+    {
+      "viewport": "768x1024",
+      "kind": "tablet-portrait",
+      "rankControlRect": {
+        "x": 187,
+        "y": 488.875,
+        "width": 138,
+        "height": 33
+      },
+      "style1ComputedParity": true,
+      "rankI": true,
+      "rankII": true,
+      "rankIII": true,
+      "rankPreviewNetworkMutation": false,
+      "heroSwapPreserved": true
+    },
+    {
+      "viewport": "390x844",
+      "kind": "phone",
+      "rankControlRect": {
+        "x": 126,
+        "y": 415.140625,
+        "width": 138,
+        "height": 33
+      },
+      "style1ComputedParity": true,
+      "rankI": true,
+      "rankII": true,
+      "rankIII": true,
+      "rankPreviewNetworkMutation": false,
+      "heroSwapPreserved": true
+    }
+  ],
+  "page_errors": []
+}

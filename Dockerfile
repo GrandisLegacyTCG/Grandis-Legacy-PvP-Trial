@@ -10,6 +10,8 @@ COPY server.js ./server.js
 COPY server ./server
 COPY public ./public
 COPY data ./data
+COPY runtime ./runtime
+COPY sync ./sync
 
 EXPOSE 3000
 CMD ["node", "server.js"]

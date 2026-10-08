@@ -1,0 +1,420 @@
+{
+  "viewports": [
+    {
+      "viewport": "1440x900",
+      "kind": "desktop",
+      "components": {
+        "shell": {
+          "vs": {
+            "x": 0,
+            "y": 0,
+            "w": 1440,
+            "h": 900
+          },
+          "pvp": {
+            "x": 0,
+            "y": 0,
+            "w": 1440,
+            "h": 900
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "p_left": {
+          "vs": {
+            "x": 187.078125,
+            "y": 486.84375,
+            "w": 152.15625,
+            "h": 213.03125
+          },
+          "pvp": {
+            "x": 187.078125,
+            "y": 486.84375,
+            "w": 152.15625,
+            "h": 213.03125
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "p_center": {
+          "vs": {
+            "x": 491.40625,
+            "y": 486.84375,
+            "w": 152.15625,
+            "h": 213.03125
+          },
+          "pvp": {
+            "x": 491.40625,
+            "y": 486.84375,
+            "w": 152.15625,
+            "h": 213.03125
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "p_right": {
+          "vs": {
+            "x": 765.3125,
+            "y": 517.28125,
+            "w": 213.03125,
+            "h": 152.15625
+          },
+          "pvp": {
+            "x": 765.3125,
+            "y": 517.28125,
+            "w": 213.03125,
+            "h": 152.15625
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "o_left": {
+          "vs": {
+            "x": 187.078125,
+            "y": 200.109375,
+            "w": 152.171875,
+            "h": 213.046875
+          },
+          "pvp": {
+            "x": 187.078125,
+            "y": 200.109375,
+            "w": 152.171875,
+            "h": 213.046875
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "o_center": {
+          "vs": {
+            "x": 460.96875,
+            "y": 230.546875,
+            "w": 213.046875,
+            "h": 152.171875
+          },
+          "pvp": {
+            "x": 460.96875,
+            "y": 230.546875,
+            "w": 213.046875,
+            "h": 152.171875
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "o_right": {
+          "vs": {
+            "x": 795.734375,
+            "y": 200.109375,
+            "w": 152.171875,
+            "h": 213.046875
+          },
+          "pvp": {
+            "x": 795.734375,
+            "y": 200.109375,
+            "w": 152.171875,
+            "h": 213.046875
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "hp": {
+          "vs": {
+            "x": 596.34375,
+            "y": 493.71875,
+            "w": 46,
+            "h": 21
+          },
+          "pvp": {
+            "x": 596.34375,
+            "y": 493.71875,
+            "w": 46,
+            "h": 21
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "hero_control": {
+          "vs": {
+            "x": 620.65625,
+            "y": 518.703125,
+            "w": 92,
+            "h": 16
+          },
+          "pvp": {
+            "x": 620.65625,
+            "y": 518.703125,
+            "w": 92,
+            "h": 16
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "status": {
+          "vs": null,
+          "pvp": null,
+          "delta": null,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "attachment": {
+          "vs": {
+            "x": 432.54852294921875,
+            "y": 607.09521484375,
+            "w": 69.1842041015625,
+            "h": 94.6376953125
+          },
+          "pvp": {
+            "x": 432.54852294921875,
+            "y": 607.09521484375,
+            "w": 69.1842041015625,
+            "h": 94.6376953125
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "hand": {
+          "vs": {
+            "x": 3,
+            "y": 841.5625,
+            "w": 1129,
+            "h": 55.4375
+          },
+          "pvp": {
+            "x": 3,
+            "y": 841.5625,
+            "w": 1129,
+            "h": 55.4375
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "hand_card": {
+          "vs": {
+            "x": 432.6355285644531,
+            "y": 840.4887084960938,
+            "w": 72.28408813476562,
+            "h": 96.76947021484375
+          },
+          "pvp": {
+            "x": 432.6355285644531,
+            "y": 840.4887084960938,
+            "w": 72.28408813476562,
+            "h": 96.76947021484375
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "shard_pool": {
+          "vs": {
+            "x": 106,
+            "y": 731.21875,
+            "w": 923,
+            "h": 103.34375
+          },
+          "pvp": {
+            "x": 106,
+            "y": 731.21875,
+            "w": 923,
+            "h": 103.34375
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "shard": {
+          "vs": {
+            "x": 433.859375,
+            "y": 740.265625,
+            "w": 60.890625,
+            "h": 85.25
+          },
+          "pvp": {
+            "x": 433.859375,
+            "y": 740.265625,
+            "w": 60.890625,
+            "h": 85.25
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "racial": {
+          "vs": {
+            "x": 992.40625,
+            "y": 83,
+            "w": 32.59375,
+            "h": 68.1875
+          },
+          "pvp": {
+            "x": 992.40625,
+            "y": 83,
+            "w": 32.59375,
+            "h": 68.1875
+          },
+          "delta": 0.0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "legacy": {
+          "vs": {
+            "x": 9,
+            "y": 493.765625,
+            "w": 90,
+            "h": 118
+          },
+          "pvp": {
+            "x": 9,
+            "y": 493.765625,
+            "w": 90,
+            "h": 118
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "shard_deck": {
+          "vs": {
+            "x": 9,
+            "y": 683.296875,
+            "w": 90,
+            "h": 118
+          },
+          "pvp": {
+            "x": 9,
+            "y": 683.296875,
+            "w": 90,
+            "h": 118
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "discard": {
+          "vs": {
+            "x": 1036,
+            "y": 493.765625,
+            "w": 90,
+            "h": 118
+          },
+          "pvp": {
+            "x": 1036,
+            "y": 493.765625,
+            "w": 90,
+            "h": 118
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "main_deck": {
+          "vs": {
+            "x": 1036,
+            "y": 683.296875,
+            "w": 90,
+            "h": 118
+          },
+          "pvp": {
+            "x": 1036,
+            "y": 683.296875,
+            "w": 90,
+            "h": 118
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "mana_regen": {
+          "vs": {
+            "x": 1069,
+            "y": 301.296875,
+            "w": 24,
+            "h": 24
+          },
+          "pvp": {
+            "x": 1069,
+            "y": 301.296875,
+            "w": 24,
+            "h": 24
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "phase": {
+          "vs": {
+            "x": 1137,
+            "y": 79.796875,
+            "w": 300,
+            "h": 342.75
+          },
+          "pvp": {
+            "x": 1137,
+            "y": 79.796875,
+            "w": 300,
+            "h": 342.75
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        },
+        "card_played": {
+          "vs": {
+            "x": 1137,
+            "y": 426.546875,
+            "w": 300,
+            "h": 439.453125
+          },
+          "pvp": {
+            "x": 1137,
+            "y": 426.546875,
+            "w": 300,
+            "h": 439.453125
+          },
+          "delta": 0,
+          "geometry_pass": true,
+          "style_pass": true
+        }
+      },
+      "overflow": {
+        "vs": false,
+        "pvp": false
+      },
+      "pass": true
+    }
+  ],
+  "interactions": {
+    "1440x900": {
+      "vs": {
+        "hero_quick": false,
+        "hand_quick": true,
+        "shard_quick": false,
+        "shard_detail": false,
+        "pointer_events": "none"
+      },
+      "pvp": {
+        "hero_quick": false,
+        "hand_quick": true,
+        "shard_quick": false,
+        "shard_detail": false,
+        "pointer_events": "none"
+      }
+    }
+  },
+  "page_errors": {
+    "vs": [],
+    "pvp": []
+  },
+  "geometry_pass": true,
+  "interaction_pass": true
+}

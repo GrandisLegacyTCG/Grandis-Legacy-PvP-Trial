@@ -1,0 +1,1 @@
+Grandis Legacy PvP v3.05: keep Back to Lobby on match results and lock server-authoritative finished-match cleanup to 1 minute; gameplay and GA4 unchanged.

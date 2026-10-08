@@ -1,0 +1,1 @@
+Grandis Legacy PvP v3.03: add GA4 PvP tracking and route Deck Builder navigation to Style 1; gameplay/network authority unchanged.

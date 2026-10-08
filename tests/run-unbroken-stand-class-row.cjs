@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.resolve(__dirname,'..');
+const dummy={style:{},classList:{add(){},remove(){},toggle(){},contains(){return false}},addEventListener(){},removeEventListener(){},setAttribute(){},removeAttribute(){},appendChild(){},querySelector(){return null},querySelectorAll(){return[]},focus(){},scrollIntoView(){},disabled:false,value:'',checked:false,hidden:false,get innerHTML(){return this._h||''},set innerHTML(v){this._h=String(v)},get textContent(){return this._t||''},set textContent(v){this._t=String(v)}};
+const document={readyState:'loading',addEventListener(){},removeEventListener(){},getElementById(){return dummy},querySelectorAll(){return[]},querySelector(){return null},createElement(){return {...dummy,style:{},classList:dummy.classList}},body:dummy,head:dummy};
+const window={document,GL_APP_MODE:'PVP',GL_PVP_SHARED_BOARD_ACTIVE:true,addEventListener(){},removeEventListener(){},dispatchEvent(){},setTimeout,clearTimeout,console};window.window=window;
+const ctx={window,document,console,setTimeout,clearTimeout,URL,CustomEvent:class{},localStorage:{getItem(){return null},setItem(){},removeItem(){}},navigator:{},location:{href:'http://localhost/'}};ctx.globalThis=ctx;window.globalThis=ctx;vm.createContext(ctx);
+for(const rel of ['public/js/static-data.js','public/js/runtime-authority.js','public/js/app.bundle.js'])vm.runInContext(fs.readFileSync(path.join(root,rel),'utf8'),ctx,{timeout:10000,filename:rel});
+const bridge=window.GL_LOCAL_AI_BRIDGE;if(!bridge||typeof bridge.testUnbrokenStandClassRows!=='function')throw new Error('Unbroken Stand QA bridge missing');
+bridge.startSharedMatch({playerDeckKey:'starter_01_elemental_lord_conqueror_renegade',aiDeckKey:'starter_02_saint_crusader_grand_ranger',firstPlayerSide:'PLAYER'});
+const got=bridge.testUnbrokenStandClassRows(),want={Warrior:false,Gladiator:false,Conqueror:false,Paladin:true,Crusader:true};
+for(const [key,value] of Object.entries(want))if(got[key]!==value)throw new Error(`${key}: expected ${value}, received ${got[key]}`);
+const reducer=fs.readFileSync(path.join(root,'runtime/core/reducer.js'),'utf8');
+if(!reducer.includes('unbrokenStandStatusImmunityEligibleForResponse'))throw new Error('Core reducer class-row gate missing');
+console.log(JSON.stringify({ok:true,card:'S1-WAR-022',rows:got},null,2));

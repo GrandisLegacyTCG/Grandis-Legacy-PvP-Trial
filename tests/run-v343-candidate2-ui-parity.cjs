@@ -1,0 +1,25 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..'),read=r=>fs.readFileSync(path.join(root,r),'utf8'),sha=r=>crypto.createHash('sha256').update(fs.readFileSync(path.join(root,r))).digest('hex');
+const ok=(v,m)=>{if(!v)throw new Error(m)};
+const index=read('public/index.html'),app=read('public/js/app.bundle.js'),net=read('public/js/pvp-network.js'),adapter=read('public/js/pvp-presentation-adapter.js'),css=read('public/css/app.css'),authority=read('public/css/battlefield-authority.css');
+ok(index.includes('window.GL_APP_MODE="PVP"'),'PVP app mode missing');
+ok(index.includes('gl-pvp-3.43-candidate2r-part-a'),'Candidate 2R-A cache token missing');
+ok(index.includes('css/battlefield-authority.css')&&index.includes('shared-ui/battlefield-ui.css')&&index.includes('shared-ui/battlefield-ui.js'),'Shared Candidate 15 presentation assets not wired');
+ok(app.includes('Grandis Legacy PvP v3.43 Candidate 2')&&app.includes('VS AI v6.42 Candidate 15 Battlefield'),'Candidate 2 visual authority marker missing');
+ok(app.includes('gl-lab-authority')&&app.includes('v642TabletBattlefieldCardTap')&&app.includes('hand-hover-active')&&app.includes('data-shard-preview-src'),'Candidate 15 Battlefield renderer/interaction family missing');
+ok(app.includes('compactTabletAbilityLabel')||app.includes("words[0]+'...'"),'Candidate 15 compact Hero control label behavior missing');
+ok(app.includes('isTouchFirstViewport')&&app.includes('v642DesktopAssetPreviewShow'),'Candidate 15 touch preview lifecycle missing');
+ok(adapter.includes('importViewerSafeSnapshot')&&adapter.includes('GL_LOCAL_AI_BRIDGE')&&adapter.includes('GL_ACTIVE_STARTER_DECKS')&&adapter.includes('pvpPrivateStateMasked===true'),'PvP presentation adapter/viewer-safe boundary missing');
+ok(net.includes('GL_PVP_PRESENTATION_ADAPTER')&&net.includes('adapter.importViewerSafeSnapshot')&&!net.includes('b.importCanonicalSnapshot(m.serverBoard'),'PvP snapshot path does not exclusively use presentation adapter');
+ok(net.includes('function handleSnapshot(msg)')&&net.includes('websocketBase()'),'PvP network architecture missing');
+ok(net.includes('gl-pvp-v260-lobby-style')&&net.includes('PVP LOBBY'),'Candidate 1 Lobby not preserved');
+ok(authority.includes('.gl-lab-authority')&&css.includes('.gl-lab-resource-rail'),'Candidate 15 shared CSS authority missing');
+ok(sha('public/css/app.css')==='a4bd309daf2904dc08020606e5ff690cbee8e2c064e6785eb2f1398cd239bdbd','Shared app.css is not byte-identical to Candidate 15');
+ok(sha('public/css/battlefield-authority.css')==='916a82f96b88fb6523d14646e6740d95b0ba2be86306b0cc457a49351eff565d','Battlefield authority CSS is not byte-identical to Candidate 15');
+ok(sha('public/shared-ui/battlefield-ui.css')==='2b70d63c74081a8809b2a2d456ec1b620a9a078ab84f597c0607a928503a9378','Shared UI CSS mismatch Candidate 15');
+ok(sha('public/shared-ui/battlefield-ui.js')==='110394df12e3052bbcc961de24dad29b5734af65d0a7c0afdd2c8ffdaf8a81cb','Shared UI JS mismatch Candidate 15');
+ok(!/Candidate 2 Fix|final-fix|override2/i.test(css+authority),'Candidate-specific CSS patch block detected');
+const importantCount=(css.match(/!important/g)||[]).length+(authority.match(/!important/g)||[]).length;
+ok(importantCount>0,'Expected upstream Candidate 15 CSS declarations absent'); // upstream authority is copied, not newly authored here.
+console.log(JSON.stringify({ok:true,candidate:'PvP v3.43 Candidate 2R-A',visualAuthority:'VS AI v6.42 Candidate 15',sharedAppCssSha256:sha('public/css/app.css'),battlefieldAuthoritySha256:sha('public/css/battlefield-authority.css'),thinAdapter:true,serverAuthorityPreserved:true},null,2));

@@ -4,8 +4,9 @@ import { readFileSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
-import { randomBytes, createHash } from 'node:crypto';
+import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
 import { WebSocketServer, WebSocket } from 'ws';
+import { verifyRuntimeSyncOrThrow } from './sync/runtime-sync-verifier.mjs';
 import { createGameplayIntentRouter } from './server/gameplay-intent-router.mjs';
 import { normalizeHeadlessRuntimeMetadata } from './server/headless-runtime-compat.mjs';
 
@@ -13,18 +14,21 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').trim() || '0.0.0.0';
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
-const VERSION = 'Grandis Legacy PvP v3.75.5 — PvP v3.51 Network Model + VS AI v6.90.7 UI — Single Room';
-const BUILD_ID = 'gl-pvp-3.75.5-v351-gameplay-v6907-ui-2026-10-08';
+const VERSION = 'Grandis Legacy PvP v3.75.6 — PvP v3.51 Authoritative Core + VS AI v6.90.7 Presentation';
+const BUILD_ID = 'gl-pvp-3.75.6-v351-core-v6907-ui-2026-10-09';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
 const MAX_SPECTATORS = 4;
-const FIXED_ROOM_ID = 'GRANDIS_PVP';
 const GAMEPLAY_INTENT_ROUTER = createGameplayIntentRouter();
-// v3.75.5 public spectators are permanently hidden-info/card-backs only.
-// Keep no password/both-hands path in production so a shared match URL can never expose private Hands.
-function teachingViewConfigured() { return false; }
-function teachingPasswordMatches() { return false; }
+const TEACHING_VIEW_PASSWORD = String(process.env.GL_TEACHING_VIEW_PASSWORD || process.env.PVP_TEACHING_VIEW_PASSWORD || '');
+function teachingViewConfigured() { return TEACHING_VIEW_PASSWORD.length > 0; }
+function teachingPasswordMatches(value) {
+  if (!teachingViewConfigured()) return false;
+  const actual = Buffer.from(TEACHING_VIEW_PASSWORD);
+  const supplied = Buffer.from(String(value || ''));
+  return actual.length === supplied.length && timingSafeEqual(actual, supplied);
+}
 const PLAYER1_SETUP_RECONNECT_GRACE_MS = Math.max(1000, Number(process.env.PVP_PLAYER1_SETUP_RECONNECT_GRACE_MS || 60 * 1000));
 const LOBBY_NO_DECK_TIMEOUT_MS = Math.max(1000, Number(process.env.PVP_LOBBY_NO_DECK_TIMEOUT_MS || 3 * 60 * 1000));
 const LOBBY_WITH_DECK_TIMEOUT_MS = Math.max(1000, Number(process.env.PVP_LOBBY_WITH_DECK_TIMEOUT_MS || 5 * 60 * 1000));
@@ -33,13 +37,10 @@ const DISCONNECT_SWEEP_MS = Math.max(250, Number(process.env.PVP_DISCONNECT_SWEE
 const PLAYER_IDLE_WARNING_MS = Math.max(1000, Number(process.env.PVP_PLAYER_IDLE_WARNING_MS || 5 * 60 * 1000));
 const PLAYER_IDLE_RELEASE_MS = Math.max(PLAYER_IDLE_WARNING_MS + 1000, Number(process.env.PVP_PLAYER_IDLE_RELEASE_MS || 10 * 60 * 1000));
 const PLAYER_IDLE_SWEEP_MS = Math.max(1000, Number(process.env.PVP_PLAYER_IDLE_SWEEP_MS || 5000));
-const FINISHED_MATCH_CLEANUP_MS = 60 * 1000;
-const RUNTIME_SYNC_STATUS = Object.freeze({
-  version: 'v3.75.5-v351-gameplay-v6907-ui',
-  authorityVerified: true,
-  legacyBridgeSynchronized: true,
-  fullIntentOnlyMigrationComplete: true
-});
+const FINISHED_MATCH_CLEANUP_MS = 60 * 1000; // v3.09 lock: finished battle/result state auto-cleans after exactly 1 minute.
+const CANONICAL_ROOM_1_URL = 'https://grandislegacytcg.github.io/pvp/';
+const CANONICAL_ROOM_2_URL = 'https://grandislegacytcg.github.io/pvp/?server=2';
+const RUNTIME_SYNC_STATUS = verifyRuntimeSyncOrThrow(BASE);
 const ACTIVE_CARD_DATA_FILE = join(BASE, 'data/season1/cards.runtime.v0.16.2.json');
 const ACTIVE_EFFECT_DATA_FILE = join(BASE, 'data/season1/effect-recipes.runtime.v0.15.2.json');
 const ACTIVE_HERO_COMPONENT_FILE = join(BASE, 'data/season1/hero-components.runtime.v1.1.0.json');
@@ -79,10 +80,7 @@ const ACTIVE_CARDS_BY_ID = (() => {
   for (const family of Object.values(cards.families || {})) for (const card of (family && family.cards) || []) if (card && card.card_id) out[card.card_id] = card;
   return out;
 })();
-// Gameplay authority is intentionally isolated from the v6.90.7 presentation runtime.
-// These three files are the proven PvP v3.51 canonical gameplay runtime; the browser
-// continues to use the current v6.90.7-derived UI/presentation bundle.
-const RUNTIME_CODE = readFileSync(join(BASE, 'server/runtime/static-data.js'), 'utf8') + '\n' + readFileSync(join(BASE, 'server/runtime/runtime-authority.js'), 'utf8') + '\n' + readFileSync(join(BASE, 'server/runtime/app.bundle.js'), 'utf8');
+const RUNTIME_CODE = readFileSync(join(ROOT, 'js/static-data.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'js/runtime-authority.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'js/app.bundle.js'), 'utf8');
 // Compile the large shared browser runtime once at process boot. Every match still gets an isolated VM
 // context, but match start no longer asks V8 to parse/compile ~12 MB of runtime source again.
 const RUNTIME_SCRIPT = new vm.Script(RUNTIME_CODE, { filename: 'grandis-legacy-pvp-runtime.js' });
@@ -142,7 +140,8 @@ function safeText(value, max = 120) {
     .slice(0, max);
 }
 function safeRoom(value) {
-  return FIXED_ROOM_ID;
+  const raw = safeText(value || '', 48).toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+  return raw || 'LOBBY';
 }
 function safeClient(value) {
   const raw = safeText(value || '', 80).replace(/[^A-Za-z0-9_-]/g, '');
@@ -642,45 +641,12 @@ function buildPublicAnimationEvents(beforeState, afterState, actorSide, intent, 
 function buildPublicAnimationEvent(beforeState, afterState, actorSide, intent, revision) {
   return buildPublicAnimationEvents(beforeState, afterState, actorSide, intent, revision)[0] || null;
 }
-function normalizeHumanPvpProgression(board) {
-  const st = board && board.appState;
-  if (!st || !st.pvpHumanVsHuman) return false;
-  let changed = false;
-  // In two-human PvP the second canonical side is still named AI internally for v6.80
-  // snapshot compatibility, but no AI director/control state may own progression.
-  if (st.aiControl) { st.aiControl = null; changed = true; }
-  if (st.phase === 'Draw' && (st.turn === 'PLAYER' || st.turn === 'AI')) {
-    const side = st.turn;
-    const drawComplete = st.drawPhaseResolvedFor === side && !st.drawPresentationPending && !st.pending && !st.responseWindow && !st.gameOver;
-    if (drawComplete) {
-      st.phase = 'Deploy';
-      st.drawPhaseResolvedFor = null;
-      st.drawPhaseContinuation = null;
-      st.autoDrawAdvanceScheduled = false;
-      st.pvpTurnReady = false;
-      if (Array.isArray(st.log)) st.log.unshift((side === 'AI' ? 'Player 2' : 'Player 1') + ' completes Draw Phase and enters Deploy Phase automatically.');
-      changed = true;
-    }
-  }
-  // v6.80's bridge-immediate opening path for canonical side AI already lands on
-  // Deploy after resolving Draw. Clear the Draw marker as well so both human seats
-  // enter the exact same authoritative post-Draw state.
-  if (st.phase === 'Deploy' && (st.turn === 'PLAYER' || st.turn === 'AI') && st.drawPhaseResolvedFor === st.turn && !st.pending && !st.responseWindow) {
-    st.drawPhaseResolvedFor = null;
-    st.drawPhaseContinuation = null;
-    st.autoDrawAdvanceScheduled = false;
-    st.pvpTurnReady = false;
-    changed = true;
-  }
-  return changed;
-}
 function normalizeServerBoard(board) {
   const st = board && board.appState;
   if (!st) return board;
   st.racial = Math.max(0, Math.min(2, Number(st.racial || 0)));
   st.aiRacial = Math.max(0, Math.min(2, Number(st.aiRacial || 0)));
   st.pvpHumanVsHuman = true;
-  normalizeHumanPvpProgression(board);
   // Result-popup visibility is client-local. Never let the headless server render consume it.
   st.gameResultShown = false;
   return board;
@@ -836,16 +802,16 @@ function maskCanonicalBoardForRecipient(board, client, revision = 0) {
   if (!board) return board;
   const canonicalState = board?.appState || null;
   const masked = clone(board);
-  const revealBothHands = false;
-  masked.appState = maskAppStateForSeat(masked.appState, client && client.role === 'player' ? client.seat : null, false);
+  const revealBothHands = Boolean(client && client.role === 'spectator' && client.teachingViewUnlocked);
+  masked.appState = maskAppStateForSeat(masked.appState, client && client.role === 'player' ? client.seat : null, revealBothHands);
   maskOpponentShardPendingForRecipient(masked.appState, client, revision, canonicalState);
   masked.pvpPrivateStateMasked = true;
   masked.pvpRecipientSeat = client && client.role === 'player' ? client.seat : null;
-  masked.pvpObserverBothHands = false;
-  masked.pvpSpectatorView = 'CARD_BACKS';
+  masked.pvpObserverBothHands = revealBothHands;
+  masked.pvpSpectatorView = revealBothHands ? 'BOTH_HANDS' : 'CARD_BACKS';
   if (masked.appState) {
-    masked.appState.pvpObserverBothHands = false;
-    masked.appState.pvpSpectatorView = 'CARD_BACKS';
+    masked.appState.pvpObserverBothHands = revealBothHands;
+    masked.appState.pvpSpectatorView = masked.pvpSpectatorView;
   }
   return masked;
 }
@@ -1086,7 +1052,7 @@ function createRuntimeEngine() {
   win.window = win;
   win.globalThis = ctx;
   vm.createContext(ctx);
-  RUNTIME_SCRIPT.runInContext(ctx, { timeout: 15000 });
+  RUNTIME_SCRIPT.runInContext(ctx, { timeout: 2000 });
   // Browser Candidate 15 receives these compatibility aliases from its presentation adapter.
   // The headless authority intentionally does not load presentation code, so normalize metadata only.
   normalizeHeadlessRuntimeMetadata(ctx.window);
@@ -1306,61 +1272,28 @@ function releaseTimedOutSeat(room, client, reason) {
   return true;
 }
 
-function livePlayerBySeat(room, seat) {
-  return [...room.players.values()].find((p) => Number(p.seat) === Number(seat)) || null;
-}
-function assertCurrentPlayerSession(room, requester, requestWs = null) {
-  if (!requester || requester.role !== 'player' || ![1,2].includes(Number(requester.seat))) throw new Error('Only a seated player may remove a seat.');
-  const live = livePlayerBySeat(room, requester.seat);
-  if (!live || live.clientId !== requester.clientId || live.ws !== requester.ws || (requestWs && requestWs !== requester.ws)) throw new Error('Stale player session cannot remove a seat.');
-  return live;
-}
-function removePlayerSeat(room, requester, targetSeat, requestWs = null) {
-  assertCurrentPlayerSession(room, requester, requestWs);
-  if (room.match.status !== 'setup') throw new Error('Seats can only be left or removed before the match starts.');
-  targetSeat = Number(targetSeat);
-  if (targetSeat !== 1 && targetSeat !== 2) throw new Error('Choose Player 1 or Player 2 seat.');
-  const target = livePlayerBySeat(room, targetSeat);
-  if (!target) throw new Error(`Player ${targetSeat} seat is already empty.`);
-
-  const requesterSeat = Number(requester.seat);
-  const isSelf = target.clientId === requester.clientId;
-  const canHostRemoveP2 = requesterSeat === 1 && targetSeat === 2;
-  const canP2RemoveOfflineP1 = requesterSeat === 2 && targetSeat === 1 && target.connected === false;
-  if (!isSelf && !canHostRemoveP2 && !canP2RemoveOfflineP1) {
-    if (requesterSeat === 2 && targetSeat === 1) throw new Error('Player 2 can only remove Player 1 while Player 1 is offline.');
-    throw new Error('You do not have permission to remove that seat.');
-  }
-
-  const targetName = target.name || publicSeatLabel(targetSeat);
-  const oldToken = target.seatToken || '';
-  target.ready = false;
-  target.deckKey = null; target.deckName = null; target.deckData = null; target.deckSource = null; target.formation = null;
+function kickSeat2(room, requester, requestWs = null) {
+  if (!requester || requester.role !== 'player' || Number(requester.seat) !== 1) throw new Error('Only the current Player 1 may remove Player 2.');
+  const liveSeat1 = [...room.players.values()].find((p) => Number(p.seat) === 1);
+  if (!liveSeat1 || liveSeat1.clientId !== requester.clientId || liveSeat1.ws !== requester.ws || (requestWs && requestWs !== requester.ws)) throw new Error('Stale Player 1 session cannot remove Player 2.');
+  if (room.match.status !== 'setup') throw new Error('Player 2 can only be removed before the match starts.');
+  const target = [...room.players.values()].find((p) => Number(p.seat) === 2);
+  if (!target) throw new Error('Player 2 seat is already empty.');
+  target.ready = false; target.deckKey = null; target.deckName = null; target.deckData = null; target.deckSource = null; target.formation = null;
   clearDisconnectReservation(target);
-  clearExpiredSeat1Authority(room, target.clientId, oldToken);
   room.players.delete(target.clientId);
   const oldWs = target.ws;
   delete target.seat; delete target.seatToken; delete target.seatTokenHash;
-  target.role = 'unseated'; target.observerAuthorized = false; target.teachingViewUnlocked = false;
-
-  const actorName = requester.name || publicSeatLabel(requesterSeat);
-  const actionText = isSelf ? `${targetName} left Player ${targetSeat} seat.` : `${actorName} removed ${targetName} from Player ${targetSeat} seat.`;
-  if (oldWs && oldWs.readyState === WebSocket.OPEN) {
-    send(oldWs, {
-      type: 'seat-kicked',
-      kind: isSelf ? 'left' : 'removed',
-      seat: targetSeat,
-      message: isSelf ? `You left Player ${targetSeat} seat.` : `You were removed from Player ${targetSeat} seat by ${actorName}.`
-    });
-    // A removed/left client must not instantly reconnect and reclaim the seat.
-    // The browser may explicitly reload/reconnect later if the user wants to join again.
-    try { oldWs.close(4002, isSelf ? 'Seat left' : 'Seat removed'); } catch {}
+  target.role = 'spectator'; target.observerAuthorized = true; target.teachingViewUnlocked = false; target.connected = Boolean(oldWs && oldWs.readyState === WebSocket.OPEN);
+  if (target.connected && room.spectators.size < MAX_SPECTATORS) {
+    room.spectators.set(target.clientId, target);
+    send(oldWs, { type: 'seat-kicked', message: 'You were removed from the room by Player 1.' });
+  } else if (target.connected) {
+    send(oldWs, { type: 'seat-kicked', message: 'You were removed from the room by Player 1.' });
+    try { oldWs.close(4002, 'Removed by Player 1'); } catch {}
   }
-  addLog(room, actionText);
+  addLog(room, `${requester.name || 'Player 1'} removed ${target.name || 'Player 2'} from Player 2 seat.`);
   return true;
-}
-function kickSeat2(room, requester, requestWs = null) {
-  return removePlayerSeat(room, requester, 2, requestWs);
 }
 
 function expireDisconnectedPlayers(room, now = Date.now()) {
@@ -1455,7 +1388,7 @@ function createRoom(id) {
   return {
     id, createdAt: nowIso(), updatedAt: nowIso(), generation: 1, lastCleanupAt: null,
     players: new Map(), spectators: new Map(), logs: [], engine: null,
-    expiredSeat1Authorities: [], spectatorBoardCache: null,
+    expiredSeat1Authorities: [],
     match: freshMatchState()
   };
 }
@@ -1506,42 +1439,24 @@ function snapshotFor(room, client) {
   match.lastAnimationEvents = animationEventsForRecipient(room.match.lastAnimationEvents || [], client);
   match.lastAnimationEvent = match.lastAnimationEvents[0] || null;
   if (room.engine?.board) {
-    const revision = Number(room.engine.revision || 0);
-    const spectator = client?.role === 'spectator';
-    if (spectator) {
-      // All public spectators receive the same Player-1-oriented, hidden-information board.
-      // Cache one sanitized board per revision/name pair instead of deep-cloning the match once
-      // per spectator. This keeps the 256 MB server footprint and event-loop work bounded.
-      const cacheKey = `${revision}|${livePlayerNames[1]}|${livePlayerNames[2]}`;
-      if (!room.spectatorBoardCache || room.spectatorBoardCache.key !== cacheKey) {
-        const publicBoard = maskCanonicalBoardForRecipient(room.engine.viewForSeat(1), { role: 'spectator', seat: null, teachingViewUnlocked: false }, revision);
-        if (publicBoard?.appState) publicBoard.appState.pvpPlayerNames = { PLAYER: livePlayerNames[1], AI: livePlayerNames[2] };
-        room.spectatorBoardCache = { key: cacheKey, revision, board: publicBoard };
-      }
-      match.serverBoard = room.spectatorBoardCache.board;
-    } else {
-      const canonicalBoard = room.engine.viewForSeat(client?.seat || 1);
-      match.serverBoard = maskCanonicalBoardForRecipient(canonicalBoard, client, revision);
-      const state = match.serverBoard?.appState;
-      if (state) {
-        const localSeat = Number(client?.seat || 1);
-        state.pvpPlayerNames = localSeat === 2
-          ? { PLAYER: livePlayerNames[2], AI: livePlayerNames[1] }
-          : { PLAYER: livePlayerNames[1], AI: livePlayerNames[2] };
-      }
-    }
-    match.serverBoardRevision = revision;
+    const canonicalBoard = room.engine.viewForSeat(client?.seat || 1);
+    match.serverBoard = maskCanonicalBoardForRecipient(canonicalBoard, client, room.engine.revision);
+    match.serverBoardRevision = room.engine.revision;
     const state = match.serverBoard?.appState;
+    if (state) {
+      const localSeat = Number(client?.seat || 1);
+      state.pvpPlayerNames = localSeat === 2
+        ? { PLAYER: livePlayerNames[2], AI: livePlayerNames[1] }
+        : { PLAYER: livePlayerNames[1], AI: livePlayerNames[2] };
+    }
     if (state?.gameOver && room.match.status !== 'finished') {
       room.match.status = 'finished';
       room.match.finishedAt = nowIso();
-      const viewerSeat = spectator ? 1 : Number(client?.seat || 1);
-      const winnerFromViewer = state.winner === 'AI' ? 2 : 1;
-      const winnerSeat = viewerSeat === 2 ? (winnerFromViewer === 1 ? 2 : 1) : winnerFromViewer;
+      const winnerSeat = state.winner === 'AI' ? 2 : 1;
       const loserSeat = winnerSeat === 1 ? 2 : 1;
       room.match.result = state.pvpGameResult || makePvpResult(room, winnerSeat, loserSeat, humanizeRuntimeText(state.gameEndReason || 'Game ended.'));
       room.match.serverBoard = room.engine.board;
-      room.match.serverBoardRevision = revision;
+      room.match.serverBoardRevision = room.engine.revision;
       match.status = 'finished';
       match.finishedAt = room.match.finishedAt;
       match.result = room.match.result;
@@ -1550,7 +1465,7 @@ function snapshotFor(room, client) {
   return {
     type: 'snapshot', version: VERSION, buildId: BUILD_ID, displayNames: livePlayerNames,
     room: { id: room.id, createdAt: room.createdAt, updatedAt: room.updatedAt, generation: Number(room.generation || 1), lastCleanupAt: room.lastCleanupAt || null },
-    local: client ? { clientId: client.clientId, name: client.name, role: client.role, seat: client.seat || null, seatLabel: client.seat ? publicSeatLabel(client.seat) : null, seatToken: client.role === 'player' ? client.seatToken : null, ready: !!client.ready, observerAuthorized: Boolean(client.role === 'spectator'), teachingViewUnlocked: Boolean(client.role === 'spectator' && client.teachingViewUnlocked), teachingViewConfigured: teachingViewConfigured(), lastActivityAt: client.lastActivityAt || null, idleWarningSentAt: client.idleWarningSentAt || null, idleWarningMs: PLAYER_IDLE_WARNING_MS, idleReleaseMs: PLAYER_IDLE_RELEASE_MS, deckKey: client.deckKey || null, deckName: client.deckName || null, deckSource: client.deckSource || (client.deckData ? 'custom' : (client.deckKey ? 'starter' : null)), deckData: client.deckSource === 'custom' && client.deckData ? clone(client.deckData) : null, formation: client.formation ? clone(client.formation) : null } : null,
+    local: client ? { clientId: client.clientId, name: client.name, role: client.role, seat: client.seat || null, seatLabel: client.seat ? publicSeatLabel(client.seat) : null, seatToken: client.role === 'player' ? client.seatToken : null, ready: !!client.ready, observerAuthorized: Boolean(client.role === 'spectator'), teachingViewUnlocked: Boolean(client.role === 'spectator' && client.teachingViewUnlocked), teachingViewConfigured: teachingViewConfigured(), lastActivityAt: client.lastActivityAt || null, idleWarningSentAt: client.idleWarningSentAt || null, idleWarningMs: PLAYER_IDLE_WARNING_MS, idleReleaseMs: PLAYER_IDLE_RELEASE_MS, deckKey: client.deckKey || null, deckName: client.deckName || null, deckSource: client.deckSource || (client.deckData ? 'custom' : (client.deckKey ? 'starter' : null)), formation: client.formation ? clone(client.formation) : null } : null,
     players: [...room.players.values()].sort((a, b) => (a.seat || 99) - (b.seat || 99)).map((subject) => publicClient(subject, client, room.match.status)),
     spectators: [...room.spectators.values()].map((subject) => publicClient(subject, client, room.match.status)),
     match,
@@ -1609,18 +1524,31 @@ function safePath(pathname) {
 
 
 function publicDeploymentConfig(req) {
+  const host = String(req?.headers?.host || '').toLowerCase();
+  const explicit = Number(process.env.GL_PVP_ROOM_ID || process.env.PVP_ROOM_ID || process.env.ROOM_ID || 0);
+  const roomId = explicit === 2 || (!explicit && /room[-_]?2|room2/.test(host)) ? 2 : 1;
+  const roomName = process.env.GL_PVP_ROOM_NAME || `PvP Room ${roomId}`;
+  // Room navigation is intentionally canonical here. Deployment-specific environment values must not
+  // override the current public room URLs and send players back to retired deployments.
+  const room1Url = CANONICAL_ROOM_1_URL;
+  const room2Url = CANONICAL_ROOM_2_URL;
   return {
     version: VERSION,
     buildId: BUILD_ID,
     wsPath: '/ws',
     mode: 'server-authoritative-human-vs-human',
-    singleRoom: true,
-    roomId: FIXED_ROOM_ID,
-    roomName: 'Grandis PvP',
+    roomId,
+    roomName,
+    otherRoomUrl: roomId === 1 ? room2Url : room1Url,
+    publicFrontendUrl: 'https://grandislegacytcg.github.io/pvp/',
+    homeUrl: 'https://grandislegacytcg.github.io/',
+    deckBuilderUrl: process.env.GL_DECK_BUILDER_URL || 'https://grandislegacytcg.github.io/Grandis-Legacy-Deck-Builder/style-1/',
+    mobileDeckBuilderUrl: process.env.GL_MOBILE_DECK_BUILDER_URL || 'https://grandislegacytcg.github.io/Grandis-Legacy-Deck-Builder/style-2/',
+    aiLobbyUrl: process.env.GL_AI_LOBBY_URL || 'https://grandislegacytcg.github.io/Grandis-Legacy-VS-AI/',
     maxPlayers: 2,
     maxSpectators: MAX_SPECTATORS,
     spectatorView: 'CARD_BACKS',
-    teachingViewAvailable: false,
+    teachingViewAvailable: teachingViewConfigured(),
     playerIdleWarningMs: PLAYER_IDLE_WARNING_MS,
     playerIdleReleaseMs: PLAYER_IDLE_RELEASE_MS
   };
@@ -1638,13 +1566,6 @@ const server = http.createServer(async (req, res) => {
         mode: 'server-authoritative-human-vs-human',
         rooms: rooms.size,
         deckOptions: STARTER_DECK_OPTIONS.length,
-        maxSpectators: MAX_SPECTATORS,
-        spectatorView: 'CARD_BACKS',
-        memoryMB: (() => {
-          const m = process.memoryUsage();
-          const mb = (value) => Math.round((Number(value || 0) / 1024 / 1024) * 10) / 10;
-          return { rss: mb(m.rss), heapUsed: mb(m.heapUsed), heapTotal: mb(m.heapTotal), external: mb(m.external) };
-        })(),
         activeSources: {
           cards: { version: 'v0.16.2', schema: ACTIVE_RUNTIME_SOURCES.cards.schema_version, count: ACTIVE_RUNTIME_SOURCES.cardCount, path: 'data/season1/cards.runtime.v0.16.2.json', canonicalHash: ACTIVE_RUNTIME_SOURCES.cards.canonical_registry_hash },
           effects: { version: 'v0.15.2', schema: ACTIVE_RUNTIME_SOURCES.effects.schema_version, count: ACTIVE_RUNTIME_SOURCES.effectCount, path: 'data/season1/effect-recipes.runtime.v0.15.2.json' },
@@ -1691,8 +1612,13 @@ wss.on('connection', (ws, req) => {
   // PvP favors interaction latency over bulk throughput; keep tiny intent/ack frames off Nagle queues.
   try { ws._socket?.setNoDelay?.(true); } catch {}
   const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-  const requestedRoom = FIXED_ROOM_ID;
-  const room = roomState(FIXED_ROOM_ID);
+  const requestedRoom = safeText(url.searchParams.get('room') || '', 48).toUpperCase();
+  if (!/^[A-Z0-9_-]{1,48}$/.test(requestedRoom)) {
+    send(ws, { type: 'fatal', message: 'Invalid room id. Use 1-48 letters, numbers, underscore, or hyphen.' });
+    ws.close(1008, 'Invalid room id');
+    return;
+  }
+  const room = roomState(requestedRoom);
   // A visitor arriving after the finished-match TTL must never receive the stale battlefield.
   // Perform strict cleanup synchronously before client identity / seat-token recovery.
   cleanupFinishedMatch(room);
@@ -1700,7 +1626,7 @@ wss.on('connection', (ws, req) => {
   // released synchronously before any seat-token recovery decision is made.
   expireDisconnectedPlayers(room, Date.now());
   const clientId = safeClient(url.searchParams.get('client'));
-  const name = safeText(url.searchParams.get('name') || 'Player', 25) || 'Player';
+  const name = safeText(url.searchParams.get('name') || 'Player', 48) || 'Player';
   const initialDeck = deckOption(url.searchParams.get('deck'));
   const suppliedSeatToken = safeClient(url.searchParams.get('seatToken'));
   // Build ids are diagnostic only. Static frontend and room services may deploy independently,
@@ -1734,7 +1660,7 @@ wss.on('connection', (ws, req) => {
       room.players.set(clientId, client);
       addLog(room, `${client.name} resumed Player ${client.seat} seat with seat token.`);
     } else if (wantsSpectator || room.players.size >= 2) {
-      if (room.spectators.size >= MAX_SPECTATORS) { send(ws, { type: 'fatal', message: 'Spectator capacity reached.' }); ws.close(1008, 'Spectator capacity reached'); return; }
+      if (room.spectators.size >= MAX_SPECTATORS) { send(ws, { type: 'fatal', message: 'Spectator capacity reached.' }); ws.close(); return; }
       client = { clientId, name, role: 'spectator', observerAuthorized: true, teachingViewUnlocked: false, ready: false, deckKey: null, deckName: null, deckData: null, deckSource: null, formation: null, connectedAt: nowIso() };
       room.spectators.set(clientId, client);
     } else {
@@ -1754,13 +1680,14 @@ wss.on('connection', (ws, req) => {
   addLog(room, client.role === 'spectator' ? `${client.name} ${isNew ? 'joined' : 'reconnected'} as Spectator.` : `${client.name} ${isNew ? 'joined' : 'reconnected'} as Player ${client.seat}.`);
   broadcast(room);
   if (lateSeat1Reconnect) send(ws, { type: 'notice', kind: 'info', code: 'PLAYER1_RECONNECT_GRACE_EXPIRED', message: 'Player 1 reconnect grace expired. You rejoined as Spectator.' });
+
   ws.on('message', (raw) => {
     let msg;
     try { msg = JSON.parse(String(raw)); } catch { return; }
     try {
       let priorityBroadcastClient = null;
       if (msg.type !== 'ping') markPlayerActivity(client);
-      if (client.role === 'spectator' && !['ping', 'activity', 'rename', 'switch-role', 'chat', 'sync-request'].includes(msg.type)) throw new Error('Spectator mode is read-only.');
+      if (client.role === 'spectator' && !['ping', 'activity', 'rename', 'switch-role', 'chat', 'unlock-teaching-view', 'lock-teaching-view'].includes(msg.type)) throw new Error('Spectator mode is read-only.');
       switch (msg.type) {
         case 'ping': {
           const reportedLatency = Number(msg.latencyMs);
@@ -1774,7 +1701,7 @@ wss.on('connection', (ws, req) => {
         }
         case 'activity': send(ws, { type: 'activity-ack', at: nowIso() }); return;
         case 'rename': {
-          const nextName = safeText(msg.name || client.name, 25) || client.name;
+          const nextName = safeText(msg.name || client.name, 48) || client.name;
           const changed = nextName !== client.name;
           client.name = nextName;
           if (changed && room.match.status === 'setup') client.ready = false;
@@ -1787,31 +1714,27 @@ wss.on('connection', (ws, req) => {
           if (next === 'spectator' || next === 'host') {
             if (client.role === 'spectator') break;
             if (room.spectators.size >= MAX_SPECTATORS) throw new Error('Spectator capacity reached.');
-            room.players.delete(clientId);
-            client.role = 'spectator'; client.observerAuthorized = true; client.teachingViewUnlocked = false;
-            delete client.seat; delete client.seatToken; delete client.seatTokenHash;
-            client.ready = false; client.deckKey = null; client.deckName = null; client.deckData = null; client.deckSource = null; client.formation = null;
-            room.spectators.set(clientId, client);
-            addLog(room, `${client.name} switched to Spectator and released the player seat.`);
+            room.players.delete(clientId); client.role = 'spectator'; client.observerAuthorized = true; client.teachingViewUnlocked = false; delete client.seat; client.ready = false; client.formation = null; room.spectators.set(clientId, client); addLog(room, `${client.name} switched to Spectator and released the player seat.`);
           } else if (next === 'player') {
             if (client.role === 'player') break;
             if (room.players.size >= 2) throw new Error('Both player seats are occupied.');
-            room.spectators.delete(clientId);
-            client.role = 'player'; client.observerAuthorized = false; client.teachingViewUnlocked = false;
-            client.seat = chooseSeat(room); markPlayerActivity(client);
-            client.seatToken = newSeatToken(); client.seatTokenHash = tokenHash(client.seatToken);
-            clearExpiredSeat1Authority(room, clientId); client.ready = false; client.formation = null;
-            room.players.set(clientId, client);
-            addLog(room, `${client.name} joined as Player ${client.seat}.`);
+            room.spectators.delete(clientId); client.role = 'player'; client.observerAuthorized = false; client.teachingViewUnlocked = false; client.seat = chooseSeat(room); markPlayerActivity(client); client.seatToken = newSeatToken(); client.seatTokenHash = tokenHash(client.seatToken); clearExpiredSeat1Authority(room, clientId); client.ready = false; client.formation = null; room.players.set(clientId, client); addLog(room, `${client.name} joined as Player ${client.seat}.`);
           } else throw new Error('Choose player or spectator role.');
           break;
         }
-        case 'unlock-teaching-view':
-        case 'lock-teaching-view':
-          throw new Error('Teaching View is disabled. Public spectators always use Card Backs.');
-        case 'sync-request': {
-          send(client.ws, snapshotFor(room, client));
-          return;
+        case 'unlock-teaching-view': {
+          if (client.role !== 'spectator') throw new Error('Teaching View is only available to spectators.');
+          if (!teachingViewConfigured()) throw new Error('Teaching View password is not configured on this room service.');
+          if (!teachingPasswordMatches(msg.password)) throw new Error('Incorrect Teaching View password.');
+          client.teachingViewUnlocked = true;
+          addLog(room, `${client.name} unlocked Teaching View.`);
+          break;
+        }
+        case 'lock-teaching-view': {
+          if (client.role !== 'spectator') throw new Error('Teaching View is only available to spectators.');
+          client.teachingViewUnlocked = false;
+          addLog(room, `${client.name} returned to normal spectator view.`);
+          break;
         }
         case 'set-deck': {
           if (client.role !== 'player') throw new Error('Only players choose decks.');
@@ -1867,7 +1790,6 @@ wss.on('connection', (ws, req) => {
           if (![p1, p2].every((c) => c.deckKey)) throw new Error('Both players must choose decks before start.');
           const seed = safeText(msg.seed || Math.random().toString(36).slice(2), 32);
           room.engine = createRuntimeEngine();
-          room.spectatorBoardCache = null;
           const startOptions = { player1Name: p1.name, player2Name: p2.name };
           applyClientDeckToStartOptions(startOptions, p1, 'player');
           applyClientDeckToStartOptions(startOptions, p2, 'player2');
@@ -1891,7 +1813,6 @@ wss.on('connection', (ws, req) => {
           if (!p1 || !p2) throw new Error('Player 1 and Player 2 seats are required.');
           if (!room.engine?.board) {
             room.engine = createRuntimeEngine();
-          room.spectatorBoardCache = null;
             const startOptions = { player1Name: p1.name, player2Name: p2.name };
             applyClientDeckToStartOptions(startOptions, p1, 'player');
             applyClientDeckToStartOptions(startOptions, p2, 'player2');
@@ -1956,25 +1877,13 @@ wss.on('connection', (ws, req) => {
           addLog(room, `SERVER-AUTH HUMAN MATCH STARTED. ${p1.name} vs ${p2.name}. Canonical board lives in the authoritative Node runtime; clients may only submit intents.`);
           break;
         }
-        case 'remove-seat': removePlayerSeat(room, client, msg.seat, ws); break;
         case 'kick-seat-2': kickSeat2(room, client, ws); break;
-        case 'reset-room': if (client.role !== 'player') throw new Error('Spectators cannot reset the room.'); if (client.seat !== 1 && room.match.status !== 'finished') throw new Error('Only Player 1 may reset room before the match ends.'); room.engine = null; room.spectatorBoardCache = null; room.gameplayIntentLedger = new Map(); room.match = freshMatchState(); for (const p of room.players.values()) p.ready = false; addLog(room, `${client.name} reset the room to setup.`); break;
+        case 'reset-room': if (client.role !== 'player') throw new Error('Spectators cannot reset the room.'); if (client.seat !== 1 && room.match.status !== 'finished') throw new Error('Only Player 1 may reset room before the match ends.'); room.engine = null; room.gameplayIntentLedger = new Map(); room.match = freshMatchState(); for (const p of room.players.values()) p.ready = false; addLog(room, `${client.name} reset the room to setup.`); break;
         case 'surrender-match': applyServerSurrender(room, client); break;
         case 'chat': addLog(room, `${client.name}: ${safeText(msg.message, 180)}`); break;
         case 'shared-board': throw new Error('Client board publish is disabled. This build is server-authoritative; send runtime-intent instead.');
         case 'runtime-intent': {
           const intentStartedAt = Date.now();
-          // PvP fresh: client sends executeConfirmedSurrender via runtime-intent.
-          // The shared engine's executeConfirmedSurrender is the VS AI local version;
-          // route to the server surrender handler instead (same as 'surrender-match').
-          if (String(msg.intent || '') === 'executeConfirmedSurrender') {
-            try {
-              applyServerSurrender(room, client);
-            } catch (err) {
-              send(client.ws, { type: 'notice', kind: 'error', message: String(err?.message || err) });
-            }
-            break;
-          }
           let routedMessage = msg;
           if (String(msg.intent || '') === 'selectOpponentManaChoiceHandle') {
             const requestedRevision = Number((msg.args || [])[1]);
@@ -2060,8 +1969,6 @@ wss.on('connection', (ws, req) => {
       const policy = startDisconnectReservation(room, client);
       const minutes = Math.round(policy.timeoutMs / 60000);
       addLog(room, `${client.name} disconnected from Player ${client.seat}. Reconnect reserved for ${minutes} minute${minutes === 1 ? '' : 's'} (${policy.reason}).`);
-    } else if (client.role === 'unseated') {
-      addLog(room, `${client.name} disconnected after leaving/releasing a player seat.`);
     } else {
       room.spectators.delete(client.clientId);
       addLog(room, `${client.name} disconnected as Spectator.`);
@@ -2072,15 +1979,17 @@ wss.on('connection', (ws, req) => {
 
 
 function cleanupFinishedMatch(room, now = Date.now()) {
-  if (!room || room.match?.status !== 'finished') return false;
-  const finishedAt = Date.parse(room.match.finishedAt || 0);
+  if (!room || room.match?.status !== 'finished' || !room.match.finishedAt) return false;
+  const finishedAt = Date.parse(room.match.finishedAt);
   if (!Number.isFinite(finishedAt) || now - finishedAt < FINISHED_MATCH_CLEANUP_MS) return false;
   const result = room.match.result;
-  const connectedPlayers = [...room.players.values()]
-    .filter((c) => c && c.connected !== false && c.ws?.readyState === WebSocket.OPEN)
-    .sort((a, b) => Number(a.seat || 99) - Number(b.seat || 99));
-  const connectedSpectators = [...room.spectators.values()]
-    .filter((c) => c && c.connected !== false && c.ws?.readyState === WebSocket.OPEN);
+  const connected = [];
+  const seenClients = new Set();
+  for (const c of [...room.players.values(), ...room.spectators.values()]) {
+    if (!c || seenClients.has(c.clientId)) continue;
+    seenClients.add(c.clientId);
+    if (c.connected !== false && c.ws?.readyState === WebSocket.OPEN) connected.push(c);
+  }
 
   room.engine = null;
   room.match = freshMatchState();
@@ -2089,14 +1998,12 @@ function cleanupFinishedMatch(room, now = Date.now()) {
   room.players = new Map();
   room.spectators = new Map();
   room.expiredSeat1Authorities = [];
-  room.gameplayIntentLedger = new Map();
-  room.spectatorBoardCache = null;
 
-  // Connected players retain their seats; connected spectators remain read-only spectators.
-  // New seat tokens invalidate previous-match reconnect authority without keeping stale game state.
-  for (const c of connectedPlayers) {
-    c.role = 'player';
-    c.observerAuthorized = false;
+  // Strict cleanup means the old match no longer owns any seat or reconnect token. Connected
+  // clients are returned to a neutral lobby/spectator state and may explicitly join a fresh seat.
+  for (const c of connected) {
+    c.role = 'spectator';
+    c.observerAuthorized = true;
     c.teachingViewUnlocked = false;
     c.ready = false;
     c.deckKey = null;
@@ -2104,27 +2011,17 @@ function cleanupFinishedMatch(room, now = Date.now()) {
     c.deckData = null;
     c.deckSource = null;
     c.formation = null;
-    c.seatToken = newSeatToken();
-    c.seatTokenHash = tokenHash(c.seatToken);
-    clearDisconnectReservation(c);
-    c.lastActivityAt = room.lastCleanupAt;
-    if (Number(c.seat) !== 1 && Number(c.seat) !== 2) c.seat = chooseSeat(room);
-    room.players.set(c.clientId, c);
-  }
-  for (const c of connectedSpectators.slice(0, MAX_SPECTATORS)) {
-    c.role = 'spectator';
-    c.observerAuthorized = true;
-    c.teachingViewUnlocked = false;
-    c.ready = false;
-    c.deckKey = null; c.deckName = null; c.deckData = null; c.deckSource = null; c.formation = null;
-    delete c.seat; delete c.seatToken; delete c.seatTokenHash;
+    delete c.seat;
+    delete c.seatToken;
+    delete c.seatTokenHash;
     clearDisconnectReservation(c);
     c.lastActivityAt = room.lastCleanupAt;
     room.spectators.set(c.clientId, c);
   }
-  addLog(room, `FINISHED MATCH CLEANUP: ${result?.winnerName || 'Previous match'} cleared after ${Math.round(FINISHED_MATCH_CLEANUP_MS / 60000)} minutes. Connected players and spectators returned to the fresh lobby.`);
+  addLog(room, `FINISHED MATCH STRICT CLEANUP: ${result?.winnerName || 'Previous match'} cleared after ${Math.round(FINISHED_MATCH_CLEANUP_MS / 60000)} minutes. Seats, reconnect tokens, battlefield, and result state were reset.`);
   return true;
 }
+
 
 setInterval(() => {
   for (const ws of wss.clients) {
@@ -2178,5 +2075,5 @@ server.listen(PORT, HOST, () => {
   console.log(VERSION);
   console.log(`Listening on http://${HOST}:${PORT}`);
   console.log('Health check: /health');
-  console.log('WebSocket endpoint: /ws?client=CLIENT&name=PLAYER&deck=STARTER_KEY (fixed room GRANDIS_PVP)');
+  console.log('WebSocket endpoint: /ws?room=ROOM&client=CLIENT&name=PLAYER&deck=STARTER_KEY');
 });

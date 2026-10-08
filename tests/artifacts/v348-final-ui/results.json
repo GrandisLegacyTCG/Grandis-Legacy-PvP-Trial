@@ -1,0 +1,81 @@
+{
+  "ok": true,
+  "lobby": {
+    "desktop": {
+      "swapPng": true,
+      "swapWorks": true,
+      "nav": {
+        "tested": false
+      }
+    },
+    "tablet-landscape": {
+      "swapPng": true,
+      "swapWorks": true,
+      "nav": {
+        "tested": false
+      }
+    },
+    "tablet-portrait": {
+      "swapPng": true,
+      "swapWorks": true,
+      "nav": {
+        "tested": true,
+        "buttonZ": 12051,
+        "menuZ": 12050,
+        "lobbyZ": 9997
+      }
+    },
+    "phone": {
+      "swapPng": true,
+      "swapWorks": true,
+      "nav": {
+        "tested": true,
+        "buttonZ": 12051,
+        "menuZ": 12050,
+        "lobbyZ": 9997
+      }
+    }
+  },
+  "surrender": {
+    "desktop": {
+      "visible": true,
+      "box": {
+        "x": 1282.328125,
+        "y": 738,
+        "width": 78.65625,
+        "height": 23
+      },
+      "control": "surrenderButton"
+    },
+    "tablet-landscape": {
+      "visible": true,
+      "box": {
+        "x": 947.234375,
+        "y": 742,
+        "width": 69.765625,
+        "height": 23
+      },
+      "control": "surrenderButton"
+    },
+    "tablet-portrait": {
+      "visible": true,
+      "box": {
+        "x": 703.65625,
+        "y": 991,
+        "width": 54.328125,
+        "height": 24
+      },
+      "control": "surrenderButton"
+    },
+    "phone": {
+      "visible": true,
+      "box": {
+        "x": 23,
+        "y": 777,
+        "width": 344,
+        "height": 44
+      },
+      "control": "mobileSurrenderButton"
+    }
+  }
+}

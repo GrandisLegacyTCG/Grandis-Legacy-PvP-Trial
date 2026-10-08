@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('fs');const path=require('path');const assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const app=fs.readFileSync(path.join(root,'public/js/app.bundle.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'public/css/app.css'),'utf8');
+assert(app.includes('Grandis Legacy PvP v3.42'),'current PvP marker missing');
+assert(app.includes("<strong>Bound Hero:</strong> Only '+esc(owner)+' may play this Ultimate or use it as Tribute."),'new Ultimate Bound Hero wording missing');
+assert(!app.includes('Only that Hero lineage may play this Ultimate'),'old Ultimate lineage sentence remains');
+assert(!app.includes('<strong>Deck limit:</strong> 1 copy.'),'Deck limit still shown in Ultimate review');
+assert(css.includes('@font-face{font-family:"Noto Sans"'),'Noto Sans asset hooks @font-face missing');
+assert(fs.existsSync(path.join(root,'public/assets/fonts/noto-sans/NotoSans-Variable.woff2'))&&fs.existsSync(path.join(root,'public/assets/fonts/noto-sans/NotoSans-Italic-Variable.woff2')),'Noto Sans binaries must be bundled');
+console.log('PASS PvP v3.00 Ultimate review wording and Noto Sans asset hooks');

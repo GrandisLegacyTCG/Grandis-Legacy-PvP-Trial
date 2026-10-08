@@ -1,0 +1,16 @@
+{
+  "version": "v3.40",
+  "date": "2026-09-13",
+  "main_deck_exact": 60,
+  "normal_copy_max": 3,
+  "ultimate_copy_max": 1,
+  "source_stack": "v1.8.1",
+  "runtime_data": "v0.15.0",
+  "playtest_authority": "v0.14",
+  "resource_terminology": {
+    "deck": "Shard Deck",
+    "pool": "Shard Pool",
+    "standard_shard": "Mana Shard",
+    "class_shard": "Class Shard"
+  }
+}

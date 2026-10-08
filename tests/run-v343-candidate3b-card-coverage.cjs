@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('fs');const path=require('path');const cp=require('child_process');
+const ROOT=path.resolve(__dirname,'..');
+const out=path.join(ROOT,'tests','artifacts','candidate3b','coverage');fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
+cp.execFileSync(process.execPath,[path.join(ROOT,'runtime/tools/generate-season1-coverage-matrix.js'),'--cards','cards.runtime.v0.16.2.json','--recipes','effect-recipes.runtime.v0.15.2.json','--out',out],{cwd:ROOT,stdio:'inherit'});
+const files=fs.readdirSync(out);const csv=files.find(x=>/\.csv$/i.test(x));const jsonf=files.find(x=>/\.json$/i.test(x));
+let text='';for(const f of files) text+=fs.readFileSync(path.join(out,f),'utf8')+'\n';
+if(!/200/.test(text))throw new Error('Coverage output does not prove 200 canonical cards');
+if(/\bblocked\b[^\n]*[1-9]/i.test(text))throw new Error('Coverage output reports blocked active runtime paths');
+const cards=JSON.parse(fs.readFileSync(path.join(ROOT,'data/season1/cards.runtime.v0.16.2.json'),'utf8')).cards;if(cards.length!==200)throw new Error(`Expected 200 cards, got ${cards.length}`);
+console.log(`PASS Candidate 3B card runtime coverage: ${cards.length}/200 canonical cards; generated artifacts: ${files.join(', ')}`);

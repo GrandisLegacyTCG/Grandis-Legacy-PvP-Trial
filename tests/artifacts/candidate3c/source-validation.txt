@@ -1,0 +1,22 @@
+== sync lock ==
+
+> grandis-legacy-pvp@3.0.43-candidate.3c sync-lock
+> node tools/build-runtime-sync-lock.cjs
+
+PASS: PvP v3.43 Candidate 3A runtime sync lock generated for 94 files.
+== syntax ==
+
+> grandis-legacy-pvp@3.0.43-candidate.3c check:syntax
+> node --check server.js && node --check public/js/app.bundle.js && node --check public/js/static-data.js && node --check public/js/runtime-authority.js && node --check public/js/pvp-network.js && find runtime -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | sort -z | xargs -0 -r -n1 node --check
+
+== runtime sync self-test ==
+{
+  "ok": true,
+  "version": "v2.63",
+  "policy": "RUNTIME_FIRST_FAIL_CLOSED_SYNC",
+  "authorityVerified": true,
+  "heroComponentsVerified": true,
+  "verifiedFiles": 94,
+  "activeStarterCount": 5,
+  "canonicalCardCount": 200
+}

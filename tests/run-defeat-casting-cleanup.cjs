@@ -1,0 +1,12 @@
+'use strict';
+const path=require('path'),assert=require('assert');
+const fs=require('fs'),vm=require('vm');
+const root=path.resolve(__dirname,'..');
+const dummy={style:{},dataset:{},classList:{add(){},remove(){},toggle(){},contains(){return false}},addEventListener(){},removeEventListener(){},setAttribute(){},removeAttribute(){},appendChild(){},querySelector(){return null},querySelectorAll(){return[]},focus(){},scrollIntoView(){},click(){},disabled:false,value:'',checked:false,hidden:false,get innerHTML(){return this._h||''},set innerHTML(v){this._h=String(v)},get textContent(){return this._t||''},set textContent(v){this._t=String(v)}};
+const document={readyState:'loading',addEventListener(){},removeEventListener(){},getElementById(){return dummy},querySelectorAll(){return[]},querySelector(){return null},createElement(){return {...dummy,style:{},dataset:{},classList:dummy.classList}},body:dummy,head:dummy};
+const window={document,GL_APP_MODE:'PVP',GL_PVP_SHARED_BOARD_ACTIVE:true,addEventListener(){},removeEventListener(){},dispatchEvent(){},setTimeout,clearTimeout,console};window.window=window;
+const ctx={window,document,console,setTimeout,clearTimeout,URL,CustomEvent:class{},localStorage:{getItem(){return null},setItem(){},removeItem(){}},navigator:{},location:{href:'http://localhost/'},Image:function(){this.complete=true;}};ctx.globalThis=ctx;window.globalThis=ctx;vm.createContext(ctx);
+for(const rel of ['public/js/static-data.js','public/js/runtime-authority.js','public/js/app.bundle.js'])vm.runInContext(fs.readFileSync(path.join(root,rel),'utf8'),ctx,{timeout:10000,filename:rel});
+const out=window.GL_LOCAL_AI_BRIDGE.testDefeatCastingCleanupRevive();
+assert(out&&out.ok,'PvP shared application defeat cleanup failed: '+JSON.stringify(out));
+console.log('PASS PvP v2.6.11 shared defeat/Casting/Revive cleanup');

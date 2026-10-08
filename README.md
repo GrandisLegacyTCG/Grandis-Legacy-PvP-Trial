@@ -1,74 +1,52 @@
-# Grandis Legacy PvP v3.75.5
+# Grandis Legacy PvP — v3.75.6
 
-Two-human, server-authoritative Grandis Legacy PvP with the current VS AI v6.90.7 battlefield/UI experience.
+## Release identity
 
-## Locked source roles
+- PvP Version: **v3.75.6**
+- Package Version: **3.75.6**
+- Date: **2026-10-09**
+- Status: **two-browser candidate; not yet promoted to live**
 
-This build uses a hard boundary between the three source lines:
+## Donor architecture
 
-- **PvP v3.51 = gameplay + multiplayer authority after match start.** The headless server loads an exact copy of the proven v3.51 canonical gameplay runtime and the v3.51 gameplay intent router.
-- **VS AI v6.90.7 = UI/UX/presentation.** The browser keeps the newer battlefield layout, center choices/payment presentation, hover/review behavior, effects, animation, and audio concepts.
-- **pvp-fresh v3.73.20 = lobby/start-game/opening donor only.** Its gameplay synchronization and exact-Shard transaction model are not used as the authoritative match engine.
+v3.75.6 is rebuilt from the proven **PvP v3.51** gameplay/network contract instead of continuing to patch the experimental v3.73.20 gameplay bridge.
 
-The practical target is simple: players should experience the latest UI/UX while the backend uses the multiplayer flow that already proved stable in v3.51.
+- **PvP v3.51** — authoritative server/runtime, browser gameplay contract, one-intent-in-flight network lifecycle, pending-choice lifecycle, hidden-information protocol, payment rules, reconnect/spectator behavior.
+- **VS AI v6.90.7** — battlefield UI/UX, interaction presentation, center-choice visuals, card/shard presentation, animation/audio presentation.
+- **pvp-fresh v3.73.20** — presentation reference only for lobby/start/opening. Its gameplay intent queue, local-first render flow, and exact-payment backend are intentionally excluded.
 
-## Why the server runtime is separate
+The intended player experience is simple: the match should look and feel like the newest VS AI UI while behaving like the proven online PvP runtime underneath.
 
-`public/js/app.bundle.js` remains the newer browser/presentation runtime required by the v6.90.7-derived UI. The server does **not** execute that file for gameplay authority.
+## Important gameplay/network decisions
 
-The canonical match engine is isolated in:
+- PvP gameplay is **server authoritative**.
+- Only **one gameplay intent may be in flight** at a time; the next interaction waits for the next authoritative board revision.
+- Browser UI does not advance gameplay locally after sending a PvP intent.
+- Pending choices are rehydrated/closed from each authoritative snapshot.
+- Normal v3.51 Mana payment is preserved: Class Shards are the optional player choice for Skills; Mana Shards fill the remaining cost automatically. Event/Item payment does not use the experimental universal exact-Shard payment backend.
+- Opponent Shard selection uses the v3.51 opaque `choice_handle + board revision` protocol so hidden Shard identity stays private.
+- Card Played/History reads only public played-card event streams; opening/draw-to-Hand is not used as Card Played history.
 
-- `server/runtime/static-data.js`
-- `server/runtime/runtime-authority.js`
-- `server/runtime/app.bundle.js`
+## Opening presentation
 
-Those files are exact v3.51 runtime artifacts. Static QA locks their SHA-256 hashes so the v3.73.x gameplay/payment model cannot silently leak back into server authority.
+The presentation layer uses the approved opening choreography without changing authoritative setup state:
 
-## Payment behavior
+1. Opening Hand: Player #1 → Opponent #1 → ... alternating until both have 6.
+2. Starting Shards: Player #1 → Opponent #1 → ... alternating until both have 3.
+3. Opening setup completes for both players.
+4. The first player then performs the normal Draw Phase presentation: +1 Main Deck card, then +1 Shard at normal speed.
 
-The authoritative payment flow is restored to v3.51 semantics:
+Opening card/shard flight is approximately 2× normal speed while remaining visually readable.
 
-- Event / Item / other non-Skill payments do not use the newer universal exact-Shard popup; Mana Shards pay first and Class Shards are consumed only if needed.
-- Skill payments may offer Class Shard choice; chosen Class Shards contribute first and Mana Shards automatically fill the remaining cost.
-- The browser may present the newer v6.90.7 payment UI, but the server decides legality, cost, Shard spending, card resolution, and the next pending state.
+## First manual acceptance pass
 
-The first player's first-turn restriction remains **Attack-only**. Deploy/Reform Events are not blocked merely because it is Round 1.
+Before live promotion, test with two real browser clients in this order:
 
-## Repository naming
+1. Opening choreography and first-player Draw Phase separation.
+2. Round 1 Event use (only the first player's Attack is restricted on that first turn).
+3. Meditation — resolve completely and identically on both clients.
+4. A paid Skill — payment → resolution → popup closes on both clients.
+5. Steal/opponent Shard selection — hidden selection and resolution on both clients.
+6. Card Played privacy — opponent opening/normal draws must never reveal card identity in history.
 
-The production tree follows the recognizable PvP v3.51-style layout: browser code under `public/js/`, CSS under `public/css/`, and shared battlefield UI under `public/shared-ui/`. Internal `PLAYER` / `AI` runtime side names are retained for snapshot compatibility; in human-vs-human PvP, internal `AI` means Player 2.
-
-See `docs/SOURCE_MAP_v3.75.5.md` and `docs/SYNC_ARCHITECTURE_v3.75.5.md`.
-
-## Versioning
-
-The active line is **v3.75.5**. Future maintenance builds increment only the final component: `v3.75.6`, `v3.75.7`, and so on unless explicitly changed.
-
-## Local run
-
-Requires Node.js 18+.
-
-```bash
-npm install
-npm start
-```
-
-Open the same URL in two browser sessions for Player 1 and Player 2. Additional visitors can join as read-only hidden-info spectators up to the configured cap.
-
-## QA
-
-```bash
-npm test
-```
-
-The automated suite locks the exact v3.51 server gameplay artifacts, checks v3.51 payment semantics and Round-1 Event legality, verifies Meditation resolution in the authoritative engine, two-human P1↔P2 handoff, Player 2 Tribute, spectator security/capacity, opening transport, and authoritative battle feedback.
-
-Real two-browser testing is still required before calling the build live-ready, especially Meditation, Steal, and a paid Skill from both seats.
-
-## Deployment
-
-- Dockerfile: repository root `Dockerfile`
-- Default port: `3000` (`PORT` is honored)
-- Health check: `/health`
-- Fixed room: `GRANDIS_PVP`
-- Intended memory budget: 256 MB
+See `ARCHITECTURE_DONOR_MAP.md` and `BUILD_NOTES_v3.75.6.md`.

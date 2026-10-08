@@ -1,0 +1,606 @@
+== Candidate 3A intent ==
+{
+  "ok": true,
+  "candidate": "PvP v3.43 Candidate 3A",
+  "oneIntentRouter": true,
+  "serverSeatOwnership": true,
+  "spectatorCentralReject": true,
+  "turnOwnership": true,
+  "pendingOwnership": true,
+  "responseOwnership": true,
+  "duplicateActionId": true,
+  "staleRevision": true,
+  "canonicalRejectionPropagation": true,
+  "supportedIntentCount": 40
+}
+== Candidate 3A headless ==
+{
+  "ok": true,
+  "candidate": "PvP v3.43 Candidate 3A",
+  "productionHeadlessLoadOrder": true,
+  "metadataCompatibility": {
+    "sharedRuntime": "v1.94.2",
+    "cardVersion": "v0.16.2",
+    "effectVersion": "v0.15.2"
+  },
+  "matchBoot": true,
+  "openingFlow": true
+}
+== Candidate 3A gameplay ==
+{
+  "ok": true,
+  "candidate": "PvP v3.43 Candidate 3A",
+  "canonicalRuntime": "Candidate 15 shared runtime + GL_RULES_RUNTIME",
+  "phaseTurn": true,
+  "representativePlay": {
+    "attack": "S1-WAR-001",
+    "tactical": "S1-MAG-006",
+    "item": "S1-ITM-005",
+    "event": "S1-EVT-002"
+  },
+  "targeting": true,
+  "manaPayment": true,
+  "shardPayment": true,
+  "responseBackbone": true,
+  "tribute": true,
+  "rankUp": true,
+  "ultimateConditionalTribute": true,
+  "reposition": true,
+  "invalidActionNoMutation": true
+}
+== Candidate 3B hero ==
+PASS Candidate 3B Hero Components: 30 hero compositions, 16 class abilities, 6 racial traits, 10 Legacy definitions; Draw Review uses canonical runtime.
+PASS PvP Candidate 3B compatibility: Quick Reload / Rapid Chamber Draw Review is resolved by the canonical Candidate 15 runtime; Aura counters and Draw/Mana continuation remain canonical.
+== Candidate 3B advanced ==
+{
+  "ok": true,
+  "candidate": "PvP v3.43 Candidate 3B",
+  "statuses": [
+    "Bleed",
+    "Burn",
+    "Freeze",
+    "Poison",
+    "Stun"
+  ],
+  "blessingClassification": "canonical Attachment/effect (not a Status record)",
+  "advancedResponse": true,
+  "sequentialAreaResponses": [
+    "LEFT",
+    "CENTER",
+    "RIGHT"
+  ],
+  "attachment": true,
+  "casting": true,
+  "searchRevealAndBlind": true,
+  "searchShuffle": true,
+  "sequentialReveal": true,
+  "attackVsDamage": true,
+  "tripleShot": true,
+  "whirlwind": 50,
+  "ultimateShardReturnBatch": true,
+  "viewerSafe": true
+}
+== Candidate 3B coverage ==
+PASS structured coverage 200/200
+PASS Candidate 3B card runtime coverage: 200/200 canonical cards; generated artifacts: SEASON1_CARD_COVERAGE_MATRIX_v1.5.0.csv, SEASON1_CARD_COVERAGE_MATRIX_v1.5.0.json, SEASON1_CARD_COVERAGE_SUMMARY_v1.5.0.md
+== Candidate 3B static ==
+PASS Candidate 3B static architecture: canonical advanced routes preserved, duplicate Draw Review authority retired, only authorized card UI corrections detected, provider-neutral core preserved.
+== Candidate 3B UI ==
+{
+  "viewports": [
+    {
+      "viewport": "1366x768",
+      "kind": "desktop",
+      "played": [
+        {
+          "w": 139.5,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 139.5,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 139.5,
+          "h": 36,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.48) 0px 7px 16px 0px"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.45) 0px 7px 18px 0px"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(74, 202, 111, 0.75) 0px 0px 0px 2px inset, rgba(74, 202, 111, 0.16) 0px 0px 14px 0px",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "1024x768",
+      "kind": "tablet-landscape",
+      "played": [
+        {
+          "w": 102.125,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 102.140625,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 102.125,
+          "h": 36,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.48) 0px 7px 16px 0px"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.45) 0px 7px 18px 0px"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(74, 202, 111, 0.75) 0px 0px 0px 2px inset, rgba(74, 202, 111, 0.16) 0px 0px 14px 0px",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "1180x820",
+      "kind": "tablet-landscape",
+      "played": [
+        {
+          "w": 119.296875,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 119.296875,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 119.296875,
+          "h": 36,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.48) 0px 7px 16px 0px"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.45) 0px 7px 18px 0px"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(74, 202, 111, 0.75) 0px 0px 0px 2px inset, rgba(74, 202, 111, 0.16) 0px 0px 14px 0px",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "768x1024",
+      "kind": "tablet-portrait",
+      "played": [
+        {
+          "w": 114.5,
+          "h": 159.9375,
+          "border": "0px"
+        },
+        {
+          "w": 114.5,
+          "h": 159.9375,
+          "border": "0px"
+        },
+        {
+          "w": 114.5,
+          "h": 159.9375,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "kind": "tablet-portrait",
+      "played": [
+        {
+          "w": 151.71875,
+          "h": 211.9375,
+          "border": "0px"
+        },
+        {
+          "w": 151.71875,
+          "h": 211.9375,
+          "border": "0px"
+        },
+        {
+          "w": 151.71875,
+          "h": 211.9375,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "360x800",
+      "kind": "phone",
+      "played": [
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "kind": "phone",
+      "played": [
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "412x915",
+      "kind": "phone",
+      "played": [
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    }
+  ],
+  "page_errors": [],
+  "pass": true
+}

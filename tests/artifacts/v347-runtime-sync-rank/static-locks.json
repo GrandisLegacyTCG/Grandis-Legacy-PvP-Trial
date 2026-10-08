@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "version": "3.0.47",
+  "baseline": "v3.45",
+  "v346ImplementationBaseline": false,
+  "v346RankReferenceOnly": true,
+  "runtimeSyncGateDisabled": false,
+  "runtimeSyncLock": "v2.63",
+  "rankStyle1": true,
+  "rankLocalOnly": true,
+  "endpointsChanged": false,
+  "networkBehaviorChanged": false,
+  "battlefieldChanged": false,
+  "canonicalCards": 200
+}

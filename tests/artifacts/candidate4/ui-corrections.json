@@ -1,0 +1,518 @@
+{
+  "viewports": [
+    {
+      "viewport": "1366x768",
+      "kind": "desktop",
+      "played": [
+        {
+          "w": 139.5,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 139.5,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 139.5,
+          "h": 36,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.48) 0px 7px 16px 0px"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.45) 0px 7px 18px 0px"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(74, 202, 111, 0.75) 0px 0px 0px 2px inset, rgba(74, 202, 111, 0.16) 0px 0px 14px 0px",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "1024x768",
+      "kind": "tablet-landscape",
+      "played": [
+        {
+          "w": 102.125,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 102.140625,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 102.125,
+          "h": 36,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.48) 0px 7px 16px 0px"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.45) 0px 7px 18px 0px"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(74, 202, 111, 0.75) 0px 0px 0px 2px inset, rgba(74, 202, 111, 0.16) 0px 0px 14px 0px",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "1180x820",
+      "kind": "tablet-landscape",
+      "played": [
+        {
+          "w": 119.296875,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 119.296875,
+          "h": 36,
+          "border": "0px"
+        },
+        {
+          "w": 119.296875,
+          "h": 36,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.48) 0px 7px 16px 0px"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.45) 0px 7px 18px 0px"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(74, 202, 111, 0.75) 0px 0px 0px 2px inset, rgba(74, 202, 111, 0.16) 0px 0px 14px 0px",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "768x1024",
+      "kind": "tablet-portrait",
+      "played": [
+        {
+          "w": 114.5,
+          "h": 159.9375,
+          "border": "0px"
+        },
+        {
+          "w": 114.5,
+          "h": 159.9375,
+          "border": "0px"
+        },
+        {
+          "w": 114.5,
+          "h": 159.9375,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "820x1180",
+      "kind": "tablet-portrait",
+      "played": [
+        {
+          "w": 151.71875,
+          "h": 211.9375,
+          "border": "0px"
+        },
+        {
+          "w": 151.71875,
+          "h": 211.9375,
+          "border": "0px"
+        },
+        {
+          "w": 151.71875,
+          "h": 211.9375,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "360x800",
+      "kind": "phone",
+      "played": [
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "390x844",
+      "kind": "phone",
+      "played": [
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    },
+    {
+      "viewport": "412x915",
+      "kind": "phone",
+      "played": [
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        },
+        {
+          "w": 40.59375,
+          "h": 30,
+          "border": "0px"
+        }
+      ],
+      "scale_pass": true,
+      "art_borders": {
+        "hero": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.5) 0px 10px 22px 0px"
+        },
+        "hand": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_played_wrapper": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "card_back": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        },
+        "attachment": {
+          "width": "0px",
+          "style": "none",
+          "outline": "none",
+          "boxShadow": "none"
+        }
+      },
+      "decorative_border_pass": true,
+      "functional_highlight": "rgba(92, 255, 151, 0.54) 0px 0px 18px 0px inset, rgba(92, 255, 151, 0.24) 0px 0px 52px 0px inset",
+      "functional_highlight_pass": true,
+      "pass": true
+    }
+  ],
+  "page_errors": [],
+  "pass": true
+}

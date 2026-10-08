@@ -1,3 +1,4 @@
+/* Grandis Legacy PvP v3.75.6 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
 (()=>{
 'use strict';
 const E=()=>window.GL_OPTION_B_ENGINE;
@@ -56,9 +57,7 @@ let obOpeningHiddenShardUids=new Set(),resultShown=false,resultCleanupTimer=null
 let transientConnectorKey='',transientConnectorUntil=0,transientDefenseConnector=null;
 let presentationPrimed=false,previousVisualState=null,lastTurnBannerKey='';
 let lastPhaseIndicatorKey='',lastInteractionFocusMode='';
-let centerChoiceKey='',centerChoiceRenderSig='',centerChoiceBusy=false,centerChoiceMagicRevealed=false,centerChoiceCommitIntent=null;
-const pvpIntentFollowups=new Map();
-let lastAuthoritativeRevision=-1;
+let centerChoiceKey='',centerChoiceRenderSig='',centerChoiceBusy=false,centerChoiceMagicRevealed=false;
 let obPresentationActive=0,obPresentationBusyUntil=0;
 let obAttachmentLastPress={key:'',at:0};
 const seenPresentationEvents=new Set();
@@ -76,9 +75,13 @@ function art(id){return id?'card-art/'+encodeURIComponent(id)+'.webp':'';}
 function shardArt(sh){if(!sh||sh.kind!=='CLASS')return 'assets/shards/Generic.webp';const n=String(sh.class_name||'').trim();return 'assets/shards/'+(n||'Generic')+'.webp';}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cloneLite(v){try{return JSON.parse(JSON.stringify(v))}catch{return null}}
+function currentPvpRevision(){const n=Number(window.GL_PVP_NETWORK?.getSnapshot?.()?.match?.serverBoardRevision);return Number.isFinite(n)?n:0;}
 function intent(name,args=[]){const net=window.GL_PVP_NETWORK;if(window.GL_PVP_CLIENT_MODE&&net&&typeof net.sendIntent==='function'){return net.sendIntent(name,args)}const r=E().intent(name,args);setTimeout(renderNow,0);return r;}
-function pvpRevision(){return Number(window.GL_PVP_NETWORK?.getRevision?.()||window.GL_PVP_NETWORK?.getSnapshot?.()?.match?.serverBoardRevision||0)}
-function intentThen(name,args,next){const r=intent(name,args);if(r?.ok&&r.clientActionId&&typeof next==='function')pvpIntentFollowups.set(String(r.clientActionId),next);return r}
+function intentThenAuthoritativeConfirm(name,args=[],confirmName='handleChoiceConfirm'){
+  if(!window.GL_PVP_CLIENT_MODE){const ok=intent(name,args);if(ok!==false)setTimeout(()=>intent(confirmName,[]),0);return ok;}
+  const before=currentPvpRevision(),ok=intent(name,args);if(!ok)return false;const deadline=Date.now()+5000;
+  const wait=()=>{const now=currentPvpRevision();if(now>before){const q=st()?.pending;if(q)intent(confirmName,[]);return}if(Date.now()<deadline)setTimeout(wait,45)};setTimeout(wait,45);return true;
+}
 function flash(msg){feedback.textContent=msg;feedback.classList.add('show');clearTimeout(flash.t);flash.t=setTimeout(()=>feedback.classList.remove('show'),700);}
 function sideHeroes(s,side){return side==='AI'?s.aiHeroes:s.playerHeroes;}
 function sideHand(s,side){return side==='AI'?s.aiHand:s.playerHand;}
@@ -462,7 +465,7 @@ function openLobbyHeroProgression(side,rankOneId){
 }
 function deckFormationHtml(side){
   const view=E()?.getOptionBLobbyFormationView?.(side)||{rank:1,lanes:{}},parts=[];
-  laneOrder.forEach((lane,index)=>{const row=view.lanes?.[lane]||{},id=row.previewId||row.rankOneId||'',v=cv(id),r1=row.rankOneId||id;parts.push('<article class="ob-lobby-hero"><button type="button" data-lobby-progression-side="'+esc(side)+'" data-lobby-progression="'+esc(r1)+'" aria-label="View '+esc(lane)+' Hero Progression">'+(id?'<img src="'+art(id)+'" alt="'+esc(v?.name||id)+'">':'<span class="ob-lobby-hero-empty">—</span>')+'</button><small>'+(lane.charAt(0)+lane.slice(1).toLowerCase())+'</small></article>');if(index<laneOrder.length-1){const next=laneOrder[index+1];parts.push('<button class="ob-lobby-swap" type="button" data-lobby-swap-side="'+esc(side)+'" data-lobby-swap-left="'+lane+'" data-lobby-swap-right="'+next+'" aria-label="Swap '+lane+' and '+next+'"><img src="assets/lobby/Swap.png" alt="" aria-hidden="true"></button>')}});
+  laneOrder.forEach((lane,index)=>{const row=view.lanes?.[lane]||{},id=row.previewId||row.rankOneId||'',v=cv(id),r1=row.rankOneId||id;parts.push('<article class="ob-lobby-hero"><button type="button" data-lobby-progression-side="'+esc(side)+'" data-lobby-progression="'+esc(r1)+'" aria-label="View '+esc(lane)+' Hero Progression">'+(id?'<img src="'+art(id)+'" alt="'+esc(v?.name||id)+'">':'<span class="ob-lobby-hero-empty">—</span>')+'</button><small>'+(lane.charAt(0)+lane.slice(1).toLowerCase())+'</small></article>');if(index<laneOrder.length-1){const next=laneOrder[index+1];parts.push('<button class="ob-lobby-swap" type="button" data-lobby-swap-side="'+esc(side)+'" data-lobby-swap-left="'+lane+'" data-lobby-swap-right="'+next+'" aria-label="Swap '+lane+' and '+next+'"><img src="assets/lobby/swap.png" alt="" aria-hidden="true"></button>')}});
   return '<div class="ob-lobby-formation">'+parts.join('')+'</div><div class="ob-lobby-rank-control" data-lobby-rank-side="'+esc(side)+'"><button type="button" data-lobby-rank-delta="-1" data-lobby-rank-side="'+esc(side)+'" aria-label="Previous rank">‹</button><strong>RANK '+['I','II','III'][Math.max(1,Math.min(3,Number(view.rank||1)))-1]+'</strong><button type="button" data-lobby-rank-delta="1" data-lobby-rank-side="'+esc(side)+'" aria-label="Next rank">›</button></div>';
 }
 function renderLobby(){
@@ -484,7 +487,7 @@ function coinFaceSrc(face){return String(face||'HEADS').toUpperCase()==='TAILS'?
 function fairCoinOutcome(){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return (a[0]&1)?'TAILS':'HEADS'}catch{return Math.random()<.5?'HEADS':'TAILS'}}
 function renderCoinChoice(){const body=coinOverlay.querySelector('.ob-coin-body');body.innerHTML='<p>Choose Heads or Tails.</p><div class="ob-coin-actions"><button type="button" data-coin-choice="HEADS"><img src="'+coinFaceSrc('HEADS')+'" alt="Heads"><strong>HEADS</strong></button><button type="button" data-coin-choice="TAILS"><img src="'+coinFaceSrc('TAILS')+'" alt="Tails"><strong>TAILS</strong></button></div>';body.querySelectorAll('[data-coin-choice]').forEach(btn=>btn.onclick=()=>runCoinFlip(btn.dataset.coinChoice));coinOverlay.classList.add('open')}
 function runCoinFlip(choice){openingChoice=choice==='TAILS'?'TAILS':'HEADS';openingOutcome=fairCoinOutcome();openingFirstSide=openingChoice===openingOutcome?'PLAYER':'AI';const body=coinOverlay.querySelector('.ob-coin-body');let face=openingOutcome==='HEADS'?'TAILS':'HEADS';body.innerHTML='<p>Flipping the coin...</p><div class="ob-coin-flip-stage"><img src="'+coinFaceSrc(face)+'" alt="Coin"></div>';const im=body.querySelector('img');let step=0;const totalSteps=8,halfDuration=72;B()?.playOpeningCoinSound?.();const runStep=()=>{if(step>=totalSteps){im.src=coinFaceSrc(openingOutcome);im.alt=openingOutcome==='HEADS'?'Heads':'Tails';im.style.transition='none';im.style.transform='translateY(0) scaleX(1)';const text=body.querySelector('p');if(text)text.textContent=(openingOutcome==='HEADS'?'Heads':'Tails')+'!';setTimeout(renderCoinResult,1000);return}const progress=(step+1)/totalSteps,lift=Math.round(Math.sin(progress*Math.PI)*22);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.45,0,.55,1)';im.style.transform='translateY(-'+lift+'px) scaleX(.04)';setTimeout(()=>{face=face==='HEADS'?'TAILS':'HEADS';im.src=coinFaceSrc(face);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.2,.75,.3,1)';im.style.transform='translateY(-'+lift+'px) scaleX(1)';setTimeout(()=>{step++;runStep()},halfDuration)},halfDuration)};runStep()}
-function renderCoinResult(){const body=coinOverlay.querySelector('.ob-coin-body'),won=openingFirstSide==='PLAYER';body.innerHTML='<div class="ob-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+(won?'YOU WON THE COIN FLIP':'OPPONENT WON THE COIN FLIP')+'</strong><p>'+(won?'You will take the first turn.':'Opponent will take the first turn.')+'</p></div><div class="ob-coin-result"><div><span>Your choice</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+openingChoice+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+openingOutcome+'"></div></div><button class="ob-coin-start" type="button">START GAME</button>';body.querySelector('.ob-coin-start').onclick=beginOpeningPresentation}
+function renderCoinResult(){const body=coinOverlay.querySelector('.ob-coin-body'),won=openingFirstSide==='PLAYER';body.innerHTML='<div class="ob-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+(won?'YOU WON THE COIN FLIP':(window.GL_PVP_CLIENT_MODE?'OPPONENT WON THE COIN FLIP':'LOCAL AI WON THE COIN FLIP'))+'</strong><p>'+(won?'You will take the first turn.':(window.GL_PVP_CLIENT_MODE?'Opponent will take the first turn.':'Local AI will take the first turn.'))+'</p></div><div class="ob-coin-result"><div><span>Your choice</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+openingChoice+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+openingOutcome+'"></div></div><button class="ob-coin-start" type="button">START GAME</button>';body.querySelector('.ob-coin-start').onclick=beginOpeningPresentation}
 function resetPresentationState(){presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;obPendingDrawReservations.PLAYER.length=0;obPendingDrawReservations.AI.length=0;obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();obOpeningHiddenShardUids.clear();obExternalDrawSequence=Promise.resolve();resultShown=false;clearResultTimer();resultOverlay.classList.remove('open');closeLobbyProgression()}
 function startMatchFromLobby(){
   lobbyErrorText='';const r=E().prepareOptionBLocalMatch?.();if(!r?.ok){lobbyErrorText=r?.error||'Could not start match.';renderLobby();return}
@@ -575,7 +578,7 @@ function runTributeLikeHeroAction(p,side,lane){
   }
   return false;
 }
-function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if(openingPresentationActive||!s.turn||lastTurnBannerKey===key)return;lastTurnBannerKey=key;const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',label=s.turn==='PLAYER'?(spectator?'PLAYER 1 TURN':'YOUR TURN'):(window.GL_PVP_CLIENT_MODE?(spectator?'PLAYER 2 TURN':'OPPONENT TURN'):'OPPONENT TURN');turnBanner.innerHTML='<strong>'+label+'</strong><small>ROUND '+Number(s.round||1)+'</small>';turnBanner.classList.remove('show');void turnBanner.offsetWidth;turnBanner.classList.add('show');clearTimeout(showTurnBannerFor.t);showTurnBannerFor.t=setTimeout(()=>turnBanner.classList.remove('show'),900)}
+function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if(openingPresentationActive||!s.turn||lastTurnBannerKey===key)return;lastTurnBannerKey=key;const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',label=s.turn==='PLAYER'?(spectator?'PLAYER 1 TURN':'YOUR TURN'):(window.GL_PVP_CLIENT_MODE?(spectator?'PLAYER 2 TURN':'OPPONENT TURN'):'AI TURN');turnBanner.innerHTML='<strong>'+label+'</strong><small>ROUND '+Number(s.round||1)+'</small>';turnBanner.classList.remove('show');void turnBanner.offsetWidth;turnBanner.classList.add('show');clearTimeout(showTurnBannerFor.t);showTurnBannerFor.t=setTimeout(()=>turnBanner.classList.remove('show'),900)}
 function buildPresentationPlan(s){
   const cur=visualStateOf(s),prev=previousVisualState,plan={draws:[],shards:[],heroTransitions:[],moved:[]};
   if(openingPresentationActive){(cur.presentation||[]).forEach(e=>{if(e?.id&&e.reason==='OPENING_HAND')seenPresentationEvents.add(e.id)});previousVisualState=cur;return plan;}
@@ -749,21 +752,6 @@ function sortedShardPoolForDisplay(pool,side){
   // by Shard kind. Center payment reuses this same stable order.
   return (pool||[]).slice();
 }
-
-function authoritativeV351ManaPlan(s,p){
-  if(!s||!p||!['mana_shard_payment_choice','response_payment_choice'].includes(p.type))return null;
-  const response=p.type==='response_payment_choice',cost=Math.max(0,Number(response?p.mana_cost:p.cost||0));
-  const pool=(s.playerManaPoolCards||[]).slice();
-  const selected=(response?p.selected_mana_class_uids:p.selected_class_uids||[]).map(String);
-  const choices=response?(p.mana_class_choices||[]):(p.class_choices||[]),values=new Map(choices.map(x=>[String(x.uid),Number(x.value||1)]));
-  const chosen=[],chosenIds=new Set(),selectedClassUids=[];let value=0,classValue=0;
-  selected.forEach(uid=>{if(value>=cost)return;const sh=pool.find(x=>String(x?.uid)===uid&&x?.kind==='CLASS');if(!sh||chosenIds.has(uid))return;const v=Math.max(1,Number(values.get(uid)||1));chosen.push(sh);chosenIds.add(uid);selectedClassUids.push(uid);value+=v;classValue+=v;});
-  for(const sh of pool){if(value>=cost)break;if(sh?.kind==='CLASS')continue;const uid=String(sh?.uid||'');if(chosenIds.has(uid))continue;chosen.push(sh);chosenIds.add(uid);value+=1;}
-  return{ok:value>=cost,cost,value,class_value:classValue,shards:chosen,selected_class_uids:selectedClassUids,generic_used:chosen.filter(x=>x?.kind!=='CLASS').length};
-}
-function authoritativeV351SelectableClassUids(p){
-  if(!p)return new Set();const rows=p.type==='response_payment_choice'?(p.mana_class_choices||[]):p.type==='mana_shard_payment_choice'?(p.class_choices||[]):[];return new Set(rows.map(x=>String(x.uid)));
-}
 function layoutManaPoolCards(host){
   if(!host)return;const cards=[...host.querySelectorAll(':scope > .mana-card')];if(!cards.length)return;
   const sample=cards.find(c=>getComputedStyle(c).display!=='none')||cards[0];
@@ -785,16 +773,16 @@ function layoutManaPoolCards(host){
 }
 
 function renderPool(host,countEl,pool,side){
-  const s=st(),p=s?.pending,legacyPlan=side==='PLAYER'?authoritativeV351ManaPlan(s,p):null;
+  const s=st(),p=s?.pending,plan=side==='PLAYER'?E().getManaPlan():null;
   const selected=new Set(),selectable=new Set();
-  if(side==='PLAYER'&&p?.type==='mana_shard_payment_choice'&&legacyPlan){
-    (legacyPlan.shards||[]).forEach(x=>selected.add(String(x.uid)));
-    authoritativeV351SelectableClassUids(p).forEach(uid=>selectable.add(uid));
+  if(side==='PLAYER'&&p?.type==='mana_shard_payment_choice'&&plan){
+    (plan.plan?.selected_shard_uids||plan.plan?.shards?.map(x=>x.uid)||[]).forEach(x=>selected.add(String(x)));
+    (plan.selectable_uids||plan.plan?.selectable_uids||[]).forEach(uid=>selectable.add(String(uid)));
   }
   if(side==='PLAYER'&&p?.type==='mana_spend_choice') (pool||[]).forEach(sh=>selected.add(String(sh.uid)));
-  if(side==='PLAYER'&&p?.type==='response_payment_choice'&&Number(p.mana_cost||0)>0){
-    (legacyPlan?.shards||[]).forEach(x=>selected.add(String(x.uid)));
-    authoritativeV351SelectableClassUids(p).forEach(uid=>selectable.add(uid));
+  if(side==='PLAYER'&&p?.type==='response_payment_choice'&&Number(p.mana_cost||0)>0&&plan){
+    (plan.plan?.selected_shard_uids||plan.plan?.shards?.map(x=>x.uid)||[]).forEach(uid=>selected.add(String(uid)));
+    (plan.selectable_uids||plan.plan?.selectable_uids||[]).forEach(uid=>selectable.add(String(uid)));
   }
 
   const blindOpponent = p?.type==='opponent_mana_selection' && pendingOwner(p)==='PLAYER' && side===p.target_side;
@@ -827,7 +815,7 @@ function renderPool(host,countEl,pool,side){
     wrap.appendChild(im);host.appendChild(wrap);cards.push(wrap);
     if(!(blindOpponent&&!blindInCenter)){if(side==='PLAYER')bindBattlefieldPreview(im,'shard',wrap);else bindPreview(im);}
     if(blindOpponent&&!blindInCenter){
-      wrap.addEventListener('click',()=>{const handle=String(p.candidates?.[blindIdx]?.choice_handle||'');if(handle)intent('selectOpponentManaChoiceHandle',[handle,Number(p.pvp_pool_revision||pvpRevision())])});
+      wrap.addEventListener('click',()=>{if(window.GL_PVP_CLIENT_MODE){const c=p?.candidates?.[blindIdx],handle=String(c?.choice_handle||'');if(handle)intent('selectOpponentManaChoiceHandle',[handle,Number(p?.pvp_pool_revision??currentPvpRevision())]);return}intent('selectOpponentManaChoice',[blindIdx])});
     }else if(selectable.has(String(sh.uid))&&!blindInCenter){
       wrap.addEventListener('click',()=>{
         if(p?.type==='response_payment_choice') intent('toggleResponseManaShardChoice',[sh.uid]);
@@ -916,7 +904,7 @@ function animateCenterChoiceIntoDeck(card,target,duration=520){
   if(!card||!target)return Promise.resolve();
   const r=card.getBoundingClientRect(),targetCard=target.querySelector?.('.zoneCard')||target.querySelector?.('img')||target,tr=targetCard?.getBoundingClientRect?.();
   if(!r.width||!r.height||!tr||!tr.width||!tr.height)return animateCenterChoiceTo(card,target,duration);
-  // v3.75.5 intentionally does NOT reuse the final v6.90.7 in-place Shard-to-Deck motion.
+  // v3.72 intentionally does NOT reuse the final v6.90.7 in-place Shard-to-Deck motion.
   // A fixed clone travels independently of the center stage so it cannot be clipped/faded
   // by center-session teardown before reaching the rendered Shard Deck.
   const clone=card.cloneNode(true);clone.classList.add('ob-center-travel-clone');
@@ -963,64 +951,10 @@ async function animateCenterChoiceExit(selectedKeys,selectedTarget,otherTarget,{
   return true;
 }
 function resetCenterChoiceVisualState(){
-  centerChoiceBusy=false;centerChoiceCommitIntent=null;centerChoiceStage.classList.remove('is-busy');
+  centerChoiceBusy=false;centerChoiceStage.classList.remove('is-busy');
   const copy=centerChoiceStage.querySelector('.ob-center-choice-copy'),actions=centerChoiceStage.querySelector('.ob-center-choice-actions');
   copy?.classList.remove('is-fading');actions?.classList.remove('is-fading');
-  centerChoiceStage.querySelectorAll('.ob-center-choice-card').forEach(c=>{try{c.getAnimations?.().forEach(a=>a.cancel())}catch{}c.style.removeProperty('visibility');c.style.removeProperty('opacity');c.style.removeProperty('transform')});
-}
-function centerChoiceIntentMatches(detail){
-  if(!centerChoiceCommitIntent)return false;
-  const actionId=String(detail?.clientActionId||''),intentName=String(detail?.intent||'');
-  if(actionId&&centerChoiceCommitIntent.clientActionId)return actionId===centerChoiceCommitIntent.clientActionId;
-  return !intentName||intentName===centerChoiceCommitIntent.intent;
-}
-function onPvpIntentFailure(detail){
-  const id=String(detail?.clientActionId||'');if(id)pvpIntentFollowups.delete(id);
-  const centerMatch=centerChoiceIntentMatches(detail);
-  if(centerMatch){resetCenterChoiceVisualState();centerChoiceRenderSig='';}
-  setTimeout(renderNow,0);return centerMatch;
-}
-function onPvpIntentResolved(detail){
-  const id=String(detail?.clientActionId||''),follow=id?pvpIntentFollowups.get(id):null;
-  if(id)pvpIntentFollowups.delete(id);
-  const centerMatch=centerChoiceIntentMatches(detail);
-  if(centerMatch){resetCenterChoiceVisualState();centerChoiceRenderSig='';}
-  // v3.51 handshake: chained convenience actions are submitted only after the
-  // previous authoritative revision was imported on this browser.
-  if(typeof follow==='function')setTimeout(()=>{try{follow()}catch(err){console.warn('[PvP v3.75.5] authoritative follow-up failed',err)}},0);
-  else setTimeout(renderNow,0);
-  return centerMatch||!!follow;
-}
-function onAuthoritativeSnapshot(detail){
-  const rev=Number(detail?.revision||0);if(rev&&rev<lastAuthoritativeRevision)return false;lastAuthoritativeRevision=Math.max(lastAuthoritativeRevision,rev);
-  // A new server revision is the only source of truth. Any visual transaction that
-  // no longer has a matching pending state is cleared instead of surviving locally.
-  const s=st(),mode=centerChoiceModeFor(s);
-  if(!mode&&centerChoiceBusy)resetCenterChoiceVisualState();
-  if(uiResponseSourceChoice&&s?.responseWindow?.response_owner!=='PLAYER')uiResponseSourceChoice=null;
-  handRenderKey='';opponentHandRenderKey='';manaRenderKey='';
-  renderNow();return true;
-}
-function startAuthoritativeCenterCommit(intentName,args,selectedKeys,selectedTarget,otherTarget,{returnSide='PLAYER',button=null}={}){
-  if(centerChoiceBusy)return false;
-  // Network authority owns the transaction. Submit first; presentation must never gate
-  // whether the PAY/CONFIRM intent reaches the server or whether the UI can recover.
-  const submitted=intent(intentName,args||[]);
-  if(!submitted?.ok){resetCenterChoiceVisualState();centerChoiceRenderSig='';setTimeout(renderNow,0);return false;}
-  centerChoiceCommitIntent={intent:intentName,clientActionId:String(submitted.clientActionId||''),submittedAt:Date.now()};
-  centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy');
-  centerChoiceStage.querySelector('.ob-center-choice-copy')?.classList.add('is-fading');
-  centerChoiceStage.querySelector('.ob-center-choice-actions')?.classList.add('is-fading');
-  if(button){button.disabled=true;button.textContent='PAYING…';}
-  // Fire-and-forget visual preview. Authoritative snapshot/error callbacks close or
-  // restore the decision layer; animation completion is never a gameplay dependency.
-  const cards=[...centerChoiceStage.querySelectorAll('.ob-center-choice-card')];
-  Promise.all(cards.map(c=>{
-    if(selectedKeys?.has(c.dataset.choiceKey))return animateCenterChoiceIntoDeck(c,selectedTarget);
-    const spreadTarget=returnSide?centerPoolCardTarget(returnSide,c.dataset.choiceUid):null;
-    return animateCenterChoiceTo(c,spreadTarget||otherTarget);
-  })).catch(()=>{});
-  return true;
+  centerChoiceStage.querySelectorAll('.ob-center-choice-card').forEach(c=>{try{c.getAnimations?.().forEach(a=>a.cancel())}catch{}c.style.removeProperty('opacity');c.style.removeProperty('transform')});
 }
 function closeCenterChoiceStage(){
   centerChoiceKey='';centerChoiceRenderSig='';centerChoiceMagicRevealed=false;resetCenterChoiceVisualState();
@@ -1039,12 +973,13 @@ function renderCenterChoiceStage(s){
   const makeBtn=(text,cls,disabled,fn)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=text;b.disabled=!!disabled;b.onclick=fn;actions.appendChild(b);return b};
 
   if(mode==='pay'){
-    const responsePay=p.type==='response_payment_choice',plan=authoritativeV351ManaPlan(s,p)||{},rawPool=s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((plan.shards||[]).map(x=>String(x.uid))),selectableClassUids=authoritativeV351SelectableClassUids(p),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?(p.selected_indices||[]).length:0);
+    const responsePay=p.type==='response_payment_choice',info=E().getManaPlan?.(),plan=info?.plan||{},rawPool=info?.pool||s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((plan.selected_shard_uids||plan.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).map(String)),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?(p.selected_indices||[]).length:0);
     identity='pay|'+(responsePay?'response':'normal')+'|'+pool.map(x=>x.uid).join('|')+'|'+String(cardId||'')+'|'+cost;
     sig=identity+'|'+[...spentUids].join(',')+'|'+discardHave+'/'+discardNeed;
-    titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the additional Hand cost. Mana Shards fill the remaining cost automatically.':'Choose optional Class Shards. Mana Shards fill the remaining cost automatically.';statusText='MANA '+Number(plan.value||0)+' / '+cost;
-    cards=pool.map((sh,i)=>({key:String(sh.uid),uid:String(sh.uid),idx:i,front:shardArt(sh),back:'assets/ui/back-shard.webp',faceUp:true,selected:spentUids.has(String(sh.uid)),clickable:selectableClassUids.has(String(sh.uid)),label:(sh.class_name||'Mana')+' Shard'}));
-    spentUids.forEach(x=>selectedKeys.add(String(x)));selectableClassUids.forEach(x=>clickableKeys.add(String(x)));
+    titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the additional Hand cost, then confirm Mana payment.':'Class Shards can also be selected.';statusText='MANA '+Number(plan.value||0)+' / '+cost;
+    const selectableUids=new Set((info?.selectable_uids||plan.selectable_uids||[]).map(String));
+    cards=pool.map((sh,i)=>({key:String(sh.uid),uid:String(sh.uid),idx:i,front:shardArt(sh),back:'assets/ui/back-shard.webp',faceUp:true,selected:spentUids.has(String(sh.uid)),clickable:selectableUids.has(String(sh.uid)),label:(sh.class_name||'Mana')+' Shard'}));
+    spentUids.forEach(x=>selectedKeys.add(String(x)));selectableUids.forEach(x=>clickableKeys.add(String(x)));
     selectedTarget=centerChoiceDestinationForZone('PLAYER','Shard Deck');otherTarget=centerChoiceDestinationForZone('PLAYER','Shard Pool');
   }else if(mode==='opponent-shard'){
     const target=p.target_side||'AI',pool=target==='PLAYER'?(s.playerManaPoolCards||[]):s.aiManaPoolCards||[],selectedIdx=new Set((p.selected_indices||[]).map(Number)),required=Math.min(Number(p.required_count||1),(p.candidates||[]).length);
@@ -1081,14 +1016,14 @@ function renderCenterChoiceStage(s){
   }
 
   if(mode==='pay'){
-    const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),planReady=!!authoritativeV351ManaPlan(s,p)?.ok;
+    const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),planReady=!!E().getManaPlan?.()?.plan?.ok;
     cardsHost.querySelectorAll('.ob-center-choice-card.is-clickable').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;intent(responsePay?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',[c.dataset.choiceUid])});
     if(!responsePay)makeBtn('CANCEL','ob-center-choice-cancel',false,()=>{if(!centerChoiceBusy)intent('cancelPendingAction',[])});
-    const payAction=makeBtn('PAY','ob-center-choice-primary',!(planReady&&discardReady),()=>{if(centerChoiceBusy)return;const live=authoritativeV351ManaPlan(st(),st()?.pending)||{},keys=new Set((live.shards||[]).map(x=>String(x.uid)));startAuthoritativeCenterCommit(responsePay?'commitResponsePaymentChoice':'handleChoiceConfirm',[],keys,selectedTarget,otherTarget,{returnSide:'PLAYER',button:payAction})});
+    makeBtn('PAY','ob-center-choice-primary',!(planReady&&discardReady),async()=>{if(centerChoiceBusy)return;const live=E().getManaPlan?.()?.plan||{},keys=new Set((live.selected_shard_uids||live.shards?.map(x=>x.uid)||[]).map(String)),commit=responsePay?'commitResponsePaymentChoice':'handleChoiceConfirm';if(window.GL_PVP_CLIENT_MODE){const ok=intent(commit,[]);if(!ok)resetCenterChoiceVisualState();return}if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget,{returnSide:'PLAYER'}))intent(commit,[])});
   }else if(mode==='opponent-shard'){
-    cardsHost.querySelectorAll('.ob-center-choice-card').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;const i=Number(c.dataset.choiceIndex),handle=String(p.candidates?.[i]?.choice_handle||c.dataset.choiceKey||'');if(handle)intent('selectOpponentManaChoiceHandle',[handle,Number(p.pvp_pool_revision||pvpRevision())])});
+    cardsHost.querySelectorAll('.ob-center-choice-card').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;const idx=Number(c.dataset.choiceIndex),cand=p.candidates?.[idx];if(window.GL_PVP_CLIENT_MODE){const handle=String(cand?.choice_handle||'');if(handle)intent('selectOpponentManaChoiceHandle',[handle,Number(p.pvp_pool_revision??currentPvpRevision())]);return}intent('selectOpponentManaChoice',[idx])});
     const required=Math.min(Number(p.required_count||1),(p.candidates||[]).length),ready=(p.selected_indices||[]).length===required;
-    makeBtn('CONFIRM','ob-center-choice-primary',!ready,async()=>{if(centerChoiceBusy)return;const keys=new Set((p.selected_indices||[]).map(i=>String(p.candidates?.[Number(i)]?.choice_handle??p.candidates?.[Number(i)]?.uid??i)));if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget,{revealSelected:true,returnSide:p.target_side||'AI'}))intent('commitOpponentManaSelection',[])});
+    makeBtn('CONFIRM','ob-center-choice-primary',!ready,async()=>{if(centerChoiceBusy)return;const keys=new Set((p.selected_indices||[]).map(i=>String(p.candidates?.[Number(i)]?.choice_handle??p.candidates?.[Number(i)]?.uid??i)));if(window.GL_PVP_CLIENT_MODE){const ok=intent('handleChoiceConfirm',[]);if(!ok)resetCenterChoiceVisualState();return}if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget,{revealSelected:true,returnSide:p.target_side||'AI'}))intent('handleChoiceConfirm',[])});
   }else if(mode==='opponent-hand'){
     cardsHost.querySelectorAll('.ob-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentHandChoice',[Number(c.dataset.choiceIndex)])});
     const ready=p.selected_index!=null&&Number.isInteger(Number(p.selected_index))&&Number(p.selected_index)>=0;
@@ -1246,10 +1181,10 @@ function renderStatuses(laneEl,h,s,side,lane,delayExhaust){
     const p=s.pending;
     if(p?.target_lane===lane&&p?.target_side===side){
       if(p.type==='status_removal_choice'){
-        b.classList.add('ob-clickable');b.onclick=()=>intentThen('selectStatusRemovalChoice',[idx],()=>intent('handleChoiceConfirm',[]));
+        b.classList.add('ob-clickable');b.onclick=()=>intentThenAuthoritativeConfirm('selectStatusRemovalChoice',[idx]);
       }else if(p.type==='saint_purify_choice'){
         const choiceIndex=(p.status_choices||[]).findIndex(x=>Number(x.status_index)===idx);
-        if(choiceIndex>=0){b.classList.add('ob-clickable');b.onclick=()=>intentThen('selectSaintPurifyChoice',[choiceIndex],()=>intent('handleChoiceConfirm',[]))}
+        if(choiceIndex>=0){b.classList.add('ob-clickable');b.onclick=()=>intentThenAuthoritativeConfirm('selectSaintPurifyChoice',[choiceIndex])}
       }
     }
     holder.append(b,tip);wrap.appendChild(holder);
@@ -1531,7 +1466,7 @@ function renderHand(s){
         addAction(actions,'TRIBUTE','tribute',()=>intent('selectCardSearchChoice',[choiceIndex]));actionCount++;
         if(directSelected===choiceIndex)card.classList.add('is-selected');
       }else if(p.resolve_to==='discard_then_draw_three'){
-        addAction(actions,'DISCARD','discard',()=>intentThen('selectCardSearchChoice',[choiceIndex],()=>intent('handleChoiceConfirm',[])));actionCount++;
+        addAction(actions,'DISCARD','discard',()=>intentThenAuthoritativeConfirm('selectCardSearchChoice',[choiceIndex]));actionCount++;
       }
     }else if(discardMode&&discardSet.has(idx)){
       addAction(actions,discardSel.selected?'CANCEL':'DISCARD',discardSel.selected?'cancel':'discard',()=>handleDiscardClick(p,idx));actionCount++;
@@ -1553,16 +1488,16 @@ function addAction(host,label,cls,fn){const b=document.createElement('button');b
 function handleDiscardClick(p,handIndex){
   if(p.type==='hand_limit_discard'){
     const selectedNow=new Set((p.selected||[]).map(Number)),idx=Number(handIndex),willAdd=!selectedNow.has(idx),nextCount=selectedNow.size+(willAdd?1:-1),required=Math.max(0,Number(p.required||0));
-    if(willAdd&&nextCount>=required)intentThen('toggleDiscardIndex',[handIndex],()=>intent('handleChoiceConfirm',[]));
-    else intent('toggleDiscardIndex',[handIndex]);
+    intent('toggleDiscardIndex',[handIndex]);
+    if(willAdd&&nextCount>=required)intent('handleChoiceConfirm',[]);
     return;
   }
   if(p.type==='response_payment_choice'){
     const ci=(p.candidates||[]).findIndex(x=>Number(x.hand_index)===Number(handIndex));
     if(ci>=0){
       const selectedNow=new Set((p.selected_indices||[]).map(Number)),willAdd=!selectedNow.has(Number(ci)),nextCount=selectedNow.size+(willAdd?1:-1),required=Math.max(0,Number(p.required_discard_count||0));
-      if(willAdd&&nextCount>=required&&Number(p.mana_cost||0)<=0)intentThen('selectResponsePaymentChoice',[ci],()=>intent('commitResponsePaymentChoice',[]));
-      else intent('selectResponsePaymentChoice',[ci]);
+      intent('selectResponsePaymentChoice',[ci]);
+      if(willAdd&&nextCount>=required&&Number(p.mana_cost||0)<=0)intent('commitResponsePaymentChoice',[]);
     }
     return;
   }
@@ -1570,8 +1505,8 @@ function handleDiscardClick(p,handIndex){
     const ci=(p.cost_candidates||[]).findIndex(x=>Number(x.hand_index??x.index)===Number(handIndex));
     if(ci>=0){
       const selectedNow=new Set((p.selected_cost_indices||[]).map(Number)),willAdd=!selectedNow.has(Number(ci)),nextCount=selectedNow.size+(willAdd?1:-1),required=Math.max(1,Number(p.required_cost||1));
-      if(willAdd&&nextCount>=required)intentThen('selectLegacyCostChoice',[ci],()=>intent('handleChoiceConfirm',[]));
-      else intent('selectLegacyCostChoice',[ci]);
+      intent('selectLegacyCostChoice',[ci]);
+      if(willAdd&&nextCount>=required)intent('handleChoiceConfirm',[]);
     }
   }
 }
@@ -1582,7 +1517,7 @@ function renderOpponentHand(s){
   if(key===opponentHandRenderKey)return;opponentHandRenderKey=key;
   oppHandTrack.innerHTML='';document.querySelector('.ob-magic-scope-done')?.remove();
   if(choice){
-    (p.candidates||[]).forEach((x,i)=>{const card=document.createElement('div');card.className='hand-card';card.dataset.handIndex=i;const im=document.createElement('img');im.className='hand-art';im.src=reveal?art(x.card_id):'assets/ui/back-main.webp';card.appendChild(im);card.style.cursor='pointer';card.onclick=e=>{if(e.detail>1)return;intentThen('selectOpponentHandChoice',[i],()=>intent('commitOpponentHandChoice',[]))};if(reveal)card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(x.card_id)};oppHandTrack.appendChild(card);if(reveal)bindPreview(im)});
+    (p.candidates||[]).forEach((x,i)=>{const card=document.createElement('div');card.className='hand-card';card.dataset.handIndex=i;const im=document.createElement('img');im.className='hand-art';im.src=reveal?art(x.card_id):'assets/ui/back-main.webp';card.appendChild(im);card.style.cursor='pointer';card.onclick=e=>{if(e.detail>1)return;intentThenAuthoritativeConfirm('selectOpponentHandChoice',[i],'commitOpponentHandChoice')};if(reveal)card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(x.card_id)};oppHandTrack.appendChild(card);if(reveal)bindPreview(im)});
   }else if(scopeReveal){
     (p.revealed_cards||[]).forEach((id,i)=>{const card=document.createElement('div');card.className='hand-card';card.dataset.handIndex=i;const im=document.createElement('img');im.className='hand-art';im.src=art(id);card.appendChild(im);card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(id)};oppHandTrack.appendChild(card);bindPreview(im)});
     const hand=document.querySelector('.hand.top');if(hand){const done=document.createElement('button');done.type='button';done.className='ob-magic-scope-done';done.textContent='DONE';done.onclick=()=>intent('handleChoiceConfirm',[]);hand.appendChild(done)}
@@ -1597,7 +1532,7 @@ function renderPhase(s){
   const labels=[...document.querySelectorAll('.phase-label')];labels.forEach(x=>x.classList.toggle('active',x.textContent.trim().toUpperCase().startsWith(phaseName(s.phase).toUpperCase())));
   const activeLabel=labels.find(x=>x.classList.contains('active'))||labels[0],phaseIndicatorKey=String(s.turn||'')+'|'+Number(s.round||1)+'|'+String(s.phase||''),phaseChanged=!!lastPhaseIndicatorKey&&phaseIndicatorKey!==lastPhaseIndicatorKey;lastPhaseIndicatorKey=phaseIndicatorKey;
   requestAnimationFrame(()=>placePhaseIndicator(activeLabel,phaseChanged));
-  const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',turnLabel=s.turn==='PLAYER'?(spectator?'PLAYER 1 TURN':'YOUR TURN'):(window.GL_PVP_CLIENT_MODE?(spectator?'PLAYER 2 TURN':'OPPONENT TURN'):'OPPONENT TURN');
+  const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',turnLabel=s.turn==='PLAYER'?(spectator?'PLAYER 1 TURN':'YOUR TURN'):(window.GL_PVP_CLIENT_MODE?(spectator?'PLAYER 2 TURN':'OPPONENT TURN'):'AI TURN');
   const turn=document.querySelector('.phase-turn .turn');turn.innerHTML=turnLabel+'<small>TURN '+Number(s.round||1)+'</small>';
   const responseOwned=s.responseWindow?.response_owner==='PLAYER',p=s.pending;
   let mode='',label='REPOSITION';
@@ -1639,7 +1574,7 @@ function renderSwap(s){
     swapRenderKey=sig;swapLayer.innerHTML='';
     descriptors.forEach((d,i)=>{
       const btn=document.createElement('button');btn.type='button';btn.className='ob-swap-button';btn.setAttribute('aria-label','Swap positions');btn.dataset.swapIndex=String(i);
-      const im=document.createElement('img');im.src='assets/lobby/Swap.png';im.alt='Swap';btn.appendChild(im);
+      const im=document.createElement('img');im.src='assets/lobby/swap.png';im.alt='Swap';btn.appendChild(im);
       if(d.kind==='manual')btn.onclick=()=>intent('performManualReposition',[d.a+'|'+d.b]);
       else if(d.kind==='optional-source')btn.onclick=()=>intent('performOptionalSwapDecision',[d.b]);
       else btn.onclick=()=>intent('performOptionalTargetSwapDecision',[d.b]);
@@ -1657,7 +1592,11 @@ function renderSwap(s){
 function responsePaymentReady(s,p){
   const selectedDiscard=(p?.selected_indices||[]).length,requiredDiscard=Number(p?.required_discard_count||0);
   if(selectedDiscard<requiredDiscard)return false;
-  return !!authoritativeV351ManaPlan(s,p)?.ok;
+  const selected=new Set((p?.selected_mana_class_uids||[]).map(String));
+  const values=new Map((p?.mana_class_choices||[]).map(x=>[String(x.uid),Number(x.value||1)]));
+  let classValue=0;(s?.playerManaPoolCards||[]).forEach(sh=>{if(sh.kind==='CLASS'&&selected.has(String(sh.uid)))classValue+=values.get(String(sh.uid))||1});
+  const generic=(s?.playerManaPoolCards||[]).filter(sh=>sh.kind!=='CLASS').length;
+  return classValue+generic>=Number(p?.mana_cost||0);
 }
 function renderPay(s){
   const p=s.pending;
@@ -1668,8 +1607,8 @@ function renderPay(s){
   payBtn.style.left=((pr.right-br.left)/currentUiScale()+8)+'px';
   payBtn.style.top=((pr.top+pr.height/2-br.top)/currentUiScale()-13)+'px';
   let ready=true;
-  if(p.type==='mana_shard_payment_choice')ready=!!authoritativeV351ManaPlan(s,p)?.ok;
-  else if(p.type==='response_payment_choice')ready=!!authoritativeV351ManaPlan(s,p)?.ok&&responsePaymentReady(s,p);
+  if(p.type==='mana_shard_payment_choice')ready=!!E().getManaPlan()?.plan?.ok;
+  else if(p.type==='response_payment_choice')ready=responsePaymentReady(s,p);
   payBtn.disabled=!ready;
   payBtn.title=ready?'Pay selected Mana':'Select a valid Mana payment first';
   payBtn.onclick=()=>{
@@ -1686,7 +1625,7 @@ function latestResolvedActionThisPhase(s){
   return allEvents(s).find(e=>[e.turn||'',Number(e.round||1),e.phase||''].join('|')===stamp&&e.card_id)||null;
 }
 function renderSidebar(s,chain){
-  const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',turnOwner=s.turn==='PLAYER'?(spectator?'Player 1':'Player'):(window.GL_PVP_CLIENT_MODE?(spectator?'Player 2':'Opponent'):'Opponent'),turnTitle=s.turn==='PLAYER'?(spectator?'Player 1 Turn':'Your Turn'):(window.GL_PVP_CLIENT_MODE?(spectator?'Player 2 Turn':'Opponent Turn'):'Opponent Turn'),remoteManaLabel=spectator?'Player 2 Mana':(window.GL_PVP_CLIENT_MODE?'Opponent Mana':'Opponent Mana');
+  const spectator=window.GL_PVP_LOCAL_ROLE==='spectator',turnOwner=s.turn==='PLAYER'?(spectator?'Player 1':'Player'):(window.GL_PVP_CLIENT_MODE?(spectator?'Player 2':'Opponent'):'AI'),turnTitle=s.turn==='PLAYER'?(spectator?'Player 1 Turn':'Your Turn'):(window.GL_PVP_CLIENT_MODE?(spectator?'Player 2 Turn':'Opponent Turn'):'AI Turn'),remoteManaLabel=spectator?'Player 2 Mana':(window.GL_PVP_CLIENT_MODE?'Opponent Mana':'AI Mana');
   turnBox.innerHTML=`<h3 class="gold">${turnTitle}</h3><div class="tiny">Round ${Number(s.round||1)} · ${turnOwner}<br>Phase: ${esc(phaseName(s.phase))}<br>Mana ${Number(s.mana||0)} / 12 · Regen +${Number(s.manaRegen||0)}<br>${remoteManaLabel} ${Number(s.aiMana||0)} / 12 · Regen +${Number(s.aiManaRegen||0)}</div>`;
   const phaseStamp=currentPhaseStamp(s);
   if(activeCardPhaseStamp!==phaseStamp){activeCardPhaseStamp=phaseStamp;activeCardHold=null}
@@ -1795,8 +1734,8 @@ function autoSpecialChoices(s){
     // With exactly one hidden Shard there is no meaningful player decision. Resolve it
     // automatically so the match cannot appear frozen after connected-hit Mana effects.
     if(required===1&&candidates.length===1&&selected.length===0){
-      const handle=String(candidates[0]?.choice_handle||'');
-      if(handle)intentThen('selectOpponentManaChoiceHandle',[handle,Number(p.pvp_pool_revision||pvpRevision())],()=>{const q=st()?.pending;if(q?.type==='opponent_mana_selection'&&(q.selected_indices||[]).length===1)intent('commitOpponentManaSelection',[])});
+      if(window.GL_PVP_CLIENT_MODE){const handle=String(candidates[0]?.choice_handle||'');if(handle)intentThenAuthoritativeConfirm('selectOpponentManaChoiceHandle',[handle,Number(p.pvp_pool_revision??currentPvpRevision())]);}
+      else intentThenAuthoritativeConfirm('selectOpponentManaChoice',[0]);
     }
   }
 }
@@ -1837,7 +1776,7 @@ function showGameResult(s){
   if(!s?.gameOver||resultShown)return;
   resultShown=true;clearResultTimer();
   const localName=String(window.GL_PVP_LOCAL_NAME||'YOU'),opponentName=String(window.GL_PVP_OPPONENT_NAME||'OPPONENT');
-  const winner=s.winner==='PLAYER'?(window.GL_PVP_CLIENT_MODE?localName:'YOU'):(s.winner==='AI'?(window.GL_PVP_CLIENT_MODE?opponentName:'OPPONENT'):String(s.winner||'UNKNOWN'));
+  const winner=s.winner==='PLAYER'?(window.GL_PVP_CLIENT_MODE?localName:'YOU'):(s.winner==='AI'?(window.GL_PVP_CLIENT_MODE?opponentName:'LOCAL AI'):String(s.winner||'UNKNOWN'));
   const reason=String(s.gameEndReason||'Game ended.');
   const phase=phaseName(s.phase)||'Unknown';
   const body=resultOverlay.querySelector('.ob-result-body');
@@ -1902,10 +1841,10 @@ function authoritativeOpeningAnchorReady(kind,event){
   }
   const fr=(from?.querySelector?.('.zoneCard')||from)?.getBoundingClientRect?.(),tr=to?.getBoundingClientRect?.();
   const ok=!!(fr&&tr&&fr.width>1&&fr.height>1&&tr.width>1&&tr.height>1);
-  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP v3.75.5] anchor FAIL:',JSON.stringify(dbg));}
+  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP fresh] anchor FAIL:',JSON.stringify(dbg));}
   return ok;
 }
-/* PvP v3.75.5: opening sequence di-split jadi dua fase agar kartu TIDAK PERNAH
+/* PvP fresh: opening sequence di-split jadi dua fase agar kartu TIDAK PERNAH
  * terlihat full sebelum animasi. primeAuthoritativeOpeningSequence() menyembunyikan
  * semua kartu opening dan me-render tangan/kolam kosong — dipanggil SEBELUM board
  * di-reveal. playPrimedOpeningSequence() menganimasikan reveal kartu satu per satu —
@@ -1931,94 +1870,33 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
       syntheticOpeningDraw2.push({side,hand_index:idx,id:'synthetic-draw2-'+side+'-'+idx});
     }
   }
-  if(syntheticOpeningDraw2.length)console.log('[PvP v3.75.5] synthesized draw2:',syntheticOpeningDraw2.length,'events');
-  console.log('[PvP v3.75.5] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
+  if(syntheticOpeningDraw2.length)console.log('[PvP fresh] synthesized draw2:',syntheticOpeningDraw2.length,'events');
+  console.log('[PvP fresh] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
-// PvP v3.75.5 opening choreography:
-//   Opening Hand:  PLAYER #1 -> OPPONENT #1 -> ... -> PLAYER #6 -> OPPONENT #6
-//   Starting Shard: PLAYER #1 -> OPPONENT #1 -> ... -> PLAYER #3 -> OPPONENT #3
-//   then a visible break before the first player's normal Draw Phase (+1 Main, +1 Shard).
-// Opening setup motions are intentionally faster than normal gameplay draw motions.
-const PVP_OPENING_MOTION_MS=190;
-const PVP_OPENING_INTER_CARD_GAP_MS=0;
-const PVP_OPENING_TO_FIRST_TURN_GAP_MS=280;
-const PVP_TURN_DRAW_MOTION_MS=360;
-const PVP_TURN_DRAW_STAGE_GAP_MS=40;
-function openingEventRound(e,fallbackField){
-  const g=Number(e?.group_index);if(Number.isFinite(g))return g;
-  const f=Number(e?.[fallbackField]);return Number.isFinite(f)?f:0;
-}
-function openingSideOrder(e){return e?.side==='AI'?1:0;}
-function orderedOpeningEvents(list,fallbackField){
-  return (list||[]).slice().sort((a,b)=>openingEventRound(a,fallbackField)-openingEventRound(b,fallbackField)||openingSideOrder(a)-openingSideOrder(b));
-}
+// v3.51 pattern: SINGLE CALL animasi opening. Kartu SUDAH di-hide via hideAuthoritativeOpeningCards.
+// Chain via onComplete: draw1 → shard1 → draw2 → shard2. Tiap stage nunggu sebelumnya selesai.
 function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
   const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean);
-  let draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean);
-  const shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
-  // Pakai synthetic draw2 kalau server nggak kirim event.
-  if(!draw2.length&&syntheticOpeningDraw2.length)draw2=syntheticOpeningDraw2.map(cloneLite);
-  syntheticOpeningDraw2=[];
+  let draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean);const shard2=(postOpeningShardEntries||[]).map(cloneLite).filter(Boolean);
+  if(!draw2.length&&syntheticOpeningDraw2.length)draw2=syntheticOpeningDraw2.map(cloneLite);syntheticOpeningDraw2=[];
   if(!draw1.length&&!shard1.length&&!draw2.length&&!shard2.length){openingPresentationActive=false;presentationPrimed=true;return false;}
   openingPresentationActive=true;
-  const shardUidFor=e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return null;const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);return pool[pi]?.uid!=null?String(pool[pi].uid):null};
-
-  // Sequential local-first choreography. Do not batch one player's whole Shard draw.
-  // group_index is the authoritative nth acquisition; pool_index is only the destination slot.
-  const animateDrawsInterleaved=(list,duration,gap,done)=>{
-    const ordered=orderedOpeningEvents(list,'hand_index');let cursor=0;
-    const next=()=>{
-      if(cursor>=ordered.length){done();return;}
-      const e=ordered[cursor++],side=e?.side==='AI'?'AI':'PLAYER';
-      const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;
-      const to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]')||hand;
-      const from=zoneEl(side,'Main Deck');
-      runPairMotions([{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to,event:e}],duration,()=>{
-        obHiddenCommittedDrawSlots[side].delete(Number(e?.hand_index));
-        handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());
-        setTimeout(next,gap);
-      });
-    };
-    next();
-  };
-  const animateShardsInterleaved=(list,duration,gap,done)=>{
-    const ordered=orderedOpeningEvents(list,'pool_index');let cursor=0;
-    const next=()=>{
-      if(cursor>=ordered.length){done();return;}
-      const e=ordered[cursor++],side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);
-      const host=side==='PLAYER'?playerManaHost:aiManaHost;
-      const to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(uid)+'"]'):host;
-      const from=zoneEl(side,'Shard Deck');
-      runPairMotions([{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to,event:e,uid,side}],duration,()=>{
-        if(uid)obOpeningHiddenShardUids.delete(side+'|'+uid);
-        manaRenderKey='';renderMana();
-        setTimeout(next,gap);
-      });
-    };
-    next();
-  };
-  const finishAll=()=>{
-    obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();
-    handRenderKey='';opponentHandRenderKey='';manaRenderKey='';
-    renderHand(st());renderOpponentHand(st());renderMana();
-    previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;
-    setTimeout(renderNow,0);
-  };
-  const firstTurnDraw=()=>{
-    animateDrawsInterleaved(draw2,PVP_TURN_DRAW_MOTION_MS,PVP_TURN_DRAW_STAGE_GAP_MS,()=>
-      animateShardsInterleaved(shard2,PVP_TURN_DRAW_MOTION_MS,0,finishAll));
-  };
-  const afterOpeningSetup=()=>{
-    // The opening 6+3 has fully resolved for both players. Keep the first-turn +1/+1
-    // visually separate instead of letting it read as a seventh opening card/fourth opening Shard.
-    if(draw2.length||shard2.length)setTimeout(firstTurnDraw,PVP_OPENING_TO_FIRST_TURN_GAP_MS);
-    else finishAll();
-  };
-  console.log('[PvP v3.75.5] opening: interleaved 6+3 at readable ~2x pace, then first-turn +1/+1 at normal pace');
-  animateDrawsInterleaved(draw1,PVP_OPENING_MOTION_MS,PVP_OPENING_INTER_CARD_GAP_MS,()=>
-    animateShardsInterleaved(shard1,PVP_OPENING_MOTION_MS,PVP_OPENING_INTER_CARD_GAP_MS,afterOpeningSetup));
+  const sideOrder=x=>x?.side==='AI'?1:0;
+  const ordered=(list,key)=>list.slice().sort((a,b)=>{
+    const ga=Number(a?.group_index),gb=Number(b?.group_index),ka=Number.isFinite(ga)?ga:Number(a?.[key]??0),kb=Number.isFinite(gb)?gb:Number(b?.[key]??0);
+    return ka-kb||sideOrder(a)-sideOrder(b);
+  });
+  const shardUidFor=e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return null;const snap=st(),pool=side==='AI'?(snap?.aiManaPoolCards||[]):(snap?.playerManaPoolCards||[]);return pool[pi]?.uid!=null?String(pool[pi].uid):null};
+  const animateDraws=(list,duration,gap,done)=>{const q=ordered(list,'hand_index');let i=0;const next=()=>{if(i>=q.length){done();return}const e=q[i++],side=e?.side==='AI'?'AI':'PLAYER',hand=side==='PLAYER'?playerHandTrack:oppHandTrack,to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]')||hand,from=zoneEl(side,'Main Deck');runPairMotions([{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to}],duration,()=>{obHiddenCommittedDrawSlots[side].delete(Number(e?.hand_index));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());setTimeout(next,gap)})};next()};
+  const animateShards=(list,duration,gap,done)=>{const q=ordered(list,'pool_index');let i=0;const next=()=>{if(i>=q.length){done();return}const e=q[i++],side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e),host=side==='PLAYER'?playerManaHost:aiManaHost,to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(uid)+'"]'):host,from=zoneEl(side,'Shard Deck');runPairMotions([{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}],duration,()=>{if(uid)obOpeningHiddenShardUids.delete(side+'|'+uid);manaRenderKey='';renderMana();setTimeout(next,gap)})};next()};
+  const finish=()=>{obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderHand(st());renderOpponentHand(st());renderMana();previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;setTimeout(renderNow,0)};
+  /* Approved opening choreography:
+     P1 hand -> P2 hand, repeated x6; P1 Shard -> P2 Shard, repeated x3.
+     Opening presentation runs ~2x speed (190 ms/card). Only after both players
+     finish 6+3 do we present the first player's normal Draw Phase at 360 ms. */
+  animateDraws(draw1,190,12,()=>animateShards(shard1,190,12,()=>setTimeout(()=>animateDraws(draw2,360,35,()=>animateShards(shard2,360,35,finish)),280)));
   return true;
 }
 // DEPRECATED: prime/play split dihapus, ikut pola v3.51 (hide + single call).
@@ -2028,7 +1906,7 @@ function queueAuthoritativeOpeningSequenceVisible(openingDrawEvents,startingShar
   // v3.51 pattern: single call langsung ke queueAuthoritativeOpeningSequence.
   return queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries);
 }
-window.GL_OPTION_B_PRESENTATION={queueReservedMainDeckDraw:queueOptionBReservedDraw,queueAuthoritativeOpeningSequence:queueAuthoritativeOpeningSequenceVisible,primeAuthoritativeOpeningSequence:primeAuthoritativeOpeningSequence,playPrimedOpeningSequence:playPrimedOpeningSequence,hideAuthoritativeOpeningCards:hideAuthoritativeOpeningCards,isBusy:optionBPresentationBusy};
+window.GL_OPTION_B_PRESENTATION={queueReservedMainDeckDraw:queueOptionBReservedDraw,queueAuthoritativeOpeningSequence:queueAuthoritativeOpeningSequenceVisible,primeAuthoritativeOpeningSequence:primeAuthoritativeOpeningSequence,playPrimedOpeningSequence:playPrimedOpeningSequence,hideAuthoritativeOpeningCards:hideAuthoritativeOpeningCards,resetForMatch:resetPresentationState,isBusy:optionBPresentationBusy};
 
 function initStableBattlefieldReviewGestures(){
   if(!BF||BF.dataset.obStableReviewBound==='1')return;BF.dataset.obStableReviewBound='1';
@@ -2048,6 +1926,6 @@ function initStableBattlefieldReviewGestures(){
 
 
 function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};document.querySelector('.bottom-actions .danger').onclick=()=>{if(confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncSoundButton();}
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,onPvpIntentFailure,onPvpIntentResolved,onAuthoritativeSnapshot,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_PVP_CLIENT_MODE){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}else renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
 boot();
 })();

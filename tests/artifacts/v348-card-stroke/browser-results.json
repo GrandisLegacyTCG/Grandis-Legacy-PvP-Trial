@@ -1,0 +1,79 @@
+{
+  "ok": true,
+  "realChromium": true,
+  "quickPreview": {
+    "hero": {
+      "cardId": "S1-WAR-H001",
+      "computedClean": true,
+      "classes": "hover-card-zoom is-v253-readable-preview is-visible",
+      "screenshot": "tests/artifacts/v348-card-stroke/quick-preview-hero.png"
+    },
+    "skill": {
+      "cardId": "S1-WAR-001",
+      "computedClean": true,
+      "classes": "hover-card-zoom is-v253-readable-preview is-visible",
+      "screenshot": "tests/artifacts/v348-card-stroke/quick-preview-skill.png"
+    },
+    "legacy": {
+      "cardId": "S1-WAR-L001",
+      "computedClean": true,
+      "classes": "hover-card-zoom is-v253-readable-preview is-visible",
+      "screenshot": "tests/artifacts/v348-card-stroke/quick-preview-legacy.png"
+    },
+    "item": {
+      "cardId": "S1-ITM-006",
+      "computedClean": true,
+      "classes": "hover-card-zoom is-v253-readable-preview is-visible",
+      "screenshot": "tests/artifacts/v348-card-stroke/quick-preview-item.png"
+    },
+    "event": {
+      "cardId": "S1-EVT-004",
+      "computedClean": true,
+      "classes": "hover-card-zoom is-v253-readable-preview is-visible",
+      "screenshot": "tests/artifacts/v348-card-stroke/quick-preview-event.png"
+    },
+    "modalVariant": {
+      "computedClean": true
+    }
+  },
+  "opponentHand": {
+    "desktop": {
+      "viewport": "1366x768",
+      "activeDomPath": ".gl-lab-authority .gl-lab-hand--opponent .opponent-hand-slot > img.back",
+      "cards": 6,
+      "computedClean": true,
+      "goldEdgePixelRatio": 0.0,
+      "screenshot": "tests/artifacts/v348-card-stroke/opponent-hand-desktop-1366x768.png"
+    },
+    "tablet-landscape": {
+      "viewport": "1024x768",
+      "activeDomPath": ".gl-lab-authority .gl-lab-hand--opponent .opponent-hand-slot > img.back",
+      "cards": 6,
+      "computedClean": true,
+      "goldEdgePixelRatio": 0.0,
+      "screenshot": "tests/artifacts/v348-card-stroke/opponent-hand-tablet-landscape-1024x768.png"
+    },
+    "tablet-portrait": {
+      "viewport": "768x1024",
+      "activeDomPath": ".v96-app .hand-area--opponent .opponent-hand-slot > img.back",
+      "cards": 6,
+      "computedClean": true,
+      "goldEdgePixelRatio": 0.0,
+      "screenshot": "tests/artifacts/v348-card-stroke/opponent-hand-tablet-portrait-768x1024.png"
+    },
+    "phone": {
+      "viewport": "390x844",
+      "activeDomPath": ".v96-app .hand-area--opponent .opponent-hand-slot > img.back",
+      "cards": 6,
+      "computedClean": true,
+      "goldEdgePixelRatio": 0.0,
+      "screenshot": "tests/artifacts/v348-card-stroke/opponent-hand-phone-390x844.png"
+    }
+  },
+  "functionalOutline": {
+    "productionHeroSurface": true,
+    "selectableLegalShadow": "rgba(74, 202, 111, 0.75) 0px 0px 0px 2px inset, rgba(74, 202, 111, 0.16) 0px 0px 14px 0px",
+    "targetLegalOutline": "rgba(115, 238, 130, 0.85) solid 2px",
+    "preserved": true
+  }
+}

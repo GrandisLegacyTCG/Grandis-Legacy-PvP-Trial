@@ -1,0 +1,10 @@
+PvP v2.6.17
+
+- Optimized server-authoritative intent handling for the 0.1 vCPU / 256 MB Northflank services by suppressing redundant VM snapshot imports and prioritizing the acting player broadcast.
+- Fixed dedicated Deck Builder link and Room 1 / Room 2 deployment defaults.
+- Fixed spectator hidden Hand card backs.
+- Added spectator-only Back to Room Select / Spectate Match flow without changing player flow or granting reset authority.
+- Added 5-minute automatic cleanup for finished stale battlefields.
+- Added compact CHANGE NAME button and protected name drafts from snapshot overwrite.
+- Added adaptive desktop-fit behavior and slightly taller mobile Next Phase button.
+- Finalized Blessing of Divinity literal any-damage prevention while preserving v2.6.16 first-turn Attack, Tornado, and Double Casting fixes.

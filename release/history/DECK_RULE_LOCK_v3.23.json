@@ -1,0 +1,10 @@
+{
+  "version": "v3.23",
+  "main_deck_valid_sizes": [
+    50,
+    60
+  ],
+  "normal_card_max_copies": 3,
+  "ultimate_max_copies": 1,
+  "note": "Unchanged from v3.22. PvP v3.23 changes turn-flow presentation/continuation only."
+}

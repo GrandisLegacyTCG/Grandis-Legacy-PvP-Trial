@@ -33,6 +33,14 @@ body:has(.gl-lab-authority) #glMobileAppMenu{display:none!important;}
 .gl-lab-identity span{font-size:7px;color:#9eb0c1;overflow:hidden;text-overflow:ellipsis;}
 .gl-lab-identity--opponent{top:2px;left:4px;}
 .gl-lab-identity--player{bottom:2px;left:4px;}
+/* PvP identity row: one anchored row; connection bar is a flex sibling, never an overlay inside identity. */
+.gl-lab-hand>.pvp-player-identity-row{position:absolute;z-index:430;left:4px;display:flex;align-items:center;gap:4px;max-width:min(62%,520px);min-width:0;}
+.gl-lab-hand--opponent>.pvp-player-identity-row{top:2px;}
+.gl-lab-hand--player>.pvp-player-identity-row{bottom:2px;}
+.gl-lab-hand>.pvp-player-identity-row .pvp-player-identity-container.gl-lab-identity{position:static;z-index:auto;min-width:0;max-width:none;height:22px;padding:2px 7px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;overflow:visible;}
+.gl-lab-hand>.pvp-player-identity-row .pvp-player-display-name{font-size:8px;line-height:8px;max-width:110px;}
+.gl-lab-hand>.pvp-player-identity-row .pvp-player-deck-name{font-size:7px;line-height:8px;color:#9eb0c1;max-width:none;overflow:visible;text-overflow:clip;}
+.gl-lab-hand>.pvp-player-identity-row .pvp-connection-bar{height:22px;flex:0 0 30px;}
 .gl-lab-log-button{position:absolute;z-index:430;right:4px;bottom:2px;height:22px;padding:2px 8px;border:1px solid #39546f;border-radius:6px;background:#101d2b;color:#d9e7f4;font-size:8px;font-weight:800;}
 
 /* HAND is geometry: 40% of each card lives outside viewport; only 60% reserves height. */
@@ -191,10 +199,10 @@ body:has(.gl-lab-authority) .hover-card-zoom.is-hand-hover img{width:100%!import
 .gl-lab-sidebar .phase-panel header{display:flex!important;justify-content:space-between!important;align-items:baseline!important;gap:4px!important;}.gl-lab-sidebar .phase-panel header strong{font-size:9px!important;color:#f1e3a1!important;}.gl-lab-sidebar .phase-panel header span{font-size:6px!important;color:#8ea1b4!important;}
 .gl-lab-sidebar .phase-list{min-height:0!important;display:grid!important;grid-template-columns:1fr!important;grid-template-rows:repeat(5,minmax(23px,1fr))!important;gap:3px!important;}.gl-lab-sidebar .phase-list button{min-height:0!important;height:auto!important;margin:0!important;padding:2px!important;border:1px solid #23313c!important;border-radius:6px!important;background:#06101a!important;color:#aeb7c5!important;font-size:7px!important;font-weight:900!important;text-transform:uppercase!important;}.gl-lab-sidebar .phase-list button.is-active{border-color:#d3a52b!important;background:linear-gradient(180deg,#60460b,#241b08)!important;color:#fff3c1!important;filter:brightness(1.12)!important;}
 .gl-lab-sidebar .phase-actions{display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-rows:24px 30px!important;gap:3px!important;}.gl-lab-sidebar .phase-actions button{height:auto!important;min-height:0!important;margin:0!important;padding:2px!important;border:1px solid #23313c!important;border-radius:6px!important;background:#06101a!important;color:#dbeeff!important;font-size:7px!important;font-weight:900!important;}.gl-lab-sidebar .phase-actions .next-phase{grid-column:1/-1!important;border-color:#96711a!important;background:linear-gradient(180deg,#8d6a19,#3a2a09)!important;color:#fff3c1!important;}.gl-lab-sidebar .phase-actions .cancel-action{border-color:#5e2931!important;background:#2a1015!important;color:#d9a5ac!important;}
-.gl-lab-sidebar .card-played-panel{display:grid!important;grid-template-rows:auto minmax(0,1fr) 24px!important;gap:5px!important;overflow:visible!important;}.gl-lab-sidebar .card-played-panel header{display:flex!important;justify-content:space-between!important;align-items:baseline!important;}.gl-lab-sidebar .card-played-panel header strong{font-size:9px!important;color:#f1e3a1!important;}.gl-lab-sidebar .card-played-panel header span{font-size:6px!important;color:#8ea1b4!important;}.gl-lab-sidebar .played-grid{min-height:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:4px!important;overflow:visible!important;}.gl-lab-sidebar .combined-played-card{position:relative!important;min-width:0!important;min-height:0!important;margin:0!important;padding:2px!important;display:grid!important;place-items:center!important;border:1px solid #2a3c4c!important;border-radius:6px!important;background:#03101a!important;overflow:hidden!important;transition:filter .08s ease,transform .08s ease!important;}.gl-lab-sidebar .combined-played-card.is-hover-lifted{z-index:980!important;filter:brightness(1.12)!important;transform:translateY(-3px)!important;}.gl-lab-sidebar .combined-played-card img{display:block!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;}.gl-lab-sidebar .combined-played-card em{position:absolute!important;left:2px!important;top:2px!important;z-index:2!important;padding:1px 3px!important;border-radius:999px!important;background:#f4d35e!important;color:#111!important;font-size:5px!important;font-style:normal!important;font-weight:900!important;}.gl-lab-sidebar .full-width{height:24px!important;margin:0!important;padding:2px!important;border:1px solid #39546f!important;border-radius:6px!important;background:#101d2b!important;font-size:7px!important;font-weight:900!important;}
+.gl-lab-sidebar .card-played-panel{display:grid!important;grid-template-rows:auto minmax(0,1fr) 24px!important;gap:5px!important;overflow:visible!important;}.gl-lab-sidebar .card-played-panel header{display:flex!important;justify-content:space-between!important;align-items:baseline!important;}.gl-lab-sidebar .card-played-panel header strong{font-size:9px!important;color:#f1e3a1!important;}.gl-lab-sidebar .card-played-panel header span{font-size:6px!important;color:#8ea1b4!important;}.gl-lab-sidebar .played-grid{min-height:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:4px!important;overflow:visible!important;}.gl-lab-sidebar .combined-played-card{position:relative!important;min-width:0!important;min-height:0!important;margin:0!important;padding:2px!important;display:grid!important;place-items:center!important;border:0!important;border-radius:6px!important;background:transparent!important;overflow:hidden!important;transition:filter .08s ease,transform .08s ease!important;}.gl-lab-sidebar .combined-played-card.is-hover-lifted{z-index:980!important;filter:brightness(1.12)!important;transform:translateY(-3px)!important;}.gl-lab-sidebar .combined-played-card img{display:block!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;}.gl-lab-sidebar .combined-played-card em{position:absolute!important;left:2px!important;top:2px!important;z-index:2!important;padding:1px 3px!important;border-radius:999px!important;background:#f4d35e!important;color:#111!important;font-size:5px!important;font-style:normal!important;font-weight:900!important;}.gl-lab-sidebar .full-width{height:24px!important;margin:0!important;padding:2px!important;border:1px solid #39546f!important;border-radius:6px!important;background:#101d2b!important;font-size:7px!important;font-weight:900!important;}
 body:has(.gl-lab-authority) .hover-card-zoom.is-card-played-hover{width:172px!important;height:241px!important;max-width:172px!important;max-height:241px!important;aspect-ratio:5/7!important;z-index:980!important;pointer-events:none!important;filter:drop-shadow(0 10px 18px rgba(0,0,0,.72));}
 body:has(.gl-lab-authority) .hover-card-zoom.is-card-played-hover img{width:100%!important;height:100%!important;object-fit:contain!important;}
-.gl-lab-sidebar .match-panel{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px!important;padding:0!important;border:0!important;background:transparent!important;}.gl-lab-sidebar .match-panel button{height:27px!important;margin:0!important;padding:2px!important;border:1px solid #334b61!important;border-radius:6px!important;background:#0b1722!important;font-size:6.5px!important;font-weight:900!important;}.gl-lab-sidebar .match-panel .surrender{border-color:#783a42!important;background:#241014!important;color:#ffb7bf!important;}
+.gl-lab-sidebar .match-panel{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;padding:0!important;border:0!important;background:transparent!important;}.gl-lab-sidebar .match-panel button{height:23px!important;margin:0!important;padding:2px!important;border:1px solid #334b61!important;border-radius:6px!important;background:#0b1722!important;font-size:6.5px!important;font-weight:900!important;}.gl-lab-sidebar .match-panel .surrender{border-color:#783a42!important;background:#241014!important;color:#ffb7bf!important;}
 
 /* Selection / attack cues remain visible on clean position boxes. */
 .gl-lab-positions .selectable-legal{box-shadow:inset 0 0 0 2px rgba(74,202,111,.75),0 0 14px rgba(74,202,111,.16)!important;}.gl-lab-positions .selectable-selected{box-shadow:inset 0 0 0 2px #f4d35e,0 0 15px rgba(244,211,94,.22)!important;}.gl-lab-positions .selectable-illegal{opacity:.64;}
@@ -381,62 +389,14 @@ html.gl-ui-tablet.gl-tablet-landscape-desktop .gl-lab-racial .racial-coins{width
 html.gl-ui-tablet.gl-tablet-landscape-desktop .gl-lab-racial .coin{flex:1 1 0!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;max-height:calc((100% - 3px)/2)!important;aspect-ratio:1/1!important;}
 
 
-/* VS AI v6.45 — opponent hand renders only the original card-back pixels.
-   This layer loads after app.css, so it owns the final passive opponent-card surface. */
-.gl-lab-hand--opponent .opponent-hand-slot,
-.gl-lab-hand--opponent .opponent-hand-slot .back{
-  border:0!important;
-  border-image:none!important;
-  outline:0!important;
-  box-shadow:none!important;
-  background:transparent!important;
-  padding:0!important;
-}
-.gl-lab-hand--opponent .opponent-hand-slot::before,
-.gl-lab-hand--opponent .opponent-hand-slot::after,
-.gl-lab-hand--opponent .opponent-hand-slot .back::before,
-.gl-lab-hand--opponent .opponent-hand-slot .back::after{
-  content:none!important;
-  display:none!important;
-  box-shadow:none!important;
-  border:0!important;
-}
-.gl-lab-hand--opponent .opponent-hand-slot .back{
-  border-radius:0!important;
-  filter:none!important;
-  text-shadow:none!important;
-}
-
-
-/* VS AI v6.45 / Tutorial v0.69 final opponent-hand perimeter ownership.
-   Desktop/tablet-landscape use Battlefield authority; tablet-portrait/phone use v96. */
+/* PvP v3.48 — approved VS AI v6.45/v0.69 opponent-hand perimeter ownership. */
 html .gl-lab-authority .gl-lab-hand--opponent .opponent-hand-slot,
 html .gl-lab-authority .gl-lab-hand--opponent .opponent-hand-slot > img.back,
 html .v96-app .hand-area--opponent .opponent-hand-slot,
-html .v96-app .hand-area--opponent .opponent-hand-slot > img.back{
-  border-width:0!important;
-  border-style:none!important;
-  border-color:transparent!important;
-  border-image:none!important;
-  outline:0!important;
-  outline-offset:0!important;
-  box-shadow:none!important;
-  background:transparent!important;
-  padding:0!important;
-}
+html .v96-app .hand-area--opponent .opponent-hand-slot > img.back{border-width:0!important;border-style:none!important;border-color:transparent!important;border-image:none!important;outline:0!important;outline-offset:0!important;box-shadow:none!important;background:transparent!important;padding:0!important}
 html .gl-lab-authority .gl-lab-hand--opponent .opponent-hand-slot > img.back,
-html .v96-app .hand-area--opponent .opponent-hand-slot > img.back{
-  border-radius:0!important;
-  filter:none!important;
-  text-shadow:none!important;
-}
+html .v96-app .hand-area--opponent .opponent-hand-slot > img.back{border-radius:0!important;filter:none!important;text-shadow:none!important}
 html .gl-lab-authority .gl-lab-hand--opponent .opponent-hand-slot::before,
 html .gl-lab-authority .gl-lab-hand--opponent .opponent-hand-slot::after,
 html .v96-app .hand-area--opponent .opponent-hand-slot::before,
-html .v96-app .hand-area--opponent .opponent-hand-slot::after{
-  content:none!important;
-  display:none!important;
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-}
+html .v96-app .hand-area--opponent .opponent-hand-slot::after{content:none!important;display:none!important;border:0!important;outline:0!important;box-shadow:none!important}

@@ -1,0 +1,1 @@
+Grandis Legacy PvP v3.04: keep all lobby app navigation in the same tab; gameplay/network authority and GA4 unchanged.

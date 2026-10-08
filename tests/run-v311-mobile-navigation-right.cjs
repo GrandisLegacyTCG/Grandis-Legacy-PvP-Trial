@@ -1,0 +1,11 @@
+const fs=require('fs');const path=require('path');const assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const css=fs.readFileSync(path.join(root,'public/css/app.css'),'utf8');
+const html=fs.readFileSync(path.join(root,'public/index.html'),'utf8');
+assert(html.includes('glMobileAppMenuButton'),'mobile app hamburger missing');
+assert(css.includes('left:auto!important;right:max(12px,env(safe-area-inset-right))!important'),'hamburger is not physically locked to right edge');
+assert(css.includes('inset-inline-start:auto!important;inset-inline-end:max(12px,env(safe-area-inset-right))!important'),'logical right-edge lock missing');
+assert(css.includes('z-index:12051'),'hamburger must remain above PvP lobby/setup overlays');
+assert(css.includes('.gl-mobile-app-menu{position:fixed;z-index:12050'),'menu layer must remain directly below hamburger and above lobby overlays');
+assert(html.includes('Grandis-Legacy-Deck-Builder/style-2/'),'mobile Deck Builder must remain Style 2');
+console.log('PASS PvP v3.11 mobile hamburger right-edge alignment.');

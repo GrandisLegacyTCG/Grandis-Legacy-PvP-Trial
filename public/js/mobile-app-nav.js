@@ -1,42 +1,43 @@
 (() => {
-  const button = document.getElementById('glMobileAppMenuButton');
-  const menu = document.getElementById('glMobileAppMenu');
-  if (!button || !menu) return;
-
+  const button = () => document.getElementById('glMobileAppMenuButton');
+  const menu = () => document.getElementById('glMobileAppMenu');
   const place = () => {
-    const rect = button.getBoundingClientRect();
-    menu.style.top = `${Math.round(rect.bottom + 8)}px`;
-    menu.style.right = `${Math.max(10, Math.round(window.innerWidth - rect.right))}px`;
+    const b = button(), m = menu();
+    if (!b || !m) return;
+    const rect = b.getBoundingClientRect();
+    m.style.top = `${Math.round(rect.bottom + 8)}px`;
+    m.style.right = `${Math.max(10, Math.round(window.innerWidth - rect.right))}px`;
   };
   const close = () => {
-    button.setAttribute('aria-expanded', 'false');
-    menu.hidden = true;
+    const b = button(), m = menu();
+    if (b) b.setAttribute('aria-expanded', 'false');
+    if (m) m.hidden = true;
   };
   const open = () => {
+    const b = button(), m = menu();
+    if (!b || !m) return;
+    if (document.body.classList.contains('pvp-match-active') || !document.body.classList.contains('pvp-lobby-mode') || document.body.getAttribute('data-pvp-gameplay-active') === '1') { close(); return; }
     place();
-    button.setAttribute('aria-expanded', 'true');
-    menu.hidden = false;
+    b.setAttribute('aria-expanded', 'true');
+    m.hidden = false;
   };
-  button.addEventListener('click', (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (button.getAttribute('aria-expanded') === 'true') close();
-    else open();
-  });
-  menu.addEventListener('click', (event) => {
-    if (event.target.closest('a')) close();
-  });
   document.addEventListener('click', (event) => {
-    if (!menu.hidden && !menu.contains(event.target) && !button.contains(event.target)) close();
+    const b = button(), m = menu();
+    const target = event.target;
+    if (b && (target === b || b.contains(target))) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (b.getAttribute('aria-expanded') === 'true') close(); else open();
+      return;
+    }
+    if (m && target && target.closest && target.closest('#glMobileAppMenu a')) { close(); return; }
+    if (m && !m.hidden && target && !m.contains(target) && (!b || !b.contains(target))) close();
   });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') close();
-  });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
   window.addEventListener('resize', () => {
+    const m = menu();
     if (window.matchMedia('(min-width: 761px)').matches) close();
-    else if (!menu.hidden) place();
+    else if (m && !m.hidden) place();
   });
-  window.addEventListener('scroll', () => {
-    if (!menu.hidden) place();
-  }, { passive: true });
+  window.addEventListener('scroll', () => { const m = menu(); if (m && !m.hidden) place(); }, { passive: true });
 })();

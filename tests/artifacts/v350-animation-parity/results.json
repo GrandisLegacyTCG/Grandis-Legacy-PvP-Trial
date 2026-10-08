@@ -1,0 +1,97 @@
+{
+  "ok": true,
+  "realBrowser": true,
+  "twoClient": true,
+  "serverPort": 49198,
+  "requiredDiscardHeldAttack": {
+    "requiredCostMotions": 2,
+    "heldDuringResponse": true,
+    "released": true
+  },
+  "handLimit": {
+    "motions": 2,
+    "discardCount": 2
+  },
+  "responseAdditionalDiscard": {
+    "costCard": "S1-WAR-002",
+    "motion": true
+  },
+  "legacyAbilityCost": {
+    "costCard": "S1-WAR-001",
+    "motion": true
+  },
+  "actualAttachmentExpiry": {
+    "card": "S1-ITM-013",
+    "expired": true,
+    "motion": true
+  },
+  "attachmentExpiry": {
+    "motions": 1
+  },
+  "multipleAttachmentDefeatEquivalent": {
+    "motions": 2
+  },
+  "legacyRevive": {
+    "revived": true,
+    "motion": true
+  },
+  "responsiveGeometry": {
+    "desktop": {
+      "source": {
+        "left": 424.489990234375,
+        "top": 511.7598571777344,
+        "width": 62.89501953125,
+        "height": 86.04275512695312
+      },
+      "destination": {
+        "left": 1036.8046875,
+        "top": 435.7421875,
+        "width": 50.390625,
+        "height": 70.546875
+      }
+    },
+    "tablet-landscape": {
+      "source": {
+        "left": 303.286865234375,
+        "top": 511.5411071777344,
+        "width": 62.89501953125,
+        "height": 86.04275512695312
+      },
+      "destination": {
+        "left": 705.8046875,
+        "top": 435.4921875,
+        "width": 50.390625,
+        "height": 70.546875
+      }
+    },
+    "tablet-portrait": {
+      "source": {
+        "left": 213.64492797851562,
+        "top": 694.507080078125,
+        "width": 64.99139404296875,
+        "height": 88.90771484375
+      },
+      "destination": {
+        "left": 448.9609375,
+        "top": 593.890625,
+        "width": 52.078125,
+        "height": 72.90625
+      }
+    },
+    "phone": {
+      "source": {
+        "left": 140.8922882080078,
+        "top": 567.00146484375,
+        "width": 69.18417358398438,
+        "height": 94.6376953125
+      },
+      "destination": {
+        "left": 132.28125,
+        "top": 478.4609375,
+        "width": 55.4375,
+        "height": 77.609375
+      }
+    }
+  },
+  "seat2Orientation": true
+}

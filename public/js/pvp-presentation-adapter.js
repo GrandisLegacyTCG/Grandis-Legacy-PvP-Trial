@@ -1,8 +1,8 @@
 (function(){
   'use strict';
-  // Candidate 2R-A presentation boundary. This file is the only production adapter
-  // allowed to translate a viewer-safe PvP server board into the shared Candidate 15 renderer.
-  // It owns compatibility aliases + seat orientation handoff, but no layout geometry and no network protocol.
+  // v3.75.6 presentation boundary. This file translates viewer-safe PvP v3.51 server boards
+  // into the latest VS AI presentation contract. It owns compatibility aliases and seat orientation
+  // only; gameplay authority, payment rules, hidden information, and network protocol stay in PvP v3.51.
   var stack=window.GL_SOURCE_STACK||{};
   if(!stack.shared_runtime && stack.runtime_foundation) stack.shared_runtime=stack.runtime_foundation;
   if(window.GRANDIS_LEGACY_RUNTIME_DATA && !window.GL_CARD_DEFINITIONS){
@@ -40,9 +40,9 @@
   }
 
   window.GL_PVP_PRESENTATION_ADAPTER={
-    version:'PvP v3.75.5 VS AI v6.90.7 Presentation Boundary',
-    visualAuthority:'VS AI v6.90.7',
-    sourceContract:'viewer-safe authoritative PvP board -> seat orientation -> shared VS AI v6.90.7 battlefield presentation',
+    version:'PvP v3.43 Candidate 2R-A',
+    visualAuthority:'VS AI v6.42 Candidate 15',
+    sourceContract:'viewer-safe server board -> seat orientation -> shared Candidate 15 presentation',
     isViewerSafeSnapshot:isViewerSafeSnapshot,
     importViewerSafeSnapshot:importViewerSafeSnapshot,
     setSharedBoardMode:setSharedBoardMode

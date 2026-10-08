@@ -1,0 +1,18 @@
+'use strict';
+const assert=require('assert'),fs=require('fs'),path=require('path');
+const {loadPvp}=require('./vm-pvp-harness.cjs');
+const root=path.resolve(__dirname,'..');
+const ctx=loadPvp(root);
+assert.strictEqual(require('../package.json').version,'3.0.42');
+assert.strictEqual(typeof ctx.GL_LAB_V014_RULE_SYNC_QA_SELF_TEST,'function','v0.14 QA hook missing');
+const qa=ctx.GL_LAB_V014_RULE_SYNC_QA_SELF_TEST();
+assert(qa&&qa.ok,'v0.14 gameplay QA failed: '+JSON.stringify(qa));
+assert.strictEqual(qa.startingMana,3); assert.strictEqual(qa.blindManaSelection,true); assert.strictEqual(qa.manaTakeOwnDeck,true); assert.strictEqual(qa.rangeAreaNoTarget,true); assert.strictEqual(qa.simultaneousLegacyQueue,true);
+const app=fs.readFileSync(path.join(root,'public/js/app.bundle.js'),'utf8');
+const staticData=fs.readFileSync(path.join(root,'public/js/static-data.js'),'utf8');
+assert(!app.includes('Mana Pool'),'obsolete Mana Pool wording remains in app');
+assert(!staticData.includes('"pool":"Mana Pool"'),'obsolete public resource terminology remains');
+assert(app.includes('Shard Pool')&&app.includes('Shard Deck'),'Shard terminology missing');
+const cards=JSON.parse(fs.readFileSync(path.join(root,'data/season1/cards.runtime.v0.15.0.json'),'utf8'));
+assert.strictEqual(cards.cards.length,200); for(const id of ['S1-ITM-019','S1-ITM-020']) assert(cards.cards.some(c=>c.card_id===id),id+' missing');
+console.log('PASS PvP v3.41 Playtest v0.14 promotion: Shard Deck/Shard Pool, Starting Shards 3, blind Shard selection, Range+Area, Legacy queue, and 200-card authority.');

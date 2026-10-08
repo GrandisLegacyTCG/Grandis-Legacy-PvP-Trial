@@ -1,0 +1,14 @@
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
+const build=JSON.parse(fs.readFileSync(path.join(root,'public/PVP_FRONTEND_BUILD.json'),'utf8'));
+const cfg=fs.readFileSync(path.join(root,'public/config.js'),'utf8');
+const html=fs.readFileSync(path.join(root,'public/index.html'),'utf8');
+assert.strictEqual(pkg.version,'3.0.51');
+assert.strictEqual(build.pvp_version,'v3.51');
+assert.strictEqual(build.package_version,'3.0.51');
+assert.strictEqual(build.website_target_version,'v1.40');
+assert.strictEqual(build.build_id,'gl-pvp-3.51-minor-correction-r2-2026-09-28');
+assert(cfg.includes('Grandis Legacy PvP v3.51'));
+assert(html.includes('gl-pvp-3.51-minor-correction-r2-2026-09-28'));
+console.log(JSON.stringify({ok:true,pvp:'v3.51',package:'3.0.51',websiteTarget:'v1.40',sameVersionCorrection:true},null,2));

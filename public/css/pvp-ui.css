@@ -70,7 +70,7 @@
 /* Tribute EXP stack stays physically attached to the Hero package during Ready/Exhaust rotation. */
 .ob-hero-physical-stack>.ob-exp-stack{position:absolute!important;left:100%!important;top:50%!important;transform:translateY(-50%)!important;margin:0!important;padding:0!important;gap:0!important;overflow:visible!important;pointer-events:none!important;z-index:20!important;display:grid!important;grid-template-columns:repeat(4,7px)!important;grid-template-rows:1fr!important;width:28px!important;min-width:28px!important;max-width:28px!important;height:var(--gl-exp-stack-height,var(--hero-h))!important}
 .ob-exp-slot{position:relative!important;display:block!important;width:7px!important;min-width:7px!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;overflow:visible!important;background:none!important}
-.ob-exp-slot:before{content:""!important;position:absolute!important;left:50%!important;top:50%!important;width:7px!important;height:var(--gl-exp-stack-height,var(--hero-h))!important;transform:translate(-50%,-50%)!important;transform-origin:center center!important;background-color:transparent!important;background-image:url("assets/exp/Stack 100-200EXP.png")!important;background-repeat:no-repeat!important;background-size:200% 100%!important;background-position:left center!important}
+.ob-exp-slot:before{content:""!important;position:absolute!important;left:50%!important;top:50%!important;width:7px!important;height:var(--gl-exp-stack-height,var(--hero-h))!important;transform:translate(-50%,-50%)!important;transform-origin:center center!important;background-color:transparent!important;background-image:url("engine/assets/exp/Stack 100-200EXP.png")!important;background-repeat:no-repeat!important;background-size:200% 100%!important;background-position:left center!important}
 .ob-exp-slot[data-exp-value="200"]:before{background-position:right center!important}
 .ob-exp-slot.is-empty{visibility:hidden!important}
 
@@ -207,7 +207,7 @@
 
 /* Presentation layer: New UX-specific draw/resource/turn/reposition transitions. */
 .ob-animation-layer{position:fixed;inset:0;z-index:11845;pointer-events:none;overflow:visible}
-.ob-flying-card{position:fixed;z-index:11846;object-fit:cover;border-radius:5px;pointer-events:none;will-change:transform,opacity,width,height;filter:drop-shadow(0 5px 9px rgba(0,0,0,.55))}
+.ob-flying-card{position:fixed;z-index:11846;object-fit:cover;border-radius:5px;pointer-events:none;will-change:left,top,transform,opacity,width,height;filter:drop-shadow(0 5px 9px rgba(0,0,0,.55))}
 .ob-turn-banner{position:fixed;left:50%;top:49%;z-index:11920;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:150px;padding:8px 20px;transform:translate(-50%,-50%) scale(.94);border:1px solid rgba(222,187,73,.7);border-radius:8px;background:rgba(7,17,25,.92);box-shadow:0 12px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;color:#f5d65c}
 .ob-turn-banner strong{font-size:14px;letter-spacing:.12em}.ob-turn-banner small{margin-top:2px;color:#b8c7d4;font-size:8px;font-weight:900;letter-spacing:.1em}
 .ob-turn-banner.show{animation:obTurnBanner .9s ease both}
@@ -541,7 +541,7 @@
 /* Full AI Lobby replacement, matching the current VS AI lobby composition. */
 .ob-lobby-overlay{
   align-items:stretch!important;justify-content:stretch!important;padding:0!important;
-  overflow:auto!important;background:#07111f url('assets/lobby/background.webp') center/cover fixed no-repeat!important;
+  overflow:auto!important;background:#07111f url('engine/assets/lobby/background.webp') center/cover fixed no-repeat!important;
 }
 .ob-lobby-panel{
   width:100%!important;max-width:none!important;min-height:100%!important;max-height:none!important;
@@ -808,7 +808,7 @@
 }
 .ob-focus-dimmer.is-visible{display:block;opacity:1}
 .battlefield.ob-focus-payment .player-mana-pool{z-index:940!important;box-shadow:0 0 0 1px rgba(46,199,122,.52),0 0 20px rgba(46,199,122,.18),inset 0 0 0 1px rgba(255,255,255,.02)!important}
-.battlefield.ob-focus-blind-mana .opponent-mana-pool{position:relative;z-index:940!important;box-shadow:0 0 0 1px rgba(244,211,94,.62),0 0 22px rgba(244,211,94,.22),inset 0 0 0 1px rgba(255,255,255,.03)!important}
+.battlefield.ob-focus-blind-mana .opponent-mana-pool{z-index:940!important;box-shadow:0 0 0 1px rgba(244,211,94,.62),0 0 22px rgba(244,211,94,.22),inset 0 0 0 1px rgba(255,255,255,.03)!important}
 .battlefield.ob-focus-blind-mana .opponent-mana-pool::before{content:"CHOOSE SHARD";position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);z-index:3;padding:3px 7px;border-radius:5px;background:rgba(4,13,21,.94);color:#f4d35e;font-size:7px;font-weight:950;letter-spacing:.04em;white-space:nowrap;box-shadow:0 0 0 1px rgba(244,211,94,.55)}
 .battlefield.ob-focus-payment .ob-pay-button{z-index:970!important}
 /* Keep only CANCEL legible in the phase rail during payment. The rest of the rail receives the same local 65% dim treatment. */
@@ -851,64 +851,8 @@
   height:var(--hero-hover-preview-h)!important;
 }
 
-/* v6.90.7 — Main Deck candidate lists use a REAL reserved preview column.
-   Preview layout is selected by the candidate source zone, never by the caller/effect.
-   This replaces the old floating/body-level preview that could cover the card grid. */
-.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{
-  width:min(1068px,calc(100vw - 36px))!important;
-  min-width:0!important;
-  transform:none!important;
-}
-.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) var(--hover-preview-w)!important;
-  gap:16px!important;
-  align-items:start!important;
-  overflow:hidden!important;
-}
-.ob-vsai-choice-overlay.ob-choice-main-deck-preview .ob-choice-list-pane{
-  min-width:0!important;
-  min-height:0!important;
-  max-height:calc(84vh - 112px)!important;
-  overflow-y:auto!important;
-  overflow-x:hidden!important;
-  padding-right:3px;
-}
-.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{
-  width:var(--hover-preview-w);
-  height:var(--hover-preview-h);
-  align-self:start;
-  position:sticky;
-  top:0;
-  display:grid;
-  place-items:center;
-  border-radius:10px;
-  background:rgba(5,12,18,.42);
-  overflow:hidden;
-}
-.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot img{
-  width:100%;
-  height:100%;
-  display:none;
-  object-fit:contain;
-  border-radius:8px;
-  filter:drop-shadow(0 10px 20px rgba(0,0,0,.64));
-}
-.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot.has-card img{display:block}
-.ob-vsai-choice-overlay .ob-choice-fixed-preview-placeholder{
-  color:#7890a5;
-  font-size:10px;
-  font-weight:800;
-  text-align:center;
-  padding:18px;
-}
-.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot.has-card .ob-choice-fixed-preview-placeholder{display:none}
-@media(max-width:1120px){
-  .ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{width:calc(100vw - 24px)!important}
-  .ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{grid-template-columns:minmax(0,1fr) min(28vw,var(--hover-preview-w))!important}
-  .ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{width:min(28vw,var(--hover-preview-w));height:auto;aspect-ratio:5/7}
-}
-/* PvP v3.75.5 / VS AI v6.90.7 center decision layer */
+/* Center Choice is deliberately not a popup: no panel/container background.
+   The global 65% focus dimmer remains the only backdrop. */
 .ob-center-choice-stage{
   position:fixed;
   inset:0;
@@ -1115,23 +1059,83 @@ body.ob-center-magic-scope .ob-magic-scope-done{display:none!important}
    the decision layer is active; center-stage cards themselves remain interactive. */
 body.ob-center-choice-active #sharedPreviewBox.previewing{opacity:0!important;pointer-events:none!important}
 
-/* v3.75.5: keep opponent Mana Pool absolutely positioned behind clone-only center choice. */
-.battlefield.ob-focus-blind-mana .opponent-mana-pool{position:absolute!important}
-.ob-center-travel-clone{will-change:transform,opacity!important}
-.ob-flying-card{will-change:left,top,transform,opacity,width,height}
 
-/* PvP v3.75.5: Force payment modal to be visible and interactive */
-.ob-center-choice-stage.open .ob-center-choice-actions {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  visibility: visible !important;
+/* v6.90.7 — Main Deck candidate lists use a REAL reserved preview column.
+   Preview layout is selected by the candidate source zone, never by the caller/effect.
+   This replaces the old floating/body-level preview that could cover the card grid. */
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{
+  width:min(1068px,calc(100vw - 36px))!important;
+  min-width:0!important;
+  transform:none!important;
 }
-.ob-center-choice-stage.open .ob-center-choice-actions.is-fading {
-  opacity: 1 !important;
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) var(--hover-preview-w)!important;
+  gap:16px!important;
+  align-items:start!important;
+  overflow:hidden!important;
 }
-.ob-center-choice-stage.open .ob-center-choice-copy.is-fading {
-  opacity: 1 !important;
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .ob-choice-list-pane{
+  min-width:0!important;
+  min-height:0!important;
+  max-height:calc(84vh - 112px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:3px;
 }
-.ob-center-choice-stage.open .ob-center-choice-card.is-clickable {
-  pointer-events: auto !important;
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{
+  width:var(--hover-preview-w);
+  height:var(--hover-preview-h);
+  align-self:start;
+  position:sticky;
+  top:0;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:rgba(5,12,18,.42);
+  overflow:hidden;
 }
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot img{
+  width:100%;
+  height:100%;
+  display:none;
+  object-fit:contain;
+  border-radius:8px;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.64));
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot.has-card img{display:block}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-placeholder{
+  color:#7890a5;
+  font-size:10px;
+  font-weight:800;
+  text-align:center;
+  padding:18px;
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot.has-card .ob-choice-fixed-preview-placeholder{display:none}
+@media(max-width:1120px){
+  .ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{width:calc(100vw - 24px)!important}
+  .ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{grid-template-columns:minmax(0,1fr) min(28vw,var(--hover-preview-w))!important}
+  .ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{width:min(28vw,var(--hover-preview-w));height:auto;aspect-ratio:5/7}
+}
+
+
+/* ========================================================================== */
+/* VS AI v6.90.7 — popup preview routing + visible Shard-to-Deck resolution.   */
+/* Main Deck candidates restore v6.88: 7-column popup, preview floats outside. */
+/* Legacy Deck / Discard candidates remain contextual outside the popup edge.  */
+/* ========================================================================== */
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{
+  width:min(788px,calc(100vw - 330px))!important;
+  min-width:min(788px,92vw)!important;
+  max-height:84vh!important;
+}
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{
+  display:block!important;
+  grid-template-columns:none!important;
+  gap:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:12px!important;
+}
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .ob-choice-list-pane{display:contents!important}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{display:none!important}

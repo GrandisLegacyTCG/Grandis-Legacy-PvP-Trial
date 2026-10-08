@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "version": "v2.63",
+  "policy": "RUNTIME_FIRST_FAIL_CLOSED_SYNC",
+  "authorityVerified": true,
+  "heroComponentsVerified": true,
+  "verifiedFiles": 94,
+  "activeStarterCount": 5,
+  "canonicalCardCount": 200
+}
