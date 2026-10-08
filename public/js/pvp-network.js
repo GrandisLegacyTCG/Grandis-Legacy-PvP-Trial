@@ -1,8 +1,8 @@
-/* Grandis Legacy PvP v3.75.1 — v3.51 network/lobby reliability model + VS AI v6.90.7 battlefield presentation.
+/* Grandis Legacy PvP v3.75.2 — v3.51 network/lobby reliability model + VS AI v6.90.7 battlefield presentation.
    Historical gl_pvp370/gl_pvp371 LocalStorage keys are intentionally retained for upgrade continuity. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.75.1';
+const VERSION='Grandis Legacy PvP v3.75.2';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};

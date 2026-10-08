@@ -1,4 +1,4 @@
-# Grandis Legacy PvP v3.75.1
+# Grandis Legacy PvP v3.75.2
 
 Server-authoritative, two-human Grandis Legacy PvP build. This release is the first cleaned rebuild after the v3.73.x integration experiments.
 
@@ -6,7 +6,7 @@ Server-authoritative, two-human Grandis Legacy PvP build. This release is the fi
 
 - **PvP v3.51 is the network role model.** The match remains server-authoritative and keeps the proven two-player lobby/seat lifecycle, intent -> ACK -> authoritative snapshot recovery pattern, reconnect handling, viewer-safe snapshots, and read-only spectator behavior.
 - **VS AI v6.90.7 is the UI/UX role model.** The visible battlefield, center decision/payment UX, card review/hover behavior, and current presentation concepts are adapted for human-vs-human PvP.
-- **pvp-fresh v3.73.20 is an integration donor, not the authority.** Only PvP adaptations that survive the v3.75.1 QA suite are retained.
+- **pvp-fresh v3.73.20 is an integration donor, not the authority.** Only PvP adaptations that survive the v3.75.2 QA suite are retained.
 
 The server is still the gameplay authority. UI animation/presentation never commits gameplay state locally.
 
@@ -25,11 +25,11 @@ Key files:
 - `public/js/pvp-animator.js` — authoritative animation-event playback only.
 - `public/css/pvp-ui.css` and `public/css/pvp-lobby.css` — PvP visual layers.
 
-See `docs/SOURCE_MAP_v3.75.1.md` for the exact source-role map.
+See `docs/SOURCE_MAP_v3.75.2.md` for the exact source-role map.
 
 ## Versioning from here
 
-The active line is **v3.75.1**. Future maintenance releases increment the final component only: `v3.75.2`, `v3.75.3`, and so on, unless a new versioning decision is made explicitly.
+The active line is **v3.75.2**. Future maintenance releases increment the final component only: `v3.75.3`, `v3.75.4`, and so on, unless a new versioning decision is made explicitly.
 
 ## Local run
 
@@ -60,4 +60,4 @@ The automated suite checks source wiring, exact Mana payment, two-human turn han
 
 Historical `gl_pvp370_*` / `gl_pvp371_*` browser storage keys are intentionally retained so existing PvP users do not lose seat/deck preferences during the upgrade. They are compatibility identifiers, not current release names.
 
-The shared v6.90.7 runtime also still uses **`PLAYER` / `AI` as internal canonical side identifiers**. In PvP v3.75.1, internal `AI` means **Player 2**, not an AI-controlled opponent. Player-facing PvP UI is normalized to Player/Opponent wording, and the server clears AI control ownership in human-vs-human mode. Renaming the canonical side schema itself is intentionally deferred because it would touch serialized runtime state and create unnecessary desync risk.
+The shared v6.90.7 runtime also still uses **`PLAYER` / `AI` as internal canonical side identifiers**. In PvP v3.75.2, internal `AI` means **Player 2**, not an AI-controlled opponent. Player-facing PvP UI is normalized to Player/Opponent wording, and the server clears AI control ownership in human-vs-human mode. Renaming the canonical side schema itself is intentionally deferred because it would touch serialized runtime state and create unnecessary desync risk.

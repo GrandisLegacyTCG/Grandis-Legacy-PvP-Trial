@@ -10836,7 +10836,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     completeOpeningFlow:function(firstSide,flipData){var before=(appState&&appState.presentationEvents||[]).length;completeOpeningFlow(appState,firstSide,flipData||{},{deferAnimation:true,bridgeImmediate:true});var events=(appState&&appState.presentationEvents||[]).slice(before);return{ok:true,events:clone(events),snapshot:glPvpBridgeSnapshot()};},
     testCoinOutcomeFromUint32:coinOutcomeFromUint32,
     testRoundAdvanceAfterEnd:function(firstSide,endingSide,round){var probe={round:Number(round||1),openingCoinFlip:{firstPlayer:firstSide==='AI'?'AI':'PLAYER'}};var advanced=advanceRoundAfterCompletedTurnPair(probe,endingSide==='AI'?'AI':'PLAYER');return{advanced:advanced,round:probe.round};},
-    testExactManaPaymentV3751:function(){
+    testExactManaPaymentV3752:function(){
       var oldApp=appState,oldMatch=matchStarted,oldSuppress=SUPPRESS_RENDER;
       try{
         SUPPRESS_RENDER=true;matchStarted=true;var s=buildInitialMatchState();appState=s;s.preGame=null;s.turn='PLAYER';s.phase='Deploy';

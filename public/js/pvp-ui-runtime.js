@@ -897,7 +897,7 @@ function animateCenterChoiceIntoDeck(card,target,duration=520){
   if(!card||!target)return Promise.resolve();
   const r=card.getBoundingClientRect(),targetCard=target.querySelector?.('.zoneCard')||target.querySelector?.('img')||target,tr=targetCard?.getBoundingClientRect?.();
   if(!r.width||!r.height||!tr||!tr.width||!tr.height)return animateCenterChoiceTo(card,target,duration);
-  // v3.75.1 intentionally does NOT reuse the final v6.90.7 in-place Shard-to-Deck motion.
+  // v3.75.2 intentionally does NOT reuse the final v6.90.7 in-place Shard-to-Deck motion.
   // A fixed clone travels independently of the center stage so it cannot be clipped/faded
   // by center-session teardown before reaching the rendered Shard Deck.
   const clone=card.cloneNode(true);clone.classList.add('ob-center-travel-clone');
@@ -1873,8 +1873,24 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
-// v3.51 pattern: SINGLE CALL animasi opening. Kartu SUDAH di-hide via hideAuthoritativeOpeningCards.
-// Chain via onComplete: draw1 → shard1 → draw2 → shard2. Tiap stage nunggu sebelumnya selesai.
+// PvP v3.75.2 opening choreography:
+//   Opening Hand:  PLAYER #1 -> OPPONENT #1 -> ... -> PLAYER #6 -> OPPONENT #6
+//   Starting Shard: PLAYER #1 -> OPPONENT #1 -> ... -> PLAYER #3 -> OPPONENT #3
+//   then a visible break before the first player's normal Draw Phase (+1 Main, +1 Shard).
+// Opening setup motions are intentionally faster than normal gameplay draw motions.
+const PVP_OPENING_MOTION_MS=110;
+const PVP_OPENING_INTER_CARD_GAP_MS=10;
+const PVP_OPENING_TO_FIRST_TURN_GAP_MS=280;
+const PVP_TURN_DRAW_MOTION_MS=360;
+const PVP_TURN_DRAW_STAGE_GAP_MS=40;
+function openingEventRound(e,fallbackField){
+  const g=Number(e?.group_index);if(Number.isFinite(g))return g;
+  const f=Number(e?.[fallbackField]);return Number.isFinite(f)?f:0;
+}
+function openingSideOrder(e){return e?.side==='AI'?1:0;}
+function orderedOpeningEvents(list,fallbackField){
+  return (list||[]).slice().sort((a,b)=>openingEventRound(a,fallbackField)-openingEventRound(b,fallbackField)||openingSideOrder(a)-openingSideOrder(b));
+}
 function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
   const draw1=(openingDrawEvents||[]).map(cloneLite).filter(Boolean),shard1=(startingShardEntries||[]).map(cloneLite).filter(Boolean);
   let draw2=(postOpeningDrawEvents||[]).map(cloneLite).filter(Boolean);
@@ -1885,74 +1901,40 @@ function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntrie
   if(!draw1.length&&!shard1.length&&!draw2.length&&!shard2.length){openingPresentationActive=false;presentationPrimed=true;return false;}
   openingPresentationActive=true;
   const shardUidFor=e=>{const side=e?.side==='AI'?'AI':'PLAYER',pi=Number(e?.pool_index);if(!Number.isInteger(pi)||pi<0)return null;const s=st(),pool=side==='AI'?(s?.aiManaPoolCards||[]):(s?.playerManaPoolCards||[]);return pool[pi]?.uid!=null?String(pool[pi].uid):null};
-  // v3.51 chain: draw1 → shard1 → draw2 → shard2. Dipisah per fase.
-  // Fase 1 (opening, kedua pemain): 6 draw + 3 shard
-  // Fase 2 (starter, hanya 1st turn): 1 draw + 1 shard
-  // Draw BARENGAN: pair P1+P2 per hand_index, animasi paralel via runPairMotions.
-  const animateDrawsPaired=(list,done)=>{
-    // Group by hand_index: {0:[P1,P2], 1:[P1,P2], ...}
-    const byIdx={};
-    list.forEach(e=>{const idx=Number(e?.hand_index);if(!Number.isInteger(idx))return;if(!byIdx[idx])byIdx[idx]=[];byIdx[idx].push(e);});
-    const indices=Object.keys(byIdx).map(Number).sort((a,b)=>a-b);
-    let gi=0;
-    const nextGroup=()=>{
-      if(gi>=indices.length){done();return;}
-      const group=byIdx[indices[gi++]];
-      const parts=group.map(e=>{
-        const side=e?.side==='AI'?'AI':'PLAYER';
-        const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;
-        const to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]')||hand;
-        const from=zoneEl(side,'Main Deck');
-        return{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to,event:e};
-      });
-      runPairMotions(parts,180,()=>{
-        group.forEach(e=>{
-          const side=e?.side==='AI'?'AI':'PLAYER';
-          obHiddenCommittedDrawSlots[side].delete(Number(e?.hand_index));
-        });
+
+  // Sequential local-first choreography. Do not batch one player's whole Shard draw.
+  // group_index is the authoritative nth acquisition; pool_index is only the destination slot.
+  const animateDrawsInterleaved=(list,duration,gap,done)=>{
+    const ordered=orderedOpeningEvents(list,'hand_index');let cursor=0;
+    const next=()=>{
+      if(cursor>=ordered.length){done();return;}
+      const e=ordered[cursor++],side=e?.side==='AI'?'AI':'PLAYER';
+      const hand=side==='PLAYER'?playerHandTrack:oppHandTrack;
+      const to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e?.hand_index)+'"]')||hand;
+      const from=zoneEl(side,'Main Deck');
+      runPairMotions([{src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to,event:e}],duration,()=>{
+        obHiddenCommittedDrawSlots[side].delete(Number(e?.hand_index));
         handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());
-        setTimeout(nextGroup,40);
+        setTimeout(next,gap);
       });
     };
-    nextGroup();
+    next();
   };
-  const animateShards=(list,done)=>{
-    // Pair P1+P2 per pool_index, animasi paralel.
-    const byIdx={};
-    list.forEach(e=>{const idx=Number(e?.pool_index);if(!Number.isInteger(idx))return;if(!byIdx[idx])byIdx[idx]=[];byIdx[idx].push(e);});
-    const indices=Object.keys(byIdx).map(Number).sort((a,b)=>a-b);
-    // Fallback: kalau nggak ada pool_index, animasi sequential satu-satu.
-    const usePaired=indices.length>0;
-    let gi=0,si=0;
-    const nextGroup=()=>{
-      if(gi>=indices.length){done();return;}
-      const group=byIdx[indices[gi++]];
-      const parts=group.map(e=>{
-        const side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);
-        const host=side==='PLAYER'?playerManaHost:aiManaHost;
-        const to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(uid)+'"]'):host;
-        const from=zoneEl(side,'Shard Deck');
-        return{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to,event:e,uid,side};
-      });
-      runPairMotions(parts,180,()=>{
-        parts.forEach(p=>{if(p.uid)obOpeningHiddenShardUids.delete(p.side+'|'+p.uid);});
-        manaRenderKey='';renderMana();
-        setTimeout(nextGroup,40);
-      });
-    };
-    const nextSingle=()=>{
-      if(si>=list.length){done();return;}
-      const e=list[si++],side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);
+  const animateShardsInterleaved=(list,duration,gap,done)=>{
+    const ordered=orderedOpeningEvents(list,'pool_index');let cursor=0;
+    const next=()=>{
+      if(cursor>=ordered.length){done();return;}
+      const e=ordered[cursor++],side=e?.side==='AI'?'AI':'PLAYER',uid=shardUidFor(e);
       const host=side==='PLAYER'?playerManaHost:aiManaHost;
       const to=uid?host?.querySelector('.mana-card[data-uid="'+CSS.escape(uid)+'"]'):host;
       const from=zoneEl(side,'Shard Deck');
-      runPairMotions([{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to}],180,()=>{
+      runPairMotions([{src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to,event:e,uid,side}],duration,()=>{
         if(uid)obOpeningHiddenShardUids.delete(side+'|'+uid);
         manaRenderKey='';renderMana();
-        setTimeout(nextSingle,40);
+        setTimeout(next,gap);
       });
     };
-    if(usePaired)nextGroup();else nextSingle();
+    next();
   };
   const finishAll=()=>{
     obOpeningHiddenShardUids.clear();obHiddenCommittedDrawSlots.PLAYER.clear();obHiddenCommittedDrawSlots.AI.clear();
@@ -1961,9 +1943,19 @@ function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntrie
     previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;
     setTimeout(renderNow,0);
   };
-  console.log('[PvP fresh] opening (v3.51): draw1['+draw1.length+'] → shard1['+shard1.length+'] → draw2['+draw2.length+'] → shard2['+shard2.length+']');
-  // Chain: draw1 → shard1 → draw2 → shard2
-  animateDrawsPaired(draw1,()=>animateShards(shard1,()=>animateDrawsPaired(draw2,()=>animateShards(shard2,finishAll))));
+  const firstTurnDraw=()=>{
+    animateDrawsInterleaved(draw2,PVP_TURN_DRAW_MOTION_MS,PVP_TURN_DRAW_STAGE_GAP_MS,()=>
+      animateShardsInterleaved(shard2,PVP_TURN_DRAW_MOTION_MS,0,finishAll));
+  };
+  const afterOpeningSetup=()=>{
+    // The opening 6+3 has fully resolved for both players. Keep the first-turn +1/+1
+    // visually separate instead of letting it read as a seventh opening card/fourth opening Shard.
+    if(draw2.length||shard2.length)setTimeout(firstTurnDraw,PVP_OPENING_TO_FIRST_TURN_GAP_MS);
+    else finishAll();
+  };
+  console.log('[PvP v3.75.2] opening: interleaved 6+3 at 2x pace, then first-turn +1/+1 at normal pace');
+  animateDrawsInterleaved(draw1,PVP_OPENING_MOTION_MS,PVP_OPENING_INTER_CARD_GAP_MS,()=>
+    animateShardsInterleaved(shard1,PVP_OPENING_MOTION_MS,PVP_OPENING_INTER_CARD_GAP_MS,afterOpeningSetup));
   return true;
 }
 // DEPRECATED: prime/play split dihapus, ikut pola v3.51 (hide + single call).
