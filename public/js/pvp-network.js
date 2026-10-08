@@ -1,12 +1,12 @@
-/* Grandis Legacy PvP v3.75.3 — v3.51 network/lobby reliability model + VS AI v6.90.7 battlefield presentation.
+/* Grandis Legacy PvP v3.75.4 — v3.51 network/lobby reliability model + VS AI v6.90.7 battlefield presentation.
    Historical gl_pvp370/gl_pvp371 LocalStorage keys are intentionally retained for upgrade continuity. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.75.3';
+const VERSION='Grandis Legacy PvP v3.75.4';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
-const state={ws:null,connected:false,snapshot:null,clientId:'',name:'',seatToken:'',deckKey:'',customDeck:null,customDeckName:'',preferredRole:'player',spectatorLobbyView:false,lastRevision:0,lastAppliedRevision:-1,lastAppliedStatus:'',intentQueue:[],intentInFlight:null,actionSeq:0,intentTimeoutTimer:null,intentAckRefreshTimer:null,awaitingResync:false,reconnectTimer:null,reconnectDelay:900,pingAt:0,latencyMs:null,opponentLatencyMs:null,lastPongAt:0,lastCoinKey:'',fatal:'',message:'',messageError:false,rank:1,socketEpoch:0,orientationObserver:null,seatExitHold:false,seenAnimationIds:Object.create(null),claimedAnimationIds:Object.create(null),seenBattleAudioIds:Object.create(null),seenBattleVfxIds:Object.create(null),battleVfxPending:Object.create(null),battlefieldRevealToken:0};
+const state={ws:null,connected:false,snapshot:null,clientId:'',name:'',seatToken:'',deckKey:'',customDeck:null,customDeckName:'',preferredRole:'player',spectatorLobbyView:false,lastRevision:0,lastAppliedRevision:-1,lastAppliedStatus:'',applyingServer:false,intentInFlight:null,actionSeq:0,intentTimeoutTimer:null,intentAckRefreshTimer:null,awaitingResync:false,reconnectTimer:null,reconnectDelay:900,pingAt:0,latencyMs:null,opponentLatencyMs:null,lastPongAt:0,lastCoinKey:'',fatal:'',message:'',messageError:false,rank:1,socketEpoch:0,orientationObserver:null,seatExitHold:false,seenAnimationIds:Object.create(null),claimedAnimationIds:Object.create(null),seenBattleAudioIds:Object.create(null),seenBattleVfxIds:Object.create(null),battleVfxPending:Object.create(null),battlefieldRevealToken:0};
 const $=(id)=>document.getElementById(id);
 const E=()=>window.GL_OPTION_B_ENGINE;
 const B=()=>window.GL_LOCAL_AI_BRIDGE;
@@ -258,9 +258,9 @@ function renderCoin(){
     }
     start.disabled=true;start.textContent='STARTING…';
     document.body.classList.add('pvp-coin-gate');
-    console.log('[PvP fresh] sending confirm-coin-flip');
+    console.log('[PvP v3.75.4] sending confirm-coin-flip');
     if(!send('confirm-coin-flip',{})){
-      console.warn('[PvP fresh] WebSocket not open; cannot send confirm-coin-flip');
+      console.warn('[PvP v3.75.4] WebSocket not open; cannot send confirm-coin-flip');
       start.disabled=false;start.textContent='START GAME';
       document.body.classList.remove('pvp-coin-gate');
       return;
@@ -269,7 +269,7 @@ function renderCoin(){
     clearTimeout(wireStart._t);
     wireStart._t=setTimeout(()=>{
       if(match().status!=='started'){
-        console.warn('[PvP fresh] confirm-coin-flip timed out; re-enabling START GAME');
+        console.warn('[PvP v3.75.4] confirm-coin-flip timed out; re-enabling START GAME');
         start.disabled=false;start.textContent='START GAME';
         document.body.classList.remove('pvp-coin-gate');
       }
@@ -289,7 +289,7 @@ function renderCoin(){
 
 function runtimeBoardHydrated(){const s=B()?.getSnapshot?.()?.appState;if(!s)return false;const ph=s.playerHeroes||{},ah=s.aiHeroes||{};const heroes=['LEFT','CENTER','RIGHT'].every(l=>!!ph?.[l]?.card_id)&&['LEFT','CENTER','RIGHT'].every(l=>!!ah?.[l]?.card_id);const decks=Math.max(Number(s.playerDeckCount||0),Array.isArray(s.playerDeck)?s.playerDeck.length:0)>0&&Math.max(Number(s.aiDeckCount||0),Array.isArray(s.aiDeck)?s.aiDeck.length:0)>0;const shards=(Array.isArray(s.playerManaDeck)&&s.playerManaDeck.length>0)&&(Array.isArray(s.aiManaDeck)&&s.aiManaDeck.length>0);return !!(heroes&&decks&&shards)}
 function serverBoardHydrated(board){const s=board?.appState;if(!s)return false;return ['LEFT','CENTER','RIGHT'].every(l=>!!s.playerHeroes?.[l]?.card_id)&&['LEFT','CENTER','RIGHT'].every(l=>!!s.aiHeroes?.[l]?.card_id)&&Math.max(Number(s.playerDeckCount||0),Array.isArray(s.playerDeck)?s.playerDeck.length:0)>0&&Math.max(Number(s.aiDeckCount||0),Array.isArray(s.aiDeck)?s.aiDeck.length:0)>0}
-function forceBattlefieldRender(){try{window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);window.GL_OPTION_B_UI?.render?.()}catch(err){console.error('[PvP fresh] battlefield render failed',err)}}
+function forceBattlefieldRender(){try{window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);window.GL_OPTION_B_UI?.render?.()}catch(err){console.error('[PvP v3.75.4] battlefield render failed',err)}}
 function swapSideForSeat(side,seat){if(Number(seat)!==2)return side;return side==='PLAYER'?'AI':(side==='AI'?'PLAYER':side)}
 function localizeAnimationEvent(evt,seat){
   if(!evt)return null;const x=clone(evt);
@@ -346,7 +346,7 @@ function playAuthoritativeAnimations(plans){
         var p=null;try{p=A.prepare(evt);}catch(e){}
         handled=!!(p&&A.play(p));
       }
-    }catch(err){console.warn('[PvP fresh] authoritative animation playback failed',evt.kind,err);handled=false}
+    }catch(err){console.warn('[PvP v3.75.4] authoritative animation playback failed',evt.kind,err);handled=false}
     finish(plan,handled);
   });
   pruneSeenMap(state.seenAnimationIds);pruneSeenMap(state.claimedAnimationIds);return ok;
@@ -354,7 +354,7 @@ function playAuthoritativeAnimations(plans){
 function battleFeedbackFromPlans(plans){return(plans||[]).map(p=>p?.event).filter(evt=>evt?.kind==='battle_feedback').map(evt=>({id:evt.id||null,kind:evt.feedback_kind==='heal'?'heal':'attack',side:evt.side,lane:evt.lane,card_id:evt.card_id||null,outcome:evt.outcome||'hit',attack_kind:evt.attack_kind||'P',defense_kind:evt.defense_kind||null,has_damage:!!evt.has_damage,play_sound:evt.play_sound!==false}))}
 function playBattleAudioNow(events){
   const b=B();if(!b?.playAuthoritativeBattleFeedbackAudio)return false;let ok=false;
-  for(const evt of events||[]){if(!evt?.id||state.seenBattleAudioIds[evt.id])continue;try{ok=!!b.playAuthoritativeBattleFeedbackAudio(evt)||ok}catch(err){console.warn('[PvP fresh] battle audio failed',err)}state.seenBattleAudioIds[evt.id]=true}
+  for(const evt of events||[]){if(!evt?.id||state.seenBattleAudioIds[evt.id])continue;try{ok=!!b.playAuthoritativeBattleFeedbackAudio(evt)||ok}catch(err){console.warn('[PvP v3.75.4] battle audio failed',err)}state.seenBattleAudioIds[evt.id]=true}
   pruneSeenMap(state.seenBattleAudioIds);return ok;
 }
 function scheduleBattleVfx(events){
@@ -365,9 +365,9 @@ function scheduleBattleVfx(events){
     const tryPlay=()=>{
       if(state.seenBattleVfxIds[evt.id]){delete state.battleVfxPending[evt.id];return}
       attempt++;let played=false;
-      try{played=!!B()?.playAuthoritativeBattleFeedback?.(evt)}catch(err){console.warn('[PvP fresh] battle VFX retry failed',err)}
+      try{played=!!B()?.playAuthoritativeBattleFeedback?.(evt)}catch(err){console.warn('[PvP v3.75.4] battle VFX retry failed',err)}
       if(played){state.seenBattleVfxIds[evt.id]=true;delete state.battleVfxPending[evt.id];pruneSeenMap(state.seenBattleVfxIds);return}
-      if(attempt>=14){delete state.battleVfxPending[evt.id];console.warn('[PvP fresh] battle VFX anchor never became ready',evt);return}
+      if(attempt>=14){delete state.battleVfxPending[evt.id];console.warn('[PvP v3.75.4] battle VFX anchor never became ready',evt);return}
       setTimeout(()=>{if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(tryPlay));else tryPlay()},Math.min(180,25+attempt*18));
     };
     if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(tryPlay));else setTimeout(tryPlay,34);
@@ -377,36 +377,43 @@ function revealBattlefieldWhenAnchored(callback){
   const token=++state.battlefieldRevealToken;
   forceBattlefieldRender();
   const done=()=>{if(token!==state.battlefieldRevealToken)return;document.body.classList.remove('pvp-coin-gate');renderCoin();ensureBattlefieldChrome();if(typeof callback==='function'){
-    // PvP fresh: biarkan board kosong terlihat sejenak ("from 0") sebelum kartu
+    // PvP v3.75.4: biarkan board kosong terlihat sejenak ("from 0") sebelum kartu
     // di-deal satu-satu, agar sensasi draw kelihatan jelas.
     setTimeout(()=>{if(token!==state.battlefieldRevealToken)return;callback()},150);
   }};
   if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(done));else setTimeout(done,32);
 }
+function runtimeAppState(){try{return B()?.getSnapshot?.()?.appState||E()?.getSnapshot?.()?.appState||null}catch{return null}}
+function pendingDecisionSide(p){if(!p)return null;return p.decision_side||p.response_owner||p.side||p.source_side||(p.type==='hand_limit_discard'?'PLAYER':null)||(p.type==='manual_reposition'?'PLAYER':null)}
+function localOwnsPending(){const s=runtimeAppState(),p=s?.pending;return !p||pendingDecisionSide(p)==='PLAYER'}
+function localOwnsResponse(){const s=runtimeAppState(),rw=s?.responseWindow;return !rw||rw.response_owner==='PLAYER'}
+function intentNeedsPendingOwner(intent){return ['chooseHeroFromBoard','setArrowBarrageSpend','selectStatusRemovalChoice','selectSaintPurifyChoice','resolveStonebloodChoice','selectScoutingExpChoice','moveCrystalBallOrder','performDualArrowPairChoice','toggleDiscardIndex','selectCardSearchChoice','selectLegacyDefeatChoice','selectLegacyCostChoice','selectLegacyCardChoice','commitDrawReplacementChoice','confirmDrawReplacement','commitMagicalSurgeChoice','toggleManaShardPaymentChoice','commitManaShardPaymentChoice','toggleResponseManaShardChoice','commitResponsePaymentChoice','selectOpponentHandChoice','commitOpponentHandChoice','selectOpponentManaChoiceHandle','commitOpponentManaSelection','selectResponsePaymentChoice','performOptionalSwapDecision','performOptionalTargetSwapDecision','performManualReposition','handleChoiceConfirm','cancelPendingAction'].includes(intent)}
+function intentNeedsResponseOwner(intent){return ['responseSelectNoStuck','confirmSelectedResponse','responsePassNoStuck'].includes(intent)}
+function syncAuthoritativePendingChoice(){
+  try{B()?.renderCurrentAuthoritativePendingChoice?.()}catch(err){console.warn('[PvP v3.75.4] canonical pending sync failed',err)}
+  try{window.GL_OPTION_B_UI?.onAuthoritativeSnapshot?.({revision:Number(match().serverBoardRevision||state.lastRevision||0),pending:clone(runtimeAppState()?.pending||null),responseWindow:clone(runtimeAppState()?.responseWindow||null)})}catch(err){console.warn('[PvP v3.75.4] Option-B authoritative sync failed',err)}
+}
 function importBoard(msg){
   const m=msg.match||{},board=m.serverBoard,seat=msg.local?.role==='spectator'?1:Number(msg.local?.seat||0);if(!board||!seat)return;
   const rev=Number(m.serverBoardRevision||0),status=String(m.status||''),same=rev===state.lastAppliedRevision&&status===state.lastAppliedStatus;
   if(same&&runtimeBoardHydrated())return;
+  const previousStatus=state.lastAppliedStatus;
+  state.applyingServer=true;
   try{
     if(!serverBoardHydrated(board))throw new Error('Authoritative server board is missing Hero/deck state.');
     adapter()?.setSharedBoardMode?.(true);
-    // Follow the proven PvP v3.51 orchestration: capture from the old board, fire
-    // authoritative battle SFX immediately, import the new state, then queue all
-    // non-battle motions without an extra paint delay. Battle VFX alone waits for
-    // the imported Hero anchors to become paint-ready.
+    // v3.51 transaction boundary: capture old presentation, import exactly one server
+    // revision, synchronise canonical pending ownership, then render from that revision.
     const animationPlans=prepareAuthoritativeAnimations(m,seat),battleFeedback=battleFeedbackFromPlans(animationPlans);
     if(battleFeedback.length)playBattleAudioNow(battleFeedback);
     const ok=adapter()?.importViewerSafeSnapshot?.(board,seat,{skipImportAnimations:true});
     if(ok===false||!runtimeBoardHydrated())throw new Error('Viewer-safe board import did not hydrate the local shared runtime.');
     state.lastAppliedRevision=rev;state.lastAppliedStatus=status;
+    syncAuthoritativePendingChoice();
     const ob=window.GL_OPTION_B_PRESENTATION;
     const openingPlans=(animationPlans||[]).filter(p=>p?.event?.kind==='opening_sequence');
     const openingPlan=openingPlans[0];
-    // PvP fresh: first reveal dideteksi dari transisi state (coin-result -> started),
-    // bukan dari class DOM lokal pvp-booting (hanya ada di browser yang klik START GAME).
-    const firstStartedReveal=status==='started'&&['coin-flip','coin-result','setup'].includes(state.lastAppliedStatus);
-    // v3.51 pattern: HIDE dulu (sebelum board direveal), terus SINGLE CALL animasi.
-    // Nggak ada prime/play split. Hide synchronous di sini, animasi dipanggil sekali di playImportedPresentation.
+    const firstStartedReveal=status==='started'&&['coin-flip','coin-result','setup',''].includes(previousStatus);
     let openingCaptured=null;
     if(firstStartedReveal&&openingPlan?.captured&&ob?.hideAuthoritativeOpeningCards){
       openingCaptured={
@@ -415,47 +422,20 @@ function importBoard(msg){
         post_opening_draw_events:openingPlan.captured.post_opening_draw_events||[],
         post_opening_shard_entries:openingPlan.captured.post_opening_shard_entries||[]
       };
-      // Hide SEMUA kartu opening SEBELUM board direveal (from blank).
-      ob.hideAuthoritativeOpeningCards(
-        openingCaptured.opening_draw_events,
-        openingCaptured.starting_shard_entries,
-        openingCaptured.post_opening_draw_events,
-        openingCaptured.post_opening_shard_entries
-      );
-      // Mark SEMUA opening plan sebagai seen (bukan cuma yang pertama) biar nggak double.
-      openingPlans.forEach(p=>{
-        const id=p?.rawId||p?.event?.id;
-        if(id){delete state.claimedAnimationIds[id];state.seenAnimationIds[id]=true;}
-      });
+      ob.hideAuthoritativeOpeningCards(openingCaptured.opening_draw_events,openingCaptured.starting_shard_entries,openingCaptured.post_opening_draw_events,openingCaptured.post_opening_shard_entries);
+      openingPlans.forEach(p=>{const id=p?.rawId||p?.event?.id;if(id){delete state.claimedAnimationIds[id];state.seenAnimationIds[id]=true}});
     }
     const playImportedPresentation=()=>{
       if(!openingCaptured)forceBattlefieldRender();
-      // v3.51: opening di-handle via single call, bukan via playAuthoritativeAnimations.
-      // Filter opening_sequence dari plans biar nggak double.
       const nonOpeningPlans=(animationPlans||[]).filter(p=>p?.event?.kind!=='opening_sequence');
       playAuthoritativeAnimations(nonOpeningPlans);
-      // SINGLE CALL: animasi opening (kartu sudah di-hide di atas).
-      if(openingCaptured&&ob?.queueAuthoritativeOpeningSequence){
-        ob.queueAuthoritativeOpeningSequence(
-          openingCaptured.opening_draw_events,
-          openingCaptured.starting_shard_entries,
-          openingCaptured.post_opening_draw_events,
-          openingCaptured.post_opening_shard_entries
-        );
-      }
+      if(openingCaptured&&ob?.queueAuthoritativeOpeningSequence){ob.queueAuthoritativeOpeningSequence(openingCaptured.opening_draw_events,openingCaptured.starting_shard_entries,openingCaptured.post_opening_draw_events,openingCaptured.post_opening_shard_entries)}
       ensureBattlefieldChrome();
       if(battleFeedback.length)scheduleBattleVfx(battleFeedback);
     };
-    if(firstStartedReveal){
-      // Reveal after the visible Option-B DOM has had two paint frames. The opening
-      // presentation itself waits only for its Main/Shard Deck + Hand/Pool anchors.
-      revealBattlefieldWhenAnchored(playImportedPresentation);
-    }else{
-      // Normal gameplay revisions must not wait two RAFs before Draw / Rank Up /
-      // Card / Shard sound+motion. This is the key PvP v3.51 timing behavior.
-      playImportedPresentation();
-    }
-  }catch(err){console.error('[PvP fresh] board import failed',err);state.lastAppliedRevision=-1;state.lastAppliedStatus='';setMessage('Battlefield sync failed: '+String(err?.message||err),true)}
+    if(firstStartedReveal)revealBattlefieldWhenAnchored(playImportedPresentation);else playImportedPresentation();
+  }catch(err){console.error('[PvP v3.75.4] board import failed',err);state.lastAppliedRevision=-1;state.lastAppliedStatus='';setMessage('Battlefield sync failed: '+String(err?.message||err),true)}
+  finally{state.applyingServer=false}
 }
 function handleSnapshot(msg){
   const previousRole=local()?.role||null;
@@ -472,7 +452,7 @@ function handleSnapshot(msg){
   if(l.deckKey&&l.deckKey!=='CUSTOM'){state.deckKey=l.deckKey;saveStore(STORE.deck,l.deckKey)}
   if(status==='setup'&&l.deckSource==='custom'&&l.deckData){
     const incoming=clone(l.deckData),incomingName=clean(l.deckName||incoming?.display_name||incoming?.deck_name||'Imported Custom Deck',100);
-    if(!state.customDeck||JSON.stringify(state.customDeck)!==JSON.stringify(incoming)){state.customDeck=incoming;state.customDeckName=incomingName;state.deckKey='CUSTOM';saveStore(STORE.deck,'CUSTOM');const r=E()?.importOptionBDeck?.('PLAYER',state.customDeck);if(!r?.ok)console.warn('[PvP fresh] custom deck reconnect preview could not be restored:',r?.error||r)}
+    if(!state.customDeck||JSON.stringify(state.customDeck)!==JSON.stringify(incoming)){state.customDeck=incoming;state.customDeckName=incomingName;state.deckKey='CUSTOM';saveStore(STORE.deck,'CUSTOM');const r=E()?.importOptionBDeck?.('PLAYER',state.customDeck);if(!r?.ok)console.warn('[PvP v3.75.4] custom deck reconnect preview could not be restored:',r?.error||r)}
   }
   if(previousRole&&previousRole!==l.role)state.message='';
   if(l.role==='spectator'&&activeMatch()&&previousRole!=='spectator')state.spectatorLobbyView=false;
@@ -482,10 +462,10 @@ function handleSnapshot(msg){
   resolveIntentFromSnapshot(msg);renderLobby();renderCoin();ensureBattlefieldChrome();
 }
 function notifyUiIntentFailure(item,reason='network-error',message=''){
-  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentFailure?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',reason,message});}catch(err){console.warn('[PvP fresh] intent failure UI recovery failed',err)}
+  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentFailure?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',reason,message});}catch(err){console.warn('[PvP v3.75.4] intent failure UI recovery failed',err)}
 }
 function notifyUiIntentResolved(item,msg){
-  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentResolved?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',committedRevision:Number(msg?.match?.serverBoardRevision||item.committedRevision||0)});}catch(err){console.warn('[PvP fresh] intent resolve UI callback failed',err)}
+  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentResolved?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',committedRevision:Number(msg?.match?.serverBoardRevision||item.committedRevision||0)});}catch(err){console.warn('[PvP v3.75.4] intent resolve UI callback failed',err)}
 }
 function clearIntentAckRefresh(){if(state.intentAckRefreshTimer){clearTimeout(state.intentAckRefreshTimer);state.intentAckRefreshTimer=null}}
 function clearIntentTimeout(){if(state.intentTimeoutTimer){clearTimeout(state.intentTimeoutTimer);state.intentTimeoutTimer=null}}
@@ -499,8 +479,8 @@ function armIntentTimeout(){
   clearIntentTimeout();
   state.intentTimeoutTimer=setTimeout(()=>{
     const inflight=state.intentInFlight;if(!inflight)return;
-    const abandoned=[inflight,...state.intentQueue];state.intentQueue.length=0;state.intentInFlight=null;clearIntentTimers();
-    abandoned.forEach(item=>notifyUiIntentFailure(item,'intent-timeout','Server response delayed.'));
+    state.intentInFlight=null;clearIntentTimers();
+    notifyUiIntentFailure(inflight,'intent-timeout','Server response delayed.');
     requestAuthoritativeResync('intent-timeout');
     state.message='Server response delayed. Battlefield resync requested; retry the action after the board refreshes.';
     state.messageError=true;renderLobby();
@@ -511,9 +491,7 @@ function handleIntentAck(msg){
   if(msg.clientActionId&&msg.clientActionId!==inflight.clientActionId)return;
   inflight.ackedAt=Date.now();inflight.committedRevision=Number(msg.committedRevision||0);
   clearIntentAckRefresh();
-  state.intentAckRefreshTimer=setTimeout(()=>{
-    if(state.intentInFlight===inflight)requestAuthoritativeResync('ack-without-snapshot');
-  },2500);
+  state.intentAckRefreshTimer=setTimeout(()=>{if(state.intentInFlight===inflight)requestAuthoritativeResync('ack-without-snapshot')},2500);
 }
 function resolveIntentFromSnapshot(msg){
   const inflight=state.intentInFlight;if(!inflight){clearIntentTimeout();return}
@@ -521,26 +499,26 @@ function resolveIntentFromSnapshot(msg){
   if(rev>inflight.baseRevision||last.clientActionId===inflight.clientActionId){
     state.intentInFlight=null;clearIntentTimers();state.messageError=false;notifyUiIntentResolved(inflight,msg);
     if(state.message&&state.message.startsWith('Server response delayed.'))state.message='';
-    pumpIntent();
   }
 }
 function sendIntent(name,args=[]){
   name=String(name||'');if(!name)return{ok:false,error:'Missing intent'};
   if(isSpectator())return{ok:false,error:'Spectator is read-only.'};
+  if(!state.connected||!activeMatch())return{ok:false,error:'PvP match is not connected.'};
+  if(state.applyingServer)return{ok:false,error:'Applying the latest authoritative board.'};
   if(state.awaitingResync)return{ok:false,error:'Waiting for authoritative resync.'};
-  const item={name,args:Array.isArray(args)?args:[],clientActionId:'a'+Date.now().toString(36)+'_'+(++state.actionSeq).toString(36)};
-  state.intentQueue.push(item);pumpIntent();return{ok:true,queued:true,intent:name,clientActionId:item.clientActionId};
+  if(state.intentInFlight)return{ok:false,busy:true,error:'Waiting for the server to resolve the previous action.'};
+  if(intentNeedsResponseOwner(name)&&!localOwnsResponse())return{ok:false,error:'Waiting for opponent response.'};
+  if(intentNeedsPendingOwner(name)&&!localOwnsPending())return{ok:false,error:'Waiting for opponent decision.'};
+  const baseRevision=Number(match().serverBoardRevision||state.lastRevision||0);
+  const item={name,args:Array.isArray(args)?args:[],baseRevision,clientActionId:'a'+Date.now().toString(36)+'_'+(++state.actionSeq).toString(36),sentAt:Date.now()};
+  if(!send('runtime-intent',{intent:item.name,args:item.args,baseRevision:item.baseRevision,clientActionId:item.clientActionId}))return{ok:false,error:'Socket is not ready.'};
+  state.intentInFlight=item;armIntentTimeout();
+  return{ok:true,queued:false,intent:name,clientActionId:item.clientActionId,baseRevision};
 }
-function pumpIntent(){
-  if(state.intentInFlight||state.awaitingResync||!state.intentQueue.length||!state.connected||!activeMatch()||isSpectator())return;
-  const item=state.intentQueue.shift();item.baseRevision=Number(match().serverBoardRevision||state.lastRevision||0);item.sentAt=Date.now();state.intentInFlight=item;
-  if(!send('runtime-intent',{intent:item.name,args:item.args,baseRevision:item.baseRevision,clientActionId:item.clientActionId})){state.intentInFlight=null;state.intentQueue.unshift(item);return}
-  armIntentTimeout();
-}
-function clearIntentQueue(reason='intent-cleared',message=''){
-  const abandoned=[];if(state.intentInFlight)abandoned.push(state.intentInFlight);abandoned.push(...state.intentQueue);
-  state.intentQueue.length=0;state.intentInFlight=null;state.awaitingResync=false;clearIntentTimers();
-  abandoned.forEach(item=>notifyUiIntentFailure(item,reason,message));
+function clearIntentLock(reason='intent-cleared',message=''){
+  const inflight=state.intentInFlight;state.intentInFlight=null;state.awaitingResync=false;clearIntentTimers();
+  if(inflight)notifyUiIntentFailure(inflight,reason,message);
 }
 
 function scheduleReconnect(){
@@ -559,9 +537,9 @@ function connect(force=false){
   let ws;try{ws=new WebSocket(wsUrl())}catch(err){state.fatal=String(err?.message||err);renderLobby();return}
   state.ws=ws;
   const live=()=>state.ws===ws&&state.socketEpoch===epoch;
-  ws.onopen=()=>{if(!live())return;state.connected=true;state.fatal='';state.messageError=false;state.reconnectDelay=900;state.lastPongAt=Date.now();send('rename',{name:state.name||'Player'});renderLobby();pumpIntent()};
-  ws.onmessage=(ev)=>{if(!live())return;let msg;try{msg=JSON.parse(ev.data)}catch{return}if(msg.type==='snapshot'){handleSnapshot(msg);return}if(msg.type==='pong'){const now=Date.now(),sent=Number(msg.clientAt||state.pingAt||0);if(sent)state.latencyMs=Math.max(0,now-sent);state.opponentLatencyMs=msg.opponentLatencyMs==null?state.opponentLatencyMs:Number(msg.opponentLatencyMs);state.lastPongAt=now;ensureBattlefieldChrome();return}if(msg.type==='intent-ack'){handleIntentAck(msg);return}if(msg.type==='notice'){if(msg.kind==='error'){clearIntentQueue(msg.code||'server-error',msg.message||'Server notice');state.messageError=true}state.message=msg.message||'Server notice';renderLobby();return}if(msg.type==='seat-kicked'){state.seatToken='';saveStore(STORE.token,'');state.seatExitHold=true;state.message=msg.message||'You left the player seat.';state.messageError=msg.kind!=='left';renderLobby();return}if(msg.type==='fatal'){state.fatal=msg.message||'Connection rejected.';state.messageError=true;renderLobby();try{ws.close()}catch{}}};
-  ws.onclose=()=>{if(!live())return;state.connected=false;state.ws=null;clearIntentQueue('socket-closed','Connection closed before the action settled.');renderLobby();scheduleReconnect()};
+  ws.onopen=()=>{if(!live())return;state.connected=true;state.fatal='';state.messageError=false;state.reconnectDelay=900;state.lastPongAt=Date.now();send('rename',{name:state.name||'Player'});renderLobby()};
+  ws.onmessage=(ev)=>{if(!live())return;let msg;try{msg=JSON.parse(ev.data)}catch{return}if(msg.type==='snapshot'){handleSnapshot(msg);return}if(msg.type==='pong'){const now=Date.now(),sent=Number(msg.clientAt||state.pingAt||0);if(sent)state.latencyMs=Math.max(0,now-sent);state.opponentLatencyMs=msg.opponentLatencyMs==null?state.opponentLatencyMs:Number(msg.opponentLatencyMs);state.lastPongAt=now;ensureBattlefieldChrome();return}if(msg.type==='intent-ack'){handleIntentAck(msg);return}if(msg.type==='notice'){if(msg.kind==='error'){clearIntentLock(msg.code||'server-error',msg.message||'Server notice');state.messageError=true}state.message=msg.message||'Server notice';renderLobby();return}if(msg.type==='seat-kicked'){state.seatToken='';saveStore(STORE.token,'');state.seatExitHold=true;state.message=msg.message||'You left the player seat.';state.messageError=msg.kind!=='left';renderLobby();return}if(msg.type==='fatal'){state.fatal=msg.message||'Connection rejected.';state.messageError=true;renderLobby();try{ws.close()}catch{}}};
+  ws.onclose=()=>{if(!live())return;state.connected=false;state.ws=null;clearIntentLock('socket-closed','Connection closed before the action settled.');renderLobby();scheduleReconnect()};
   ws.onerror=()=>{if(!live())return;renderLobby()};
 }
 function resetRoom(){send('reset-room',{})}
@@ -580,7 +558,7 @@ function boot(){
   const requestGameplayAudioUnlock=()=>{try{return !!B()?.unlockGameplayAudioPlayback?.()}catch{return false}};
   ['pointerdown','touchstart','keydown'].forEach(type=>document.addEventListener(type,requestGameplayAudioUnlock,{capture:true,passive:type==='touchstart'}));
   try{B()?.prepareAuthoritativeBattleAssets?.()}catch{}
-  window.GL_PVP_NETWORK={version:VERSION,send,sendIntent,getSnapshot:()=>state.snapshot,getIntentState:()=>({inFlight:state.intentInFlight?{...state.intentInFlight}:null,queued:state.intentQueue.map(x=>({...x})),awaitingResync:!!state.awaitingResync}),reconnect:()=>{state.seatExitHold=false;connect(true)},resetRoom,surrender:()=>sendIntent('executeConfirmedSurrender',[]),fitIdentity};
+  window.GL_PVP_NETWORK={version:VERSION,send,sendIntent,getSnapshot:()=>state.snapshot,getRevision:()=>Number(match().serverBoardRevision||state.lastRevision||0),getIntentState:()=>({inFlight:state.intentInFlight?{...state.intentInFlight}:null,queued:[],awaitingResync:!!state.awaitingResync,applyingServer:!!state.applyingServer}),reconnect:()=>{state.seatExitHold=false;connect(true)},resetRoom,surrender:()=>sendIntent('executeConfirmedSurrender',[]),fitIdentity};
   connect();
   setInterval(()=>{if(state.ws?.readyState===WebSocket.OPEN){state.pingAt=Date.now();send('ping',{clientAt:state.pingAt,latencyMs:state.latencyMs})}},10000);
   setInterval(()=>{if(state.ws?.readyState===WebSocket.OPEN&&state.lastPongAt&&Date.now()-state.lastPongAt>45000&&document.visibilityState!=='hidden')connect(true);ensureBattlefieldChrome();if(activeMatch())renderCoin()},1000);

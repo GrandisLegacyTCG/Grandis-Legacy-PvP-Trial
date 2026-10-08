@@ -1,4 +1,4 @@
-/* Grandis Legacy PvP v3.75.3 — static fallback config.
+/* Grandis Legacy PvP v3.75.4 — static fallback config.
    The Node server serves its own /config.js dynamically for same-origin deployments. */
 (function(){
   'use strict';
@@ -6,8 +6,8 @@
   window.GL_PVP_CLIENT_MODE=true;
   window.GL_PVP_SHARED_BOARD_ACTIVE=true;
   window.GL_CONFIG={
-    version:'Grandis Legacy PvP v3.75.3',
-    buildId:'gl-pvp-3.75.3-v351-network-v6907-ui-2026-10-08',
+    version:'Grandis Legacy PvP v3.75.4',
+    buildId:'gl-pvp-3.75.4-v351-network-v6907-ui-2026-10-08',
     mode:'server-authoritative-human-vs-human',
     singleRoom:true,
     roomId:'GRANDIS_PVP',

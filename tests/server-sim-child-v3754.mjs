@@ -173,7 +173,7 @@ const p7=connect('test_p7','Gabe');
 const full=p7.latest('fatal');if(!full||!/capacity/i.test(String(full.message||'')))throw new Error('Fifth spectator was not rejected at the configured capacity.');
 if(snap(p1).players.length!==2||snap(p2).players.length!==2)throw new Error('Spectator-capacity check disturbed player seats.');
 
-console.log('v3.75.3 two-human + spectator server simulation: PASS');
+console.log('v3.75.4 two-human + spectator server simulation: PASS');
 const mem=process.memoryUsage(),mb=v=>Math.round((Number(v||0)/1024/1024)*10)/10;
 console.log('seats=1/2, coin-flow=PASS, viewer-safe=PASS, P1<->P2 handoff=PASS, P2 tribute->next-phase=PASS, spectator-card-backs=PASS, spectator-read-only=PASS, opening-sequence=PASS, spectator-cap=4=PASS, revision='+nextAfterTribute.match.serverBoardRevision);
 console.log('active-match-memoryMB rss='+mb(mem.rss)+', heapUsed='+mb(mem.heapUsed)+', heapTotal='+mb(mem.heapTotal)+', external='+mb(mem.external));

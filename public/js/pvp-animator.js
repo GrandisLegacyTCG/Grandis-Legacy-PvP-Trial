@@ -1,5 +1,5 @@
 /* ============================================================================
- * Grandis Legacy PvP Fresh — Option-B Animation Player
+ * Grandis Legacy PvP v3.75.4 — Option-B Animation Player
  *
  * Menerjemahkan authoritative server animation events menjadi gerakan kartu
  * (flyBetween) yang VISIBLE di Option-B battlefield DOM.
@@ -211,7 +211,7 @@ function playAll(plans, duration){
 }
 
 window.GL_PVP_ANIMATOR = {
-  version: 'pvp-fresh-1.0',
+  version: 'pvp-v3.75.4-1.0',
   prepare: prepare,
   prepareAll: prepareAll,
   play: play,

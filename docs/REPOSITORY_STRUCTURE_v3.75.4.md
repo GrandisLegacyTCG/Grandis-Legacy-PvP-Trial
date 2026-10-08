@@ -1,11 +1,11 @@
-# Repository Structure — PvP v3.75.3
+# Repository Structure — PvP v3.75.4
 
 ```text
-Grandis_Legacy_PvP_v3.75.3_GitHub_Repository_2026-10-08/
+Grandis_Legacy_PvP_v3.75.4_GitHub_Repository_2026-10-08/
 ├─ data/
 ├─ docs/
-│  ├─ SOURCE_MAP_v3.75.3.md
-│  ├─ REPOSITORY_STRUCTURE_v3.75.3.md
+│  ├─ SOURCE_MAP_v3.75.4.md
+│  ├─ REPOSITORY_STRUCTURE_v3.75.4.md
 │  └─ donor/
 ├─ public/
 │  ├─ assets/

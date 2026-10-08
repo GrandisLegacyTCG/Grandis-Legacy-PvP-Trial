@@ -57,6 +57,8 @@ let transientConnectorKey='',transientConnectorUntil=0,transientDefenseConnector
 let presentationPrimed=false,previousVisualState=null,lastTurnBannerKey='';
 let lastPhaseIndicatorKey='',lastInteractionFocusMode='';
 let centerChoiceKey='',centerChoiceRenderSig='',centerChoiceBusy=false,centerChoiceMagicRevealed=false,centerChoiceCommitIntent=null;
+const pvpIntentFollowups=new Map();
+let lastAuthoritativeRevision=-1;
 let obPresentationActive=0,obPresentationBusyUntil=0;
 let obAttachmentLastPress={key:'',at:0};
 const seenPresentationEvents=new Set();
@@ -74,7 +76,9 @@ function art(id){return id?'card-art/'+encodeURIComponent(id)+'.webp':'';}
 function shardArt(sh){if(!sh||sh.kind!=='CLASS')return 'assets/shards/Generic.webp';const n=String(sh.class_name||'').trim();return 'assets/shards/'+(n||'Generic')+'.webp';}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cloneLite(v){try{return JSON.parse(JSON.stringify(v))}catch{return null}}
-function intent(name,args=[]){const net=window.GL_PVP_NETWORK;if(window.GL_PVP_CLIENT_MODE&&net&&typeof net.sendIntent==='function'){const r=net.sendIntent(name,args);setTimeout(renderNow,0);return r}const r=E().intent(name,args);setTimeout(renderNow,0);return r;}
+function intent(name,args=[]){const net=window.GL_PVP_NETWORK;if(window.GL_PVP_CLIENT_MODE&&net&&typeof net.sendIntent==='function'){return net.sendIntent(name,args)}const r=E().intent(name,args);setTimeout(renderNow,0);return r;}
+function pvpRevision(){return Number(window.GL_PVP_NETWORK?.getRevision?.()||window.GL_PVP_NETWORK?.getSnapshot?.()?.match?.serverBoardRevision||0)}
+function intentThen(name,args,next){const r=intent(name,args);if(r?.ok&&r.clientActionId&&typeof next==='function')pvpIntentFollowups.set(String(r.clientActionId),next);return r}
 function flash(msg){feedback.textContent=msg;feedback.classList.add('show');clearTimeout(flash.t);flash.t=setTimeout(()=>feedback.classList.remove('show'),700);}
 function sideHeroes(s,side){return side==='AI'?s.aiHeroes:s.playerHeroes;}
 function sideHand(s,side){return side==='AI'?s.aiHand:s.playerHand;}
@@ -808,7 +812,7 @@ function renderPool(host,countEl,pool,side){
     wrap.appendChild(im);host.appendChild(wrap);cards.push(wrap);
     if(!(blindOpponent&&!blindInCenter)){if(side==='PLAYER')bindBattlefieldPreview(im,'shard',wrap);else bindPreview(im);}
     if(blindOpponent&&!blindInCenter){
-      wrap.addEventListener('click',()=>{intent('selectOpponentManaChoice',[blindIdx])});
+      wrap.addEventListener('click',()=>{const handle=String(p.candidates?.[blindIdx]?.choice_handle||'');if(handle)intent('selectOpponentManaChoiceHandle',[handle,Number(p.pvp_pool_revision||pvpRevision())])});
     }else if(selectable.has(String(sh.uid))&&!blindInCenter){
       wrap.addEventListener('click',()=>{
         if(p?.type==='response_payment_choice') intent('toggleResponseManaShardChoice',[sh.uid]);
@@ -897,7 +901,7 @@ function animateCenterChoiceIntoDeck(card,target,duration=520){
   if(!card||!target)return Promise.resolve();
   const r=card.getBoundingClientRect(),targetCard=target.querySelector?.('.zoneCard')||target.querySelector?.('img')||target,tr=targetCard?.getBoundingClientRect?.();
   if(!r.width||!r.height||!tr||!tr.width||!tr.height)return animateCenterChoiceTo(card,target,duration);
-  // v3.75.3 intentionally does NOT reuse the final v6.90.7 in-place Shard-to-Deck motion.
+  // v3.75.4 intentionally does NOT reuse the final v6.90.7 in-place Shard-to-Deck motion.
   // A fixed clone travels independently of the center stage so it cannot be clipped/faded
   // by center-session teardown before reaching the rendered Shard Deck.
   const clone=card.cloneNode(true);clone.classList.add('ob-center-travel-clone');
@@ -956,12 +960,31 @@ function centerChoiceIntentMatches(detail){
   return !intentName||intentName===centerChoiceCommitIntent.intent;
 }
 function onPvpIntentFailure(detail){
-  if(!centerChoiceIntentMatches(detail))return false;
-  resetCenterChoiceVisualState();centerChoiceRenderSig='';setTimeout(renderNow,0);return true;
+  const id=String(detail?.clientActionId||'');if(id)pvpIntentFollowups.delete(id);
+  const centerMatch=centerChoiceIntentMatches(detail);
+  if(centerMatch){resetCenterChoiceVisualState();centerChoiceRenderSig='';}
+  setTimeout(renderNow,0);return centerMatch;
 }
 function onPvpIntentResolved(detail){
-  if(!centerChoiceIntentMatches(detail))return false;
-  centerChoiceCommitIntent=null;return true;
+  const id=String(detail?.clientActionId||''),follow=id?pvpIntentFollowups.get(id):null;
+  if(id)pvpIntentFollowups.delete(id);
+  const centerMatch=centerChoiceIntentMatches(detail);
+  if(centerMatch){resetCenterChoiceVisualState();centerChoiceRenderSig='';}
+  // v3.51 handshake: chained convenience actions are submitted only after the
+  // previous authoritative revision was imported on this browser.
+  if(typeof follow==='function')setTimeout(()=>{try{follow()}catch(err){console.warn('[PvP v3.75.4] authoritative follow-up failed',err)}},0);
+  else setTimeout(renderNow,0);
+  return centerMatch||!!follow;
+}
+function onAuthoritativeSnapshot(detail){
+  const rev=Number(detail?.revision||0);if(rev&&rev<lastAuthoritativeRevision)return false;lastAuthoritativeRevision=Math.max(lastAuthoritativeRevision,rev);
+  // A new server revision is the only source of truth. Any visual transaction that
+  // no longer has a matching pending state is cleared instead of surviving locally.
+  const s=st(),mode=centerChoiceModeFor(s);
+  if(!mode&&centerChoiceBusy)resetCenterChoiceVisualState();
+  if(uiResponseSourceChoice&&s?.responseWindow?.response_owner!=='PLAYER')uiResponseSourceChoice=null;
+  handRenderKey='';opponentHandRenderKey='';manaRenderKey='';
+  renderNow();return true;
 }
 function startAuthoritativeCenterCommit(intentName,args,selectedKeys,selectedTarget,otherTarget,{returnSide='PLAYER',button=null}={}){
   if(centerChoiceBusy)return false;
@@ -1048,7 +1071,7 @@ function renderCenterChoiceStage(s){
     if(!responsePay)makeBtn('CANCEL','ob-center-choice-cancel',false,()=>{if(!centerChoiceBusy)intent('cancelPendingAction',[])});
     const payAction=makeBtn('PAY','ob-center-choice-primary',!(planReady&&discardReady),()=>{if(centerChoiceBusy)return;const live=E().getManaPlan?.()?.plan||{},keys=new Set((live.selected_shard_uids||live.shards?.map(x=>x.uid)||[]).map(String));startAuthoritativeCenterCommit(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[],keys,selectedTarget,otherTarget,{returnSide:'PLAYER',button:payAction})});
   }else if(mode==='opponent-shard'){
-    cardsHost.querySelectorAll('.ob-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentManaChoice',[Number(c.dataset.choiceIndex)])});
+    cardsHost.querySelectorAll('.ob-center-choice-card').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;const i=Number(c.dataset.choiceIndex),handle=String(p.candidates?.[i]?.choice_handle||c.dataset.choiceKey||'');if(handle)intent('selectOpponentManaChoiceHandle',[handle,Number(p.pvp_pool_revision||pvpRevision())])});
     const required=Math.min(Number(p.required_count||1),(p.candidates||[]).length),ready=(p.selected_indices||[]).length===required;
     makeBtn('CONFIRM','ob-center-choice-primary',!ready,async()=>{if(centerChoiceBusy)return;const keys=new Set((p.selected_indices||[]).map(i=>String(p.candidates?.[Number(i)]?.choice_handle??p.candidates?.[Number(i)]?.uid??i)));if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget,{revealSelected:true,returnSide:p.target_side||'AI'}))intent('commitOpponentManaSelection',[])});
   }else if(mode==='opponent-hand'){
@@ -1208,10 +1231,10 @@ function renderStatuses(laneEl,h,s,side,lane,delayExhaust){
     const p=s.pending;
     if(p?.target_lane===lane&&p?.target_side===side){
       if(p.type==='status_removal_choice'){
-        b.classList.add('ob-clickable');b.onclick=()=>{intent('selectStatusRemovalChoice',[idx]);intent('handleChoiceConfirm',[])};
+        b.classList.add('ob-clickable');b.onclick=()=>intentThen('selectStatusRemovalChoice',[idx],()=>intent('handleChoiceConfirm',[]));
       }else if(p.type==='saint_purify_choice'){
         const choiceIndex=(p.status_choices||[]).findIndex(x=>Number(x.status_index)===idx);
-        if(choiceIndex>=0){b.classList.add('ob-clickable');b.onclick=()=>{intent('selectSaintPurifyChoice',[choiceIndex]);intent('handleChoiceConfirm',[])}}
+        if(choiceIndex>=0){b.classList.add('ob-clickable');b.onclick=()=>intentThen('selectSaintPurifyChoice',[choiceIndex],()=>intent('handleChoiceConfirm',[]))}
       }
     }
     holder.append(b,tip);wrap.appendChild(holder);
@@ -1493,7 +1516,7 @@ function renderHand(s){
         addAction(actions,'TRIBUTE','tribute',()=>intent('selectCardSearchChoice',[choiceIndex]));actionCount++;
         if(directSelected===choiceIndex)card.classList.add('is-selected');
       }else if(p.resolve_to==='discard_then_draw_three'){
-        addAction(actions,'DISCARD','discard',()=>{intent('selectCardSearchChoice',[choiceIndex]);intent('handleChoiceConfirm',[])});actionCount++;
+        addAction(actions,'DISCARD','discard',()=>intentThen('selectCardSearchChoice',[choiceIndex],()=>intent('handleChoiceConfirm',[])));actionCount++;
       }
     }else if(discardMode&&discardSet.has(idx)){
       addAction(actions,discardSel.selected?'CANCEL':'DISCARD',discardSel.selected?'cancel':'discard',()=>handleDiscardClick(p,idx));actionCount++;
@@ -1515,16 +1538,16 @@ function addAction(host,label,cls,fn){const b=document.createElement('button');b
 function handleDiscardClick(p,handIndex){
   if(p.type==='hand_limit_discard'){
     const selectedNow=new Set((p.selected||[]).map(Number)),idx=Number(handIndex),willAdd=!selectedNow.has(idx),nextCount=selectedNow.size+(willAdd?1:-1),required=Math.max(0,Number(p.required||0));
-    intent('toggleDiscardIndex',[handIndex]);
-    if(willAdd&&nextCount>=required)intent('handleChoiceConfirm',[]);
+    if(willAdd&&nextCount>=required)intentThen('toggleDiscardIndex',[handIndex],()=>intent('handleChoiceConfirm',[]));
+    else intent('toggleDiscardIndex',[handIndex]);
     return;
   }
   if(p.type==='response_payment_choice'){
     const ci=(p.candidates||[]).findIndex(x=>Number(x.hand_index)===Number(handIndex));
     if(ci>=0){
       const selectedNow=new Set((p.selected_indices||[]).map(Number)),willAdd=!selectedNow.has(Number(ci)),nextCount=selectedNow.size+(willAdd?1:-1),required=Math.max(0,Number(p.required_discard_count||0));
-      intent('selectResponsePaymentChoice',[ci]);
-      if(willAdd&&nextCount>=required&&Number(p.mana_cost||0)<=0)intent('commitResponsePaymentChoice',[]);
+      if(willAdd&&nextCount>=required&&Number(p.mana_cost||0)<=0)intentThen('selectResponsePaymentChoice',[ci],()=>intent('commitResponsePaymentChoice',[]));
+      else intent('selectResponsePaymentChoice',[ci]);
     }
     return;
   }
@@ -1532,8 +1555,8 @@ function handleDiscardClick(p,handIndex){
     const ci=(p.cost_candidates||[]).findIndex(x=>Number(x.hand_index??x.index)===Number(handIndex));
     if(ci>=0){
       const selectedNow=new Set((p.selected_cost_indices||[]).map(Number)),willAdd=!selectedNow.has(Number(ci)),nextCount=selectedNow.size+(willAdd?1:-1),required=Math.max(1,Number(p.required_cost||1));
-      intent('selectLegacyCostChoice',[ci]);
-      if(willAdd&&nextCount>=required)intent('handleChoiceConfirm',[]);
+      if(willAdd&&nextCount>=required)intentThen('selectLegacyCostChoice',[ci],()=>intent('handleChoiceConfirm',[]));
+      else intent('selectLegacyCostChoice',[ci]);
     }
   }
 }
@@ -1544,7 +1567,7 @@ function renderOpponentHand(s){
   if(key===opponentHandRenderKey)return;opponentHandRenderKey=key;
   oppHandTrack.innerHTML='';document.querySelector('.ob-magic-scope-done')?.remove();
   if(choice){
-    (p.candidates||[]).forEach((x,i)=>{const card=document.createElement('div');card.className='hand-card';card.dataset.handIndex=i;const im=document.createElement('img');im.className='hand-art';im.src=reveal?art(x.card_id):'assets/ui/back-main.webp';card.appendChild(im);card.style.cursor='pointer';card.onclick=e=>{if(e.detail>1)return;intent('selectOpponentHandChoice',[i]);intent('commitOpponentHandChoice',[])};if(reveal)card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(x.card_id)};oppHandTrack.appendChild(card);if(reveal)bindPreview(im)});
+    (p.candidates||[]).forEach((x,i)=>{const card=document.createElement('div');card.className='hand-card';card.dataset.handIndex=i;const im=document.createElement('img');im.className='hand-art';im.src=reveal?art(x.card_id):'assets/ui/back-main.webp';card.appendChild(im);card.style.cursor='pointer';card.onclick=e=>{if(e.detail>1)return;intentThen('selectOpponentHandChoice',[i],()=>intent('commitOpponentHandChoice',[]))};if(reveal)card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(x.card_id)};oppHandTrack.appendChild(card);if(reveal)bindPreview(im)});
   }else if(scopeReveal){
     (p.revealed_cards||[]).forEach((id,i)=>{const card=document.createElement('div');card.className='hand-card';card.dataset.handIndex=i;const im=document.createElement('img');im.className='hand-art';im.src=art(id);card.appendChild(im);card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(id)};oppHandTrack.appendChild(card);bindPreview(im)});
     const hand=document.querySelector('.hand.top');if(hand){const done=document.createElement('button');done.type='button';done.className='ob-magic-scope-done';done.textContent='DONE';done.onclick=()=>intent('handleChoiceConfirm',[]);hand.appendChild(done)}
@@ -1767,8 +1790,8 @@ function autoSpecialChoices(s){
     // With exactly one hidden Shard there is no meaningful player decision. Resolve it
     // automatically so the match cannot appear frozen after connected-hit Mana effects.
     if(required===1&&candidates.length===1&&selected.length===0){
-      intent('selectOpponentManaChoice',[0]);
-      setTimeout(()=>{const q=st()?.pending;if(q?.type==='opponent_mana_selection'&&(q.selected_indices||[]).length===1)intent('commitOpponentManaSelection',[])},0);
+      const handle=String(candidates[0]?.choice_handle||'');
+      if(handle)intentThen('selectOpponentManaChoiceHandle',[handle,Number(p.pvp_pool_revision||pvpRevision())],()=>{const q=st()?.pending;if(q?.type==='opponent_mana_selection'&&(q.selected_indices||[]).length===1)intent('commitOpponentManaSelection',[])});
     }
   }
 }
@@ -1874,10 +1897,10 @@ function authoritativeOpeningAnchorReady(kind,event){
   }
   const fr=(from?.querySelector?.('.zoneCard')||from)?.getBoundingClientRect?.(),tr=to?.getBoundingClientRect?.();
   const ok=!!(fr&&tr&&fr.width>1&&fr.height>1&&tr.width>1&&tr.height>1);
-  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP fresh] anchor FAIL:',JSON.stringify(dbg));}
+  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP v3.75.4] anchor FAIL:',JSON.stringify(dbg));}
   return ok;
 }
-/* PvP fresh: opening sequence di-split jadi dua fase agar kartu TIDAK PERNAH
+/* PvP v3.75.4: opening sequence di-split jadi dua fase agar kartu TIDAK PERNAH
  * terlihat full sebelum animasi. primeAuthoritativeOpeningSequence() menyembunyikan
  * semua kartu opening dan me-render tangan/kolam kosong — dipanggil SEBELUM board
  * di-reveal. playPrimedOpeningSequence() menganimasikan reveal kartu satu per satu —
@@ -1903,12 +1926,12 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
       syntheticOpeningDraw2.push({side,hand_index:idx,id:'synthetic-draw2-'+side+'-'+idx});
     }
   }
-  if(syntheticOpeningDraw2.length)console.log('[PvP fresh] synthesized draw2:',syntheticOpeningDraw2.length,'events');
-  console.log('[PvP fresh] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
+  if(syntheticOpeningDraw2.length)console.log('[PvP v3.75.4] synthesized draw2:',syntheticOpeningDraw2.length,'events');
+  console.log('[PvP v3.75.4] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
-// PvP v3.75.3 opening choreography:
+// PvP v3.75.4 opening choreography:
 //   Opening Hand:  PLAYER #1 -> OPPONENT #1 -> ... -> PLAYER #6 -> OPPONENT #6
 //   Starting Shard: PLAYER #1 -> OPPONENT #1 -> ... -> PLAYER #3 -> OPPONENT #3
 //   then a visible break before the first player's normal Draw Phase (+1 Main, +1 Shard).
@@ -1988,7 +2011,7 @@ function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntrie
     if(draw2.length||shard2.length)setTimeout(firstTurnDraw,PVP_OPENING_TO_FIRST_TURN_GAP_MS);
     else finishAll();
   };
-  console.log('[PvP v3.75.3] opening: interleaved 6+3 at readable ~2x pace, then first-turn +1/+1 at normal pace');
+  console.log('[PvP v3.75.4] opening: interleaved 6+3 at readable ~2x pace, then first-turn +1/+1 at normal pace');
   animateDrawsInterleaved(draw1,PVP_OPENING_MOTION_MS,PVP_OPENING_INTER_CARD_GAP_MS,()=>
     animateShardsInterleaved(shard1,PVP_OPENING_MOTION_MS,PVP_OPENING_INTER_CARD_GAP_MS,afterOpeningSetup));
   return true;
@@ -2020,6 +2043,6 @@ function initStableBattlefieldReviewGestures(){
 
 
 function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};document.querySelector('.bottom-actions .danger').onclick=()=>{if(confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncSoundButton();}
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,onPvpIntentFailure,onPvpIntentResolved,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,onPvpIntentFailure,onPvpIntentResolved,onAuthoritativeSnapshot,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
 boot();
 })();
