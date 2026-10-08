@@ -1,18 +1,18 @@
 {
-  "name": "grandis-legacy-pvp-fresh",
-  "version": "3.73.11",
+  "name": "grandis-legacy-pvp",
+  "version": "3.75.1",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.72 — PvP v3.70 gameplay authority with PvP v3.51-style network recovery/spectators and selectively ported VS AI v6.90.7 battlefield + center decision UX.",
+  "description": "Grandis Legacy PvP v3.75.1 \u2014 server-authoritative two-human PvP using the proven v3.51 network model with the VS AI v6.90.7 battlefield/UI layer.",
   "scripts": {
     "start": "node server.js",
-    "check:syntax": "node --check server.js && node --check server/gameplay-intent-router.mjs && node --check public/option-b-runtime.js && node --check public/pvp/pvp-net.js && node --check public/pvp/pvp-animator.js && node --check public/pvp/pvp-presentation-adapter.js",
-    "test:static": "node tests/run-v372-static.mjs",
-    "test:runtime": "node tests/run-v372-runtime.mjs",
+    "check:syntax": "node --check server.js && node --check server/gameplay-intent-router.mjs && node --check public/js/pvp-ui-runtime.js && node --check public/js/pvp-network.js && node --check public/js/pvp-animator.js && node --check public/js/pvp-presentation-adapter.js",
+    "test:static": "node tests/run-v3751-static.mjs",
+    "test:runtime": "node tests/run-v3751-runtime.mjs",
+    "test:server-sim": "node tests/run-v3751-server-sim.mjs",
+    "test:battle-feedback": "node tests/run-v3751-battle-feedback.cjs",
     "test": "npm run check:syntax && npm run test:static && npm run test:runtime && npm run test:server-sim && npm run test:battle-feedback",
-    "check": "npm test",
-    "test:server-sim": "node tests/run-v372-server-sim.mjs",
-    "test:battle-feedback": "node tests/run-v372-battle-feedback.cjs"
+    "check": "npm test"
   },
   "engines": {
     "node": ">=18"
@@ -21,7 +21,7 @@
     "ws": "^8.18.0"
   },
   "grandisLegacySourceStack": {
-    "behaviorReference": "PvP v3.70 remains the gameplay/server-authority baseline. PvP v3.51 is the network/lobby/spectator recovery reference. VS AI v6.90.7 is the battlefield/decision donor only; AI control and known-broken donor behavior are not imported.",
+    "behaviorReference": "PvP v3.51 is the multiplayer/network reliability model. VS AI v6.90.7 is the battlefield/UI donor. v3.73.20 is used only as an integration donor where its server-authoritative PvP adaptations pass the v3.75.1 QA suite.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
@@ -35,7 +35,7 @@
     "runtimeFoundation": "1.94.2",
     "uiLock": "2.53",
     "starter60": "1.6.1",
-    "applicationRuntimeSync": "v3.72-v351-network-v6907-battlefield",
+    "applicationRuntimeSync": "v3.75.1-v351-network-v6907-ui",
     "activeStarterCount": 5
   },
   "northflankDeployment": {

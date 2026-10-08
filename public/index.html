@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-<title>Grandis Legacy — PvP v3.73.20</title>
+<title>Grandis Legacy — PvP v3.75.1</title>
 <link rel="icon" type="image/png" href="assets/favicon.png" />
 <script id="pvp-mobile-orientation-detect">
 (() => {
@@ -295,8 +295,8 @@ html,body{width:100%;height:100%;overflow:hidden}
 
 </style>
 
-<link rel="stylesheet" href="option-b-integration.css">
-<link rel="stylesheet" href="pvp/pvp-lobby.css">
+<link rel="stylesheet" href="css/pvp-ui.css">
+<link rel="stylesheet" href="css/pvp-lobby.css">
 </head>
 <body class="pvp-booting">
 <div class="app ob-lobby-hidden">
@@ -304,7 +304,7 @@ html,body{width:100%;height:100%;overflow:hidden}
     <div class="concept" aria-hidden="true"></div>
 
     <section class="hand top">
-      <div class="hand-title">LOCAL AI</div>
+      <div class="hand-title">OPPONENT</div>
       <div class="hand-track">
         <div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div>
       </div>
@@ -527,15 +527,15 @@ html,body{width:100%;height:100%;overflow:hidden}
   </div>
   <script>window.GL_APP_MODE="PVP";window.GL_PVP_CLIENT_MODE=true;window.GL_PVP_SHARED_BOARD_ACTIVE=true;</script>
   <script src="config.js"></script>
-  <script src="engine/shared-ui/battlefield-ui.js"></script>
-  <script src="engine/js/static-data.js"></script>
-  <script src="engine/js/runtime-authority.js"></script>
-  <script src="engine/shared-app/active-starters.js"></script>
-  <script src="engine/shared-app/app.bundle.js"></script>
-  <script src="pvp/pvp-presentation-adapter.js"></script>
-  <script src="option-b-runtime.js"></script>
-  <script src="pvp/pvp-animator.js"></script>
-  <script src="pvp/pvp-net.js"></script>
+  <script src="shared-ui/battlefield-ui.js"></script>
+  <script src="js/static-data.js"></script>
+  <script src="js/runtime-authority.js"></script>
+  <script src="js/active-starters.js"></script>
+  <script src="js/app.bundle.js"></script>
+  <script src="js/pvp-presentation-adapter.js"></script>
+  <script src="js/pvp-ui-runtime.js"></script>
+  <script src="js/pvp-animator.js"></script>
+  <script src="js/pvp-network.js"></script>
 
 </body>
 </html>

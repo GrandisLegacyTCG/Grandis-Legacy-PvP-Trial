@@ -13,15 +13,15 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').trim() || '0.0.0.0';
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
-const VERSION = 'Grandis Legacy PvP v3.72 — PvP v3.51 Network + VS AI v6.90.7 Battlefield — Single Room';
-const BUILD_ID = 'gl-pvp-3.72-v351-net-v6907-battlefield-2026-10-04';
+const VERSION = 'Grandis Legacy PvP v3.75.1 — PvP v3.51 Network Model + VS AI v6.90.7 UI — Single Room';
+const BUILD_ID = 'gl-pvp-3.75.1-v351-network-v6907-ui-2026-10-08';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
 const MAX_SPECTATORS = 4;
 const FIXED_ROOM_ID = 'GRANDIS_PVP';
 const GAMEPLAY_INTENT_ROUTER = createGameplayIntentRouter();
-// v3.72 public spectators are permanently hidden-info/card-backs only.
+// v3.75.1 public spectators are permanently hidden-info/card-backs only.
 // Keep no password/both-hands path in production so a shared match URL can never expose private Hands.
 function teachingViewConfigured() { return false; }
 function teachingPasswordMatches() { return false; }
@@ -35,7 +35,7 @@ const PLAYER_IDLE_RELEASE_MS = Math.max(PLAYER_IDLE_WARNING_MS + 1000, Number(pr
 const PLAYER_IDLE_SWEEP_MS = Math.max(1000, Number(process.env.PVP_PLAYER_IDLE_SWEEP_MS || 5000));
 const FINISHED_MATCH_CLEANUP_MS = 60 * 1000;
 const RUNTIME_SYNC_STATUS = Object.freeze({
-  version: 'v3.72-v351-network-v6907-battlefield',
+  version: 'v3.75.1-v351-network-v6907-ui',
   authorityVerified: true,
   legacyBridgeSynchronized: true,
   fullIntentOnlyMigrationComplete: true
@@ -79,7 +79,7 @@ const ACTIVE_CARDS_BY_ID = (() => {
   for (const family of Object.values(cards.families || {})) for (const card of (family && family.cards) || []) if (card && card.card_id) out[card.card_id] = card;
   return out;
 })();
-const RUNTIME_CODE = readFileSync(join(ROOT, 'engine/js/static-data.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'engine/js/runtime-authority.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'engine/shared-app/active-starters.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'engine/shared-app/app.bundle.js'), 'utf8');
+const RUNTIME_CODE = readFileSync(join(ROOT, 'js/static-data.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'js/runtime-authority.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'js/active-starters.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'js/app.bundle.js'), 'utf8');
 // Compile the large shared browser runtime once at process boot. Every match still gets an isolated VM
 // context, but match start no longer asks V8 to parse/compile ~12 MB of runtime source again.
 const RUNTIME_SCRIPT = new vm.Script(RUNTIME_CODE, { filename: 'grandis-legacy-pvp-runtime.js' });

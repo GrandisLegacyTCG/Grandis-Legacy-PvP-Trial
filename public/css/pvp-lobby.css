@@ -211,7 +211,7 @@ html.pvp-mobile-device.pvp-mobile-portrait #pvpOrientationRoot .ob-card-review-o
 
 @media(max-width:760px){html.pvp-fresh-app .hand-title,html.pvp-fresh-app .player-name{max-width:58vw}}
 
-/* v3.72 PvP identity lock: two lines, no extra labels. */
+/* v3.75.1 PvP identity lock: two lines, no extra labels. */
 html.pvp-fresh-app .hand-title,
 html.pvp-fresh-app .player-name{
   display:flex!important;
@@ -284,7 +284,7 @@ html.pvp-mobile-device.pvp-fresh-app .active-card-visual img{
 }
 
 
-/* v3.72 spectator: same authoritative battlefield, strictly read-only. */
+/* v3.75.1 spectator: same authoritative battlefield, strictly read-only. */
 body.pvp-spectator-mode .phase-actions,
 body.pvp-spectator-mode .card-actions,
 body.pvp-spectator-mode .ob-pay-button,

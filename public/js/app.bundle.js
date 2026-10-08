@@ -1,5 +1,3 @@
-'use strict';
-(function(w){w.GL_ACTIVE_STARTER_SET_META={"schema_version":"GL-ACTIVE-STARTERS-1.2","active_starter_count":5,"composition_authority":"OSA v1.9.5 consumer of unchanged Starter Deck Authority v1.6.1","source_authority":"v1.9.5","starter_authority_version":"v1.6.1","application_runtime_sync":"v2.66","canonical_registry_hash":"7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389","ids":["starter_01_elemental_lord_conqueror_renegade","starter_02_saint_crusader_grand_ranger","starter_03_arcane_duelist_elemental_lord_saint","starter_04_grand_ranger_grand_arbalest_renegade","starter_05_renegade_arcane_duelist_elemental_lord"]};w.GL_ACTIVE_STARTER_DECKS={"starter_01_elemental_lord_conqueror_renegade":{"label":"Starter 1 — ElementalLord / Conqueror / Renegade","file":"starter_deck_examples/starter_01_elemental_lord_conqueror_renegade_GL_DECK_1_0.json","deck":{"schema_version":"GL-DECK-1.0","builder_version":"2.27-classic-split","deck_name":"Starter 1 - ElementalLord/Conqueror/Renegade","format":"Grandis Legacy Source Authority v1.9.2 / Starter Deck Authority v1.6.1 / 60-card Main Deck","main_deck_count":60,"legacy_package_count":3,"legacy_deck_count":12,"legacy_deck_label":"Legacy Deck","legacy_deck_package_slots":[{"progression":"S1-MAG-H001","legacy":"S1-MAG-L002"},{"progression":"S1-WAR-H001","legacy":"S1-WAR-L001"},{"progression":"S1-THF-H001","legacy":"S1-THF-L001"}],"legacy_deck_expanded":[{"card_id":"S1-MAG-H001","card_name":"Vaelis Stormweave","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Vaelis Stormweave + Arcane Wand"},{"card_id":"S1-MAG-H002","card_name":"Vaelis Stormweave","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Vaelis Stormweave + Arcane Wand"},{"card_id":"S1-MAG-H003","card_name":"Vaelis Stormweave","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Vaelis Stormweave + Arcane Wand"},{"card_id":"S1-MAG-L002","card_name":"Arcane Wand","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Vaelis Stormweave + Arcane Wand"},{"card_id":"S1-WAR-H001","card_name":"Draxen Blacksand","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Draxen Blacksand + Warrior’s Relic"},{"card_id":"S1-WAR-H002","card_name":"Draxen Blacksand","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Draxen Blacksand + Warrior’s Relic"},{"card_id":"S1-WAR-H003","card_name":"Draxen Blacksand","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Draxen Blacksand + Warrior’s Relic"},{"card_id":"S1-WAR-L001","card_name":"Warrior’s Relic","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Draxen Blacksand + Warrior’s Relic"},{"card_id":"S1-THF-H001","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-H002","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-H003","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-L001","card_name":"Hidden Stash","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"}],"side_package_count":3,"side_deck_count":12,"side_deck_package_slots":[{"progression":"S1-MAG-H001","legacy":"S1-MAG-L002"},{"progression":"S1-WAR-H001","legacy":"S1-WAR-L001"},{"progression":"S1-THF-H001","legacy":"S1-THF-L001"}],"side_deck_expanded":[{"card_id":"S1-MAG-H001","card_name":"Vaelis Stormweave","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Vaelis Stormweave + Arcane Wand"},{"card_id":"S1-MAG-H002","card_name":"Vaelis Stormweave","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Vaelis Stormweave + Arcane Wand"},{"card_id":"S1-MAG-H003","card_name":"Vaelis Stormweave","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Vaelis Stormweave + Arcane Wand"},{"card_id":"S1-MAG-L002","card_name":"Arcane Wand","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Vaelis Stormweave + Arcane Wand"},{"card_id":"S1-WAR-H001","card_name":"Draxen Blacksand","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Draxen Blacksand + Warrior’s Relic"},{"card_id":"S1-WAR-H002","card_name":"Draxen Blacksand","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Draxen Blacksand + Warrior’s Relic"},{"card_id":"S1-WAR-H003","card_name":"Draxen Blacksand","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Draxen Blacksand + Warrior’s Relic"},{"card_id":"S1-WAR-L001","card_name":"Warrior’s Relic","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Draxen Blacksand + Warrior’s Relic"},{"card_id":"S1-THF-H001","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-H002","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-H003","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-L001","card_name":"Hidden Stash","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"}],"is_valid":true,"validation_issues":[],"validation_warnings":[],"main_deck":[{"card_id":"S1-MAG-002","card_name":"Ice Lance","quantity":2},{"card_id":"S1-MAG-004","card_name":"Mana Shield","quantity":1},{"card_id":"S1-MAG-005","card_name":"Mirror Image","quantity":2},{"card_id":"S1-MAG-006","card_name":"Meditation","quantity":1},{"card_id":"S1-MAG-007","card_name":"Tornado","quantity":1},{"card_id":"S1-MAG-008","card_name":"Frostbite","quantity":3},{"card_id":"S1-MAG-011","card_name":"Ice Block","quantity":1},{"card_id":"S1-MAG-015","card_name":"Permafrost","quantity":1},{"card_id":"S1-MAG-016","card_name":"Nova Strike","quantity":1},{"card_id":"S1-MAG-017","card_name":"Frostfire Nova","quantity":2},{"card_id":"S1-MAG-018","card_name":"Double Casting","quantity":1},{"card_id":"S1-THF-003","card_name":"Evasion","quantity":1},{"card_id":"S1-THF-005","card_name":"Steal","quantity":1},{"card_id":"S1-THF-010","card_name":"Back Slash","quantity":3},{"card_id":"S1-THF-011","card_name":"Elusive Escape","quantity":2},{"card_id":"S1-THF-012","card_name":"Poison Mist","quantity":2},{"card_id":"S1-THF-013","card_name":"Venom Strike","quantity":2},{"card_id":"S1-THF-015","card_name":"Venom Sovereign","quantity":2},{"card_id":"S1-THF-016","card_name":"Finishing Strike","quantity":2},{"card_id":"S1-THF-018","card_name":"Venom Detonation","quantity":1},{"card_id":"S1-WAR-002","card_name":"Power Slash","quantity":1},{"card_id":"S1-WAR-004","card_name":"Cover Up","quantity":1},{"card_id":"S1-WAR-007","card_name":"Upward Thrust","quantity":2},{"card_id":"S1-WAR-009","card_name":"Rage Swing","quantity":2},{"card_id":"S1-WAR-010","card_name":"Rage Blast","quantity":1},{"card_id":"S1-WAR-011","card_name":"Side Step","quantity":1},{"card_id":"S1-WAR-012","card_name":"Deflect","quantity":2},{"card_id":"S1-WAR-014","card_name":"Final Grit","quantity":1},{"card_id":"S1-WAR-015","card_name":"Charge Attack","quantity":1},{"card_id":"S1-WAR-016","card_name":"Whirlwind","quantity":1},{"card_id":"S1-WAR-017","card_name":"Fiery Thrust","quantity":1},{"card_id":"S1-WAR-018","card_name":"Execute","quantity":1},{"card_id":"S1-EVT-002","card_name":"Market Bargain","quantity":1},{"card_id":"S1-EVT-003","card_name":"Scouting","quantity":1},{"card_id":"S1-EVT-004","card_name":"Relentless Leveling","quantity":1},{"card_id":"S1-EVT-007","card_name":"Intercept","quantity":1},{"card_id":"S1-EVT-009","card_name":"Tactical Adaptation","quantity":1},{"card_id":"S1-EVT-010","card_name":"Déjà vu","quantity":1},{"card_id":"S1-ITM-001","card_name":"Health Potion","quantity":1},{"card_id":"S1-ITM-002","card_name":"Greater Health Potion","quantity":1},{"card_id":"S1-ITM-008","card_name":"Phoenix Feather","quantity":1},{"card_id":"S1-ITM-016","card_name":"Chain Mail","quantity":1},{"card_id":"S1-ITM-018","card_name":"Magic Compass","quantity":2},{"card_id":"S1-ITM-020","card_name":"Freeze Bomb","quantity":1}],"default_formation":{"LEFT":"S1-MAG-H001","CENTER":"S1-WAR-H001","RIGHT":"S1-THF-H001"},"source_database_version":"Grandis Legacy Source Authority v1.9.2 · Starter Deck Authority v1.6.1 · canonical registry 85d25ebda9bb2bc260983a566e6d430dde97bfc7a32e8042ec2fddfeaff1b42f","builder_version_note":"Style 2 v2.27 / Deck Builder v1.31 allows export at any Main Deck count within the existing 80-card cutting workspace. Normal cards remain maximum 3 copies and Ultimate remains maximum 1 copy. Official match legality is validated by VS AI and PvP.","active_starter_id":"starter_01_elemental_lord_conqueror_renegade","active_starter_slot":1,"starter_authority_version":"v1.6.1","authority_status":"ACTIVE_CANONICAL","authority_provenance":{"source_type":"NEW_USER_UPLOAD_PATCH","source_filename":"Starter_1_ElementalLord_Conqueror_Renegade.json","source_sha256":"f63e14a9cc43729fe2e27d77a6d1606a067bc399a5230fa2489eded3ad066353","previous_authority_source_sha256":"e1c918811f031cd23aca00f17d29e95351b5b75d257ada85b0cda950e8451c1d","adopted_in_osa":"v1.9.2","gameplay_semantics_preserved_from_input":true},"generated_only":true,"do_not_edit":true,"canonical_source":"Authority/Game/Starter-Decks/Active/starter_01_elemental_lord_conqueror_renegade.json","canonical_source_sha256":"15788ed47922f3a517992e58da7c3e887bc9618c91421a365f90459155a0a795","generation":{"generator":"Authority/Runtime/Validators/generate-v1.9.2.cjs","generator_version":"1.9.2-starter1-generator.1","generated_at":"2026-09-21"}}},"starter_02_saint_crusader_grand_ranger":{"label":"Starter 2 — Saint / Crusader / GrandRanger","file":"starter_deck_examples/starter_02_saint_crusader_grand_ranger_GL_DECK_1_0.json","deck":{"schema_version":"GL-DECK-1.0","builder_version":"2.27-classic-split","deck_name":"Starter 2 - Saint/Crusader/GrandRanger","format":"Grandis Legacy Source Authority v1.9.2 / Starter Deck Authority v1.6.1 / 60-card Main Deck","main_deck_count":60,"legacy_package_count":3,"legacy_deck_count":12,"legacy_deck_label":"Legacy Deck","legacy_deck_package_slots":[{"progression":"S1-CLE-H004","legacy":"S1-CLE-L001"},{"progression":"S1-WAR-H004","legacy":"S1-WAR-L002"},{"progression":"S1-ARC-H001","legacy":"S1-ARC-L001"}],"legacy_deck_expanded":[{"card_id":"S1-CLE-H004","card_name":"Thrain Sunborn","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Thrain Sunborn + Sun God Church"},{"card_id":"S1-CLE-H005","card_name":"Thrain Sunborn","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Thrain Sunborn + Sun God Church"},{"card_id":"S1-CLE-H006","card_name":"Thrain Sunborn","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Thrain Sunborn + Sun God Church"},{"card_id":"S1-CLE-L001","card_name":"Sun God Church","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Thrain Sunborn + Sun God Church"},{"card_id":"S1-WAR-H004","card_name":"Aurex Sunsworn","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Aurex Sunsworn + Statue of the Lightbringer"},{"card_id":"S1-WAR-H005","card_name":"Aurex Sunsworn","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Aurex Sunsworn + Statue of the Lightbringer"},{"card_id":"S1-WAR-H006","card_name":"Aurex Sunsworn","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Aurex Sunsworn + Statue of the Lightbringer"},{"card_id":"S1-WAR-L002","card_name":"Statue of the Lightbringer","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Aurex Sunsworn + Statue of the Lightbringer"},{"card_id":"S1-ARC-H001","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Korvak Ironfang + Golden Arrows"},{"card_id":"S1-ARC-H002","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Korvak Ironfang + Golden Arrows"},{"card_id":"S1-ARC-H003","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Korvak Ironfang + Golden Arrows"},{"card_id":"S1-ARC-L001","card_name":"Golden Arrows","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Korvak Ironfang + Golden Arrows"}],"side_package_count":3,"side_deck_count":12,"side_deck_package_slots":[{"progression":"S1-CLE-H004","legacy":"S1-CLE-L001"},{"progression":"S1-WAR-H004","legacy":"S1-WAR-L002"},{"progression":"S1-ARC-H001","legacy":"S1-ARC-L001"}],"side_deck_expanded":[{"card_id":"S1-CLE-H004","card_name":"Thrain Sunborn","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Thrain Sunborn + Sun God Church"},{"card_id":"S1-CLE-H005","card_name":"Thrain Sunborn","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Thrain Sunborn + Sun God Church"},{"card_id":"S1-CLE-H006","card_name":"Thrain Sunborn","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Thrain Sunborn + Sun God Church"},{"card_id":"S1-CLE-L001","card_name":"Sun God Church","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Thrain Sunborn + Sun God Church"},{"card_id":"S1-WAR-H004","card_name":"Aurex Sunsworn","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Aurex Sunsworn + Statue of the Lightbringer"},{"card_id":"S1-WAR-H005","card_name":"Aurex Sunsworn","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Aurex Sunsworn + Statue of the Lightbringer"},{"card_id":"S1-WAR-H006","card_name":"Aurex Sunsworn","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Aurex Sunsworn + Statue of the Lightbringer"},{"card_id":"S1-WAR-L002","card_name":"Statue of the Lightbringer","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Aurex Sunsworn + Statue of the Lightbringer"},{"card_id":"S1-ARC-H001","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Korvak Ironfang + Golden Arrows"},{"card_id":"S1-ARC-H002","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Korvak Ironfang + Golden Arrows"},{"card_id":"S1-ARC-H003","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Korvak Ironfang + Golden Arrows"},{"card_id":"S1-ARC-L001","card_name":"Golden Arrows","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Korvak Ironfang + Golden Arrows"}],"is_valid":true,"validation_issues":[],"validation_warnings":[],"main_deck":[{"card_id":"S1-ARC-002","card_name":"Poison Arrow","quantity":3},{"card_id":"S1-ARC-005","card_name":"Reload","quantity":2},{"card_id":"S1-ARC-006","card_name":"Aim Shot","quantity":2},{"card_id":"S1-ARC-008","card_name":"Ambush Shot","quantity":2},{"card_id":"S1-ARC-010","card_name":"Arrow Barrage","quantity":1},{"card_id":"S1-ARC-011","card_name":"Back Step","quantity":2},{"card_id":"S1-ARC-012","card_name":"Deflect Arrow","quantity":1},{"card_id":"S1-ARC-014","card_name":"Replenish","quantity":2},{"card_id":"S1-ARC-015","card_name":"Power Shot","quantity":1},{"card_id":"S1-ARC-016","card_name":"Soul Blast Shot","quantity":1},{"card_id":"S1-ARC-018","card_name":"Charged Shot","quantity":1},{"card_id":"S1-CLE-003","card_name":"Brilliant Radiance","quantity":2},{"card_id":"S1-CLE-009","card_name":"Holy Ring","quantity":2},{"card_id":"S1-CLE-011","card_name":"Holy Barrier","quantity":2},{"card_id":"S1-CLE-012","card_name":"Binding Light","quantity":1},{"card_id":"S1-CLE-015","card_name":"Resurrection","quantity":1},{"card_id":"S1-CLE-017","card_name":"Lay on Hands","quantity":1},{"card_id":"S1-CLE-019","card_name":"Divine Punishment","quantity":1},{"card_id":"S1-CLE-020","card_name":"Holy Slash","quantity":3},{"card_id":"S1-CLE-021","card_name":"Hammer of Justice","quantity":2},{"card_id":"S1-CLE-022","card_name":"Sacred Bulwark","quantity":1},{"card_id":"S1-CLE-023","card_name":"Holy Light","quantity":2},{"card_id":"S1-CLE-025","card_name":"Blessing of Divinity","quantity":1},{"card_id":"S1-WAR-004","card_name":"Cover Up","quantity":1},{"card_id":"S1-WAR-020","card_name":"Shield Bash","quantity":3},{"card_id":"S1-WAR-021","card_name":"Sacred Stormblade","quantity":2},{"card_id":"S1-WAR-022","card_name":"Unbroken Stand","quantity":2},{"card_id":"S1-WAR-023","card_name":"Divine Slash","quantity":1},{"card_id":"S1-EVT-002","card_name":"Market Bargain","quantity":1},{"card_id":"S1-EVT-003","card_name":"Scouting","quantity":1},{"card_id":"S1-EVT-004","card_name":"Relentless Leveling","quantity":1},{"card_id":"S1-EVT-007","card_name":"Intercept","quantity":1},{"card_id":"S1-EVT-008","card_name":"Forged Alliance","quantity":1},{"card_id":"S1-EVT-009","card_name":"Tactical Adaptation","quantity":1},{"card_id":"S1-EVT-010","card_name":"Déjà vu","quantity":1},{"card_id":"S1-ITM-001","card_name":"Health Potion","quantity":1},{"card_id":"S1-ITM-002","card_name":"Greater Health Potion","quantity":2},{"card_id":"S1-ITM-008","card_name":"Phoenix Feather","quantity":1},{"card_id":"S1-ITM-016","card_name":"Chain Mail","quantity":1},{"card_id":"S1-ITM-018","card_name":"Magic Compass","quantity":2}],"default_formation":{"LEFT":"S1-CLE-H004","CENTER":"S1-WAR-H004","RIGHT":"S1-ARC-H001"},"source_database_version":"Grandis Legacy Source Authority v1.9.2 · Starter Deck Authority v1.6.1 · canonical registry 85d25ebda9bb2bc260983a566e6d430dde97bfc7a32e8042ec2fddfeaff1b42f","builder_version_note":"Style 2 v2.27 / Deck Builder v1.31 allows export at any Main Deck count within the existing 80-card cutting workspace. Normal cards remain maximum 3 copies and Ultimate remains maximum 1 copy. Official match legality is validated by VS AI and PvP.","active_starter_id":"starter_02_saint_crusader_grand_ranger","active_starter_slot":2,"starter_authority_version":"v1.6.1","authority_status":"ACTIVE_CANONICAL","authority_provenance":{"source_type":"NEW_USER_UPLOAD","source_filename":"Starter_2_Saint_Crusader_GrandRanger.json","source_sha256":"7dd7efcdee83851411f4f8904c230b63e3a2b1e70fd6178909f65fccf1ae4299","adopted_in_osa":"v1.9.1","gameplay_semantics_preserved":true,"retained_from_osa":"v1.9.1","retained_canonical_sha256":"34e89d3ba77681116ee4dab563b7063807ba1d2dc81f9a433883616b0e14179d","current_authority":"v1.9.2","gameplay_semantics_unchanged":true},"generated_only":true,"do_not_edit":true,"canonical_source":"Authority/Game/Starter-Decks/Active/starter_02_saint_crusader_grand_ranger.json","canonical_source_sha256":"d1e36758a72a452123f1b72ac5b8d06aebf98692e1cd5cc4a193662080e50de3","generation":{"generator":"Authority/Runtime/Validators/generate-v1.9.2.cjs","generator_version":"1.9.2-starter1-generator.1","generated_at":"2026-09-21"}}},"starter_03_arcane_duelist_elemental_lord_saint":{"label":"Starter 3 — ArcaneDuelist / ElementalLord / Saint","file":"starter_deck_examples/starter_03_arcane_duelist_elemental_lord_saint_GL_DECK_1_0.json","deck":{"schema_version":"GL-DECK-1.0","builder_version":"1.30-public-deck-builder","deck_name":"Starter 3 - ArcaneDuelist/ElementalLord/Saint","format":"Grandis Legacy Source Authority v1.9.2 / Starter Deck Authority v1.6.1 / 60-card Main Deck","main_deck_count":60,"legacy_package_count":3,"legacy_deck_count":12,"legacy_deck_label":"Legacy Deck","legacy_deck_package_slots":[{"progression":"S1-CLE-H001","legacy":"S1-CLE-L002"},{"progression":"S1-THF-H004","legacy":"S1-THF-L002"},{"progression":"S1-MAG-H004","legacy":"S1-MAG-L002"}],"legacy_deck_expanded":[{"card_id":"S1-CLE-H001","card_name":"Elara Heavens","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Elf Cleric — Cleric;Priest;Saint + Wand of First Light"},{"card_id":"S1-CLE-H002","card_name":"Elara Heavens","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Elf Cleric — Cleric;Priest;Saint + Wand of First Light"},{"card_id":"S1-CLE-H003","card_name":"Elara Heavens","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Elf Cleric — Cleric;Priest;Saint + Wand of First Light"},{"card_id":"S1-CLE-L002","card_name":"Wand of First Light","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Elf Cleric — Cleric;Priest;Saint + Wand of First Light"},{"card_id":"S1-THF-H004","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-H005","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-H006","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-L002","card_name":"Hidden Archives","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-MAG-H004","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-H005","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-H006","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-L002","card_name":"Arcane Wand","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"}],"side_package_count":3,"side_deck_count":12,"side_deck_package_slots":[{"progression":"S1-CLE-H001","legacy":"S1-CLE-L002"},{"progression":"S1-THF-H004","legacy":"S1-THF-L002"},{"progression":"S1-MAG-H004","legacy":"S1-MAG-L002"}],"side_deck_expanded":[{"card_id":"S1-CLE-H001","card_name":"Elara Heavens","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Elf Cleric — Cleric;Priest;Saint + Wand of First Light"},{"card_id":"S1-CLE-H002","card_name":"Elara Heavens","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Elf Cleric — Cleric;Priest;Saint + Wand of First Light"},{"card_id":"S1-CLE-H003","card_name":"Elara Heavens","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Elf Cleric — Cleric;Priest;Saint + Wand of First Light"},{"card_id":"S1-CLE-L002","card_name":"Wand of First Light","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Elf Cleric — Cleric;Priest;Saint + Wand of First Light"},{"card_id":"S1-THF-H004","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-H005","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-H006","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-L002","card_name":"Hidden Archives","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-MAG-H004","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-H005","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-H006","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-L002","card_name":"Arcane Wand","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"}],"is_valid":true,"validation_issues":[],"validation_warnings":[],"main_deck":[{"card_id":"S1-CLE-007","card_name":"Blessing of Wisdom","quantity":2},{"card_id":"S1-CLE-009","card_name":"Holy Ring","quantity":1},{"card_id":"S1-CLE-010","card_name":"Holy Blast","quantity":1},{"card_id":"S1-CLE-011","card_name":"Holy Barrier","quantity":2},{"card_id":"S1-CLE-012","card_name":"Binding Light","quantity":2},{"card_id":"S1-CLE-014","card_name":"Wrathful Radiance","quantity":1},{"card_id":"S1-CLE-015","card_name":"Resurrection","quantity":2},{"card_id":"S1-CLE-017","card_name":"Lay on Hands","quantity":2},{"card_id":"S1-CLE-018","card_name":"Heaven’s Fury","quantity":1},{"card_id":"S1-EVT-001","card_name":"Begin Anew","quantity":1},{"card_id":"S1-EVT-002","card_name":"Market Bargain","quantity":2},{"card_id":"S1-EVT-003","card_name":"Scouting","quantity":2},{"card_id":"S1-EVT-004","card_name":"Relentless Leveling","quantity":1},{"card_id":"S1-EVT-008","card_name":"Forged Alliance","quantity":1},{"card_id":"S1-EVT-009","card_name":"Tactical Adaptation","quantity":1},{"card_id":"S1-ITM-002","card_name":"Greater Health Potion","quantity":2},{"card_id":"S1-ITM-012","card_name":"Spectral Grappling Hook","quantity":2},{"card_id":"S1-ITM-017","card_name":"Flashpowder Bomb","quantity":1},{"card_id":"S1-ITM-018","card_name":"Magic Compass","quantity":2},{"card_id":"S1-MAG-003","card_name":"Fireball","quantity":2},{"card_id":"S1-MAG-005","card_name":"Mirror Image","quantity":2},{"card_id":"S1-MAG-007","card_name":"Tornado","quantity":2},{"card_id":"S1-MAG-009","card_name":"Fire Blast","quantity":2},{"card_id":"S1-MAG-016","card_name":"Nova Strike","quantity":2},{"card_id":"S1-MAG-017","card_name":"Frostfire Nova","quantity":2},{"card_id":"S1-MAG-019","card_name":"Flame Dragon's Wrath","quantity":1},{"card_id":"S1-MAG-020","card_name":"Aether Ball","quantity":2},{"card_id":"S1-MAG-021","card_name":"Mana Absorption","quantity":2},{"card_id":"S1-MAG-022","card_name":"Aether Infusion","quantity":2},{"card_id":"S1-MAG-023","card_name":"Aether Slash","quantity":2},{"card_id":"S1-MAG-025","card_name":"Mana Void","quantity":1},{"card_id":"S1-THF-019","card_name":"Dash Slash","quantity":1},{"card_id":"S1-THF-020","card_name":"Sword Slash","quantity":2},{"card_id":"S1-THF-022","card_name":"Step In","quantity":2},{"card_id":"S1-THF-023","card_name":"Flash Slash","quantity":2},{"card_id":"S1-THF-024","card_name":"Sword Combo","quantity":2}],"default_formation":{"LEFT":"S1-THF-H004","CENTER":"S1-MAG-H004","RIGHT":"S1-CLE-H001"},"source_database_version":"Grandis Legacy Source Authority v1.9.2 · Starter Deck Authority v1.6.1 · canonical registry 85d25ebda9bb2bc260983a566e6d430dde97bfc7a32e8042ec2fddfeaff1b42f","builder_version_note":"Deck Builder v1.30 allows export/save at any Main Deck count; normal cards remain maximum 3 copies and Ultimate maximum 1 copy. Official match legality is enforced by VS AI and PvP. Starter60 v1.5 and Source Stack v1.8.1 authority are preserved.","active_starter_id":"starter_03_arcane_duelist_elemental_lord_saint","active_starter_slot":3,"starter_authority_version":"v1.6.1","authority_status":"ACTIVE_CANONICAL","authority_provenance":{"source_type":"DECK_BUILDER_V1.30_RETAINED","source_filename":"Starter_3_ArcaneDuelist_ElementalLord_Saint.json","source_sha256":"6886211afec312035e8094a6c8b54a54aceeeccc1724f647ff186295a7967444","adopted_in_osa":"v1.9.1","gameplay_semantics_preserved":true,"retained_from_osa":"v1.9.1","retained_canonical_sha256":"5c4144afcc9243bfdbc59264043784bd7c0a2b7e56d0fcf58a0020b7f3b2b874","current_authority":"v1.9.2","gameplay_semantics_unchanged":true},"generated_only":true,"do_not_edit":true,"canonical_source":"Authority/Game/Starter-Decks/Active/starter_03_arcane_duelist_elemental_lord_saint.json","canonical_source_sha256":"dbc7ea2c42da2db8eac7e3594fbef8286a2d5717b9a5e8b4e015c60a74e057a5","generation":{"generator":"Authority/Runtime/Validators/generate-v1.9.2.cjs","generator_version":"1.9.2-starter1-generator.1","generated_at":"2026-09-21"}}},"starter_04_grand_ranger_grand_arbalest_renegade":{"label":"Starter 4 — GrandRanger / GrandArbalest / Renegade","file":"starter_deck_examples/starter_04_grand_ranger_grand_arbalest_renegade_GL_DECK_1_0.json","deck":{"schema_version":"GL-DECK-1.0","builder_version":"2.27-classic-split","deck_name":"Starter 4 - GrandRanger/GrandArbalest/Renegade","format":"Grandis Legacy Source Authority v1.9.2 / Starter Deck Authority v1.6.1 / 60-card Main Deck","main_deck_count":60,"legacy_package_count":3,"legacy_deck_count":12,"legacy_deck_label":"Legacy Deck","legacy_deck_package_slots":[{"progression":"S1-ARC-H001","legacy":"S1-ARC-L002"},{"progression":"S1-ARC-H004","legacy":"S1-ARC-L001"},{"progression":"S1-THF-H001","legacy":"S1-THF-L001"}],"legacy_deck_expanded":[{"card_id":"S1-ARC-H001","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Korvak Ironfang + Falconer’s Whistle"},{"card_id":"S1-ARC-H002","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Korvak Ironfang + Falconer’s Whistle"},{"card_id":"S1-ARC-H003","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Korvak Ironfang + Falconer’s Whistle"},{"card_id":"S1-ARC-L002","card_name":"Falconer’s Whistle","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Korvak Ironfang + Falconer’s Whistle"},{"card_id":"S1-ARC-H004","card_name":"Alden Sterling","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Alden Sterling + Golden Arrows"},{"card_id":"S1-ARC-H005","card_name":"Alden Sterling","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Alden Sterling + Golden Arrows"},{"card_id":"S1-ARC-H006","card_name":"Alden Sterling","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Alden Sterling + Golden Arrows"},{"card_id":"S1-ARC-L001","card_name":"Golden Arrows","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Alden Sterling + Golden Arrows"},{"card_id":"S1-THF-H001","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-H002","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-H003","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-L001","card_name":"Hidden Stash","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"}],"side_package_count":3,"side_deck_count":12,"side_deck_package_slots":[{"progression":"S1-ARC-H001","legacy":"S1-ARC-L002"},{"progression":"S1-ARC-H004","legacy":"S1-ARC-L001"},{"progression":"S1-THF-H001","legacy":"S1-THF-L001"}],"side_deck_expanded":[{"card_id":"S1-ARC-H001","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Korvak Ironfang + Falconer’s Whistle"},{"card_id":"S1-ARC-H002","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Korvak Ironfang + Falconer’s Whistle"},{"card_id":"S1-ARC-H003","card_name":"Korvak Ironfang","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Korvak Ironfang + Falconer’s Whistle"},{"card_id":"S1-ARC-L002","card_name":"Falconer’s Whistle","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Korvak Ironfang + Falconer’s Whistle"},{"card_id":"S1-ARC-H004","card_name":"Alden Sterling","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Alden Sterling + Golden Arrows"},{"card_id":"S1-ARC-H005","card_name":"Alden Sterling","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Alden Sterling + Golden Arrows"},{"card_id":"S1-ARC-H006","card_name":"Alden Sterling","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Alden Sterling + Golden Arrows"},{"card_id":"S1-ARC-L001","card_name":"Golden Arrows","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Alden Sterling + Golden Arrows"},{"card_id":"S1-THF-H001","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-H002","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-H003","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"},{"card_id":"S1-THF-L001","card_name":"Hidden Stash","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Finnian Copperpot + Hidden Stash"}],"is_valid":true,"validation_issues":[],"validation_warnings":[],"main_deck":[{"card_id":"S1-ARC-002","card_name":"Poison Arrow","quantity":2},{"card_id":"S1-ARC-003","card_name":"Escape Arrow","quantity":3},{"card_id":"S1-ARC-005","card_name":"Reload","quantity":2},{"card_id":"S1-ARC-008","card_name":"Ambush Shot","quantity":2},{"card_id":"S1-ARC-010","card_name":"Arrow Barrage","quantity":1},{"card_id":"S1-ARC-012","card_name":"Deflect Arrow","quantity":2},{"card_id":"S1-ARC-014","card_name":"Replenish","quantity":2},{"card_id":"S1-ARC-015","card_name":"Power Shot","quantity":1},{"card_id":"S1-ARC-016","card_name":"Soul Blast Shot","quantity":1},{"card_id":"S1-ARC-018","card_name":"Charged Shot","quantity":1},{"card_id":"S1-ARC-019","card_name":"Long Range Shot","quantity":1},{"card_id":"S1-ARC-020","card_name":"Piercing Bolt","quantity":1},{"card_id":"S1-ARC-021","card_name":"Aura Infusion Bolt","quantity":1},{"card_id":"S1-ARC-022","card_name":"Singularity Reload","quantity":1},{"card_id":"S1-ARC-023","card_name":"Cross Bolt","quantity":2},{"card_id":"S1-ARC-024","card_name":"Colossal Dreadbolt","quantity":1},{"card_id":"S1-THF-003","card_name":"Evasion","quantity":3},{"card_id":"S1-THF-010","card_name":"Back Slash","quantity":3},{"card_id":"S1-THF-011","card_name":"Elusive Escape","quantity":1},{"card_id":"S1-THF-012","card_name":"Poison Mist","quantity":2},{"card_id":"S1-THF-014","card_name":"Viper’s Fang","quantity":2},{"card_id":"S1-THF-015","card_name":"Venom Sovereign","quantity":2},{"card_id":"S1-THF-016","card_name":"Finishing Strike","quantity":2},{"card_id":"S1-THF-018","card_name":"Venom Detonation","quantity":1},{"card_id":"S1-THF-026","card_name":"Dodge Instinct","quantity":1},{"card_id":"S1-THF-027","card_name":"Camouflage","quantity":2},{"card_id":"S1-THF-029","card_name":"Flash Combo","quantity":3},{"card_id":"S1-EVT-001","card_name":"Begin Anew","quantity":1},{"card_id":"S1-EVT-002","card_name":"Market Bargain","quantity":1},{"card_id":"S1-EVT-003","card_name":"Scouting","quantity":1},{"card_id":"S1-EVT-004","card_name":"Relentless Leveling","quantity":2},{"card_id":"S1-EVT-007","card_name":"Intercept","quantity":1},{"card_id":"S1-EVT-008","card_name":"Forged Alliance","quantity":1},{"card_id":"S1-ITM-001","card_name":"Health Potion","quantity":1},{"card_id":"S1-ITM-002","card_name":"Greater Health Potion","quantity":1},{"card_id":"S1-ITM-008","card_name":"Phoenix Feather","quantity":1},{"card_id":"S1-ITM-012","card_name":"Spectral Grappling Hook","quantity":1},{"card_id":"S1-ITM-016","card_name":"Chain Mail","quantity":1},{"card_id":"S1-ITM-018","card_name":"Magic Compass","quantity":2}],"default_formation":{"LEFT":"S1-ARC-H001","CENTER":"S1-ARC-H004","RIGHT":"S1-THF-H001"},"source_database_version":"Grandis Legacy Source Authority v1.9.2 · Starter Deck Authority v1.6.1 · canonical registry 85d25ebda9bb2bc260983a566e6d430dde97bfc7a32e8042ec2fddfeaff1b42f","builder_version_note":"Style 2 v2.27 / Deck Builder v1.31 allows export at any Main Deck count within the existing 80-card cutting workspace. Normal cards remain maximum 3 copies and Ultimate remains maximum 1 copy. Official match legality is validated by VS AI and PvP.","active_starter_id":"starter_04_grand_ranger_grand_arbalest_renegade","active_starter_slot":4,"starter_authority_version":"v1.6.1","authority_status":"ACTIVE_CANONICAL","authority_provenance":{"source_type":"NEW_USER_UPLOAD","source_filename":"Starter_4_GrandRanger_GrandArbalest_Renegade.json","source_sha256":"527407b9eb90dbcbb04313c78316585b85d8e311767ca5dd35788e62cc0c8904","adopted_in_osa":"v1.9.1","gameplay_semantics_preserved":true,"retained_from_osa":"v1.9.1","retained_canonical_sha256":"65ca9b390c13e02684fec60f08ccc17fbaef6ccf92061b484b08f0bad035e4e3","current_authority":"v1.9.2","gameplay_semantics_unchanged":true},"generated_only":true,"do_not_edit":true,"canonical_source":"Authority/Game/Starter-Decks/Active/starter_04_grand_ranger_grand_arbalest_renegade.json","canonical_source_sha256":"ea077eb002c51376ba3ae891ce01175becb86c285a4511a3ea914b1e91b1e4c7","generation":{"generator":"Authority/Runtime/Validators/generate-v1.9.2.cjs","generator_version":"1.9.2-starter1-generator.1","generated_at":"2026-09-21"}}},"starter_05_renegade_arcane_duelist_elemental_lord":{"label":"Starter 5 — Renegade / ArcaneDuelist / ElementalLord","file":"starter_deck_examples/starter_05_renegade_arcane_duelist_elemental_lord_GL_DECK_1_0.json","deck":{"schema_version":"GL-DECK-1.0","builder_version":"1.30-public-deck-builder","deck_name":"Starter 5 - Renegade/ArcaneDuelist/ElementalLord","format":"Grandis Legacy Source Authority v1.9.2 / Starter Deck Authority v1.6.1 / 60-card Main Deck","main_deck_count":60,"legacy_package_count":3,"legacy_deck_count":12,"legacy_deck_label":"Legacy Deck","legacy_deck_package_slots":[{"progression":"S1-MAG-H004","legacy":"S1-MAG-L002"},{"progression":"S1-THF-H001","legacy":"S1-THF-L001"},{"progression":"S1-THF-H004","legacy":"S1-THF-L002"}],"legacy_deck_expanded":[{"card_id":"S1-MAG-H004","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-H005","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-H006","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-L002","card_name":"Arcane Wand","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-THF-H001","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Halfling Thief — Thief;Rogue;Renegade + Hidden Stash"},{"card_id":"S1-THF-H002","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Halfling Thief — Thief;Rogue;Renegade + Hidden Stash"},{"card_id":"S1-THF-H003","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Halfling Thief — Thief;Rogue;Renegade + Hidden Stash"},{"card_id":"S1-THF-L001","card_name":"Hidden Stash","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Halfling Thief — Thief;Rogue;Renegade + Hidden Stash"},{"card_id":"S1-THF-H004","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-H005","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-H006","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-L002","card_name":"Hidden Archives","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"}],"side_package_count":3,"side_deck_count":12,"side_deck_package_slots":[{"progression":"S1-MAG-H004","legacy":"S1-MAG-L002"},{"progression":"S1-THF-H001","legacy":"S1-THF-L001"},{"progression":"S1-THF-H004","legacy":"S1-THF-L002"}],"side_deck_expanded":[{"card_id":"S1-MAG-H004","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-H005","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-H006","card_name":"Aldric Ashford","card_type":"Hero","package_id":"CUSTOM-SLOT-1","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-MAG-L002","card_name":"Arcane Wand","card_type":"Legacy","package_id":"CUSTOM-SLOT-1","package_name":"Human Mage — Mage;Elementalist;Elemental Lord + Arcane Wand"},{"card_id":"S1-THF-H001","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Halfling Thief — Thief;Rogue;Renegade + Hidden Stash"},{"card_id":"S1-THF-H002","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Halfling Thief — Thief;Rogue;Renegade + Hidden Stash"},{"card_id":"S1-THF-H003","card_name":"Finnian Copperpot","card_type":"Hero","package_id":"CUSTOM-SLOT-2","package_name":"Halfling Thief — Thief;Rogue;Renegade + Hidden Stash"},{"card_id":"S1-THF-L001","card_name":"Hidden Stash","card_type":"Legacy","package_id":"CUSTOM-SLOT-2","package_name":"Halfling Thief — Thief;Rogue;Renegade + Hidden Stash"},{"card_id":"S1-THF-H004","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-H005","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-H006","card_name":"Lucien Voss","card_type":"Hero","package_id":"CUSTOM-SLOT-3","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"},{"card_id":"S1-THF-L002","card_name":"Hidden Archives","card_type":"Legacy","package_id":"CUSTOM-SLOT-3","package_name":"Elf Thief — Thief;Spell Blade;Arcane Duelist;Mage + Hidden Archives"}],"is_valid":true,"validation_issues":[],"validation_warnings":[],"main_deck":[{"card_id":"S1-EVT-001","card_name":"Begin Anew","quantity":1},{"card_id":"S1-EVT-002","card_name":"Market Bargain","quantity":2},{"card_id":"S1-EVT-003","card_name":"Scouting","quantity":2},{"card_id":"S1-EVT-007","card_name":"Intercept","quantity":1},{"card_id":"S1-EVT-008","card_name":"Forged Alliance","quantity":1},{"card_id":"S1-EVT-009","card_name":"Tactical Adaptation","quantity":1},{"card_id":"S1-ITM-002","card_name":"Greater Health Potion","quantity":2},{"card_id":"S1-ITM-008","card_name":"Phoenix Feather","quantity":1},{"card_id":"S1-ITM-012","card_name":"Spectral Grappling Hook","quantity":2},{"card_id":"S1-ITM-017","card_name":"Flashpowder Bomb","quantity":1},{"card_id":"S1-ITM-018","card_name":"Magic Compass","quantity":2},{"card_id":"S1-MAG-003","card_name":"Fireball","quantity":1},{"card_id":"S1-MAG-005","card_name":"Mirror Image","quantity":2},{"card_id":"S1-MAG-006","card_name":"Meditation","quantity":2},{"card_id":"S1-MAG-007","card_name":"Tornado","quantity":2},{"card_id":"S1-MAG-009","card_name":"Fire Blast","quantity":2},{"card_id":"S1-MAG-014","card_name":"Lightning Strike","quantity":1},{"card_id":"S1-MAG-016","card_name":"Nova Strike","quantity":2},{"card_id":"S1-MAG-017","card_name":"Frostfire Nova","quantity":1},{"card_id":"S1-MAG-019","card_name":"Flame Dragon's Wrath","quantity":1},{"card_id":"S1-MAG-020","card_name":"Aether Ball","quantity":1},{"card_id":"S1-MAG-021","card_name":"Mana Absorption","quantity":2},{"card_id":"S1-MAG-022","card_name":"Aether Infusion","quantity":2},{"card_id":"S1-MAG-023","card_name":"Aether Slash","quantity":2},{"card_id":"S1-MAG-024","card_name":"Aether Sweep","quantity":1},{"card_id":"S1-MAG-025","card_name":"Mana Void","quantity":1},{"card_id":"S1-THF-002","card_name":"Jump Slash","quantity":1},{"card_id":"S1-THF-003","card_name":"Evasion","quantity":2},{"card_id":"S1-THF-004","card_name":"Smoke Screen","quantity":1},{"card_id":"S1-THF-006","card_name":"Sixth Sense","quantity":2},{"card_id":"S1-THF-010","card_name":"Back Slash","quantity":2},{"card_id":"S1-THF-011","card_name":"Elusive Escape","quantity":2},{"card_id":"S1-THF-016","card_name":"Finishing Strike","quantity":2},{"card_id":"S1-THF-017","card_name":"Venom Binding","quantity":2},{"card_id":"S1-THF-018","card_name":"Venom Detonation","quantity":1},{"card_id":"S1-THF-020","card_name":"Sword Slash","quantity":2},{"card_id":"S1-THF-022","card_name":"Step In","quantity":2},{"card_id":"S1-THF-023","card_name":"Flash Slash","quantity":1},{"card_id":"S1-THF-024","card_name":"Sword Combo","quantity":1}],"default_formation":{"LEFT":"S1-THF-H001","CENTER":"S1-THF-H004","RIGHT":"S1-MAG-H004"},"source_database_version":"Grandis Legacy Source Authority v1.9.2 · Starter Deck Authority v1.6.1 · canonical registry 85d25ebda9bb2bc260983a566e6d430dde97bfc7a32e8042ec2fddfeaff1b42f","builder_version_note":"Deck Builder v1.30 allows export/save at any Main Deck count; normal cards remain maximum 3 copies and Ultimate maximum 1 copy. Official match legality is enforced by VS AI and PvP. Starter60 v1.5 and Source Stack v1.8.1 authority are preserved.","active_starter_id":"starter_05_renegade_arcane_duelist_elemental_lord","active_starter_slot":5,"starter_authority_version":"v1.6.1","authority_status":"ACTIVE_CANONICAL","authority_provenance":{"source_type":"DECK_BUILDER_V1.30_RETAINED","source_filename":"Starter_5_Renegade_ArcaneDuelist_ElementalLord.json","source_sha256":"9431696b8c292e3dd16411012d509bf4e0871714d048788b8133280cb7635140","adopted_in_osa":"v1.9.1","gameplay_semantics_preserved":true,"retained_from_osa":"v1.9.1","retained_canonical_sha256":"45b12f033c90bee83058804ba78a7ce1e3692f9b91e9cd8afaee45738aa23dcd","current_authority":"v1.9.2","gameplay_semantics_unchanged":true},"generated_only":true,"do_not_edit":true,"canonical_source":"Authority/Game/Starter-Decks/Active/starter_05_renegade_arcane_duelist_elemental_lord.json","canonical_source_sha256":"2bd572f6c8cb08e8d10b905b6c0c02e4af59cd17f0671622afa8d196e7e414a7","generation":{"generator":"Authority/Runtime/Validators/generate-v1.9.2.cjs","generator_version":"1.9.2-starter1-generator.1","generated_at":"2026-09-21"}}}};})(typeof window!=='undefined'?window:globalThis);
 /* Grandis Legacy shared gameplay application v3.5 — ONE EDITABLE SOURCE for VS AI v6.48 + Tutorial v0.71.
    One Source Authority v1.9.5 + Runtime Foundation v1.94.2 / Runtime Core v0.61 / Runtime Data v0.16.2.
    This gameplay/UI bundle is the next shared authority for Local AI and the future PvP rebuild; only intent controller and network transport may differ. */
@@ -129,6 +127,9 @@
   var importedDecks={PLAYER:null, AI:null};
   var decks={PLAYER:clone(STARTER_DECK_OPTIONS[selectedDeckKey.PLAYER].deck), AI:clone(STARTER_DECK_OPTIONS[selectedDeckKey.AI].deck)};
   var SUPPRESS_RENDER=false;
+  // External UI (Option B) can suppress the legacy renderer without surrendering human response ownership.
+  // Keep this independent from SUPPRESS_RENDER: renderer visibility is presentation; response gating is gameplay.
+  var EXTERNAL_HUMAN_UI=false;
   var matchStarted=false;
   var setupError='';
   var GL_SETUP_RANK_VIEW={PLAYER:1,AI:1};
@@ -143,14 +144,37 @@
   var GL_ANIMATION_SEQUENCE=0, GL_ANIMATION_QUEUE=[], GL_ANIMATION_RUNNING=false;
   var GL_CARD_SOUND_STORAGE_KEY='grandis_legacy_card_motion_sound_v1';
   var GL_AUDIO_PRELOAD_CACHE={},GL_ACTIVE_AUDIO_POOL=new Set();
+  var GL_AUDIO_CONTEXT=null,GL_AUDIO_BUFFER_CACHE=Object.create(null),GL_AUDIO_BUFFER_PROMISES=Object.create(null);
   var GL_CARD_SOUND_ENABLED=(function(){ try{ var v=window.localStorage&&window.localStorage.getItem(GL_CARD_SOUND_STORAGE_KEY); return v===null?true:v==='on'; }catch(e){ return true; } })();
   function primeAudioAsset(src){
     if(!src||typeof Audio==='undefined'||GL_AUDIO_PRELOAD_CACHE[src]) return GL_AUDIO_PRELOAD_CACHE[src]||null;
     try{var a=new Audio(src);a.preload='auto';if(typeof a.load==='function')a.load();GL_AUDIO_PRELOAD_CACHE[src]=a;return a;}catch(e){return null;}
   }
+  function gameplayAudioContext(){
+    if(GL_AUDIO_CONTEXT)return GL_AUDIO_CONTEXT;
+    if(typeof window==='undefined')return null;
+    var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
+    try{GL_AUDIO_CONTEXT=new C({latencyHint:'interactive'});return GL_AUDIO_CONTEXT;}catch(e){return null;}
+  }
+  function primeWebAudioAsset(src){
+    if(!src||typeof window==='undefined'||typeof window.fetch!=='function')return Promise.resolve(null);
+    if(GL_AUDIO_BUFFER_CACHE[src])return Promise.resolve(GL_AUDIO_BUFFER_CACHE[src]);
+    if(GL_AUDIO_BUFFER_PROMISES[src])return GL_AUDIO_BUFFER_PROMISES[src];
+    var ctx=gameplayAudioContext();if(!ctx)return Promise.resolve(null);
+    var url=src;try{url=new URL(src,window.location&&window.location.href||undefined).href;}catch(e){}
+    GL_AUDIO_BUFFER_PROMISES[src]=window.fetch(url,{cache:'force-cache'}).then(function(r){if(!r.ok)throw new Error('Audio HTTP '+r.status);return r.arrayBuffer();}).then(function(buf){return ctx.decodeAudioData(buf.slice(0));}).then(function(decoded){GL_AUDIO_BUFFER_CACHE[src]=decoded;delete GL_AUDIO_BUFFER_PROMISES[src];return decoded;}).catch(function(){delete GL_AUDIO_BUFFER_PROMISES[src];return null;});
+    return GL_AUDIO_BUFFER_PROMISES[src];
+  }
+  function playWebAudio(src,volume){
+    var ctx=gameplayAudioContext(),buf=GL_AUDIO_BUFFER_CACHE[src];if(!ctx||ctx.state!=='running'||!buf)return false;
+    try{var source=ctx.createBufferSource(),gain=ctx.createGain();source.buffer=buf;gain.gain.value=Number(volume||.55);source.connect(gain);gain.connect(ctx.destination);source.start(0);return true;}catch(e){return false;}
+  }
   function playPreloadedAudio(src,volume){
-    if(!GL_CARD_SOUND_ENABLED||SUPPRESS_RENDER||typeof Audio==='undefined')return false;
-    try{var base=primeAudioAsset(src),a=(base&&typeof base.cloneNode==='function')?base.cloneNode(true):new Audio(src);a.preload='auto';a.volume=Number(volume||.55);a.currentTime=0;var release=function(){GL_ACTIVE_AUDIO_POOL.delete(a);if(a&&typeof a.removeEventListener==='function'){a.removeEventListener('ended',release);a.removeEventListener('error',release);}};GL_ACTIVE_AUDIO_POOL.add(a);if(typeof a.addEventListener==='function'){a.addEventListener('ended',release,{once:true});a.addEventListener('error',release,{once:true});}var pr=a.play();if(pr&&typeof pr.catch==='function')pr.catch(function(){release();});return true;}catch(e){return false;}
+    if(!GL_CARD_SOUND_ENABLED||(SUPPRESS_RENDER&&!EXTERNAL_HUMAN_UI))return false;
+    if(playWebAudio(src,volume))return true;
+    // Keep HTMLAudio as a fallback while the decoded WebAudio buffer is still warming.
+    if(typeof Audio==='undefined')return false;
+    try{var base=primeAudioAsset(src),a=(base&&typeof base.cloneNode==='function')?base.cloneNode(true):new Audio(src);a.preload='auto';a.volume=Number(volume||.55);a.currentTime=0;var release=function(){GL_ACTIVE_AUDIO_POOL.delete(a);if(a&&typeof a.removeEventListener==='function'){a.removeEventListener('ended',release);a.removeEventListener('error',release);}};GL_ACTIVE_AUDIO_POOL.add(a);if(typeof a.addEventListener==='function'){a.addEventListener('ended',release,{once:true});a.addEventListener('error',release,{once:true});}var pr=a.play();if(pr&&typeof pr.then==='function')pr.then(function(){primeWebAudioAsset(src);}).catch(function(){release();primeWebAudioAsset(src);});return true;}catch(e){primeWebAudioAsset(src);return false;}
   }
   function cardMotionSoundLabel(){ return GL_CARD_SOUND_ENABLED?'Sound ON':'Sound OFF'; }
   function setCardMotionSoundEnabled(enabled){ GL_CARD_SOUND_ENABLED=!!enabled; try{ if(window.localStorage) window.localStorage.setItem(GL_CARD_SOUND_STORAGE_KEY,GL_CARD_SOUND_ENABLED?'on':'off'); }catch(e){} ['soundToggleButton','mobileSoundToggleButton'].forEach(function(id){ var b=$(id); if(b){ b.textContent=cardMotionSoundLabel(); b.setAttribute('aria-pressed',GL_CARD_SOUND_ENABLED?'true':'false'); } }); }
@@ -203,7 +227,7 @@
     if(!GL_TUTORIAL_AI_ACTION_GATE.waiting||typeof GL_TUTORIAL_AI_ACTION_GATE.resume!=='function')return false;
     var fn=GL_TUTORIAL_AI_ACTION_GATE.resume;clearTutorialAIActionGate();fn();return true;
   }
-  function aiTurnDirectorAvailable(){ return !SUPPRESS_RENDER && !window.GL_PVP_SHARED_BOARD_ACTIVE && typeof window!=='undefined' && typeof setTimeout==='function'; }
+  function aiTurnDirectorAvailable(){ return !window.GL_PVP_SHARED_BOARD_ACTIVE && typeof window!=='undefined' && typeof setTimeout==='function'; }
   function cancelAITurnDirector(){ GL_AI_TURN_DIRECTOR.token++; GL_AI_TURN_DIRECTOR.active=false; clearTutorialAIPhaseGate(); clearTutorialAIActionGate(); GL_TUTORIAL_AI_ACTION_GATED=Object.create(null); GL_TUTORIAL_CASTING_STAGE_GATED={STARTED:false,RESOLVED:false}; if(GL_AI_TURN_DIRECTOR.timer){ clearTimeout(GL_AI_TURN_DIRECTOR.timer); GL_AI_TURN_DIRECTOR.timer=null; } if(appState) appState.aiPresentationStatus=''; }
   function aiDirectorSchedule(fn,delay){
     var token=GL_AI_TURN_DIRECTOR.token;
@@ -269,7 +293,7 @@
     return layer;
   }
   function battlePlayAudio(src,volume){
-    if(!src||!GL_CARD_SOUND_ENABLED||SUPPRESS_RENDER||typeof Audio==='undefined')return false;
+    if(!src||!GL_CARD_SOUND_ENABLED||(SUPPRESS_RENDER&&!EXTERNAL_HUMAN_UI)||typeof Audio==='undefined')return false;
     var now=Date.now();
     if(GL_LAST_BATTLE_AUDIO.src===src&&now-GL_LAST_BATTLE_AUDIO.at<180)return false;
     var played=playPreloadedAudio(src,volume||.58);
@@ -289,6 +313,18 @@
     clip.style.left=rect.left+'px';clip.style.top=rect.top+'px';clip.style.width=rect.width+'px';clip.style.height=rect.height+'px';
     layer.appendChild(clip);return clip;
   }
+  function armBattleVfxImage(node){
+    if(!node)return Promise.resolve(false);
+    // PvP presentation can receive the authoritative result before a large VFX PNG has
+    // finished decoding on slower/tablet browsers. Pause the CSS animation at frame 0
+    // until the image is actually paint-ready, then start the animation clock.
+    try{node.style.animationPlayState='paused';}catch(e){}
+    var ready=Promise.resolve(prepareImageForPaint(node)).then(function(ok){
+      try{node.style.animationPlayState='running';}catch(e){}
+      return ok!==false;
+    },function(){try{node.style.animationPlayState='running';}catch(e){}return false;});
+    node._battleReadyPromise=ready;return ready;
+  }
   function battleVfxNode(src,cls,rect,scale,clipToCard){
     var layer=battleFeedbackLayer();if(!layer||!rect)return null;
     var tier=battleVfxTier(cls);
@@ -305,15 +341,19 @@
       node.style.width=(insideScale*100)+'%';node.style.height=(insideScale*100)+'%';
       node.style.left=(((1-insideScale)*50))+'%';node.style.top=(((1-insideScale)*50))+'%';
     }
-    node.draggable=false;host.appendChild(node);prepareImageForPaint(node);node._battleHost=host;return node;
+    node.draggable=false;host.appendChild(node);node._battleHost=host;armBattleVfxImage(node);return node;
   }
   function battleHealNode(src,cls,rect,side){
     var host=battleVfxClip(rect,11852);if(!host)return null;
     var node=document.createElement('img');node.src=src;node.className='gl-battle-vfx '+cls;
     node.style.width='46%';node.style.height='58%';node.style.top='34%';node.style.left=(side==='right'?'50%':'4%');
-    node.draggable=false;host.appendChild(node);prepareImageForPaint(node);node._battleHost=host;return node;
+    node.draggable=false;host.appendChild(node);node._battleHost=host;armBattleVfxImage(node);return node;
   }
-  function battleRemoveLater(node,ms){if(!node)return;setTimeout(function(){var host=node._battleHost;removeVisualNode(node);if(host&&host!==node&&host.parentNode)removeVisualNode(host);},Math.max(50,Number(ms||700)));}
+  function battleRemoveLater(node,ms){
+    if(!node)return;
+    function armRemoval(){setTimeout(function(){var host=node._battleHost;removeVisualNode(node);if(host&&host!==node&&host.parentNode)removeVisualNode(host);},Math.max(50,Number(ms||700)));}
+    if(node._battleReadyPromise&&typeof node._battleReadyPromise.then==='function')node._battleReadyPromise.then(armRemoval,armRemoval);else armRemoval();
+  }
   function battlePulseHeroClass(side,lane,cls,ms){
     var anchor=battleHeroAnchor(side,lane);if(!anchor)return false;
     anchor.classList.remove(cls);void anchor.offsetWidth;anchor.classList.add(cls);
@@ -326,11 +366,11 @@
     evt._sound_played=true;
     if(evt.kind==='heal')return battlePlayAudio(GL_BATTLE_AUDIO.heal,.52);
     if(evt.outcome==='dodge')return battlePlayAudio(GL_BATTLE_AUDIO.dodge,.62);
-    if(evt.outcome==='block')return battlePlayAudio((evt.defense_kind||'P')==='M'?GL_BATTLE_AUDIO.mDefense:GL_BATTLE_AUDIO.pDefense,.6);
+    if(evt.outcome==='block'||evt.outcome==='negate')return battlePlayAudio((evt.defense_kind||'P')==='M'?GL_BATTLE_AUDIO.mDefense:GL_BATTLE_AUDIO.pDefense,.6);
     return battlePlayAudio((evt.attack_kind||'P')==='M'?GL_BATTLE_AUDIO.mAttack:GL_BATTLE_AUDIO.pAttack,.6);
   }
   function runBattleFeedback(evt){
-    if(!evt||SUPPRESS_RENDER||!animationDocumentReady())return false;
+    if(!evt||(SUPPRESS_RENDER&&!EXTERNAL_HUMAN_UI)||!animationDocumentReady())return false;
     var rect=battleHeroRect(evt.side,evt.lane);if(!rect)return false;
     GL_BATTLE_FEEDBACK_ACTIVE++;
     playBattleFeedbackAudioNow(evt);
@@ -348,8 +388,8 @@
     }else{
       var attackNode=battleVfxNode(attackSrc,attackKind==='M'?'gl-battle-mattack':'gl-battle-pattack',rect,.72,true);
       battleRemoveLater(attackNode,650);
-      if(evt.has_damage)battlePulseHeroClass(evt.side,evt.lane,'gl-battle-damage-card',520);
-      if(evt.outcome==='block'){
+      if(evt.has_damage&&evt.outcome!=='negate')battlePulseHeroClass(evt.side,evt.lane,'gl-battle-damage-card',520);
+      if(evt.outcome==='block'||evt.outcome==='negate'){
         duration=820;
         var defKind=evt.defense_kind||'P',defSrc=defKind==='M'?GL_BATTLE_VFX.mDefense:GL_BATTLE_VFX.pDefense;
         setTimeout(function(){
@@ -357,6 +397,7 @@
           var isMagicDefense=defKind==='M';
           var defNode=battleVfxNode(defSrc,isMagicDefense?'gl-battle-mdef':'gl-battle-pdef',fresh,1.08,isMagicDefense?false:true);
           battleRemoveLater(defNode,640);
+          if(evt.outcome==='negate')battlePulseHeroClass(evt.side,evt.lane,'gl-battle-negate-card',700);
         },105);
       }else{
       }
@@ -380,13 +421,16 @@
   function queueBattleFeedback(evt){
     if(!evt)return false;
     evt=Object.assign({id:'battle-'+Date.now()+'-'+(++GL_BATTLE_FEEDBACK_SEQUENCE),play_sound:true},evt);
+    // In server-authoritative human PvP the runtime resolves with render suppression on.
+    // Preserve the exact approved v6.80 battle feedback in a canonical ledger so the
+    // server can transport one viewer-safe event to both browsers.
     recordPvpBattleFeedbackEvent(appState,evt);
-    if(SUPPRESS_RENDER)return true;
+    if(SUPPRESS_RENDER&&!EXTERNAL_HUMAN_UI)return true;
     playBattleFeedbackAudioNow(evt);
     GL_BATTLE_FEEDBACK_QUEUE.push(evt);return true;
   }
   function flushBattleFeedbackQueue(){
-    if(!GL_BATTLE_FEEDBACK_QUEUE.length||SUPPRESS_RENDER||!animationDocumentReady())return false;
+    if(!GL_BATTLE_FEEDBACK_QUEUE.length||(SUPPRESS_RENDER&&!EXTERNAL_HUMAN_UI)||!animationDocumentReady())return false;
     var items=GL_BATTLE_FEEDBACK_QUEUE.splice(0);
     items.forEach(function(evt,index){setTimeout(function(){var ok=runBattleFeedback(evt);if(!ok&&!battleFeedbackBusy()&&appState&&matchStarted&&!SUPPRESS_RENDER)render();},index*130);});
     return true;
@@ -481,15 +525,46 @@
   }
   if(typeof window!=='undefined'&&window.addEventListener){window.addEventListener('resize',refreshPendingAttackDirectionGeometry);window.addEventListener('scroll',refreshPendingAttackDirectionGeometry,true);}
   function primeBattleFeedbackAssets(){
-    Object.keys(GL_BATTLE_VFX).forEach(function(k){preloadVisualAsset(GL_BATTLE_VFX[k]);});
-    Object.keys(GL_BATTLE_AUDIO).forEach(function(k){primeAudioAsset(GL_BATTLE_AUDIO[k]);});
+    var visualPromises=Object.keys(GL_BATTLE_VFX).map(function(k){return preloadVisualAsset(GL_BATTLE_VFX[k]);});
+    var audioSources=['assets/audio/Card Sound.mp3','assets/audio/Coin Flip.mp3'];Object.keys(GL_BATTLE_AUDIO).forEach(function(k){audioSources.push(GL_BATTLE_AUDIO[k]);});
+    audioSources.forEach(function(src){primeAudioAsset(src);primeWebAudioAsset(src);});
+    return Promise.all(visualPromises);
+  }
+  function unlockGameplayAudioPlayback(){
+    var sources=['assets/audio/Card Sound.mp3','assets/audio/Coin Flip.mp3'];Object.keys(GL_BATTLE_AUDIO).forEach(function(k){sources.push(GL_BATTLE_AUDIO[k]);});
+    sources.forEach(function(src){primeAudioAsset(src);primeWebAudioAsset(src);});
+    var ctx=gameplayAudioContext();
+    if(ctx){
+      try{
+        var resumed=ctx.resume();if(resumed&&typeof resumed.catch==='function')resumed.catch(function(){});
+        // Exercise a real (silent-gain) WebAudio source inside the user's gesture. Unlike a
+        // muted HTMLAudio probe, this actually unlocks the context used by Card Sound playback.
+        var buffer=ctx.createBuffer(1,1,Math.max(8000,ctx.sampleRate||44100)),source=ctx.createBufferSource(),gain=ctx.createGain();gain.gain.value=0;source.buffer=buffer;source.connect(gain);gain.connect(ctx.destination);source.start(0);
+      }catch(e){}
+    }
+    // Safari/older browsers still get an HTMLAudio warm-up fallback.
+    if(typeof Audio!=='undefined')sources.forEach(function(src){try{var base=primeAudioAsset(src),probe=(base&&typeof base.cloneNode==='function')?base.cloneNode(true):new Audio(src);probe.preload='auto';probe.volume=.0001;probe.currentTime=0;var pr=probe.play();if(pr&&typeof pr.then==='function')pr.then(function(){try{probe.pause();probe.currentTime=0;}catch(e){}}).catch(function(){});else{try{probe.pause();probe.currentTime=0;}catch(e){}}}catch(e){}});
+    return !!(ctx||typeof Audio!=='undefined');
   }
   var GL_AI_TURN_DIRECTOR={active:false,token:0,timer:null};
-  function aiTurnDirectorAvailable(){ return !SUPPRESS_RENDER && !window.GL_PVP_SHARED_BOARD_ACTIVE && typeof window!=='undefined' && typeof setTimeout==='function'; }
+  function aiTurnDirectorAvailable(){ return !window.GL_PVP_SHARED_BOARD_ACTIVE && typeof window!=='undefined' && typeof setTimeout==='function'; }
   function cancelAITurnDirector(){ GL_AI_TURN_DIRECTOR.token++; GL_AI_TURN_DIRECTOR.active=false; if(GL_AI_TURN_DIRECTOR.timer){ clearTimeout(GL_AI_TURN_DIRECTOR.timer); GL_AI_TURN_DIRECTOR.timer=null; } if(appState) appState.aiPresentationStatus=''; }
   function aiDirectorSchedule(fn,delay){ var token=GL_AI_TURN_DIRECTOR.token; if(GL_AI_TURN_DIRECTOR.timer) clearTimeout(GL_AI_TURN_DIRECTOR.timer); GL_AI_TURN_DIRECTOR.timer=setTimeout(function(){ GL_AI_TURN_DIRECTOR.timer=null; if(!GL_AI_TURN_DIRECTOR.active || token!==GL_AI_TURN_DIRECTOR.token) return; fn(); },Math.max(0,Number(delay||0))); }
   function aiDirectorStatus(state,text){ if(!state) return; state.aiPresentationStatus=text||''; if(!SUPPRESS_RENDER) render(); }
-  function aiDirectorWaitForAnimations(state,next,settleDelay){ var token=GL_AI_TURN_DIRECTOR.token; function check(){ if(!GL_AI_TURN_DIRECTOR.active || token!==GL_AI_TURN_DIRECTOR.token) return; if(state.pending || state.responseWindow) return; if(animationBusy()||tutorialGuideHoldActive()||battleFeedbackBusy()||!!state.drawPresentationPending){ GL_AI_TURN_DIRECTOR.timer=setTimeout(check,80); return; } aiDirectorSchedule(next,typeof settleDelay==='number'?settleDelay:320); } check(); }
+  function aiDirectorExternalPresentationBusy(){ try{return !!(typeof window!=='undefined'&&window.GL_OPTION_B_PRESENTATION&&typeof window.GL_OPTION_B_PRESENTATION.isBusy==='function'&&window.GL_OPTION_B_PRESENTATION.isBusy());}catch(e){return false;} }
+  function aiDirectorWaitForAnimations(state,next,settleDelay){
+    var token=GL_AI_TURN_DIRECTOR.token,settle=Math.max(0,typeof settleDelay==='number'?settleDelay:320),idleSince=0;
+    function check(){
+      if(!GL_AI_TURN_DIRECTOR.active || token!==GL_AI_TURN_DIRECTOR.token) return;
+      if(state.pending || state.responseWindow) return;
+      var busy=animationBusy()||tutorialGuideHoldActive()||battleFeedbackBusy()||!!state.drawPresentationPending||aiDirectorExternalPresentationBusy();
+      if(busy){idleSince=0;GL_AI_TURN_DIRECTOR.timer=setTimeout(check,70);return;}
+      var now=Date.now();if(!idleSince)idleSince=now;var remaining=settle-(now-idleSince);
+      if(remaining>0){GL_AI_TURN_DIRECTOR.timer=setTimeout(check,Math.max(20,Math.min(70,remaining)));return;}
+      GL_AI_TURN_DIRECTOR.timer=null;next();
+    }
+    check();
+  }
   function animationBusy(){ return !!(GL_ANIMATION_RUNNING || GL_ANIMATION_QUEUE.length); }
   function gameplayInputLocked(){return animationBusy()||!!(appState&&appState.preGame)||!!(appState&&appState.drawPresentationPending);}
   var GL_HELD_CARD_VISUALS={}, GL_PENDING_HELD_RELEASES={};
@@ -1788,6 +1863,35 @@
     var genericUsed=chosen.filter(function(sh){return sh.kind!=='CLASS';}).length;
     return{ok:value>=cost,cost:cost,value:value,class_value:classValue,generic_used:genericUsed,remaining_generic:Math.max(0,cost-classValue),shards:chosen,selected_class_uids:selected};
   }
+  function computeExactManaPayment(state,side,c,cost,selectedShardUids){
+    cost=Math.max(0,Number(cost||0));var pool=manaPoolCardsForSide(state,side),seen={},selected=(selectedShardUids||[]).map(String),chosen=[],value=0,classValue=0;
+    selected.forEach(function(uid){if(seen[uid])return;seen[uid]=true;var sh=pool.find(function(x){return String(x.uid)===uid;});if(!sh)return;chosen.push(sh);var shardValue=sh.kind==='CLASS'?manaShardValueForCard(sh,c):1;value+=shardValue;if(sh.kind==='CLASS')classValue+=shardValue;});
+    var classUids=chosen.filter(function(sh){return sh.kind==='CLASS';}).map(function(sh){return sh.uid;});
+    return{ok:value===cost,cost:cost,value:value,class_value:classValue,generic_used:chosen.filter(function(sh){return sh.kind!=='CLASS';}).length,remaining_generic:Math.max(0,cost-classValue),shards:chosen,selected_shard_uids:chosen.map(function(sh){return sh.uid;}),selected_class_uids:classUids};
+  }
+  function recommendedExactManaShardUids(state,side,c,cost){
+    cost=Math.max(0,Number(cost||0));if(cost===0)return[];
+    var pool=manaPoolCardsForSide(state,side),generic=pool.filter(function(sh){return sh.kind!=='CLASS';}),classes=pool.filter(function(sh){return sh.kind==='CLASS';}),best=null,totalMasks=Math.pow(2,classes.length);
+    for(var mask=0;mask<totalMasks;mask++){
+      var picked=[],classValue=0;
+      for(var i=0;i<classes.length;i++)if(mask&(1<<i)){picked.push(classes[i]);classValue+=manaShardValueForCard(classes[i],c);}
+      var genericNeed=cost-classValue;if(genericNeed<0||genericNeed>generic.length)continue;
+      var candidate={classes:picked,genericNeed:genericNeed,classCount:picked.length,classValue:classValue};
+      if(!best||candidate.classCount<best.classCount||(candidate.classCount===best.classCount&&candidate.genericNeed>best.genericNeed))best=candidate;
+    }
+    if(!best)return[];
+    return generic.slice(0,best.genericNeed).map(function(sh){return sh.uid;}).concat(best.classes.map(function(sh){return sh.uid;}));
+  }
+  function manaSelectionAfterToggle(state,side,c,cost,currentUids,toggleUid){
+    var pool=manaPoolCardsForSide(state,side),uid=String(toggleUid||''),selected=(currentUids||[]).map(String).filter(function(x,i,a){return a.indexOf(x)===i&&pool.some(function(sh){return String(sh.uid)===x;});}),at=selected.indexOf(uid);
+    if(at>=0){selected.splice(at,1);return selected;}
+    if(!pool.some(function(sh){return String(sh.uid)===uid;}))return selected;
+    var before=selected.slice();selected.push(uid);
+    var plan=computeExactManaPayment(state,side,c,cost,selected);
+    while(plan.value>cost&&selected.length>1){selected.shift();plan=computeExactManaPayment(state,side,c,cost,selected);}
+    if(plan.value>cost)return before;
+    return selected;
+  }
   function autoManaPaymentWithoutPrompt(state,side,c,cost){
     cost=Math.max(0,Number(cost||0));var selected=[],plan=computeManaPayment(state,side,c,cost,selected);
     if(plan.ok)return plan;
@@ -1807,12 +1911,17 @@
     return plan;
   }
   function shouldPromptManaPayment(state,side,c,cost){
-    if(side!=='PLAYER'||Number(cost||0)<=0||!isSkillCard(c))return false;
-    if(isArrowBarrageCard(c))return false;
-    return manaClassShardsInPool(state,side).length>0;
+    // Option B UX: Mana Payment is the pre-commit gate for every paid PLAYER card.
+    return side==='PLAYER' && Number(cost||0)>0;
   }
   function spendManaPayment(state,side,c,cost,selectedClassUids,context){
     var plan=computeManaPayment(state,side,c,cost,selectedClassUids);if(!plan.ok)return{ok:false,reason:'Not enough selected Mana Shards.',plan:plan};
+    var pool=manaPoolCardsForSide(state,side),spent=[];plan.shards.forEach(function(sh){var idx=pool.findIndex(function(x){return x.uid===sh.uid;});if(idx>=0)spent.push(pool.splice(idx,1)[0]);});
+    var returned=returnManaPaymentBatchToOwnerDeck(state,c,spent);syncManaCountForSide(state,side);
+    return{ok:true,spent:spent,returned:returned,value:plan.value,cost:plan.cost,context:context||'payment'};
+  }
+  function spendExactManaPayment(state,side,c,cost,selectedShardUids,context){
+    var plan=computeExactManaPayment(state,side,c,cost,selectedShardUids);if(!plan.ok)return{ok:false,reason:'Selected Shards do not cover the Mana cost.',plan:plan};
     var pool=manaPoolCardsForSide(state,side),spent=[];plan.shards.forEach(function(sh){var idx=pool.findIndex(function(x){return x.uid===sh.uid;});if(idx>=0)spent.push(pool.splice(idx,1)[0]);});
     var returned=returnManaPaymentBatchToOwnerDeck(state,c,spent);syncManaCountForSide(state,side);
     return{ok:true,spent:spent,returned:returned,value:plan.value,cost:plan.cost,context:context||'payment'};
@@ -1821,9 +1930,14 @@
     var sh=matchingClassShardForCard(state,side,c);if(!sh)return false;var pool=manaPoolCardsForSide(state,side),idx=pool.findIndex(function(x){return x.uid===sh.uid;});if(idx<0)return false;var spent=pool.splice(idx,1)[0];returnManaShardToOwnerDeck(state,spent);syncManaCountForSide(state,side);if(reason)pushLog(state,(reason||'Class Shard')+': '+spent.class_name+' Shard returns to bottom of its Shard Deck.');return spent;
   }
   function openManaShardPaymentChoice(state,action,cost){
-    var side=action.side||action.source_side||'PLAYER',c=card(action.card_id),classes=manaClassShardsInPool(state,side);
-    state.pending={type:'mana_shard_payment_choice',decision_side:side,side:side,card_id:action.card_id,cost:Number(cost||0),action:clone(action),selected_class_uids:[],class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,c),asset:manaShardAsset(sh)};})};
-    pushLog(state,'Choose whether to use Class Shard(s) to pay '+cardName(c)+'. Mana Shards fill the remaining cost automatically.');renderManaShardPaymentChoice();if(!SUPPRESS_RENDER)render();return true;
+    var side=action.side||action.source_side||'PLAYER',c=card(action.card_id),pool=manaPoolCardsForSide(state,side),classes=manaClassShardsInPool(state,side);
+    // v6.90 UX: every Shard in the centered payment row is directly selectable. The
+    // initial selection is only a recommendation: Mana Shards are chosen first, and
+    // Class Shards are included automatically only when generic Mana is insufficient.
+    var selectedShards=recommendedExactManaShardUids(state,side,c,cost);
+    var selectedClasses=pool.filter(function(sh){return sh.kind==='CLASS'&&selectedShards.map(String).indexOf(String(sh.uid))!==-1;}).map(function(sh){return sh.uid;}),selectableClasses=classes;
+    state.pending={type:'mana_shard_payment_choice',decision_side:side,side:side,card_id:action.card_id,cost:Number(cost||0),action:clone(action),selected_shard_uids:selectedShards,selected_class_uids:selectedClasses,class_choices:selectableClasses.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,c),asset:manaShardAsset(sh)};}),shard_choices:pool.map(function(sh){return{uid:sh.uid,kind:sh.kind,class_name:sh.class_name||'',value:sh.kind==='CLASS'?manaShardValueForCard(sh,c):1,asset:manaShardAsset(sh)};})};
+    pushLog(state,'Choose your Shard payment for '+cardName(c)+'. The recommended payment is preselected; any Shard may be changed before PAY.');renderManaShardPaymentChoice();if(!SUPPRESS_RENDER)render();return true;
   }
   function setManaConfirmState(button,manaReady,allReady,shortage){
     if(!button)return;
@@ -1833,18 +1947,18 @@
   }
   function renderManaShardPaymentChoice(){
     if(!appState||!appState.pending||appState.pending.type!=='mana_shard_payment_choice'||SUPPRESS_RENDER||!$('choiceOverlay'))return;
-    var p=appState.pending,c=card(p.card_id),selected=(p.selected_class_uids||[]).map(String),plan=computeManaPayment(appState,p.side,c,p.cost,selected),genericCount=manaPoolCardsForSide(appState,p.side).filter(function(sh){return sh.kind!=='CLASS';}).length;
-    var classContribution=Math.min(Number(p.cost||0),Number(plan.class_value||0)),remainingMana=Math.max(0,Number(p.cost||0)-classContribution),shortage=Math.max(0,remainingMana-genericCount),manaReady=shortage===0;
-    $('choiceTitle').textContent=cardName(c)+' — Mana Payment';$('choiceConfirm').style.display='';$('choiceConfirm').textContent=manaReady?('Pay '+remainingMana+' Mana'):('Need '+shortage+' More Mana');$('choiceConfirm').disabled=!plan.ok;setManaConfirmState($('choiceConfirm'),manaReady,!!plan.ok,shortage);if($('choiceClose'))$('choiceClose').hidden=false;
-    var cards=(p.class_choices||[]).map(function(x){var sel=selected.indexOf(String(x.uid))!==-1,match=x.value===2;return '<article class="discard-choice mana-shard-choice '+(sel?'selected':'')+'"><button type="button" class="discard-preview" data-mana-class-uid="'+esc(x.uid)+'"><img src="'+esc(x.asset)+'" alt="'+esc(x.class_name)+' Shard"><span><strong>'+esc(x.class_name)+' Shard</strong><small>Counts as '+x.value+' Mana'+(match?' for this Skill':'')+'</small></span></button><button type="button" class="discard-select" data-mana-class-uid="'+esc(x.uid)+'">'+(sel?'Selected':'Use Shard')+'</button></article>';}).join('');
-    $('choiceBody').innerHTML='<p class="choice-instruction">Class Shards are optional for normal card payment. A matching Class Shard counts as 2 Mana for a Skill with the same card-code class; otherwise it counts as 1. Any Class Shard spent returns to the bottom of its Shard Deck.</p><p class="choice-instruction mana-payment-summary">Mana Shards available: '+genericCount+'. <strong>Class Shard contribution: '+classContribution+' / '+p.cost+'.</strong> <strong>Remaining Mana: '+remainingMana+'.</strong></p><div class="choice-grid card-search-choice-grid mana-shard-choice-grid">'+cards+'</div>';
+    var p=appState.pending,c=card(p.card_id),selected=(p.selected_shard_uids||[]).map(String),plan=computeExactManaPayment(appState,p.side,c,p.cost,selected),genericCount=manaPoolCardsForSide(appState,p.side).filter(function(sh){return sh.kind!=='CLASS';}).length;
+    var classContribution=Math.min(Number(p.cost||0),Number(plan.class_value||0)),remainingMana=Math.max(0,Number(p.cost||0)-Number(plan.value||0)),manaReady=!!plan.ok;
+    $('choiceTitle').textContent=cardName(c)+' — Mana Payment';$('choiceConfirm').style.display='';$('choiceConfirm').textContent=manaReady?'PAY':'Need '+Math.max(0,Number(p.cost||0)-Number(plan.value||0))+' More Mana';$('choiceConfirm').disabled=!plan.ok;setManaConfirmState($('choiceConfirm'),manaReady,!!plan.ok,Math.max(0,Number(p.cost||0)-Number(plan.value||0)));if($('choiceClose'))$('choiceClose').hidden=false;
+    var pool=manaPoolCardsForSide(appState,p.side),cards=pool.map(function(sh){var uid=String(sh.uid),sel=selected.indexOf(uid)!==-1,val=sh.kind==='CLASS'?manaShardValueForCard(sh,c):1;return '<article class="discard-choice mana-shard-choice '+(sel?'selected':'')+'"><button type="button" class="discard-preview" data-mana-class-uid="'+esc(uid)+'"><img src="'+esc(manaShardAsset(sh))+'" alt="'+esc((sh.class_name||'Mana')+' Shard')+'"><span><strong>'+esc((sh.class_name||'Mana')+' Shard')+'</strong><small>Counts as '+val+' Mana</small></span></button><button type="button" class="discard-select" data-mana-class-uid="'+esc(uid)+'">'+(sel?'Selected':'Use Shard')+'</button></article>';}).join('');
+    $('choiceBody').innerHTML='<p class="choice-instruction">The recommended payment is preselected. You may change any Mana Shard or Class Shard before confirming.</p><p class="choice-instruction mana-payment-summary"><strong>Selected Mana: '+plan.value+' / '+p.cost+'.</strong></p><div class="choice-grid card-search-choice-grid mana-shard-choice-grid">'+cards+'</div>';
     $('choiceOverlay').classList.add('open');
   }
   function toggleManaShardPaymentChoice(uid){
-    if(!appState||!appState.pending||appState.pending.type!=='mana_shard_payment_choice')return false;uid=String(uid||'');var p=appState.pending,selected=(p.selected_class_uids||[]).map(String),i=selected.indexOf(uid);if(i>=0)selected.splice(i,1);else selected.push(uid);p.selected_class_uids=selected;renderManaShardPaymentChoice();return true;
+    if(!appState||!appState.pending||appState.pending.type!=='mana_shard_payment_choice')return false;uid=String(uid||'');var p=appState.pending,pool=manaPoolCardsForSide(appState,p.side),c=card(p.card_id);if(!pool.some(function(sh){return String(sh.uid)===uid;}))return false;var selected=manaSelectionAfterToggle(appState,p.side,c,p.cost,p.selected_shard_uids||[],uid);p.selected_shard_uids=selected;p.selected_class_uids=pool.filter(function(sh){return sh.kind==='CLASS'&&selected.indexOf(String(sh.uid))!==-1;}).map(function(sh){return sh.uid;});renderManaShardPaymentChoice();if(!SUPPRESS_RENDER)render();return true;
   }
   function commitManaShardPaymentChoice(){
-    if(!appState||!appState.pending||appState.pending.type!=='mana_shard_payment_choice')return false;var p=clone(appState.pending),c=card(p.card_id),plan=computeManaPayment(appState,p.side,c,p.cost,p.selected_class_uids||[]);if(!plan.ok){showInfo('Mana Payment','Selected Class Shards plus available Mana Shards cannot pay this cost.');return false;}var action=clone(p.action||{});action._mana_choice_complete=true;action.selected_mana_class_uids=(p.selected_class_uids||[]).slice();appState.pending=null;closeChoice();return commitPlayedCard(appState,action);
+    if(!appState||!appState.pending||appState.pending.type!=='mana_shard_payment_choice')return false;var p=clone(appState.pending),c=card(p.card_id),selected=(p.selected_shard_uids||[]).slice(),plan=computeExactManaPayment(appState,p.side,c,p.cost,selected);if(!plan.ok){showInfo('Mana Payment','Selected Shards must equal the Mana cost exactly.');return false;}var action=clone(p.action||{});action._mana_choice_complete=true;action.selected_mana_shard_uids=plan.selected_shard_uids.slice();action.selected_mana_class_uids=plan.selected_class_uids.slice();appState.pending=null;closeChoice();return commitPlayedCard(appState,action);
   }
   function tributeExpValue(c){ return Number((c.tribute&&c.tribute.exp_value)||100); }
   function attachmentCardId(v){ return typeof v==='string'?v:(v&&v.card_id)||null; }
@@ -2781,8 +2895,16 @@
       pushLog(state,'AI stores tactical setup plan: '+cardName(card(action.ai_setup_plan.setup_card_id))+' → '+followDetail+'.');
     }
     if(state.responseWindow && state.responseWindow.target_side==='PLAYER'){
-      if(SUPPRESS_RENDER){ resolveResponseWindow(null); }
-      else { state.aiControl={resume:'after_player_response', from_phase:state.phase, director:GL_AI_TURN_DIRECTOR.active}; state.aiPresentationStatus='Waiting for PLAYER response to '+cardName(card(action.card_id))+'.'; pushLog(state,'AI pauses for PLAYER Response Window. Resolve response to continue AI turn.'); syncCounts(state); render(); }
+      // Root rule: suppressing the legacy renderer must NOT auto-pass a real human Response Window
+      // when an external battlefield UI owns the interaction surface.
+      if(SUPPRESS_RENDER && !EXTERNAL_HUMAN_UI){ resolveResponseWindow(null); }
+      else {
+        state.aiControl={resume:'after_player_response', from_phase:state.phase, director:GL_AI_TURN_DIRECTOR.active};
+        state.aiPresentationStatus='Waiting for PLAYER response to '+cardName(card(action.card_id))+'.';
+        pushLog(state,'AI pauses for PLAYER Response Window. Resolve response to continue AI turn.');
+        syncCounts(state);
+        if(!SUPPRESS_RENDER) render();
+      }
     }
     return beforePending!==state.pending || committed;
   }
@@ -3784,7 +3906,8 @@
   function responsePaymentSpec(rc){ return {discard_from_hand:Math.max(0,responseExtraDiscardCount(rc))}; }
   function responsePaymentNeedsChoice(state,side,rc,cost){
     var spec=responsePaymentSpec(rc);if(spec.discard_from_hand>0)return true;
-    return !!(side==='PLAYER'&&isSkillCard(rc)&&Number(cost||0)>0&&manaClassShardsInPool(state,side).length>0);
+    // Option B requires an explicit PAY step for every paid PLAYER Response, including Event/Item counters.
+    return !!(side==='PLAYER'&&Number(cost||0)>0);
   }
   function handHasResponseExtraDiscard(hand, idx, rc){ return Math.max(0,((hand||[]).length-1))>=responsePaymentSpec(rc).discard_from_hand; }
   function isHandCardResponseOption(opt){ return !!(opt&&opt.card_id&&Number.isInteger(Number(opt.hand_index))&&['legacy_reduce','dragon_scale','second_chance'].indexOf(opt.response_kind)===-1); }
@@ -3803,21 +3926,22 @@
     pushLog(state,cardName(card(responseOption.card_id))+' moves to Discard Pile'+(reason?' ('+reason+')':'')+'.');return true;
   }
   function openResponsePaymentChoice(state,rw,responseOption){
-    var side=rw.target_side||rw.response_owner||'PLAYER', rc=card(responseOption.card_id), spec=responsePaymentSpec(rc), candidates=responsePaymentCandidates(state,side,responseOption),sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side),classes=(isSkillCard(rc)&&Number(cost||0)>0)?manaClassShardsInPool(state,side):[];
+    var side=rw.target_side||rw.response_owner||'PLAYER', rc=card(responseOption.card_id), spec=responsePaymentSpec(rc), candidates=responsePaymentCandidates(state,side,responseOption),sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side),classes=Number(cost||0)>0?manaClassShardsInPool(state,side):[];
     if(candidates.length<spec.discard_from_hand){showInfo(cardName(rc)+' — Additional Cost','This Response is no longer payable because there are not enough other cards in Hand.');return false;}
     // Confirm Response is the commit boundary. The old Response Window is gone; this is mandatory payment.
     state.responseWindow=null;closeResponseWindowUI();
-    state.pending={type:'response_payment_choice',decision_side:side,side:side,response_owner:side,response_option:clone(responseOption),incoming_response_window:clone(rw),required_discard_count:spec.discard_from_hand,candidates:candidates,selected_indices:[],mana_cost:cost,mana_class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,rc),asset:manaShardAsset(sh)};}),selected_mana_class_uids:[],committed:true,commit_stage:'committed'};
+    var pool=manaPoolCardsForSide(state,side),selectedShards=recommendedExactManaShardUids(state,side,rc,cost);
+    state.pending={type:'response_payment_choice',decision_side:side,side:side,response_owner:side,response_option:clone(responseOption),incoming_response_window:clone(rw),required_discard_count:spec.discard_from_hand,candidates:candidates,selected_indices:[],mana_cost:cost,mana_class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,rc),asset:manaShardAsset(sh)};}),selected_mana_class_uids:pool.filter(function(sh){return sh.kind==='CLASS'&&selectedShards.map(String).indexOf(String(sh.uid))!==-1;}).map(function(sh){return sh.uid;}),selected_shard_uids:selectedShards,shard_choices:pool.map(function(sh){return{uid:sh.uid,kind:sh.kind,class_name:sh.class_name||'',value:sh.kind==='CLASS'?manaShardValueForCard(sh,rc):1,asset:manaShardAsset(sh)};}),committed:true,commit_stage:'committed'};
     renderResponsePaymentChoice();return true;
   }
   function renderResponsePaymentChoice(){
     if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return;
-    var p=appState.pending,selected=Array.isArray(p.selected_indices)?p.selected_indices:[],choices=p.candidates||[],need=Number(p.required_discard_count||0),selectedMana=(p.selected_mana_class_uids||[]).map(String),rc=card(p.response_option&&p.response_option.card_id),manaCost=Number(p.mana_cost||0),manaPlan=computeManaPayment(appState,p.side,rc,manaCost,selectedMana),genericCount=manaPoolCardsForSide(appState,p.side).filter(function(sh){return sh.kind!=='CLASS';}).length;
+    var p=appState.pending,selected=Array.isArray(p.selected_indices)?p.selected_indices:[],choices=p.candidates||[],need=Number(p.required_discard_count||0),selectedMana=(p.selected_shard_uids||[]).map(String),rc=card(p.response_option&&p.response_option.card_id),manaCost=Number(p.mana_cost||0),manaPlan=computeExactManaPayment(appState,p.side,rc,manaCost,selectedMana),genericCount=manaPoolCardsForSide(appState,p.side).filter(function(sh){return sh.kind!=='CLASS';}).length;
     if(!pvpLocalOwnsPending(p)){pvpHideChoiceForNonOwner();return;}if(SUPPRESS_RENDER||!$('choiceOverlay'))return;
-    var classContribution=Math.min(manaCost,Number(manaPlan.class_value||0)),remainingMana=Math.max(0,manaCost-classContribution),shortage=Math.max(0,remainingMana-genericCount),manaReady=shortage===0,allReady=manaReady&&selected.length===need;
+    var classContribution=Number(manaPlan.class_value||0),remainingMana=Math.max(0,manaCost-Number(manaPlan.value||0)),shortage=Math.max(0,manaCost-Number(manaPlan.value||0)),manaReady=!!manaPlan.ok,allReady=manaReady&&selected.length===need;
     var sourceName=cardName(rc);$('choiceTitle').textContent=sourceName+' — Pay Response Cost';$('choiceConfirm').style.display='';$('choiceConfirm').textContent=!manaReady?('Need '+shortage+' More Mana'):(need>0?'Pay Cost':('Pay '+remainingMana+' Mana'));$('choiceConfirm').disabled=!allReady;setManaConfirmState($('choiceConfirm'),manaReady,allReady,shortage);
     if($('choiceClose'))$('choiceClose').hidden=true;
-    var manaHtml=(p.mana_class_choices||[]).length?'<h4 class="choice-section-title">Mana Shards</h4><p class="choice-instruction">Response is committed. Choose any Class Shard(s) you want to use. Matching Class Shards count as 2 Mana for this Skill; nonmatching Class Shards count as 1. Mana Shards automatically fill the remaining Mana cost.</p><p class="choice-instruction mana-payment-summary">Mana Shards available: '+genericCount+'. <strong>Class Shard contribution: '+classContribution+' / '+manaCost+'.</strong> <strong>Remaining Mana: '+remainingMana+'.</strong></p><div class="choice-grid card-search-choice-grid mana-shard-choice-grid">'+(p.mana_class_choices||[]).map(function(x){var sel=selectedMana.indexOf(String(x.uid))!==-1;return '<article class="discard-choice mana-shard-choice '+(sel?'selected':'')+'"><button type="button" class="discard-preview" data-response-mana-uid="'+esc(x.uid)+'"><img src="'+esc(x.asset)+'" alt="'+esc(x.class_name)+' Shard"><span><strong>'+esc(x.class_name)+' Shard</strong><small>'+x.value+' Mana for this Response</small></span></button><button class="discard-select" type="button" data-response-mana-uid="'+esc(x.uid)+'">'+(sel?'Selected':'Use Shard')+'</button></article>';}).join('')+'</div>':'<p class="choice-instruction">Mana cost: '+manaCost+'. Mana Shards will be used.</p>';
+    var responsePool=manaPoolCardsForSide(appState,p.side),manaHtml='<h4 class="choice-section-title">Mana Shards</h4><p class="choice-instruction">Response is committed. Choose an exact Shard payment.</p><p class="choice-instruction mana-payment-summary"><strong>Selected Mana: '+manaPlan.value+' / '+manaCost+'.</strong></p><div class="choice-grid card-search-choice-grid mana-shard-choice-grid">'+responsePool.map(function(sh){var uid=String(sh.uid),sel=selectedMana.indexOf(uid)!==-1,val=sh.kind==='CLASS'?manaShardValueForCard(sh,rc):1;return '<article class="discard-choice mana-shard-choice '+(sel?'selected':'')+'"><button type="button" class="discard-preview" data-response-mana-uid="'+esc(uid)+'"><img src="'+esc(manaShardAsset(sh))+'" alt="'+esc((sh.class_name||'Mana')+' Shard')+'"><span><strong>'+esc((sh.class_name||'Mana')+' Shard')+'</strong><small>'+val+' Mana</small></span></button><button class="discard-select" type="button" data-response-mana-uid="'+esc(uid)+'">'+(sel?'Selected':'Use Shard')+'</button></article>';}).join('')+'</div>';
     var discardHtml=need?'<h4 class="choice-section-title">Additional Card Cost</h4><p class="choice-instruction">Choose exactly '+need+' other card'+(need===1?'':'s')+' from your Hand to discard.</p><div class="choice-grid card-search-choice-grid">'+choices.map(function(x,idx){var sel=selected.indexOf(idx)!==-1;return '<article class="discard-choice '+(sel?'selected':'')+'"><button class="discard-preview" type="button" data-preview="'+esc(x.card_id)+'"><img src="'+esc(thumbFor(x.card_id))+'" alt="'+esc(cardName(card(x.card_id)))+' thumbnail"><span>'+esc(cardName(card(x.card_id)))+'</span></button><button class="discard-select" type="button" data-response-payment-index="'+idx+'">'+(sel?'Selected':'Select')+'</button></article>';}).join('')+'</div>':'<p class="choice-instruction">No additional card discard is required.</p>';
     $('choiceBody').innerHTML=manaHtml+discardHtml;$('choiceOverlay').classList.add('open');
   }
@@ -3826,22 +3950,21 @@
     var selected=Array.isArray(p.selected_indices)?p.selected_indices.slice():[],at=selected.indexOf(idx);if(at>=0)selected.splice(at,1);else if(need===1)selected=[idx];else if(selected.length<need)selected.push(idx);p.selected_indices=selected;renderResponsePaymentChoice();return true;
   }
   function toggleResponseManaShardChoice(uid){
-    if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return false;uid=String(uid||'');var p=appState.pending,selected=(p.selected_mana_class_uids||[]).map(String),at=selected.indexOf(uid);if(at>=0)selected.splice(at,1);else selected.push(uid);p.selected_mana_class_uids=selected;renderResponsePaymentChoice();return true;
+    if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return false;uid=String(uid||'');var p=appState.pending,rc=card(p.response_option&&p.response_option.card_id),pool=manaPoolCardsForSide(appState,p.side);if(!pool.some(function(sh){return String(sh.uid)===uid;}))return false;var selected=manaSelectionAfterToggle(appState,p.side,rc,p.mana_cost,p.selected_shard_uids||[],uid);p.selected_shard_uids=selected;p.selected_mana_class_uids=pool.filter(function(sh){return sh.kind==='CLASS'&&selected.indexOf(String(sh.uid))!==-1;}).map(function(sh){return sh.uid;});renderResponsePaymentChoice();if(!SUPPRESS_RENDER)render();return true;
   }
-  function finalizeResponsePayment(state,rw,responseOption,selectedHandIndices,selectedClassUids){
+  function finalizeResponsePayment(state,rw,responseOption,selectedHandIndices,selectedShardUids){
     var side=rw.target_side||rw.response_owner||'PLAYER',rc=card(responseOption.card_id),hand=sideHand(state,side)||[],responseIndex=Number(responseOption.hand_index);
     if(hand[responseIndex]!==responseOption.card_id){showInfo('Response Payment','The confirmed Response card is no longer in its committed Hand position.');return false;}
-    var sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side),effectiveClassUids=(selectedClassUids||[]).slice(),plan=computeManaPayment(state,side,rc,cost,effectiveClassUids);
-    if(!plan.ok && !isSkillCard(rc)){plan=autoManaPaymentWithoutPrompt(state,side,rc,cost);effectiveClassUids=(plan.selected_class_uids||[]).slice();}
-    if(!plan.ok){showInfo('Response Payment','The current Shard Pool cannot complete the confirmed Response payment.');return false;}
+    var sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side),effectiveShardUids=(selectedShardUids||[]).slice(),plan=computeExactManaPayment(state,side,rc,cost,effectiveShardUids);
+    if(!plan.ok){showInfo('Response Payment','Selected Shards must equal the Response Mana cost exactly.');return false;}
     var need=responsePaymentSpec(rc).discard_from_hand,indices=(selectedHandIndices||[]).map(Number),seen={};
     if(indices.length!==need){showInfo('Response Payment','Choose exactly '+need+' other card'+(need===1?'':'s')+' to discard.');return false;}
     for(var i=0;i<indices.length;i++){var ix=indices[i];if(!Number.isInteger(ix)||ix<0||ix>=hand.length||ix===responseIndex||seen[ix]){showInfo('Response Payment','The selected additional card cost is no longer legal.');return false;}seen[ix]=true;}
-    var paid=spendManaPayment(state,side,rc,cost,effectiveClassUids,'Response payment');if(!paid.ok){showInfo('Response Payment','Mana payment failed.');return false;}
+    var paid=spendExactManaPayment(state,side,rc,cost,effectiveShardUids,'Response payment');if(!paid.ok){showInfo('Response Payment','Mana payment failed.');return false;}
     indices.slice().sort(function(a,b){return b-a;}).forEach(function(ix){var motion=captureHandDiscardMotion(side,ix,hand[ix]),id=hand.splice(ix,1)[0];sideDiscard(state,side).push(id);queueHandDiscardMotion(motion);pushLog(state,cardName(rc)+' pays additional cost by discarding '+cardName(card(id))+'.');if(ix<responseIndex)responseIndex--;});
     if(hand[responseIndex]!==responseOption.card_id){showInfo('Response Payment','The committed Response card moved unexpectedly during payment.');return false;}
     hand.splice(responseIndex,1);
-    responseOption=clone(responseOption);responseOption._payment_complete=true;responseOption._response_card_staged=true;responseOption._response_card_finalized=false;responseOption._paid_mana=cost;responseOption._paid_mana_class_uids=effectiveClassUids.slice();responseOption._counter_checked=!!responseOption._counter_checked;responseOption.hand_index=responseIndex;
+    responseOption=clone(responseOption);responseOption._payment_complete=true;responseOption._response_card_staged=true;responseOption._response_card_finalized=false;responseOption._paid_mana=cost;responseOption._paid_mana_shard_uids=effectiveShardUids.slice();responseOption._paid_mana_class_uids=plan.selected_class_uids.slice();responseOption._counter_checked=!!responseOption._counter_checked;responseOption.hand_index=responseIndex;
     state.pending=null;closeChoice();state.responseWindow=null;closeResponseWindowUI();
     pushLog(state,side+' completes payment for '+cardName(rc)+(cost?' ('+cost+' Mana value).':' (no Mana).')+' Counter-response priority may now open.');
     return resolveResponseWindow(responseOption,clone(rw));
@@ -3849,7 +3972,7 @@
   function commitResponsePaymentChoice(){
     if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return false;
     var p=appState.pending,selected=Array.isArray(p.selected_indices)?p.selected_indices:[],need=Number(p.required_discard_count||0);if(selected.length!==need){showInfo('Response Payment','Choose exactly '+need+' card'+(need===1?'':'s')+' to pay the additional cost.');return false;}
-    var handIndices=selected.map(function(choiceIndex){var c=(p.candidates||[])[choiceIndex];return c&&c.hand_index;});return finalizeResponsePayment(appState,clone(p.incoming_response_window),clone(p.response_option),handIndices,(p.selected_mana_class_uids||[]).slice());
+    var handIndices=selected.map(function(choiceIndex){var c=(p.candidates||[])[choiceIndex];return c&&c.hand_index;});return finalizeResponsePayment(appState,clone(p.incoming_response_window),clone(p.response_option),handIndices,(p.selected_shard_uids||[]).slice());
   }
   function beginResponsePayment(state,rw,responseOption){
     var rc=card(responseOption.card_id),side=rw.target_side||rw.response_owner||'PLAYER',spec=responsePaymentSpec(rc),hand=sideHand(state,side)||[],idx=Number(responseOption.hand_index),sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side);
@@ -3857,7 +3980,7 @@
     if(!handHasResponseExtraDiscard(hand,idx,rc)){showInfo('Cannot Respond',cardName(rc)+' requires '+spec.discard_from_hand+' other card'+(spec.discard_from_hand===1?'':'s')+' in Hand as an additional cost.');return false;}
     // Confirm Response is final commit. Mana/card costs are paid here before a new counter-response window can open.
     if(side==='AI'&&!state.pvpHumanVsHuman){
-      var aiCandidates=responsePaymentCandidates(state,side,responseOption);if(aiCandidates.length<spec.discard_from_hand)return false;var aiPaymentIndices=aiCandidates.slice(0,spec.discard_from_hand).map(function(x){return x.hand_index;}),aiPlan=autoManaPaymentForAI(state,side,rc,cost);if(!aiPlan.ok)return false;state.responseWindow=null;closeResponseWindowUI();pushLog(state,'AI confirms '+cardName(rc)+' and pays all mandatory costs before counter-response priority.');return finalizeResponsePayment(state,clone(rw),clone(responseOption),aiPaymentIndices,aiPlan.selected_class_uids||[]);
+      var aiCandidates=responsePaymentCandidates(state,side,responseOption);if(aiCandidates.length<spec.discard_from_hand)return false;var aiPaymentIndices=aiCandidates.slice(0,spec.discard_from_hand).map(function(x){return x.hand_index;}),aiPlan=autoManaPaymentForAI(state,side,rc,cost);if(!aiPlan.ok)return false;state.responseWindow=null;closeResponseWindowUI();pushLog(state,'AI confirms '+cardName(rc)+' and pays all mandatory costs before counter-response priority.');return finalizeResponsePayment(state,clone(rw),clone(responseOption),aiPaymentIndices,(aiPlan.shards||[]).map(function(sh){return sh.uid;}));
     }
     if(responsePaymentNeedsChoice(state,side,rc,cost)) return openResponsePaymentChoice(state,rw,clone(responseOption));
     state.responseWindow=null;closeResponseWindowUI();return finalizeResponsePayment(state,clone(rw),clone(responseOption),[],[]);
@@ -3897,12 +4020,12 @@
   function isDragonbornHero(hero){ return racialActionMatches(hero,'dragon_scale','response_damage_block'); }
   function dragonScaleResponseOptionsFor(state, responderSide, incoming){
     if(!state || !incoming || incoming.cannot_block) return [];var lanes=responseAffectedLanes(state,responderSide,incoming), out=[];
-    lanes.forEach(function(lane){var h=sideHeroes(state,responderSide)[lane],r=resolvedRacialTrait(h),a=r&&r.action||{},e=a.effect||{},types=e.damage_types||[],cost=Number((a.cost&&a.cost.racial_token)||0);if(h&&Number(h.hp||0)>0&&!isLegacyModeHero(h)&&a.type==='response_damage_block'&&types.indexOf(String(incoming.damage_type||''))!==-1&&Number(state[racialTokenKey(responderSide)]||0)>=cost&&!racialAbilityUsedThisTurnByHero(state,h))out.push({card_id:h.card_id,source_lane:lane,response_kind:'dragon_scale',racial_ability:a.action_key||'dragon_scale',label:(r.name||'Dragon Scale')+' — '+cardName(card(h.card_id))+' from '+lane,block:Number(e.block_damage||0),cost_racial:cost,chosen_affected_lane:lane});});
+    lanes.forEach(function(lane){var h=sideHeroes(state,responderSide)[lane],r=resolvedRacialTrait(h),a=r&&r.action||{},e=a.effect||{},types=e.damage_types||[],cost=Number((a.cost&&a.cost.racial_token)||0);if(h&&Number(h.hp||0)>0&&!isLegacyModeHero(h)&&a.type==='response_damage_block'&&types.indexOf(String(incoming.damage_type||''))!==-1&&Number(state[racialTokenKey(responderSide)]||0)>=cost&&!racialAbilityUsedThisTurnByHero(state,h))out.push({card_id:h.card_id,source_lane:lane,source_card_id:h.card_id,response_kind:'dragon_scale',racial_ability:a.action_key||'dragon_scale',label:(r.name||'Dragon Scale')+' — '+cardName(card(h.card_id))+' from '+lane,block:Number(e.block_damage||0),cost_racial:cost,chosen_affected_lane:lane});});
     return out;
   }
   function secondChanceResponseOptionsFor(state,responderSide,incoming){
     if(!state||!incoming||incoming.cannot_dodge)return[];var lanes=responseAffectedLanes(state,responderSide,incoming),out=[];
-    lanes.forEach(function(lane){var h=sideHeroes(state,responderSide)[lane],r=resolvedRacialTrait(h),a=r&&r.action||{},e=a.effect||{},types=e.damage_types||[],cost=Number((a.cost&&a.cost.racial_token)||0);if(h&&Number(h.hp||0)>0&&!isLegacyModeHero(h)&&a.type==='response_damage_dodge'&&e.dodge_incoming_damage===true&&types.indexOf(String(incoming.damage_type||''))!==-1&&Number(state[racialTokenKey(responderSide)]||0)>=cost&&!racialAbilityUsedThisTurnByHero(state,h)&&!hasStatus(h,'Freeze'))out.push({card_id:h.card_id,source_lane:lane,response_kind:'second_chance',racial_ability:a.action_key||'second_chance',label:(r.name||'Second Chance')+' — '+cardName(card(h.card_id))+' from '+lane,cost_racial:cost,chosen_affected_lane:lane});});
+    lanes.forEach(function(lane){var h=sideHeroes(state,responderSide)[lane],r=resolvedRacialTrait(h),a=r&&r.action||{},e=a.effect||{},types=e.damage_types||[],cost=Number((a.cost&&a.cost.racial_token)||0);if(h&&Number(h.hp||0)>0&&!isLegacyModeHero(h)&&a.type==='response_damage_dodge'&&e.dodge_incoming_damage===true&&types.indexOf(String(incoming.damage_type||''))!==-1&&Number(state[racialTokenKey(responderSide)]||0)>=cost&&!racialAbilityUsedThisTurnByHero(state,h)&&!hasStatus(h,'Freeze'))out.push({card_id:h.card_id,source_lane:lane,source_card_id:h.card_id,response_kind:'second_chance',racial_ability:a.action_key||'second_chance',label:(r.name||'Second Chance')+' — '+cardName(card(h.card_id))+' from '+lane,cost_racial:cost,chosen_affected_lane:lane});});
     return out;
   }
   function responseAffectedLanes(state, responderSide, incoming){
@@ -3922,7 +4045,7 @@
       if(isBrilliantRadianceCard(rc)&&(area||isUltimateCard(card(incoming.card_id)))) return;
             if(isCoverUpCard(rc)){
         if(responseKind(rc,incoming)!=='cover_up') return;
-        adjacentLanes(incoming.target_lane).forEach(function(srcLane){ var src=sideHeroes(state,responderSide)[srcLane]; if(sourceCompatibleForResponse(rc,src) && !hasStatus(src,'Freeze') && !hasStatus(defender,'Freeze') && affordable(rc,src)) options.push({card_id:id, hand_index:idx, card:rc, source_lane:srcLane, response_kind:'cover_up', label:cardName(rc)+' — '+cardName(card(src.card_id))+' from '+srcLane}); }); return;
+        adjacentLanes(incoming.target_lane).forEach(function(srcLane){ var src=sideHeroes(state,responderSide)[srcLane]; if(sourceCompatibleForResponse(rc,src) && !hasStatus(src,'Freeze') && !hasStatus(defender,'Freeze') && affordable(rc,src)) options.push({card_id:id, hand_index:idx, card:rc, source_lane:srcLane, source_card_id:heroIdFrom(src), response_kind:'cover_up', label:cardName(rc)+' — '+cardName(card(src.card_id))+' from '+srcLane}); }); return;
       }
       var rk=responseKind(rc,incoming); if(!rk) return;
       if(isSpectralGrapplingHookCard(rc) && !spectralGrapplingHookResponderValid(defender)) return;
@@ -3930,12 +4053,12 @@
       if((incoming.affected_lanes||[]).length>1 && !(isSacredBulwarkCard(rc) || isBlessingDivinityCard(rc) || isDefensiveFormationCard(rc) || isSpectralGrapplingHookCard(rc))) return;
       if(isDefensiveFormationCard(rc)){ if(affordable(rc,null)) options.push({card_id:id, hand_index:idx, card:rc, source_lane:null, response_kind:'area_reduce', affected_lanes:affected.slice()}); return; }
       if(isAlliedSourceDefenseCard(rc)){
-        LANE_ORDER.forEach(function(srcLane){ var src=sideHeroes(state,responderSide)[srcLane]; if(sourceCompatibleForResponse(rc,src)&&affordable(rc,src)){ var pol=attachmentPolicyForCard(rc,src); if(!pol||attachmentSlotIndex(src)!==-1) options.push({card_id:id, hand_index:idx, card:rc, source_lane:srcLane, response_kind:rk, affected_lanes:(isHolyBarrierCard(rc)?null:affected.slice()), protected_lane:incoming.target_lane}); } }); return;
+        LANE_ORDER.forEach(function(srcLane){ var src=sideHeroes(state,responderSide)[srcLane]; if(sourceCompatibleForResponse(rc,src)&&affordable(rc,src)){ var pol=attachmentPolicyForCard(rc,src); if(!pol||attachmentSlotIndex(src)!==-1) options.push({card_id:id, hand_index:idx, card:rc, source_lane:srcLane, source_card_id:heroIdFrom(src), response_kind:rk, affected_lanes:(isHolyBarrierCard(rc)?null:affected.slice()), protected_lane:incoming.target_lane}); } }); return;
       }
       if(rk==='dodge' && hasStatus(defender,'Freeze')) return;
       if(requiresSourceHero(rc) && !sourceCompatibleForResponse(rc,defender)) return;
       if(!affordable(rc,defender)) return;
-      options.push({card_id:id, hand_index:idx, card:rc, source_lane:incoming.target_lane, response_kind:rk});
+      options.push({card_id:id, hand_index:idx, card:rc, source_lane:incoming.target_lane, source_card_id:heroIdFrom(defender), response_kind:rk});
     });
     options=options.concat(dragonScaleResponseOptionsFor(state,responderSide,incoming));
     options=options.concat(secondChanceResponseOptionsFor(state,responderSide,incoming));
@@ -4085,7 +4208,10 @@
   }
   function canOpenReactiveCancelWindow(state, c, responderSide, sourceSide){
     var fam=committedResponseCounterFamily(c); if(fam!=='Event' && fam!=='Item') return false;
-    return sourceSide!==responderSide && reactiveCancelOptionsFor(state,fam,responderSide||'PLAYER',sourceSide).length>0;
+    // Option B no-popup UX: every opposing Event/Item gets a visible Response gate.
+    // The window may have zero legal Reaction cards; the human defender can still PASS
+    // from the fixed action slot while Active Card keeps the incoming card visible.
+    return sourceSide!==responderSide;
   }
   function openReactiveCancelWindow(state, action, cost, responderSide){
     responderSide=responderSide||'PLAYER';
@@ -4113,7 +4239,7 @@
     // Generic nested committed-response continuation. Every fully paid Response can
     // become the incoming card of a new counter window only when its canonical family
     // has a legal reactive cancel option. The prior window remains continuation data.
-    state.responseWindow={kind:'incoming_card',committed_response_counter:true,response_continuation:clone(continuationWindow),committed_response_option:clone(responseOption),response_owner:responderSide,card_id:responseOption.card_id,source_side:sourceSide,source_lane:responseOption.source_lane||continuationWindow.target_lane||null,target_side:responderSide,target_lane:continuationWindow.source_lane||null,incoming_family:family,options:opts,selected:null};
+    state.responseWindow={kind:'incoming_card',committed_response_counter:true,response_continuation:clone(continuationWindow),committed_response_option:clone(responseOption),response_owner:responderSide,card_id:responseOption.card_id,source_side:sourceSide,source_lane:responseOption.source_lane||continuationWindow.target_lane||null,source_card_id:responseOption.source_card_id||null,target_side:responderSide,target_lane:continuationWindow.source_lane||null,incoming_family:family,options:opts,selected:null};
     state.pending={type:'response_window',card_id:responseOption.card_id,response_owner:responderSide,decision_side:responderSide,commit_stage:'committed'};
     pushLog(state,'New Response Window opens: '+responderSide+' may counter committed '+cardName(incoming)+'.');closeResponseWindowUI();
     if(responderSide==='AI'&&!state.pvpHumanVsHuman){var aiChoice=opts[0]||null;return resolveResponseWindow(aiChoice);}
@@ -4152,7 +4278,7 @@
       if(responseOption._response_card_staged) discardStagedResponseCard(appState,owner,responseOption,'counter-response resolved');
       else { var ph=sideHand(appState,owner), pi=responseOption.hand_index; if(ph[pi]!==responseOption.card_id) pi=ph.indexOf(responseOption.card_id); if(pi>=0){ ph.splice(pi,1); sideDiscard(appState,owner).push(responseOption.card_id); } }
       var srcSide=rw.source_side||'AI', srcHand=sideHand(appState,srcSide), idx=rw.hand_index; if(srcHand[idx]!==rw.card_id) idx=srcHand.indexOf(rw.card_id);
-      var incomingAction=rw.action||{},incomingPayment=isArrowBarrageCard(incoming)?spendAllManaForCard(appState,srcSide,incoming):spendManaPayment(appState,srcSide,incoming,Number(rw.original_cost||0),incomingAction.selected_mana_class_uids||[],'Canceled card payment');
+      var incomingAction=rw.action||{},incomingPayment=isArrowBarrageCard(incoming)?spendAllManaForCard(appState,srcSide,incoming):(Array.isArray(incomingAction.selected_mana_shard_uids)?spendExactManaPayment(appState,srcSide,incoming,Number(rw.original_cost||0),incomingAction.selected_mana_shard_uids,'Canceled card payment'):spendManaPayment(appState,srcSide,incoming,Number(rw.original_cost||0),incomingAction.selected_mana_class_uids||[],'Canceled card payment'));
       if(!incomingPayment||!incomingPayment.ok){showInfo('Mana Payment','The committed incoming card could not complete its Mana payment.');return false;}
       var srcHero=(rw.source_lane?sideHeroes(appState,srcSide)[rw.source_lane]:null);
       if(srcHero && sourceShouldExhaust(incoming,srcHero)){ srcHero.exhausted=true; srcHero.exhaust_reason='Played '+cardName(incoming)+'; canceled by response.'; }
@@ -4862,6 +4988,27 @@
     syncCounts(appState); render(); return true;
   }
   function closeResponseWindowUI(){ var overlay=$('responseOverlay'); if(overlay) overlay.classList.remove('open'); }
+  // Option B safety repair: only normalize objectively inconsistent Response state.
+  // Never clears a real mandatory choice. This prevents a stale response_window marker from
+  // blocking NEXT PHASE after the authoritative Response context has already disappeared.
+  function repairOrphanBlockingState(){
+    if(!appState)return false;
+    var p=appState.pending,rw=appState.responseWindow,changed=false;
+    if(p&&p.type==='response_window'&&!rw){
+      appState.pending=null;changed=true;pushLog(appState,'Recovered stale Response marker; no active Response Window remained.');
+    }
+    if(rw){
+      var owner=rw.response_owner||rw.target_side||null;
+      if(owner&&!rw.response_owner){rw.response_owner=owner;changed=true;}
+      if(!appState.pending){appState.pending={type:'response_window',card_id:rw.card_id,response_owner:owner,decision_side:owner,commit_stage:'committed'};changed=true;}
+      else if(appState.pending.type==='response_window'&&owner){
+        if(!appState.pending.response_owner){appState.pending.response_owner=owner;changed=true;}
+        if(!appState.pending.decision_side){appState.pending.decision_side=owner;changed=true;}
+      }
+    }
+    if(changed){syncCounts(appState);runtimeStateCheckpoint(appState,'Recovered inconsistent Response blocking state');render();}
+    return changed;
+  }
   function responsePassNoStuck(){ return resolveResponseWindow(null); }
   function responseSelectNoStuck(idx){
     var rw=appState&&appState.responseWindow; if(rw)refreshResponseWindowOptions(appState,rw); var opt=rw&&rw.options&&rw.options[idx];
@@ -4990,6 +5137,13 @@
     opts=opts||{}; var side=opts.side||'PLAYER',targetSide=oppositeSide(side),pool=manaPoolCardsForSide(state,targetSide),required=Math.min(Math.max(0,Number(opts.amount||1)),pool.length);
     var rawCandidates=pool.map(function(sh){return{uid:sh.uid};}), p={type:'opponent_mana_selection',side:side,decision_side:side,target_side:targetSide,mode:opts.mode==='REMOVE_AND_GAIN_OWN'?'REMOVE_AND_GAIN_OWN':'REMOVE_ONLY',reason:opts.reason||'Mana effect',required_count:required,candidates:blindShuffleCandidates(rawCandidates),selected_indices:[],title:opts.title||'Choose Opponent Mana',instruction:opts.instruction||null,confirm_text:opts.confirm_text||null,commit_stage:'committed',direct_source:opts.direct_source||null,continuation:opts.continuation||null};
     if(!required) return finishOpponentManaInteraction(state,p,[]);
+    var noMeaningfulChoice=required>=pool.length || !pool.some(function(sh){return sh&&sh.kind==='CLASS';});
+    if(noMeaningfulChoice){
+      p.direct_pool_to_deck_animation=true;
+      p.candidates=(required>=pool.length?rawCandidates.slice():rawCandidates.slice(0,required));
+      pushLog(state,(opts.reason||'Mana effect')+' auto-resolves because there is no meaningful opponent Shard choice.');
+      return finishOpponentManaInteraction(state,p,p.candidates);
+    }
     if(side!=='PLAYER' && !state.pvpHumanVsHuman){
       return finishOpponentManaInteraction(state,p,p.candidates.slice(0,required));
     }
@@ -5469,7 +5623,7 @@
   }
   function isCancelablePreCommitPending(p){
     if(!p || pendingRevealsHiddenInformation(p) || pendingActionCommitted(p) || (appState&&appState.responseWindow)) return false;
-    return ['source_selection','target_selection','scouting_target_selection','scouting_exp_selection','exact_two_target_selection','mana_spend_choice','optional_magical_surge','status_removal_choice','tribute_target','racial_target_selection','hero_ability_target_selection','legacy_cost_selection','legacy_hero_target_selection','manual_reposition'].indexOf(p.type)!==-1;
+    return ['warp_scroll_selection','source_selection','target_selection','scouting_target_selection','scouting_exp_selection','exact_two_target_selection','mana_spend_choice','mana_shard_payment_choice','optional_magical_surge','status_removal_choice','tribute_target','racial_target_selection','hero_ability_target_selection','legacy_cost_selection','legacy_hero_target_selection','manual_reposition'].indexOf(p.type)!==-1;
   }
   function localPendingClosePolicy(state,p){
     if(!p) return 'CLOSE_ONLY';
@@ -5677,7 +5831,7 @@
 
   function promptOptionalTargetSwap(state, action, nextPending){
     var opts=soulBlastTargetSwapOptions(state,action); if(!opts.length) return false;
-    state.pending={type:'optional_target_swap', card_id:action.card_id, source_side:action.source_side, source_lane:action.source_lane, decision_side:action.source_side, target_side:action.target_side, target_lane:action.target_lane, swap_options:opts, next_pending:nextPending?clone(nextPending):null, deferred_discard_card_id:action.deferred_discard_card_id||action.card_id, deferred_discard_side:action.deferred_discard_side||action.source_side, visual_hold_key:action.visual_hold_key||(nextPending&&nextPending.visual_hold_key)||null, commit_token:action.commit_token||(nextPending&&nextPending.commit_token)||null};
+    state.pending={type:'optional_target_swap', card_id:action.card_id, source_side:action.source_side, source_lane:action.source_lane, source_card_id:action.source_card_id||null, decision_side:action.source_side, target_side:action.target_side, target_lane:action.target_lane, swap_options:opts, next_pending:nextPending?clone(nextPending):null, deferred_discard_card_id:action.deferred_discard_card_id||action.card_id, deferred_discard_side:action.deferred_discard_side||action.source_side, visual_hold_key:action.visual_hold_key||(nextPending&&nextPending.visual_hold_key)||null, commit_token:action.commit_token||(nextPending&&nextPending.commit_token)||null};
     if(action.source_side==='AI' && !state.pvpHumanVsHuman && state===appState){
       pushLog(state,'AI chooses Soul Blast Shot reposition with '+opts[0]+'.');
       performOptionalTargetSwapDecision(opts[0]);
@@ -5708,7 +5862,7 @@
   }
   function promptOptionalSwap(state, action, nextPending){
     var opts=sourceSwapOptions(state,action); if(!opts.length) return false;
-    state.pending={type:'optional_swap', decision_side:action.source_side, card_id:action.card_id, source_side:action.source_side, source_lane:action.source_lane, swap_lane:opts[0], swap_options:opts.slice(), next_pending:nextPending?clone(nextPending):null, deferred_discard_card_id:action.deferred_discard_card_id||action.card_id, deferred_discard_side:action.deferred_discard_side||action.source_side, visual_hold_key:action.visual_hold_key||(nextPending&&nextPending.visual_hold_key)||null, commit_token:action.commit_token||(nextPending&&nextPending.commit_token)||null};
+    state.pending={type:'optional_swap', decision_side:action.source_side, card_id:action.card_id, source_side:action.source_side, source_lane:action.source_lane, source_card_id:action.source_card_id||null, swap_lane:opts[0], swap_options:opts.slice(), next_pending:nextPending?clone(nextPending):null, deferred_discard_card_id:action.deferred_discard_card_id||action.card_id, deferred_discard_side:action.deferred_discard_side||action.source_side, visual_hold_key:action.visual_hold_key||(nextPending&&nextPending.visual_hold_key)||null, commit_token:action.commit_token||(nextPending&&nextPending.commit_token)||null};
     if(action.source_side==='AI' && !state.pvpHumanVsHuman && state===appState){
       pushLog(state,'AI chooses optional reposition with '+opts[0]+' for '+cardName(card(action.card_id))+'.');
       performOptionalSwapDecision(opts[0]);
@@ -5879,6 +6033,7 @@ function getActivatedHeroAbilities(state, side, lane){
     if(ability.once_per_turn)source.class_ability_used_turn=runtimeTurnStamp(state);
     pushLog(state, side+' uses Class Ability '+classAbilityName+' from '+cardName(card(source.card_id))+' to heal '+targetLane+' by '+amount+'.');
     if(side==='AI'&&!state.pvpHumanVsHuman) recordOpponentAction(state,'ABILITY',source.card_id,'AI '+classAbilityName,'AI uses Class Ability '+classAbilityName+'.',{action_line:'Action: AI used Class Ability '+classAbilityName+'.', source_side:'AI', source_lane:lane, target_side:'AI', target_lane:targetLane, result_lines:['Healed '+targetLane+' by '+amount+'.'].concat(ability.exhaust?['Source Hero Exhausted.']:[])});
+    if(side==='PLAYER'&&!state.pvpHumanVsHuman) recordLocalPlayerAction(state,'ABILITY',source.card_id,classAbilityName,'You use Class Ability '+classAbilityName+'.',{action_line:'Action: You used Class Ability '+classAbilityName+'.', source_side:'PLAYER', source_lane:lane, target_side:'PLAYER', target_lane:targetLane, result_lines:['Healed '+targetLane+' by '+amount+'.'].concat(ability.exhaust?['Source Hero Exhausted.']:[])});
     if(state.pvpHumanVsHuman) recordPvpSideAction(state,side,'ABILITY',source.card_id,classAbilityName,side+' uses Class Ability '+classAbilityName+'.',{action_line:'Action: '+side+' used Class Ability '+classAbilityName+'.', source_side:side, source_lane:lane, target_side:side, target_lane:targetLane, result_lines:['Healed '+targetLane+' by '+amount+'.'].concat(ability.exhaust?['Source Hero Exhausted.']:[])});
     state.pending=null; activateNextSaintPurifyChoice(state); syncCounts(state); render(); return true;
   }
@@ -5929,6 +6084,7 @@ function getActivatedHeroAbilities(state, side, lane){
       var primalAmount=Number(eff.direct_damage||0),primalType=String(eff.damage_type||'Physical');
       pushLog(state,side+' uses '+a.label+' from '+cardName(card(h.card_id))+', spends '+Number(a.cost||0)+' Racial Token, and declares '+primalAmount+' '+primalType+' damage.');
       if(side==='AI'&&!state.pvpHumanVsHuman) recordOpponentAction(state,'RACIAL',h.card_id,'AI '+a.label,'AI uses '+a.label+' as a finisher.',{action_line:'Action: AI used '+a.label+'.',source_side:'AI',source_lane:lane,target_side:'PLAYER',target_lane:targetLane,result_lines:['Spent '+Number(a.cost||0)+' Racial Token.','Declared '+primalAmount+' '+primalType+' damage.']});
+      if(side==='PLAYER'&&!state.pvpHumanVsHuman) recordLocalPlayerAction(state,'RACIAL',h.card_id,a.label,'You use '+a.label+'.',{action_line:'Action: You used '+a.label+'.',source_side:'PLAYER',source_lane:lane,target_side:'AI',target_lane:targetLane,result_lines:['Spent '+Number(a.cost||0)+' Racial Token.','Declared '+primalAmount+' '+primalType+' damage.']});
       openPrimalStrikeResponseWindow(state,side,lane,targetLane,a);
       if(!state.pvpHumanVsHuman && oppositeSide(side)==='AI'){ var opt=(state.responseWindow.options||[])[0]||null; return resolveAbilityDamageResponseWindow(opt); }
       syncCounts(state); render(); return true;
@@ -5937,6 +6093,7 @@ function getActivatedHeroAbilities(state, side, lane){
     if(a.does_exhaust){ h.exhausted=true; h.exhaust_reason='Racial Ability used.'; }
     pushLog(state, side+' uses Racial Ability '+a.label+' from '+cardName(card(h.card_id))+'.');
     if(side==='AI'&&!state.pvpHumanVsHuman) recordOpponentAction(state,'RACIAL',h.card_id,'AI '+a.label,'AI uses Racial Trait '+a.label+'.',{action_line:'Action: AI used Racial Trait '+a.label+'.',source_side:'AI',source_lane:lane,result_lines:['Spent '+Number(a.cost||0)+' Racial Token.'+(eff.draw_cards?' Drew '+Number(eff.draw_cards||0)+' cards.':'')+(eff.gain_mana?' Gained '+Number(eff.gain_mana||0)+' Shards.':'')]});
+    if(side==='PLAYER'&&!state.pvpHumanVsHuman) recordLocalPlayerAction(state,'RACIAL',h.card_id,a.label,'You use Racial Trait '+a.label+'.',{action_line:'Action: You used Racial Trait '+a.label+'.',source_side:'PLAYER',source_lane:lane,result_lines:['Spent '+Number(a.cost||0)+' Racial Token.'+(eff.draw_cards?' Drew '+Number(eff.draw_cards||0)+' cards.':'')+(eff.gain_mana?' Gained '+Number(eff.gain_mana||0)+' Shards.':'')]});
     state.pending=null; activateNextSaintPurifyChoice(state); syncCounts(state); render(); return true;
   }
   function isCastingCard(c){
@@ -6023,7 +6180,7 @@ function getActivatedHeroAbilities(state, side, lane){
     // Source/target selection is pre-commit UI state. Clear it before the card leaves Hand so it
     // cannot masquerade as an active post-commit destination if a later resolver exits early.
     state.pending=null;
-    var manaPaymentResult=isArrowBarrageCard(c)?spendAllManaForCard(state,side,c):spendManaPayment(state,side,c,cost,action.selected_mana_class_uids||[],'Card payment');
+    var manaPaymentResult=isArrowBarrageCard(c)?spendAllManaForCard(state,side,c):(Array.isArray(action.selected_mana_shard_uids)?spendExactManaPayment(state,side,c,cost,action.selected_mana_shard_uids,'Card payment'):spendManaPayment(state,side,c,cost,action.selected_mana_class_uids||[],'Card payment'));
     if(!manaPaymentResult||!manaPaymentResult.ok){showInfo('Cannot Play','Mana payment could not be completed from the current Shard Pool.');restoreStateSnapshot(state,committedSnapshot);render();return false;}
     if(isArrowBarrageCard(c)){action.mana_spent=Number(manaPaymentResult.value||0);cost=action.mana_spent;}
     hand=sideHand(state,side);if(hand[action.hand_index]!==cardId){var paidFound=hand.indexOf(cardId);if(paidFound<0){restoreStateSnapshot(state,committedSnapshot);showInfo('Cannot Play','Card left Hand before payment completed.');render();return false;}action.hand_index=paidFound;}
@@ -6273,8 +6430,8 @@ function getActivatedHeroAbilities(state, side, lane){
     var hero=sideHeroes(state,side)[lane]; if(!hero) return false;
     var threshold=nextRankThreshold(hero); if(!threshold || Number(hero.exp_total||0)<threshold) return false;
     var beforeRank=heroRank(hero), beforeClass=heroClass(hero), beforeDrawReplacement=!!drawReplacementAbilityForHero(hero);
-    var targetRank=beforeRank+1; var nextId=nextRankHeroId(state,side,lane,targetRank); if(nextId) queueLegacyDeckToFieldMotion(side,lane,nextId); if(!nextId){ pushLog(state,'Rank Up failed: no Rank '+targetRank+' Hero found in Legacy Deck package for '+lane+'.'); return false; }
-    var spentExpCards=(hero.exp_cards||[]).slice(); queueRankUpDiscardMotion(side,lane,spentExpCards);
+    var targetRank=beforeRank+1; var nextId=nextRankHeroId(state,side,lane,targetRank); if(nextId && !EXTERNAL_HUMAN_UI) queueLegacyDeckToFieldMotion(side,lane,nextId); if(!nextId){ pushLog(state,'Rank Up failed: no Rank '+targetRank+' Hero found in Legacy Deck package for '+lane+'.'); return false; }
+    var spentExpCards=(hero.exp_cards||[]).slice(); if(!EXTERNAL_HUMAN_UI) queueRankUpDiscardMotion(side,lane,spentExpCards);
     var discard=sideDiscard(state,side); spentExpCards.forEach(function(id){ discard.push(id); });
     var oldHp=Number(hero.hp||0), oldMax=Number(hero.maxHp||100); var damageTaken=Math.max(0,oldMax-oldHp); hero.card_id=nextId; var nc=card(nextId), afterClass=heroClass(hero); var newMax=Number(nc.hp||oldMax||100); hero.maxHp=newMax; hero.hp=Math.max(1, Math.min(newMax, newMax-damageTaken)); hero.exp_cards=[]; hero.exp_total=Number(hero.exp_total||0);
     /* v0.12: Alden's Draw This Turn counter does not exist while he is Archer. The moment he becomes Arbalest, start the Hero-owned counter at 0 before Rank II reward draws resolve. Arbalest -> Grand Arbalest keeps the current turn count. */
@@ -6391,6 +6548,13 @@ function getActivatedHeroAbilities(state, side, lane){
   }
   function queueReservedMainDeckDraw(reservation,state,options){
     options=options||{};if(!reservation){if(typeof options.onComplete==='function')options.onComplete(null);return false;}
+    /* Option B external UI reuses the same reserve -> animate -> commit authority as VS AI.
+       Its renderer owns the visible Hand slot, so delegate only the motion target while
+       keeping commitReservedMainDeckDraw as the sole state mutation. */
+    if(EXTERNAL_HUMAN_UI&&typeof window!=='undefined'&&window.GL_OPTION_B_PRESENTATION&&typeof window.GL_OPTION_B_PRESENTATION.queueReservedMainDeckDraw==='function'){
+      var finished=false;function externalDone(){if(finished)return;finished=true;var result=commitReservedMainDeckDraw(state,reservation);syncCounts(state);if(typeof options.onComplete==='function')options.onComplete(result);}
+      try{if(window.GL_OPTION_B_PRESENTATION.queueReservedMainDeckDraw(clone(reservation),externalDone)!==false)return true;}catch(ignoreExternalDraw){}
+    }
     if(!animationDocumentReady()){var immediate=commitReservedMainDeckDraw(state,reservation);if(!SUPPRESS_RENDER)render();if(typeof options.onComplete==='function')options.onComplete(immediate);return false;}
     if(appState&&matchStarted&&!SUPPRESS_RENDER)render();var queued=false;
     nextVisualFrame(function(){
@@ -6414,7 +6578,8 @@ function getActivatedHeroAbilities(state, side, lane){
     if(state.turn==='AI'){
       if(opts.bridgeImmediate){resolveDrawPhase(state,'AI',{deferAnimation:true});if(!state.gameOver&&!state.pending)state.phase='Deploy';syncCounts(state);}else runAITurn(state);
     }else{
-      resolveDrawPhase(state,'PLAYER',{deferAnimation:!!opts.deferAnimation});
+      var optionBExternalDraw=!!(EXTERNAL_HUMAN_UI&&typeof window!=='undefined'&&window.GL_OPTION_B_PRESENTATION&&typeof window.GL_OPTION_B_PRESENTATION.queueReservedMainDeckDraw==='function');
+      resolveDrawPhase(state,'PLAYER',{deferAnimation:!!opts.deferAnimation&&!optionBExternalDraw});
       syncCounts(state);autoAdvancePlayerDrawWhenReady(state);
     }
     if(!SUPPRESS_RENDER)render();
@@ -6504,7 +6669,7 @@ function getActivatedHeroAbilities(state, side, lane){
     opts=opts||{};clearRacialUseForSide(state,side);state.cardsDrawnThisTurn=state.cardsDrawnThisTurn||{PLAYER:0,AI:0};state.cardsDrawnThisTurn[side]=0;clearExhaustForSide(state,side);checkGameEnd(state);if(state.gameOver)return false;
     /* v0.10 authority: Ready -> mandatory Main Deck draw -> all draw replacement/actual-draw effects -> Mana Regen draw(s) -> Deploy. Destination state commits only after each flying card arrives. */
     state.drawPhaseResolvedFor=null;state.drawPresentationPending=true;state.drawPhaseContinuation=null;
-    if(opts.deferAnimation||SUPPRESS_RENDER){var immediate=drawOne(state,side,true,{reason:'MANDATORY_DRAW_PHASE',deferAnimation:true});syncCounts(state);if(state.gameOver){state.drawPresentationPending=false;return{drawEvents:[],manaEvents:[]};}if(state.pending&&state.pending.type==='draw_replacement_choice'){state.drawPresentationPending=false;state.drawPhaseContinuation={side:side,step:'MANA_REGEN'};return{drawEvents:immediate&&immediate.event?[immediate.event]:[],manaEvents:[]};}continueDrawPhaseWithMana(state,side,{deferAnimation:true});return{drawEvents:immediate&&immediate.event?[immediate.event]:[],manaEvents:[]};}
+    if(opts.deferAnimation||(SUPPRESS_RENDER&&!(EXTERNAL_HUMAN_UI&&typeof window!=='undefined'&&window.GL_OPTION_B_PRESENTATION&&typeof window.GL_OPTION_B_PRESENTATION.queueReservedMainDeckDraw==='function'))){var immediate=drawOne(state,side,true,{reason:'MANDATORY_DRAW_PHASE',deferAnimation:true});syncCounts(state);if(state.gameOver){state.drawPresentationPending=false;return{drawEvents:[],manaEvents:[]};}if(state.pending&&state.pending.type==='draw_replacement_choice'){state.drawPresentationPending=false;state.drawPhaseContinuation={side:side,step:'MANA_REGEN'};return{drawEvents:immediate&&immediate.event?[immediate.event]:[],manaEvents:[]};}continueDrawPhaseWithMana(state,side,{deferAnimation:true});return{drawEvents:immediate&&immediate.event?[immediate.event]:[],manaEvents:[]};}
     var reservation=reserveMainDeckDraw(state,side,true,{reason:'MANDATORY_DRAW_PHASE'});syncCounts(state);render();if(!reservation){state.drawPresentationPending=false;return false;}
     queueReservedMainDeckDraw(reservation,state,{onComplete:function(result){
       if(!result||state.gameOver){state.drawPresentationPending=false;syncCounts(state);if(!SUPPRESS_RENDER)render();return;}
@@ -9827,7 +9992,9 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     var s=glPvpDeepSwapSides(clone(state));
     function sw(a,b){ var t=s[a]; s[a]=s[b]; s[b]=t; }
     sw('mana','aiMana'); sw('manaRegen','aiManaRegen'); sw('racial','aiRacial');
-    // Physical Shard state belongs to the seat too in human-vs-human PvP.
+    // Physical Shard state belongs to the seat too. Without these swaps, seat 2
+    // resolves its local Draw/Mana Regen against seat 1's Shard Deck/Pool after
+    // mirroring, causing the opponent to gain Shards instead of the active player.
     sw('playerManaDeck','aiManaDeck'); sw('playerManaPoolCards','aiManaPoolCards');
     sw('playerManaClasses','aiManaClasses'); sw('playerManaDeckCount','aiManaDeckCount');
     sw('playerDeck','aiDeck'); sw('playerHand','aiHand'); sw('playerDiscard','aiDiscard');
@@ -10617,6 +10784,8 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     },
     setSharedBoardMode:function(active){ window.GL_PVP_SHARED_BOARD_ACTIVE=!!active; },
     setRenderSuppressed:function(active){SUPPRESS_RENDER=!!active;return SUPPRESS_RENDER;},
+    setExternalHumanUi:function(active){EXTERNAL_HUMAN_UI=!!active;return EXTERNAL_HUMAN_UI;},
+    getExternalHumanUi:function(){return !!EXTERNAL_HUMAN_UI;},
     getPendingClosePolicy:function(){ return localPendingClosePolicy(appState,appState&&appState.pending); },
     clearTransientUiState:clearTransientUiState,
     testSetManaPreviewHidden:function(side,uid,hidden){side=side==='AI'?'AI':'PLAYER';if(hidden){if(!hiddenManaDrawToken(side,uid))addHiddenManaDrawToken(side,uid);}else removeHiddenManaDrawToken(side,uid,{suppressRender:true});if(appState&&matchStarted&&!SUPPRESS_RENDER)render();return !!hiddenManaDrawToken(side,uid);},
@@ -10629,6 +10798,10 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     testGameplayFoundationFixes:simulateV559GameplayFixes,
     testV69SourcePendingAudit:simulateV69SourcePendingAudit,
     playOpeningCoinSound:playOpeningCoinSound,
+    unlockGameplayAudioPlayback:unlockGameplayAudioPlayback,
+    prepareAuthoritativeBattleAssets:primeBattleFeedbackAssets,
+    // Authoritative PvP presentation transport: audio is played as soon as the
+    // server revision arrives; VFX is replayed after the imported board is painted.
     playAuthoritativeBattleFeedbackAudio:function(evt){ return playBattleFeedbackAudioNow(evt); },
     playAuthoritativeBattleFeedback:function(evt){ return runBattleFeedback(evt); },
     playAuthoritativeCardSound:playCardMotionSound,
@@ -10663,6 +10836,28 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     completeOpeningFlow:function(firstSide,flipData){var before=(appState&&appState.presentationEvents||[]).length;completeOpeningFlow(appState,firstSide,flipData||{},{deferAnimation:true,bridgeImmediate:true});var events=(appState&&appState.presentationEvents||[]).slice(before);return{ok:true,events:clone(events),snapshot:glPvpBridgeSnapshot()};},
     testCoinOutcomeFromUint32:coinOutcomeFromUint32,
     testRoundAdvanceAfterEnd:function(firstSide,endingSide,round){var probe={round:Number(round||1),openingCoinFlip:{firstPlayer:firstSide==='AI'?'AI':'PLAYER'}};var advanced=advanceRoundAfterCompletedTurnPair(probe,endingSide==='AI'?'AI':'PLAYER');return{advanced:advanced,round:probe.round};},
+    testExactManaPaymentV3751:function(){
+      var oldApp=appState,oldMatch=matchStarted,oldSuppress=SUPPRESS_RENDER;
+      try{
+        SUPPRESS_RENDER=true;matchStarted=true;var s=buildInitialMatchState();appState=s;s.preGame=null;s.turn='PLAYER';s.phase='Deploy';
+        var c=card('S1-WAR-001')||card(Object.keys(CARDS||{})[0]);if(!c)return{ok:false,reason:'QA card unavailable'};
+        var generic=[];for(var i=0;i<7;i++)generic.push(makeManaShard('GENERIC','','PLAYER','QA-EX-'+i));
+        var matchClass=manaClassFromCardCode(c.card_id)||'Warrior',cls=makeManaShard('CLASS',matchClass,'PLAYER','QA-EX-C');
+        s.playerManaPoolCards=generic.concat([cls]);syncManaCountForSide(s,'PLAYER');
+        var six=generic.slice(0,6).map(function(x){return x.uid;}),seven=generic.slice(0,7).map(function(x){return x.uid;});
+        var exact=computeExactManaPayment(s,'PLAYER',c,6,six),over=computeExactManaPayment(s,'PLAYER',c,6,seven);
+        if(!exact.ok||Number(exact.value)!==6)return{ok:false,reason:'6/6 exact payment rejected',plan:exact};
+        if(over.ok||Number(over.value)!==7)return{ok:false,reason:'7/6 overpay incorrectly accepted',plan:over};
+        var replaced=manaSelectionAfterToggle(s,'PLAYER',c,6,six,generic[6].uid),repPlan=computeExactManaPayment(s,'PLAYER',c,6,replaced);
+        if(!repPlan.ok||replaced.indexOf(generic[0].uid)!==-1||replaced.indexOf(generic[6].uid)===-1)return{ok:false,reason:'FIFO generic replacement failed',selected:replaced,plan:repPlan};
+        var withClass=manaSelectionAfterToggle(s,'PLAYER',c,6,six,cls.uid),classPlan=computeExactManaPayment(s,'PLAYER',c,6,withClass);
+        if(withClass.indexOf(cls.uid)===-1||Number(classPlan.value)>6)return{ok:false,reason:'Class toggle overpay trimming failed',selected:withClass,plan:classPlan};
+        var afterUnselect=manaSelectionAfterToggle(s,'PLAYER',c,6,withClass,cls.uid),underPlan=computeExactManaPayment(s,'PLAYER',c,6,afterUnselect);
+        if(underPlan.ok&&Number(underPlan.value)!==6)return{ok:false,reason:'Manual unselect produced invalid exact state',selected:afterUnselect,plan:underPlan};
+        return{ok:true,exactValue:exact.value,overpayRejected:!over.ok,fifo:true,classSelected:true,manualUnselectNoAutofill:Number(underPlan.value)<6};
+      }catch(err){return{ok:false,reason:String(err&&err.message||err),stack:String(err&&err.stack||'')};}
+      finally{appState=oldApp;matchStarted=oldMatch;SUPPRESS_RENDER=oldSuppress;}
+    },
     testPlaytestManaRules:function(){
       initCards();var oldApp=appState,oldMatch=matchStarted,oldSuppress=SUPPRESS_RENDER;SUPPRESS_RENDER=true;
       try{
@@ -10717,6 +10912,9 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
         beginTributeFromHand:beginTributeFromHand,
         chooseHeroFromBoard:chooseHeroFromBoard,
         setArrowBarrageSpend:setArrowBarrageSpend,
+        toggleManaShardPaymentChoice:toggleManaShardPaymentChoice,
+        commitManaShardPaymentChoice:commitManaShardPaymentChoice,
+        toggleResponseManaShardChoice:toggleResponseManaShardChoice,
         commitMagicalSurgeChoice:commitMagicalSurgeChoice,
         commitDrawReplacementChoice:commitDrawReplacementChoice,
         selectStatusRemovalChoice:selectStatusRemovalChoice,
@@ -10739,6 +10937,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
         responseSelectNoStuck:responseSelectNoStuck,
         confirmSelectedResponse:confirmSelectedResponse,
         responsePassNoStuck:responsePassNoStuck,
+        repairOrphanBlockingState:repairOrphanBlockingState,
         performOptionalSwapDecision:performOptionalSwapDecision,
         performOptionalTargetSwapDecision:performOptionalTargetSwapDecision,
         beginActivatedHeroAbility:function(side,lane,abilityId){ return beginActivatedHeroAbility(appState,side,lane,abilityId); },
@@ -10757,6 +10956,112 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
       }catch(err){
         return {ok:false,error:String(err&&err.message||err), snapshot:glPvpBridgeSnapshot()};
       }
+    }
+  };
+  window.GL_OPTION_B_ENGINE={
+    version:GL_VERSION,
+    prepareOptionBLocalMatch:function(){
+      initCards();
+      var pv=validateDeck(decks.PLAYER,'PLAYER'),av=validateDeck(decks.AI,'AI');
+      if(!pv.ok||!av.ok)return{ok:false,error:(pv.errors[0]||av.errors[0]||'Deck validation failed.')};
+      decks.PLAYER=pv.deck;decks.AI=av.deck;cancelAITurnDirector();clearTransientUiState();
+      appState=buildInitialMatchState();matchStarted=true;setupError='';syncCounts(appState);render();
+      return{ok:true,snapshot:glPvpBridgeSnapshot()};
+    },
+    commitOptionBOpeningSetup:function(choice,outcome,firstSide){
+      if(!appState||!matchStarted)return{ok:false,error:'Match has not been prepared.'};
+      if(appState.openingHandsDrawn||appState.openingManaDrawn)return{ok:false,error:'Opening setup has already been committed.'};
+      firstSide=firstSide==='AI'?'AI':'PLAYER';choice=String(choice||'HEADS').toUpperCase()==='TAILS'?'TAILS':'HEADS';outcome=String(outcome||'HEADS').toUpperCase()==='TAILS'?'TAILS':'HEADS';
+      appState.openingCoinFlip={choice:choice,outcome:outcome,firstPlayer:firstSide,completed:true};
+      appState.preGame={stage:'OPENING_DRAW',firstPlayer:firstSide};appState.phase='Opening Hand';appState.turn=null;
+      var before=(appState.presentationEvents||[]).length;
+      for(var i=0;i<OPENING_HAND_SIZE;i++){
+        var group='OPENING_PAIR_'+(i+1);
+        drawOne(appState,'PLAYER',false,{reason:'OPENING_HAND',countsForTurn:false,triggerDrawEffects:false,suppressDrawReplacement:true,deferAnimation:true,groupId:group,groupIndex:i});
+        drawOne(appState,'AI',false,{reason:'OPENING_HAND',countsForTurn:false,triggerDrawEffects:false,suppressDrawReplacement:true,deferAnimation:true,groupId:group,groupIndex:i});
+      }
+      appState.openingHandsDrawn=true;
+      var handEvents=(appState.presentationEvents||[]).slice(before).filter(function(e){return e&&e.type==='CARD_DRAWN'&&e.reason==='OPENING_HAND';});
+      appState.preGame={stage:'OPENING_MANA',firstPlayer:firstSide};appState.phase='Opening Shards';
+      var manaEvents=openingManaDrawEvents(appState);appState.openingManaDrawn=true;revealAllOpeningMana(manaEvents);
+      appState.preGame={stage:'OPENING_PRESENTATION',firstPlayer:firstSide};appState.phase='Opening Match';appState.turn=null;
+      syncCounts(appState);render();
+      return{ok:true,firstSide:firstSide,choice:choice,outcome:outcome,handEvents:clone(handEvents),manaEvents:clone(manaEvents),snapshot:glPvpBridgeSnapshot()};
+    },
+    beginOptionBFirstTurn:function(firstSide){
+      if(!appState||!matchStarted)return{ok:false,error:'Match has not been prepared.'};
+      firstSide=firstSide==='AI'?'AI':'PLAYER';
+      var ok=startFirstTurnAfterOpeningDraw(appState,firstSide,{});syncCounts(appState);render();
+      return{ok:ok!==false,snapshot:glPvpBridgeSnapshot()};
+    },
+    startLocalMatch:function(firstSide){
+      initCards();
+      var pv=validateDeck(decks.PLAYER,'PLAYER'),av=validateDeck(decks.AI,'AI');
+      if(!pv.ok||!av.ok)return{ok:false,error:(pv.errors[0]||av.errors[0]||'Deck validation failed.')};
+      decks.PLAYER=pv.deck;decks.AI=av.deck;cancelAITurnDirector();clearTransientUiState();
+      appState=buildInitialMatchState();matchStarted=true;setupError='';
+      firstSide=firstSide==='AI'?'AI':'PLAYER';
+      completeOpeningFlow(appState,firstSide,{choice:'HEADS',outcome:'HEADS',firstPlayer:firstSide,completed:true},{deferAnimation:true});
+      syncCounts(appState);render();
+      return{ok:true,snapshot:glPvpBridgeSnapshot()};
+    },
+    getSnapshot:glPvpBridgeSnapshot,
+    getCardPlayedDetail:function(side,eventId){
+      side=side==='AI'?'AI':'PLAYER';
+      var groups=v96CombinedPlayedEvents(appState),group=groups.find(function(g){
+        if(g&&g.event&&g.side===side&&g.event.id===eventId)return true;
+        return !!(g&&g.chainEvents&&g.chainEvents.some(function(x){return x&&x.event&&x.event.id===eventId;}));
+      });
+      if(!group){
+        var evt=v94EventsForSide(appState,side).find(function(e){return e&&e.id===eventId;});
+        if(evt)group={side:side,event:evt,chainEvents:[]};
+      }
+      if(!group)return null;
+      return{title:'Card Played — '+v204PlayedActor(group.side,false),html:v94EventDetailHtml(group,group.side)};
+    },
+    intent:function(name,args){return window.GL_LOCAL_AI_BRIDGE.applyServerIntent(name,args||[]);},
+    cardView:function(id){var c=card(id)||{};function abs(src){try{return new URL(src,location.href).href;}catch(e){return src||'';}}return{id:id,name:cardName(c),family:cardFamily(c),subtype:cardSubtype(c),thumb:abs(thumbFor(id)),full:abs(fullFor(id)),isAttack:isAttackCard(c),isResponse:isResponseOnly(c),isUltimate:isUltimateCard(c)};},
+    manaAsset:function(sh){return (function(src){try{return new URL(src,location.href).href;}catch(e){return src||'';}})(manaShardAsset(sh));},
+    getHandModel:function(){var s=appState;if(!s)return[];return (s.playerHand||[]).map(function(id,idx){var lp=legalPlayState(s,id),tp=legalTributeState(s,id);return{card_id:id,index:idx,canPlay:!!lp.can,playReasons:clone(lp.reasons||[]),canTribute:!!tp.can,tributeReasons:clone(tp.reasons||[])};});},
+    getHeroActions:function(side,lane){var s=appState;if(!s)return{classAbilities:[],racialAbilities:[],legacyAbilities:[]};return{classAbilities:clone(getActivatedHeroAbilities(s,side,lane)||[]),racialAbilities:clone(getActivatedRacialAbilities(s,side,lane)||[]),legacyAbilities:clone(getActivatedLegacyAbilities(s,side,lane)||[]),components:clone(getResolvedHeroComponents(sideHeroes(s,side)[lane])||{})};},
+    getRepositionPairs:function(){return clone(manualRepositionPairs(appState)||[]);},
+    getManaPlan:function(){var s=appState,p=s&&s.pending;if(!p)return null;if(p.type==='mana_shard_payment_choice'){var c=card(p.card_id),plan=computeExactManaPayment(s,p.side,c,p.cost,p.selected_shard_uids||[]);return clone({pending:p,plan:plan,pool:manaPoolCardsForSide(s,p.side)});}if(p.type==='response_payment_choice'&&Number(p.mana_cost||0)>0){var rc=card(p.response_option&&p.response_option.card_id),rplan=computeExactManaPayment(s,p.side,rc,p.mana_cost,p.selected_shard_uids||[]);return clone({pending:p,plan:rplan,pool:manaPoolCardsForSide(s,p.side)});}return null;},
+    getResponseModel:function(){var s=appState;return s&&s.responseWindow?clone(s.responseWindow):null;},
+    setExternalHumanUi:function(active){EXTERNAL_HUMAN_UI=!!active;return EXTERNAL_HUMAN_UI;},
+    getExternalHumanUi:function(){return !!EXTERNAL_HUMAN_UI;},
+    getStatusLabel:function(st){return statusName(st);},
+    getStatusDetail:function(st){try{return typeof statusTooltip==='function'?statusTooltip(st):v58StatusTooltipText(st);}catch(e){return v58StatusTooltipText(st);}},
+    getSoundEnabled:function(){return !!GL_CARD_SOUND_ENABLED;},
+    setSoundEnabled:function(enabled){setCardMotionSoundEnabled(!!enabled);return !!GL_CARD_SOUND_ENABLED;},
+    toggleSound:function(){toggleCardMotionSound();return !!GL_CARD_SOUND_ENABLED;},
+    playCardMotionSound:function(){return playCardMotionSound();},
+    flushBattleFeedback:function(){return flushBattleFeedbackQueue();},
+    getOptionBDeckSetupState:function(){
+      return clone({selectedDeckKey:selectedDeckKey,player:{deck_name:(decks.PLAYER&&decks.PLAYER.deck_name)||'Player Deck',default_formation:(decks.PLAYER&&decks.PLAYER.default_formation)||{},rank_preview:setupRankView('PLAYER')},ai:{deck_name:(decks.AI&&decks.AI.deck_name)||'AI Deck',default_formation:(decks.AI&&decks.AI.default_formation)||{},rank_preview:setupRankView('AI')},imported:{PLAYER:!!importedDecks.PLAYER,AI:!!importedDecks.AI}});
+    },
+    getOptionBLobbyFormationView:function(side){
+      side=side==='AI'?'AI':'PLAYER';var d=decks[side]||{},rank=setupRankView(side),out={side:side,rank:rank,lanes:{}};
+      LANE_ORDER.forEach(function(lane){var rankOne=d.default_formation&&d.default_formation[lane];out.lanes[lane]={rankOneId:rankOne||'',previewId:rankOne?setupRankHeroId(d,rankOne,rank):''};});return clone(out);
+    },
+    swapOptionBLobbyFormation:function(side,leftLane,rightLane){
+      side=side==='AI'?'AI':'PLAYER';var ok=swapSetupFormation(side,leftLane,rightLane);return{ok:!!ok,state:this.getOptionBDeckSetupState(),view:this.getOptionBLobbyFormationView(side)};
+    },
+    cycleOptionBLobbyRank:function(side,delta){
+      side=side==='AI'?'AI':'PLAYER';cycleSetupRank(side,Number(delta||0));return{ok:true,state:this.getOptionBDeckSetupState(),view:this.getOptionBLobbyFormationView(side)};
+    },
+    getOptionBHeroProgression:function(side,rankOneId){
+      side=side==='AI'?'AI':'PLAYER';var ids=setupHeroProgressionIds(decks[side]||{},rankOneId);return clone({side:side,rankOneId:rankOneId,ids:ids});
+    },
+    selectOptionBDeck:function(side,key){
+      side=side==='AI'?'AI':'PLAYER';
+      if(!glPvpApplyDeckChoice(side,key,null))return{ok:false,error:'Unknown starter deck: '+String(key||'')};
+      appState=null;matchStarted=false;setupError='';
+      return{ok:true,state:this.getOptionBDeckSetupState()};
+    },
+    importOptionBDeck:function(side,rawDeck){
+      side=side==='AI'?'AI':'PLAYER';
+      try{glPvpApplyDeckChoice(side,null,rawDeck);appState=null;matchStarted=false;setupError='';return{ok:true,state:this.getOptionBDeckSetupState()};}
+      catch(err){return{ok:false,error:String(err&&err.message||err)}}
     }
   };
   var __glPvpBaseRender=render;

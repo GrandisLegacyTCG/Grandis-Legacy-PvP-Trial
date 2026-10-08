@@ -5,18 +5,18 @@ import { normalizeHeadlessRuntimeMetadata } from '../server/headless-runtime-com
 const root=resolve(new URL('..',import.meta.url).pathname);
 const pub=join(root,'public');
 const code=[
-  join(pub,'engine/js/static-data.js'),
-  join(pub,'engine/js/runtime-authority.js'),
-  join(pub,'engine/shared-app/active-starters.js'),
-  join(pub,'engine/shared-app/app.bundle.js')
+  join(pub,'js/static-data.js'),
+  join(pub,'js/runtime-authority.js'),
+  join(pub,'js/active-starters.js'),
+  join(pub,'js/app.bundle.js')
 ].map(f=>readFileSync(f,'utf8')).join('\n');
 const dummy={style:{},classList:{add(){},remove(){},toggle(){},contains(){return false}},addEventListener(){},removeEventListener(){},appendChild(){},remove(){},setAttribute(){},removeAttribute(){},querySelectorAll(){return[]},querySelector(){return null},closest(){return null},focus(){},scrollIntoView(){},click(){},getBoundingClientRect(){return{left:0,top:0,width:0,height:0,right:0,bottom:0}},disabled:false,value:'',checked:false,get innerHTML(){return this._h||''},set innerHTML(v){this._h=String(v??'')},get textContent(){return this._t||''},set textContent(v){this._t=String(v??'')}};
 const doc={readyState:'loading',body:dummy,documentElement:dummy,addEventListener(){},removeEventListener(){},getElementById(){return dummy},querySelectorAll(){return[]},querySelector(){return null},createElement(){return {...dummy,style:{},classList:dummy.classList}},createDocumentFragment(){return dummy}};
 const win={document:doc,addEventListener(){},removeEventListener(){},dispatchEvent(){},setTimeout,clearTimeout,requestAnimationFrame:(fn)=>setTimeout(fn,0),cancelAnimationFrame:clearTimeout,console,GL_PVP_SHARED_BOARD_ACTIVE:true,GL_APP_MODE:'PVP'};
 const ctx={window:win,document:doc,console,setTimeout,clearTimeout,requestAnimationFrame:win.requestAnimationFrame,cancelAnimationFrame:clearTimeout,URL,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts?.detail}},localStorage:{getItem(){return null},setItem(){},removeItem(){}},navigator:{},location:{href:'http://localhost/'},performance:{now:()=>0},Image:class{}};
-ctx.globalThis=ctx;win.window=win;win.globalThis=ctx;vm.createContext(ctx);new vm.Script(code,{filename:'v372-runtime.js'}).runInContext(ctx,{timeout:5000});normalizeHeadlessRuntimeMetadata(win);
+ctx.globalThis=ctx;win.window=win;win.globalThis=ctx;vm.createContext(ctx);new vm.Script(code,{filename:'v3751-runtime.js'}).runInContext(ctx,{timeout:5000});normalizeHeadlessRuntimeMetadata(win);
 const b=win.GL_LOCAL_AI_BRIDGE;
-for(const method of ['startSharedMatch','getCanonicalSnapshot','completeOpeningFlow','playAuthoritativeBattleFeedbackAudio','playAuthoritativeBattleFeedback','unlockGameplayAudioPlayback','prepareAuthoritativeBattleAssets','captureAuthoritativePlayedCardMotion','beginAuthoritativeHeldPlayedCardMotion','releaseAuthoritativeHeldCardMotion','captureAuthoritativeHandDiscardMotion','queueCapturedAuthoritativeHandDiscardMotion','captureAuthoritativeAttachmentDiscardMotion','queueCapturedAuthoritativeAttachmentDiscardMotion','captureAuthoritativeLegacyToDeckMotion','queueCapturedAuthoritativeLegacyToDeckMotion','queueAuthoritativeShardGainMotions','queueAuthoritativeOpeningSequence','queueAuthoritativeDrawThenShardMotions','captureAuthoritativeRankUpMotion','queueCapturedAuthoritativeRankUpMotion']) if(typeof b?.[method]!=='function') throw new Error('v3.72 shared PvP runtime bridge unavailable: '+method);
+for(const method of ['startSharedMatch','getCanonicalSnapshot','completeOpeningFlow','playAuthoritativeBattleFeedbackAudio','playAuthoritativeBattleFeedback','unlockGameplayAudioPlayback','prepareAuthoritativeBattleAssets','captureAuthoritativePlayedCardMotion','beginAuthoritativeHeldPlayedCardMotion','releaseAuthoritativeHeldCardMotion','captureAuthoritativeHandDiscardMotion','queueCapturedAuthoritativeHandDiscardMotion','captureAuthoritativeAttachmentDiscardMotion','queueCapturedAuthoritativeAttachmentDiscardMotion','captureAuthoritativeLegacyToDeckMotion','queueCapturedAuthoritativeLegacyToDeckMotion','queueAuthoritativeShardGainMotions','queueAuthoritativeOpeningSequence','queueAuthoritativeDrawThenShardMotions','captureAuthoritativeRankUpMotion','queueCapturedAuthoritativeRankUpMotion']) if(typeof b?.[method]!=='function') throw new Error('v3.75.1 shared PvP runtime bridge unavailable: '+method);
 b.setSharedBoardMode?.(true);b.setRenderSuppressed?.(true);
 const starterKey='starter_01_elemental_lord_conqueror_renegade';
 const start=b.startSharedMatch({player1Name:'Alice',player2Name:'Bob',playerDeckKey:starterKey,player2DeckKey:starterKey});if(!start?.appState?.pvpHumanVsHuman) throw new Error('Human-vs-human flag was not enabled');
@@ -43,6 +43,6 @@ if((seat2ShardView.playerManaPoolCards||[]).length!==2||(seat2ShardView.aiManaPo
 if((seat2ShardView.playerManaDeck||[]).length!==5||(seat2ShardView.aiManaDeck||[]).length!==7) throw new Error('Seat 2 Shard Deck mirror is cross-wired');
 if(JSON.stringify(seat2ShardView.playerManaClasses)!==JSON.stringify(['Mage','Thief'])||JSON.stringify(seat2ShardView.aiManaClasses)!==JSON.stringify(['Warrior'])) throw new Error('Seat 2 Class Shard mirror is cross-wired');
 if(Number(seat2ShardView.playerManaDeckCount)!==5||Number(seat2ShardView.aiManaDeckCount)!==7||Number(seat2ShardView.mana)!==2||Number(seat2ShardView.aiMana)!==1) throw new Error('Seat 2 Shard counters are cross-wired');
-const exact=b.testExactManaPaymentV372?.();
-if(!exact?.ok) throw new Error('v3.72 exact Mana payment QA failed: '+JSON.stringify(exact));
-console.log('v3.72 shared human-vs-human runtime + exact Mana payment: PASS');
+const exact=b.testExactManaPaymentV3751?.();
+if(!exact?.ok) throw new Error('v3.75.1 exact Mana payment QA failed: '+JSON.stringify(exact));
+console.log('v3.75.1 shared human-vs-human runtime + exact Mana payment: PASS');
