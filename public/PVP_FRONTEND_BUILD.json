@@ -1,10 +1,11 @@
 {
-  "version": "Grandis Legacy PvP v3.75.4",
-  "buildId": "gl-pvp-3.75.4-v351-network-v6907-ui-2026-10-08",
+  "version": "Grandis Legacy PvP v3.75.5",
+  "buildId": "gl-pvp-3.75.5-v351-gameplay-v6907-ui-2026-10-08",
   "networkModel": "Grandis Legacy PvP v3.51",
   "uiModel": "Grandis Legacy VS AI v6.90.7",
-  "integrationDonor": "pvp-fresh v3.73.20 (tested presentation/server adaptations only; queued gameplay sync rejected)",
+  "integrationDonor": "pvp-fresh v3.73.20 — lobby/start-game/opening only; gameplay sync/payment excluded",
   "canonicalLayout": "PvP v3.51-style public/js + public/css + public/shared-ui",
   "generated": "2026-10-08",
-  "networkTransactionModel": "PvP v3.51 single in-flight intent -> authoritative snapshot -> next intent"
+  "networkTransactionModel": "PvP v3.51 one intent -> authoritative commit/snapshot -> next intent",
+  "gameplayAuthority": "Grandis Legacy PvP v3.51 canonical runtime"
 }

@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const ROOT=path.resolve(__dirname,'..');
-const TMP=path.join(ROOT,'.tmp-v3754-battle-server.mjs');
+const TMP=path.join(ROOT,'.tmp-v3755-battle-server.mjs');
 function generic(side,n,prefix){return Array.from({length:n},(_,i)=>({uid:`${prefix}:${i}`,kind:'GENERIC',class_name:'',owner_side:side,bottom_locked:false}));}
 function other(side){return side==='PLAYER'?'AI':'PLAYER';}
 function seatFor(side){return side==='PLAYER'?1:2;}
@@ -40,16 +40,16 @@ function transformServer(){
       e.applyIntent(a,'chooseHeroFromBoard',['AI','CENTER']);
       const payPending=e.board.appState.pending;
       assert(payPending&&payPending.type==='mana_shard_payment_choice',attacker+' attack did not open authoritative Mana payment');
-      assert(Array.isArray(payPending.selected_shard_uids)&&payPending.selected_shard_uids.length===2,attacker+' exact payment recommendation should select two generic Mana Shards for cost 2');
+      assert(Array.isArray(payPending.selected_class_uids)&&payPending.selected_class_uids.length===0,attacker+' v3.51 payment should begin with no Class Shard selected; Mana Shards are automatic');
       e.applyIntent(a,'toggleManaShardPaymentChoice',[matchingClassUid]);
       const toggled=e.board.appState.pending;
-      assert(toggled.selected_shard_uids.includes(matchingClassUid),attacker+' matching Class Shard toggle did not reach authoritative engine');
-      assert.equal(toggled.selected_shard_uids.length,1,attacker+' FIFO replacement should leave only the matching Class Shard at exact 2 Mana');
+      assert(toggled.selected_class_uids.includes(matchingClassUid),attacker+' matching Class Shard toggle did not reach authoritative engine');
+      assert.equal(toggled.selected_class_uids.length,1,attacker+' v3.51 payment should retain the chosen matching Class Shard');
       const poolKey=attacker==='PLAYER'?'playerManaPoolCards':'aiManaPoolCards',deckKey=attacker==='PLAYER'?'playerManaDeck':'aiManaDeck',handKey=attacker==='PLAYER'?'playerHand':'aiHand';
       const poolBeforeCommit=e.board.appState[poolKey].length;
-      const commit=e.applyIntent(a,'commitManaShardPaymentChoice',[]);
+      const commit=e.applyIntent(a,'handleChoiceConfirm',[]);
       assert(commit.animationEvents.some(x=>x.kind==='card_play'),attacker+' attack commit did not emit card_play');
-      assert.equal(e.board.appState[poolKey].length,poolBeforeCommit-1,attacker+' authoritative PAY did not remove the selected exact Shard from Pool');
+      assert.equal(e.board.appState[poolKey].length,poolBeforeCommit-1,attacker+' authoritative PAY did not remove the selected Class Shard from Pool');
       assert(!e.board.appState[poolKey].some(x=>x.uid===matchingClassUid),attacker+' spent Class Shard remained in Pool after PAY');
       assert.equal(e.board.appState[deckKey].at(-1)?.uid,matchingClassUid,attacker+' spent Class Shard did not return to bottom of Shard Deck');
       assert(!e.board.appState[handKey].includes('S1-WAR-001'),attacker+' paid card remained in Hand after authoritative commit');
@@ -63,6 +63,6 @@ function transformServer(){
       assert.equal(ledger.length,1,attacker+' canonical battle feedback ledger missing');
       assert.equal(ledger[0].id,fx.id,attacker+' public feedback did not originate from canonical ledger');
     }
-    console.log('authoritative exact Class-Shard payment + battle feedback transport: PASS');
+    console.log('authoritative v3.51 Class-Shard payment + battle feedback transport: PASS');
   }finally{try{fs.unlinkSync(TMP)}catch{}}
 })().catch(err=>{try{fs.unlinkSync(TMP)}catch{};console.error(err);process.exit(1)});

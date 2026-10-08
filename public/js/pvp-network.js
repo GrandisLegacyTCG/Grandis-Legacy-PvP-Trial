@@ -1,8 +1,8 @@
-/* Grandis Legacy PvP v3.75.4 — v3.51 network/lobby reliability model + VS AI v6.90.7 battlefield presentation.
+/* Grandis Legacy PvP v3.75.5 — v3.51 network/lobby reliability model + VS AI v6.90.7 battlefield presentation.
    Historical gl_pvp370/gl_pvp371 LocalStorage keys are intentionally retained for upgrade continuity. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.75.4';
+const VERSION='Grandis Legacy PvP v3.75.5';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
@@ -258,9 +258,9 @@ function renderCoin(){
     }
     start.disabled=true;start.textContent='STARTING…';
     document.body.classList.add('pvp-coin-gate');
-    console.log('[PvP v3.75.4] sending confirm-coin-flip');
+    console.log('[PvP v3.75.5] sending confirm-coin-flip');
     if(!send('confirm-coin-flip',{})){
-      console.warn('[PvP v3.75.4] WebSocket not open; cannot send confirm-coin-flip');
+      console.warn('[PvP v3.75.5] WebSocket not open; cannot send confirm-coin-flip');
       start.disabled=false;start.textContent='START GAME';
       document.body.classList.remove('pvp-coin-gate');
       return;
@@ -269,7 +269,7 @@ function renderCoin(){
     clearTimeout(wireStart._t);
     wireStart._t=setTimeout(()=>{
       if(match().status!=='started'){
-        console.warn('[PvP v3.75.4] confirm-coin-flip timed out; re-enabling START GAME');
+        console.warn('[PvP v3.75.5] confirm-coin-flip timed out; re-enabling START GAME');
         start.disabled=false;start.textContent='START GAME';
         document.body.classList.remove('pvp-coin-gate');
       }
@@ -289,7 +289,7 @@ function renderCoin(){
 
 function runtimeBoardHydrated(){const s=B()?.getSnapshot?.()?.appState;if(!s)return false;const ph=s.playerHeroes||{},ah=s.aiHeroes||{};const heroes=['LEFT','CENTER','RIGHT'].every(l=>!!ph?.[l]?.card_id)&&['LEFT','CENTER','RIGHT'].every(l=>!!ah?.[l]?.card_id);const decks=Math.max(Number(s.playerDeckCount||0),Array.isArray(s.playerDeck)?s.playerDeck.length:0)>0&&Math.max(Number(s.aiDeckCount||0),Array.isArray(s.aiDeck)?s.aiDeck.length:0)>0;const shards=(Array.isArray(s.playerManaDeck)&&s.playerManaDeck.length>0)&&(Array.isArray(s.aiManaDeck)&&s.aiManaDeck.length>0);return !!(heroes&&decks&&shards)}
 function serverBoardHydrated(board){const s=board?.appState;if(!s)return false;return ['LEFT','CENTER','RIGHT'].every(l=>!!s.playerHeroes?.[l]?.card_id)&&['LEFT','CENTER','RIGHT'].every(l=>!!s.aiHeroes?.[l]?.card_id)&&Math.max(Number(s.playerDeckCount||0),Array.isArray(s.playerDeck)?s.playerDeck.length:0)>0&&Math.max(Number(s.aiDeckCount||0),Array.isArray(s.aiDeck)?s.aiDeck.length:0)>0}
-function forceBattlefieldRender(){try{window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);window.GL_OPTION_B_UI?.render?.()}catch(err){console.error('[PvP v3.75.4] battlefield render failed',err)}}
+function forceBattlefieldRender(){try{window.GL_OPTION_B_UI?.setPvpLobbyOpen?.(false);window.GL_OPTION_B_UI?.render?.()}catch(err){console.error('[PvP v3.75.5] battlefield render failed',err)}}
 function swapSideForSeat(side,seat){if(Number(seat)!==2)return side;return side==='PLAYER'?'AI':(side==='AI'?'PLAYER':side)}
 function localizeAnimationEvent(evt,seat){
   if(!evt)return null;const x=clone(evt);
@@ -346,7 +346,7 @@ function playAuthoritativeAnimations(plans){
         var p=null;try{p=A.prepare(evt);}catch(e){}
         handled=!!(p&&A.play(p));
       }
-    }catch(err){console.warn('[PvP v3.75.4] authoritative animation playback failed',evt.kind,err);handled=false}
+    }catch(err){console.warn('[PvP v3.75.5] authoritative animation playback failed',evt.kind,err);handled=false}
     finish(plan,handled);
   });
   pruneSeenMap(state.seenAnimationIds);pruneSeenMap(state.claimedAnimationIds);return ok;
@@ -354,7 +354,7 @@ function playAuthoritativeAnimations(plans){
 function battleFeedbackFromPlans(plans){return(plans||[]).map(p=>p?.event).filter(evt=>evt?.kind==='battle_feedback').map(evt=>({id:evt.id||null,kind:evt.feedback_kind==='heal'?'heal':'attack',side:evt.side,lane:evt.lane,card_id:evt.card_id||null,outcome:evt.outcome||'hit',attack_kind:evt.attack_kind||'P',defense_kind:evt.defense_kind||null,has_damage:!!evt.has_damage,play_sound:evt.play_sound!==false}))}
 function playBattleAudioNow(events){
   const b=B();if(!b?.playAuthoritativeBattleFeedbackAudio)return false;let ok=false;
-  for(const evt of events||[]){if(!evt?.id||state.seenBattleAudioIds[evt.id])continue;try{ok=!!b.playAuthoritativeBattleFeedbackAudio(evt)||ok}catch(err){console.warn('[PvP v3.75.4] battle audio failed',err)}state.seenBattleAudioIds[evt.id]=true}
+  for(const evt of events||[]){if(!evt?.id||state.seenBattleAudioIds[evt.id])continue;try{ok=!!b.playAuthoritativeBattleFeedbackAudio(evt)||ok}catch(err){console.warn('[PvP v3.75.5] battle audio failed',err)}state.seenBattleAudioIds[evt.id]=true}
   pruneSeenMap(state.seenBattleAudioIds);return ok;
 }
 function scheduleBattleVfx(events){
@@ -365,9 +365,9 @@ function scheduleBattleVfx(events){
     const tryPlay=()=>{
       if(state.seenBattleVfxIds[evt.id]){delete state.battleVfxPending[evt.id];return}
       attempt++;let played=false;
-      try{played=!!B()?.playAuthoritativeBattleFeedback?.(evt)}catch(err){console.warn('[PvP v3.75.4] battle VFX retry failed',err)}
+      try{played=!!B()?.playAuthoritativeBattleFeedback?.(evt)}catch(err){console.warn('[PvP v3.75.5] battle VFX retry failed',err)}
       if(played){state.seenBattleVfxIds[evt.id]=true;delete state.battleVfxPending[evt.id];pruneSeenMap(state.seenBattleVfxIds);return}
-      if(attempt>=14){delete state.battleVfxPending[evt.id];console.warn('[PvP v3.75.4] battle VFX anchor never became ready',evt);return}
+      if(attempt>=14){delete state.battleVfxPending[evt.id];console.warn('[PvP v3.75.5] battle VFX anchor never became ready',evt);return}
       setTimeout(()=>{if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(tryPlay));else tryPlay()},Math.min(180,25+attempt*18));
     };
     if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(tryPlay));else setTimeout(tryPlay,34);
@@ -377,7 +377,7 @@ function revealBattlefieldWhenAnchored(callback){
   const token=++state.battlefieldRevealToken;
   forceBattlefieldRender();
   const done=()=>{if(token!==state.battlefieldRevealToken)return;document.body.classList.remove('pvp-coin-gate');renderCoin();ensureBattlefieldChrome();if(typeof callback==='function'){
-    // PvP v3.75.4: biarkan board kosong terlihat sejenak ("from 0") sebelum kartu
+    // PvP v3.75.5: biarkan board kosong terlihat sejenak ("from 0") sebelum kartu
     // di-deal satu-satu, agar sensasi draw kelihatan jelas.
     setTimeout(()=>{if(token!==state.battlefieldRevealToken)return;callback()},150);
   }};
@@ -387,11 +387,13 @@ function runtimeAppState(){try{return B()?.getSnapshot?.()?.appState||E()?.getSn
 function pendingDecisionSide(p){if(!p)return null;return p.decision_side||p.response_owner||p.side||p.source_side||(p.type==='hand_limit_discard'?'PLAYER':null)||(p.type==='manual_reposition'?'PLAYER':null)}
 function localOwnsPending(){const s=runtimeAppState(),p=s?.pending;return !p||pendingDecisionSide(p)==='PLAYER'}
 function localOwnsResponse(){const s=runtimeAppState(),rw=s?.responseWindow;return !rw||rw.response_owner==='PLAYER'}
-function intentNeedsPendingOwner(intent){return ['chooseHeroFromBoard','setArrowBarrageSpend','selectStatusRemovalChoice','selectSaintPurifyChoice','resolveStonebloodChoice','selectScoutingExpChoice','moveCrystalBallOrder','performDualArrowPairChoice','toggleDiscardIndex','selectCardSearchChoice','selectLegacyDefeatChoice','selectLegacyCostChoice','selectLegacyCardChoice','commitDrawReplacementChoice','confirmDrawReplacement','commitMagicalSurgeChoice','toggleManaShardPaymentChoice','commitManaShardPaymentChoice','toggleResponseManaShardChoice','commitResponsePaymentChoice','selectOpponentHandChoice','commitOpponentHandChoice','selectOpponentManaChoiceHandle','commitOpponentManaSelection','selectResponsePaymentChoice','performOptionalSwapDecision','performOptionalTargetSwapDecision','performManualReposition','handleChoiceConfirm','cancelPendingAction'].includes(intent)}
+function intentNeedsPendingOwner(intent){return ['chooseHeroFromBoard','setArrowBarrageSpend','selectStatusRemovalChoice','selectSaintPurifyChoice','resolveStonebloodChoice','selectScoutingExpChoice','moveCrystalBallOrder','performDualArrowPairChoice','toggleDiscardIndex','selectCardSearchChoice','selectLegacyDefeatChoice','selectLegacyCostChoice','selectLegacyCardChoice','commitDrawReplacementChoice','confirmDrawReplacement','commitMagicalSurgeChoice','toggleManaShardPaymentChoice','toggleResponseManaShardChoice','commitResponsePaymentChoice','selectOpponentHandChoice','commitOpponentHandChoice','selectOpponentManaChoiceHandle','commitOpponentManaSelection','selectResponsePaymentChoice','performOptionalSwapDecision','performOptionalTargetSwapDecision','performManualReposition','handleChoiceConfirm','cancelPendingAction'].includes(intent)}
 function intentNeedsResponseOwner(intent){return ['responseSelectNoStuck','confirmSelectedResponse','responsePassNoStuck'].includes(intent)}
 function syncAuthoritativePendingChoice(){
-  try{B()?.renderCurrentAuthoritativePendingChoice?.()}catch(err){console.warn('[PvP v3.75.4] canonical pending sync failed',err)}
-  try{window.GL_OPTION_B_UI?.onAuthoritativeSnapshot?.({revision:Number(match().serverBoardRevision||state.lastRevision||0),pending:clone(runtimeAppState()?.pending||null),responseWindow:clone(runtimeAppState()?.responseWindow||null)})}catch(err){console.warn('[PvP v3.75.4] Option-B authoritative sync failed',err)}
+  // The server is the gameplay authority. The v6.90.7 browser engine is presentation-only,
+  // so never ask its local choice renderer to advance/close gameplay state. Feed the imported
+  // authoritative pending/response state directly to the PvP UI adapter instead.
+  try{window.GL_OPTION_B_UI?.onAuthoritativeSnapshot?.({revision:Number(match().serverBoardRevision||state.lastRevision||0),pending:clone(runtimeAppState()?.pending||null),responseWindow:clone(runtimeAppState()?.responseWindow||null)})}catch(err){console.warn('[PvP v3.75.5] authoritative UI sync failed',err)}
 }
 function importBoard(msg){
   const m=msg.match||{},board=m.serverBoard,seat=msg.local?.role==='spectator'?1:Number(msg.local?.seat||0);if(!board||!seat)return;
@@ -434,7 +436,7 @@ function importBoard(msg){
       if(battleFeedback.length)scheduleBattleVfx(battleFeedback);
     };
     if(firstStartedReveal)revealBattlefieldWhenAnchored(playImportedPresentation);else playImportedPresentation();
-  }catch(err){console.error('[PvP v3.75.4] board import failed',err);state.lastAppliedRevision=-1;state.lastAppliedStatus='';setMessage('Battlefield sync failed: '+String(err?.message||err),true)}
+  }catch(err){console.error('[PvP v3.75.5] board import failed',err);state.lastAppliedRevision=-1;state.lastAppliedStatus='';setMessage('Battlefield sync failed: '+String(err?.message||err),true)}
   finally{state.applyingServer=false}
 }
 function handleSnapshot(msg){
@@ -452,7 +454,7 @@ function handleSnapshot(msg){
   if(l.deckKey&&l.deckKey!=='CUSTOM'){state.deckKey=l.deckKey;saveStore(STORE.deck,l.deckKey)}
   if(status==='setup'&&l.deckSource==='custom'&&l.deckData){
     const incoming=clone(l.deckData),incomingName=clean(l.deckName||incoming?.display_name||incoming?.deck_name||'Imported Custom Deck',100);
-    if(!state.customDeck||JSON.stringify(state.customDeck)!==JSON.stringify(incoming)){state.customDeck=incoming;state.customDeckName=incomingName;state.deckKey='CUSTOM';saveStore(STORE.deck,'CUSTOM');const r=E()?.importOptionBDeck?.('PLAYER',state.customDeck);if(!r?.ok)console.warn('[PvP v3.75.4] custom deck reconnect preview could not be restored:',r?.error||r)}
+    if(!state.customDeck||JSON.stringify(state.customDeck)!==JSON.stringify(incoming)){state.customDeck=incoming;state.customDeckName=incomingName;state.deckKey='CUSTOM';saveStore(STORE.deck,'CUSTOM');const r=E()?.importOptionBDeck?.('PLAYER',state.customDeck);if(!r?.ok)console.warn('[PvP v3.75.5] custom deck reconnect preview could not be restored:',r?.error||r)}
   }
   if(previousRole&&previousRole!==l.role)state.message='';
   if(l.role==='spectator'&&activeMatch()&&previousRole!=='spectator')state.spectatorLobbyView=false;
@@ -462,10 +464,10 @@ function handleSnapshot(msg){
   resolveIntentFromSnapshot(msg);renderLobby();renderCoin();ensureBattlefieldChrome();
 }
 function notifyUiIntentFailure(item,reason='network-error',message=''){
-  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentFailure?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',reason,message});}catch(err){console.warn('[PvP v3.75.4] intent failure UI recovery failed',err)}
+  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentFailure?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',reason,message});}catch(err){console.warn('[PvP v3.75.5] intent failure UI recovery failed',err)}
 }
 function notifyUiIntentResolved(item,msg){
-  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentResolved?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',committedRevision:Number(msg?.match?.serverBoardRevision||item.committedRevision||0)});}catch(err){console.warn('[PvP v3.75.4] intent resolve UI callback failed',err)}
+  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentResolved?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',committedRevision:Number(msg?.match?.serverBoardRevision||item.committedRevision||0)});}catch(err){console.warn('[PvP v3.75.5] intent resolve UI callback failed',err)}
 }
 function clearIntentAckRefresh(){if(state.intentAckRefreshTimer){clearTimeout(state.intentAckRefreshTimer);state.intentAckRefreshTimer=null}}
 function clearIntentTimeout(){if(state.intentTimeoutTimer){clearTimeout(state.intentTimeoutTimer);state.intentTimeoutTimer=null}}

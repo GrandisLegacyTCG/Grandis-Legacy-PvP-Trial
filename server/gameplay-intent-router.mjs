@@ -21,7 +21,6 @@ const INTENT_METADATA = Object.freeze({
 
   setArrowBarrageSpend: { category: 'PAYMENT', decisionOwnership: true },
   toggleManaShardPaymentChoice: { category: 'PAYMENT', decisionOwnership: true },
-  commitManaShardPaymentChoice: { category: 'PAYMENT', decisionOwnership: true },
   toggleResponseManaShardChoice: { category: 'PAYMENT', decisionOwnership: true },
   commitMagicalSurgeChoice: { category: 'PAYMENT', decisionOwnership: true },
   selectResponsePaymentChoice: { category: 'PAYMENT', decisionOwnership: true },
@@ -48,7 +47,6 @@ const INTENT_METADATA = Object.freeze({
   responseSelectNoStuck: { category: 'RESPONSE', responseOwnership: true },
   confirmSelectedResponse: { category: 'RESPONSE', responseOwnership: true },
   responsePassNoStuck: { category: 'RESPONSE', responseOwnership: true },
-  repairOrphanBlockingState: { category: 'PENDING', decisionOwnership: true },
 
   performOptionalSwapDecision: { category: 'REPOSITION', decisionOwnership: true },
   performOptionalTargetSwapDecision: { category: 'REPOSITION', decisionOwnership: true },
