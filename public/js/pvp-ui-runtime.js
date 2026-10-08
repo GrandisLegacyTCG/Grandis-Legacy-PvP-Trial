@@ -56,7 +56,7 @@ let obOpeningHiddenShardUids=new Set(),resultShown=false,resultCleanupTimer=null
 let transientConnectorKey='',transientConnectorUntil=0,transientDefenseConnector=null;
 let presentationPrimed=false,previousVisualState=null,lastTurnBannerKey='';
 let lastPhaseIndicatorKey='',lastInteractionFocusMode='';
-let centerChoiceKey='',centerChoiceRenderSig='',centerChoiceBusy=false,centerChoiceMagicRevealed=false;
+let centerChoiceKey='',centerChoiceRenderSig='',centerChoiceBusy=false,centerChoiceMagicRevealed=false,centerChoiceCommitIntent=null;
 let obPresentationActive=0,obPresentationBusyUntil=0;
 let obAttachmentLastPress={key:'',at:0};
 const seenPresentationEvents=new Set();
@@ -897,7 +897,7 @@ function animateCenterChoiceIntoDeck(card,target,duration=520){
   if(!card||!target)return Promise.resolve();
   const r=card.getBoundingClientRect(),targetCard=target.querySelector?.('.zoneCard')||target.querySelector?.('img')||target,tr=targetCard?.getBoundingClientRect?.();
   if(!r.width||!r.height||!tr||!tr.width||!tr.height)return animateCenterChoiceTo(card,target,duration);
-  // v3.75.2 intentionally does NOT reuse the final v6.90.7 in-place Shard-to-Deck motion.
+  // v3.75.3 intentionally does NOT reuse the final v6.90.7 in-place Shard-to-Deck motion.
   // A fixed clone travels independently of the center stage so it cannot be clipped/faded
   // by center-session teardown before reaching the rendered Shard Deck.
   const clone=card.cloneNode(true);clone.classList.add('ob-center-travel-clone');
@@ -944,10 +944,45 @@ async function animateCenterChoiceExit(selectedKeys,selectedTarget,otherTarget,{
   return true;
 }
 function resetCenterChoiceVisualState(){
-  centerChoiceBusy=false;centerChoiceStage.classList.remove('is-busy');
+  centerChoiceBusy=false;centerChoiceCommitIntent=null;centerChoiceStage.classList.remove('is-busy');
   const copy=centerChoiceStage.querySelector('.ob-center-choice-copy'),actions=centerChoiceStage.querySelector('.ob-center-choice-actions');
   copy?.classList.remove('is-fading');actions?.classList.remove('is-fading');
-  centerChoiceStage.querySelectorAll('.ob-center-choice-card').forEach(c=>{try{c.getAnimations?.().forEach(a=>a.cancel())}catch{}c.style.removeProperty('opacity');c.style.removeProperty('transform')});
+  centerChoiceStage.querySelectorAll('.ob-center-choice-card').forEach(c=>{try{c.getAnimations?.().forEach(a=>a.cancel())}catch{}c.style.removeProperty('visibility');c.style.removeProperty('opacity');c.style.removeProperty('transform')});
+}
+function centerChoiceIntentMatches(detail){
+  if(!centerChoiceCommitIntent)return false;
+  const actionId=String(detail?.clientActionId||''),intentName=String(detail?.intent||'');
+  if(actionId&&centerChoiceCommitIntent.clientActionId)return actionId===centerChoiceCommitIntent.clientActionId;
+  return !intentName||intentName===centerChoiceCommitIntent.intent;
+}
+function onPvpIntentFailure(detail){
+  if(!centerChoiceIntentMatches(detail))return false;
+  resetCenterChoiceVisualState();centerChoiceRenderSig='';setTimeout(renderNow,0);return true;
+}
+function onPvpIntentResolved(detail){
+  if(!centerChoiceIntentMatches(detail))return false;
+  centerChoiceCommitIntent=null;return true;
+}
+function startAuthoritativeCenterCommit(intentName,args,selectedKeys,selectedTarget,otherTarget,{returnSide='PLAYER',button=null}={}){
+  if(centerChoiceBusy)return false;
+  // Network authority owns the transaction. Submit first; presentation must never gate
+  // whether the PAY/CONFIRM intent reaches the server or whether the UI can recover.
+  const submitted=intent(intentName,args||[]);
+  if(!submitted?.ok){resetCenterChoiceVisualState();centerChoiceRenderSig='';setTimeout(renderNow,0);return false;}
+  centerChoiceCommitIntent={intent:intentName,clientActionId:String(submitted.clientActionId||''),submittedAt:Date.now()};
+  centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy');
+  centerChoiceStage.querySelector('.ob-center-choice-copy')?.classList.add('is-fading');
+  centerChoiceStage.querySelector('.ob-center-choice-actions')?.classList.add('is-fading');
+  if(button){button.disabled=true;button.textContent='PAYING…';}
+  // Fire-and-forget visual preview. Authoritative snapshot/error callbacks close or
+  // restore the decision layer; animation completion is never a gameplay dependency.
+  const cards=[...centerChoiceStage.querySelectorAll('.ob-center-choice-card')];
+  Promise.all(cards.map(c=>{
+    if(selectedKeys?.has(c.dataset.choiceKey))return animateCenterChoiceIntoDeck(c,selectedTarget);
+    const spreadTarget=returnSide?centerPoolCardTarget(returnSide,c.dataset.choiceUid):null;
+    return animateCenterChoiceTo(c,spreadTarget||otherTarget);
+  })).catch(()=>{});
+  return true;
 }
 function closeCenterChoiceStage(){
   centerChoiceKey='';centerChoiceRenderSig='';centerChoiceMagicRevealed=false;resetCenterChoiceVisualState();
@@ -1011,7 +1046,7 @@ function renderCenterChoiceStage(s){
     const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),planReady=!!E().getManaPlan?.()?.plan?.ok;
     cardsHost.querySelectorAll('.ob-center-choice-card.is-clickable').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;intent(responsePay?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',[c.dataset.choiceUid])});
     if(!responsePay)makeBtn('CANCEL','ob-center-choice-cancel',false,()=>{if(!centerChoiceBusy)intent('cancelPendingAction',[])});
-    makeBtn('PAY','ob-center-choice-primary',!(planReady&&discardReady),async()=>{if(centerChoiceBusy)return;const live=E().getManaPlan?.()?.plan||{},keys=new Set((live.selected_shard_uids||live.shards?.map(x=>x.uid)||[]).map(String));if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget,{returnSide:'PLAYER'}))intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[])});
+    const payAction=makeBtn('PAY','ob-center-choice-primary',!(planReady&&discardReady),()=>{if(centerChoiceBusy)return;const live=E().getManaPlan?.()?.plan||{},keys=new Set((live.selected_shard_uids||live.shards?.map(x=>x.uid)||[]).map(String));startAuthoritativeCenterCommit(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[],keys,selectedTarget,otherTarget,{returnSide:'PLAYER',button:payAction})});
   }else if(mode==='opponent-shard'){
     cardsHost.querySelectorAll('.ob-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentManaChoice',[Number(c.dataset.choiceIndex)])});
     const required=Math.min(Number(p.required_count||1),(p.candidates||[]).length),ready=(p.selected_indices||[]).length===required;
@@ -1873,13 +1908,13 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
-// PvP v3.75.2 opening choreography:
+// PvP v3.75.3 opening choreography:
 //   Opening Hand:  PLAYER #1 -> OPPONENT #1 -> ... -> PLAYER #6 -> OPPONENT #6
 //   Starting Shard: PLAYER #1 -> OPPONENT #1 -> ... -> PLAYER #3 -> OPPONENT #3
 //   then a visible break before the first player's normal Draw Phase (+1 Main, +1 Shard).
 // Opening setup motions are intentionally faster than normal gameplay draw motions.
-const PVP_OPENING_MOTION_MS=110;
-const PVP_OPENING_INTER_CARD_GAP_MS=10;
+const PVP_OPENING_MOTION_MS=190;
+const PVP_OPENING_INTER_CARD_GAP_MS=0;
 const PVP_OPENING_TO_FIRST_TURN_GAP_MS=280;
 const PVP_TURN_DRAW_MOTION_MS=360;
 const PVP_TURN_DRAW_STAGE_GAP_MS=40;
@@ -1953,7 +1988,7 @@ function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntrie
     if(draw2.length||shard2.length)setTimeout(firstTurnDraw,PVP_OPENING_TO_FIRST_TURN_GAP_MS);
     else finishAll();
   };
-  console.log('[PvP v3.75.2] opening: interleaved 6+3 at 2x pace, then first-turn +1/+1 at normal pace');
+  console.log('[PvP v3.75.3] opening: interleaved 6+3 at readable ~2x pace, then first-turn +1/+1 at normal pace');
   animateDrawsInterleaved(draw1,PVP_OPENING_MOTION_MS,PVP_OPENING_INTER_CARD_GAP_MS,()=>
     animateShardsInterleaved(shard1,PVP_OPENING_MOTION_MS,PVP_OPENING_INTER_CARD_GAP_MS,afterOpeningSetup));
   return true;
@@ -1985,6 +2020,6 @@ function initStableBattlefieldReviewGestures(){
 
 
 function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};document.querySelector('.bottom-actions .danger').onclick=()=>{if(confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncSoundButton();}
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,onPvpIntentFailure,onPvpIntentResolved,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
 boot();
 })();

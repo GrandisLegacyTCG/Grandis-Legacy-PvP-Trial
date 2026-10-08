@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const ROOT=path.resolve(__dirname,'..');
-const TMP=path.join(ROOT,'.tmp-v3752-battle-server.mjs');
+const TMP=path.join(ROOT,'.tmp-v3753-battle-server.mjs');
 function generic(side,n,prefix){return Array.from({length:n},(_,i)=>({uid:`${prefix}:${i}`,kind:'GENERIC',class_name:'',owner_side:side,bottom_locked:false}));}
 function other(side){return side==='PLAYER'?'AI':'PLAYER';}
 function seatFor(side){return side==='PLAYER'?1:2;}
@@ -45,8 +45,14 @@ function transformServer(){
       const toggled=e.board.appState.pending;
       assert(toggled.selected_shard_uids.includes(matchingClassUid),attacker+' matching Class Shard toggle did not reach authoritative engine');
       assert.equal(toggled.selected_shard_uids.length,1,attacker+' FIFO replacement should leave only the matching Class Shard at exact 2 Mana');
+      const poolKey=attacker==='PLAYER'?'playerManaPoolCards':'aiManaPoolCards',deckKey=attacker==='PLAYER'?'playerManaDeck':'aiManaDeck',handKey=attacker==='PLAYER'?'playerHand':'aiHand';
+      const poolBeforeCommit=e.board.appState[poolKey].length;
       const commit=e.applyIntent(a,'commitManaShardPaymentChoice',[]);
       assert(commit.animationEvents.some(x=>x.kind==='card_play'),attacker+' attack commit did not emit card_play');
+      assert.equal(e.board.appState[poolKey].length,poolBeforeCommit-1,attacker+' authoritative PAY did not remove the selected exact Shard from Pool');
+      assert(!e.board.appState[poolKey].some(x=>x.uid===matchingClassUid),attacker+' spent Class Shard remained in Pool after PAY');
+      assert.equal(e.board.appState[deckKey].at(-1)?.uid,matchingClassUid,attacker+' spent Class Shard did not return to bottom of Shard Deck');
+      assert(!e.board.appState[handKey].includes('S1-WAR-001'),attacker+' paid card remained in Hand after authoritative commit');
       assert(e.board.appState.responseWindow,attacker+' attack did not open response window');
       const finalSnap=e.applyIntent(d,'responsePassNoStuck',[]);
       const events=finalSnap.animationEvents.filter(x=>x.kind==='battle_feedback');

@@ -1,4 +1,4 @@
-# Grandis Legacy PvP v3.75.2 — Source Map
+# Grandis Legacy PvP v3.75.3 — Source Map
 
 ## Authority order
 
@@ -25,7 +25,7 @@
 
 `v3.73.20` is **not** the naming/layout authority and is not copied wholesale.
 
-## Canonical v3.75.2 production files
+## Canonical v3.75.3 production files
 
 | Responsibility | Canonical file | Source role |
 |---|---|---|
@@ -60,6 +60,6 @@ The browser LocalStorage identifiers containing `pvp370` / `pvp371` are intentio
 
 ## Internal `AI` side-name exception
 
-The shared v6.90.7 runtime serializes the second canonical side as `AI` (`aiHand`, `aiHeroes`, `turn === "AI"`, etc.). PvP v3.75.2 deliberately keeps that **internal schema** so browser and headless-server snapshots stay compatible. In human-vs-human PvP, that side is Player 2 and no AI controller owns its decisions.
+The shared v6.90.7 runtime serializes the second canonical side as `AI` (`aiHand`, `aiHeroes`, `turn === "AI"`, etc.). PvP v3.75.3 deliberately keeps that **internal schema** so browser and headless-server snapshots stay compatible. In human-vs-human PvP, that side is Player 2 and no AI controller owns its decisions.
 
 This is the one major naming exception: **file/module names and player-facing labels are PvP-normalized; canonical runtime state keys are compatibility-stable.**

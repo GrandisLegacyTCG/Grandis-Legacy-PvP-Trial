@@ -1,8 +1,8 @@
-/* Grandis Legacy PvP v3.75.2 — v3.51 network/lobby reliability model + VS AI v6.90.7 battlefield presentation.
+/* Grandis Legacy PvP v3.75.3 — v3.51 network/lobby reliability model + VS AI v6.90.7 battlefield presentation.
    Historical gl_pvp370/gl_pvp371 LocalStorage keys are intentionally retained for upgrade continuity. */
 (function(){
 'use strict';
-const VERSION='Grandis Legacy PvP v3.75.2';
+const VERSION='Grandis Legacy PvP v3.75.3';
 const ROOM='GRANDIS_PVP';
 const DEFAULT_DECK_KEY='starter_01_elemental_lord_conqueror_renegade';
 const STORE={client:'gl_pvp370_client',name:'gl_pvp370_name',token:'gl_pvp370_seat_token',deck:'gl_pvp370_deck',role:'gl_pvp371_role'};
@@ -172,7 +172,7 @@ function selectDeck(key){if(!key||key==='CUSTOM')return;const r=E()?.selectOptio
 function importDeckFile(){const file=$('pvpLobbyFile')?.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const raw=JSON.parse(String(reader.result||'')),r=E()?.importOptionBDeck?.('PLAYER',raw);if(!r?.ok)throw new Error(r?.error||'Invalid deck file.');state.customDeck=clone(raw);state.customDeckName=clean(r?.state?.player?.deck_name||raw.display_name||raw.deck_name||'Imported Custom Deck',100);state.deckKey='CUSTOM';saveStore(STORE.deck,'CUSTOM');send('set-deck',{customDeck:state.customDeck,deckName:state.customDeckName});renderDeckOptions();renderFormation();renderDeckSummary();updateBudget();setMessage('Custom deck loaded.')}catch(err){setMessage(err?.message||String(err),true)}finally{$('pvpLobbyFile').value=''}};reader.onerror=()=>setMessage('Could not read the selected deck file.',true);reader.readAsText(file)}
 function swapFormation(a,b){const r=E()?.swapOptionBLobbyFormation?.('PLAYER',a,b);if(!r?.ok)return;const formation=currentFormation();if(state.customDeck){state.customDeck=clone(state.customDeck);state.customDeck.default_formation=clone(formation);send('set-deck',{customDeck:state.customDeck,deckName:state.customDeckName})}else if(state.deckKey)send('set-deck',{deckKey:state.deckKey,formation});renderFormation();renderDeckSummary()}
 function cycleRank(delta){E()?.cycleOptionBLobbyRank?.('PLAYER',delta);renderFormation()}
-function renderFormation(){const host=$('pvpLobbyFormation');if(!host||!E())return;const view=E().getOptionBLobbyFormationView?.('PLAYER')||{rank:1,lanes:{}},lanes=['LEFT','CENTER','RIGHT'],parts=[];lanes.forEach((lane,i)=>{const id=view.lanes?.[lane]?.previewId||view.lanes?.[lane]?.rankOneId||'',rankOne=view.lanes?.[lane]?.rankOneId||'',v=id?E().cardView?.(id):null;parts.push('<div class="pvp-lobby-hero"'+(rankOne?' data-pvp-progression="'+esc(rankOne)+'" role="button" tabindex="0" title="View Hero Progression"':'')+'>'+(id?'<img src="card-art/'+encodeURIComponent(id)+'.webp" alt="'+esc(v?.name||id)+'">':'')+'<small>'+lane.charAt(0)+lane.slice(1).toLowerCase()+'</small></div>');if(i<2)parts.push('<button class="pvp-lobby-swap" type="button" data-pvp-swap="'+lane+'|'+lanes[i+1]+'"><img src="assets/lobby/swap.png" alt="Swap"></button>')});host.innerHTML='<div class="pvp-lobby-formation">'+parts.join('')+'</div><div class="pvp-lobby-rank"><button type="button" data-pvp-rank="-1">‹</button><strong>RANK '+['I','II','III'][Math.max(1,Math.min(3,Number(view.rank||1)))-1]+'</strong><button type="button" data-pvp-rank="1">›</button></div>';host.querySelectorAll('[data-pvp-swap]').forEach(b=>b.onclick=()=>{const[a,c]=b.dataset.pvpSwap.split('|');swapFormation(a,c)});host.querySelectorAll('[data-pvp-rank]').forEach(b=>b.onclick=()=>cycleRank(Number(b.dataset.pvpRank||0)));host.querySelectorAll('[data-pvp-progression]').forEach(el=>{el.onclick=e=>{e.preventDefault();openHeroProgression(el.dataset.pvpProgression)};el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openHeroProgression(el.dataset.pvpProgression)}}})}
+function renderFormation(){const host=$('pvpLobbyFormation');if(!host||!E())return;const view=E().getOptionBLobbyFormationView?.('PLAYER')||{rank:1,lanes:{}},lanes=['LEFT','CENTER','RIGHT'],parts=[];lanes.forEach((lane,i)=>{const id=view.lanes?.[lane]?.previewId||view.lanes?.[lane]?.rankOneId||'',rankOne=view.lanes?.[lane]?.rankOneId||'',v=id?E().cardView?.(id):null;parts.push('<div class="pvp-lobby-hero"'+(rankOne?' data-pvp-progression="'+esc(rankOne)+'" role="button" tabindex="0" title="View Hero Progression"':'')+'>'+(id?'<img src="card-art/'+encodeURIComponent(id)+'.webp" alt="'+esc(v?.name||id)+'">':'')+'<small>'+lane.charAt(0)+lane.slice(1).toLowerCase()+'</small></div>');if(i<2)parts.push('<button class="pvp-lobby-swap" type="button" data-pvp-swap="'+lane+'|'+lanes[i+1]+'"><img src="assets/lobby/Swap.png" alt="Swap"></button>')});host.innerHTML='<div class="pvp-lobby-formation">'+parts.join('')+'</div><div class="pvp-lobby-rank"><button type="button" data-pvp-rank="-1">‹</button><strong>RANK '+['I','II','III'][Math.max(1,Math.min(3,Number(view.rank||1)))-1]+'</strong><button type="button" data-pvp-rank="1">›</button></div>';host.querySelectorAll('[data-pvp-swap]').forEach(b=>b.onclick=()=>{const[a,c]=b.dataset.pvpSwap.split('|');swapFormation(a,c)});host.querySelectorAll('[data-pvp-rank]').forEach(b=>b.onclick=()=>cycleRank(Number(b.dataset.pvpRank||0)));host.querySelectorAll('[data-pvp-progression]').forEach(el=>{el.onclick=e=>{e.preventDefault();openHeroProgression(el.dataset.pvpProgression)};el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openHeroProgression(el.dataset.pvpProgression)}}})}
 function toggleSpectatorRole(){
   const l=local();if(!state.connected||!l)return;
   if(isSpectator()&&activeMatch()){state.spectatorLobbyView=false;renderLobby();forceBattlefieldRender();ensureBattlefieldChrome();return}
@@ -481,6 +481,12 @@ function handleSnapshot(msg){
   if(activeMatch())importBoard(msg);
   resolveIntentFromSnapshot(msg);renderLobby();renderCoin();ensureBattlefieldChrome();
 }
+function notifyUiIntentFailure(item,reason='network-error',message=''){
+  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentFailure?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',reason,message});}catch(err){console.warn('[PvP fresh] intent failure UI recovery failed',err)}
+}
+function notifyUiIntentResolved(item,msg){
+  if(!item)return;try{window.GL_OPTION_B_UI?.onPvpIntentResolved?.({intent:item.name||item.intent||'',clientActionId:item.clientActionId||'',committedRevision:Number(msg?.match?.serverBoardRevision||item.committedRevision||0)});}catch(err){console.warn('[PvP fresh] intent resolve UI callback failed',err)}
+}
 function clearIntentAckRefresh(){if(state.intentAckRefreshTimer){clearTimeout(state.intentAckRefreshTimer);state.intentAckRefreshTimer=null}}
 function clearIntentTimeout(){if(state.intentTimeoutTimer){clearTimeout(state.intentTimeoutTimer);state.intentTimeoutTimer=null}}
 function clearIntentTimers(){clearIntentAckRefresh();clearIntentTimeout()}
@@ -493,7 +499,8 @@ function armIntentTimeout(){
   clearIntentTimeout();
   state.intentTimeoutTimer=setTimeout(()=>{
     const inflight=state.intentInFlight;if(!inflight)return;
-    state.intentQueue.length=0;state.intentInFlight=null;clearIntentTimers();
+    const abandoned=[inflight,...state.intentQueue];state.intentQueue.length=0;state.intentInFlight=null;clearIntentTimers();
+    abandoned.forEach(item=>notifyUiIntentFailure(item,'intent-timeout','Server response delayed.'));
     requestAuthoritativeResync('intent-timeout');
     state.message='Server response delayed. Battlefield resync requested; retry the action after the board refreshes.';
     state.messageError=true;renderLobby();
@@ -512,7 +519,7 @@ function resolveIntentFromSnapshot(msg){
   const inflight=state.intentInFlight;if(!inflight){clearIntentTimeout();return}
   const rev=Number(msg.match?.serverBoardRevision||0),last=msg.match?.lastIntent||{};
   if(rev>inflight.baseRevision||last.clientActionId===inflight.clientActionId){
-    state.intentInFlight=null;clearIntentTimers();state.messageError=false;
+    state.intentInFlight=null;clearIntentTimers();state.messageError=false;notifyUiIntentResolved(inflight,msg);
     if(state.message&&state.message.startsWith('Server response delayed.'))state.message='';
     pumpIntent();
   }
@@ -521,8 +528,8 @@ function sendIntent(name,args=[]){
   name=String(name||'');if(!name)return{ok:false,error:'Missing intent'};
   if(isSpectator())return{ok:false,error:'Spectator is read-only.'};
   if(state.awaitingResync)return{ok:false,error:'Waiting for authoritative resync.'};
-  state.intentQueue.push({name,args:Array.isArray(args)?args:[],clientActionId:'a'+Date.now().toString(36)+'_'+(++state.actionSeq).toString(36)});
-  pumpIntent();return{ok:true,queued:true};
+  const item={name,args:Array.isArray(args)?args:[],clientActionId:'a'+Date.now().toString(36)+'_'+(++state.actionSeq).toString(36)};
+  state.intentQueue.push(item);pumpIntent();return{ok:true,queued:true,intent:name,clientActionId:item.clientActionId};
 }
 function pumpIntent(){
   if(state.intentInFlight||state.awaitingResync||!state.intentQueue.length||!state.connected||!activeMatch()||isSpectator())return;
@@ -530,7 +537,11 @@ function pumpIntent(){
   if(!send('runtime-intent',{intent:item.name,args:item.args,baseRevision:item.baseRevision,clientActionId:item.clientActionId})){state.intentInFlight=null;state.intentQueue.unshift(item);return}
   armIntentTimeout();
 }
-function clearIntentQueue(){state.intentQueue.length=0;state.intentInFlight=null;state.awaitingResync=false;clearIntentTimers()}
+function clearIntentQueue(reason='intent-cleared',message=''){
+  const abandoned=[];if(state.intentInFlight)abandoned.push(state.intentInFlight);abandoned.push(...state.intentQueue);
+  state.intentQueue.length=0;state.intentInFlight=null;state.awaitingResync=false;clearIntentTimers();
+  abandoned.forEach(item=>notifyUiIntentFailure(item,reason,message));
+}
 
 function scheduleReconnect(){
   if(state.fatal||state.seatExitHold||state.reconnectTimer||navigator.onLine===false)return;
@@ -549,8 +560,8 @@ function connect(force=false){
   state.ws=ws;
   const live=()=>state.ws===ws&&state.socketEpoch===epoch;
   ws.onopen=()=>{if(!live())return;state.connected=true;state.fatal='';state.messageError=false;state.reconnectDelay=900;state.lastPongAt=Date.now();send('rename',{name:state.name||'Player'});renderLobby();pumpIntent()};
-  ws.onmessage=(ev)=>{if(!live())return;let msg;try{msg=JSON.parse(ev.data)}catch{return}if(msg.type==='snapshot'){handleSnapshot(msg);return}if(msg.type==='pong'){const now=Date.now(),sent=Number(msg.clientAt||state.pingAt||0);if(sent)state.latencyMs=Math.max(0,now-sent);state.opponentLatencyMs=msg.opponentLatencyMs==null?state.opponentLatencyMs:Number(msg.opponentLatencyMs);state.lastPongAt=now;ensureBattlefieldChrome();return}if(msg.type==='intent-ack'){handleIntentAck(msg);return}if(msg.type==='notice'){if(msg.kind==='error'){clearIntentQueue();state.messageError=true}state.message=msg.message||'Server notice';renderLobby();return}if(msg.type==='seat-kicked'){state.seatToken='';saveStore(STORE.token,'');state.seatExitHold=true;state.message=msg.message||'You left the player seat.';state.messageError=msg.kind!=='left';renderLobby();return}if(msg.type==='fatal'){state.fatal=msg.message||'Connection rejected.';state.messageError=true;renderLobby();try{ws.close()}catch{}}};
-  ws.onclose=()=>{if(!live())return;state.connected=false;state.ws=null;clearIntentQueue();renderLobby();scheduleReconnect()};
+  ws.onmessage=(ev)=>{if(!live())return;let msg;try{msg=JSON.parse(ev.data)}catch{return}if(msg.type==='snapshot'){handleSnapshot(msg);return}if(msg.type==='pong'){const now=Date.now(),sent=Number(msg.clientAt||state.pingAt||0);if(sent)state.latencyMs=Math.max(0,now-sent);state.opponentLatencyMs=msg.opponentLatencyMs==null?state.opponentLatencyMs:Number(msg.opponentLatencyMs);state.lastPongAt=now;ensureBattlefieldChrome();return}if(msg.type==='intent-ack'){handleIntentAck(msg);return}if(msg.type==='notice'){if(msg.kind==='error'){clearIntentQueue(msg.code||'server-error',msg.message||'Server notice');state.messageError=true}state.message=msg.message||'Server notice';renderLobby();return}if(msg.type==='seat-kicked'){state.seatToken='';saveStore(STORE.token,'');state.seatExitHold=true;state.message=msg.message||'You left the player seat.';state.messageError=msg.kind!=='left';renderLobby();return}if(msg.type==='fatal'){state.fatal=msg.message||'Connection rejected.';state.messageError=true;renderLobby();try{ws.close()}catch{}}};
+  ws.onclose=()=>{if(!live())return;state.connected=false;state.ws=null;clearIntentQueue('socket-closed','Connection closed before the action settled.');renderLobby();scheduleReconnect()};
   ws.onerror=()=>{if(!live())return;renderLobby()};
 }
 function resetRoom(){send('reset-room',{})}
@@ -569,7 +580,7 @@ function boot(){
   const requestGameplayAudioUnlock=()=>{try{return !!B()?.unlockGameplayAudioPlayback?.()}catch{return false}};
   ['pointerdown','touchstart','keydown'].forEach(type=>document.addEventListener(type,requestGameplayAudioUnlock,{capture:true,passive:type==='touchstart'}));
   try{B()?.prepareAuthoritativeBattleAssets?.()}catch{}
-  window.GL_PVP_NETWORK={version:VERSION,send,sendIntent,getSnapshot:()=>state.snapshot,reconnect:()=>{state.seatExitHold=false;connect(true)},resetRoom,surrender:()=>sendIntent('executeConfirmedSurrender',[]),fitIdentity};
+  window.GL_PVP_NETWORK={version:VERSION,send,sendIntent,getSnapshot:()=>state.snapshot,getIntentState:()=>({inFlight:state.intentInFlight?{...state.intentInFlight}:null,queued:state.intentQueue.map(x=>({...x})),awaitingResync:!!state.awaitingResync}),reconnect:()=>{state.seatExitHold=false;connect(true)},resetRoom,surrender:()=>sendIntent('executeConfirmedSurrender',[]),fitIdentity};
   connect();
   setInterval(()=>{if(state.ws?.readyState===WebSocket.OPEN){state.pingAt=Date.now();send('ping',{clientAt:state.pingAt,latencyMs:state.latencyMs})}},10000);
   setInterval(()=>{if(state.ws?.readyState===WebSocket.OPEN&&state.lastPongAt&&Date.now()-state.lastPongAt>45000&&document.visibilityState!=='hidden')connect(true);ensureBattlefieldChrome();if(activeMatch())renderCoin()},1000);
