@@ -1,4 +1,4 @@
-/* Grandis Legacy PvP v3.76.5
+/* Grandis Legacy PvP v3.76.6
    External VS AI v6 shell isolation.
    app.css remains loaded for native engine overlays/controller compatibility, but
    its historical generic !important rules must not own external battlefield geometry. */
@@ -209,3 +209,52 @@ body.pvp-presentation-owned:not(.pvp-gameplay-revealed)>.app.ob-pvp-shell{
   pointer-events:none!important;
 }
 .gl-opening-coin-modal,.pvp-coin-modal{z-index:12000!important}
+
+
+/* v3.76.6 — lock final phase geometry to the visible VS AI v6.90.7 shell.
+   app.css carries an unrelated legacy `.phase{min-height:58px}` that survives
+   normal cascade because donor CSS does not set min-height. Neutralize only the
+   external shell residue; do not redesign the donor. */
+.ob-pvp-shell .phase{
+  position:relative!important;
+  top:4px!important;
+  z-index:110!important;
+  height:32px!important;
+  min-height:0!important;
+  margin:0 0 2px!important;
+  display:flex!important;
+  align-items:center!important;
+  min-width:0!important;
+  padding:2px 8px 2px 15px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:linear-gradient(90deg,rgba(11,24,36,.98),rgba(6,15,24,.96))!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.23),inset 0 0 0 1px rgba(62,82,101,.11)!important;
+}
+.ob-pvp-shell .phase:before{left:4px!important;top:4px!important;bottom:4px!important;width:3px!important}
+.ob-pvp-shell .phase-turn{flex:0 0 150px!important;min-width:0!important;display:flex!important;align-items:center!important;align-self:stretch!important}
+.ob-pvp-shell .phase .turn{font-size:10px!important;font-weight:950!important;line-height:1.05!important}
+.ob-pvp-shell .phase .turn small{display:block!important;margin-top:2px!important;font-size:7px!important;line-height:normal!important;font-weight:500!important}
+.ob-pvp-shell .phase-track{flex:1 1 auto!important;min-width:0!important;display:flex!important;align-items:center!important;justify-content:space-around!important;gap:10px!important;padding:0 26px!important}
+.ob-pvp-shell .phase-label{padding:0!important;border:0!important;background:none!important;font-size:7.4px!important;font-weight:850!important;letter-spacing:.025em!important;line-height:1!important;white-space:nowrap!important;text-align:center!important}
+.ob-pvp-shell .phase-label.active{font-weight:950!important}
+.ob-pvp-shell .phase-action{width:auto!important;min-width:0!important;height:24px!important;min-height:0!important;padding:0 12px!important;border-radius:7px!important;font-size:7.4px!important;font-weight:950!important;letter-spacing:.025em!important;line-height:1!important;white-space:nowrap!important}
+.ob-pvp-shell .phase-action.next{padding-left:13px!important;padding-right:13px!important}
+@media(max-width:1250px){
+  .ob-pvp-shell .phase{padding-left:12px!important;padding-right:5px!important}
+  .ob-pvp-shell .phase-turn{flex-basis:112px!important}
+  .ob-pvp-shell .phase-track{gap:5px!important;padding:0 12px!important}
+  .ob-pvp-shell .phase-label{font-size:6.5px!important}
+  .ob-pvp-shell .phase-actions{gap:5px!important}
+  .ob-pvp-shell .phase-action{height:25px!important;padding-left:9px!important;padding-right:9px!important;font-size:6.6px!important}
+  .ob-pvp-shell .phase-action.next{padding-left:10px!important;padding-right:10px!important}
+}
+
+/* Human-vs-human identity keeps the donor positions but is intentionally more
+   readable than the old generic LOCAL AI / PLAYER chips. */
+.ob-pvp-shell .pvp-external-identity{gap:8px!important}
+.ob-pvp-shell .pvp-external-identity .pvp-player-display-name{max-width:156px!important;font-size:10px!important;line-height:11px!important;letter-spacing:.015em!important}
+.ob-pvp-shell .pvp-external-identity .pvp-player-deck-name{max-width:156px!important;font-size:7px!important;line-height:8px!important}
+.ob-pvp-shell .hand.top>.pvp-external-identity{padding:5px 6px 5px 8px!important}
+.ob-pvp-shell .player-name.pvp-external-identity{min-width:160px!important;max-width:212px!important;padding:5px 8px 5px 6px!important}
+.ob-pvp-shell .pvp-connection-bar{flex-basis:28px!important;width:28px!important;height:20px!important}

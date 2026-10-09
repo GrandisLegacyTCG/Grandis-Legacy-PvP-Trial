@@ -10400,6 +10400,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     },
     setSharedBoardMode:function(active){ window.GL_PVP_SHARED_BOARD_ACTIVE=!!active; },
     setRenderSuppressed:function(active){SUPPRESS_RENDER=!!active;return SUPPRESS_RENDER;},
+    isAnimationBusy:function(){return animationBusy();},
     getPendingClosePolicy:function(){ return localPendingClosePolicy(appState,appState&&appState.pending); },
     clearTransientUiState:clearTransientUiState,
     testSetManaPreviewHidden:function(side,uid,hidden){side=side==='AI'?'AI':'PLAYER';if(hidden){if(!hiddenManaDrawToken(side,uid))addHiddenManaDrawToken(side,uid);}else removeHiddenManaDrawToken(side,uid,{suppressRender:true});if(appState&&matchStarted&&!SUPPRESS_RENDER)render();return !!hiddenManaDrawToken(side,uid);},
@@ -12415,7 +12416,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
   };
 
 
-  // v3.76.5 presentation API bridge; authority remains this PvP v3.51 runtime.
+  // v3.76.6 presentation API bridge; authority remains this PvP v3.51 runtime.
   window.GL_OPTION_B_ENGINE={
     version:GL_VERSION,
     prepareOptionBLocalMatch:function(){

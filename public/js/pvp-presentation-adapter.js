@@ -40,7 +40,7 @@
   }
 
   window.GL_PVP_PRESENTATION_ADAPTER={
-    version:'PvP v3.76.5 presentation bridge',
+    version:'PvP v3.76.6 presentation bridge',
     visualAuthority:'VS AI v6.90.7',
     sourceContract:'viewer-safe server board -> seat orientation -> shared Candidate 15 presentation',
     isViewerSafeSnapshot:isViewerSafeSnapshot,

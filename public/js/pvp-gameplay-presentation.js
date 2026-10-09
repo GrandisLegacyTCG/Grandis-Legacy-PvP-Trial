@@ -1405,8 +1405,8 @@ function renderHand(s){
     }else if(discardMode&&discardSet.has(idx)){
       addAction(actions,discardSel.selected?'CANCEL':'DISCARD',discardSel.selected?'cancel':'discard',()=>handleDiscardClick(p,idx));actionCount++;
     }else if(!s.pending&&!s.responseWindow&&s.turn==='PLAYER'){
-      if(m.canPlay){addAction(actions,'PLAY','play',()=>intent('beginPlayFromHand',[idx]));actionCount++}
-      if(m.canTribute){addAction(actions,'TRIBUTE','tribute',()=>intent('beginTributeFromHand',[idx]));actionCount++}
+      if(m.canPlay){const playBtn=addAction(actions,'PLAY','play',()=>intent('beginPlayFromHand',[idx]));playBtn.dataset.playIndex=String(idx);playBtn.dataset.pvpIntent='beginPlayFromHand';actionCount++}
+      if(m.canTribute){const tributeBtn=addAction(actions,'TRIBUTE','tribute',()=>intent('beginTributeFromHand',[idx]));tributeBtn.dataset.tributeIndex=String(idx);tributeBtn.dataset.pvpIntent='beginTributeFromHand';actionCount++}
     }
     if(actionCount)card.classList.add('ob-has-action');
     card.appendChild(actions);const im=document.createElement('img');im.className='hand-art';im.src=art(id);im.alt=v?.name||'Card';im.draggable=false;card.appendChild(im);bindBattlefieldPreview(im,'hand',card);bindOptionBHandHover(card);card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(id)};playerHandTrack.appendChild(card);
@@ -1418,7 +1418,7 @@ function renderHand(s){
   applyHandFan(playerHandTrack,'PLAYER');
   requestAnimationFrame(syncPlayerHandToHeroCenter);
 }
-function addAction(host,label,cls,fn){const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=label;b.onclick=e=>{e.stopPropagation();fn()};host.appendChild(b)}
+function addAction(host,label,cls,fn){const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=label;b.onclick=e=>{e.stopPropagation();fn()};host.appendChild(b);return b}
 function handleDiscardClick(p,handIndex){
   if(p.type==='hand_limit_discard'){
     intent('toggleDiscardIndex',[handIndex]);

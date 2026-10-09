@@ -1139,7 +1139,7 @@ body.ob-center-choice-active #sharedPreviewBox.previewing{opacity:0!important;po
 .ob-vsai-choice-overlay.ob-choice-main-deck-preview .ob-choice-list-pane{display:contents!important}
 .ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{display:none!important}
 
-/* v3.76.5 — single-owner PvP identity + pre-game presentation state. */
+/* v3.76.6 — single-owner PvP identity + pre-game presentation state. */
 .ob-pvp-shell .pvp-external-identity{box-sizing:border-box;display:flex;align-items:center;gap:7px;color:#f7f9fc;background:rgba(3,10,17,.88);border:1px solid rgba(244,211,94,.34);border-radius:7px;z-index:92;pointer-events:none}
 .ob-pvp-shell .pvp-external-identity .pvp-player-identity-container{display:flex;min-width:0;flex-direction:column;gap:2px;line-height:1}
 .ob-pvp-shell .pvp-external-identity .pvp-player-display-name{max-width:118px;color:#f7f9fc;font-size:8px;font-weight:900;line-height:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
