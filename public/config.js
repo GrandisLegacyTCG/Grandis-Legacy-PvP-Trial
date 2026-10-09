@@ -1,11 +1,11 @@
-/* Grandis Legacy PvP v3.75.8 — static frontend config.
+/* Grandis Legacy PvP v3.75.9 — static frontend config.
    PvP v3.51 remains authoritative; VS AI v6.90.7 supplies presentation only. */
 (function(){
   'use strict';
   window.GL_APP_MODE='PVP';
   window.GL_CONFIG={
-    version:'Grandis Legacy PvP v3.75.8',
-    buildId:'gl-pvp-3.75.8-v351-authority-v6907-ui-2026-10-09',
+    version:'Grandis Legacy PvP v3.75.9',
+    buildId:'gl-pvp-3.75.9-v351-authority-v6907-ui-2026-10-09',
     mode:'server-authoritative-human-vs-human',
     wsPath:'/ws',
     connectionTimeoutMs:10000,

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-<title>Grandis Legacy — PvP v3.75.8</title>
+<title>Grandis Legacy — PvP v3.75.9</title>
 <link rel="icon" type="image/png" href="assets/favicon.png" />
 <script id="pvp-mobile-orientation-detect">
 (() => {
@@ -29,7 +29,7 @@
   }, { passive: false });
 })();
 </script>
-<style>
+<style id="pvpV6CoreStyles" media="not all">
 @font-face{font-family:Noto;src:url('assets/fonts/NotoSans-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 :root{
   --sidebar-w:15vw;
@@ -295,10 +295,23 @@ html,body{width:100%;height:100%;overflow:hidden}
 
 </style>
 
-<link rel="stylesheet" href="css/pvp-ui.css?v=3.75.8">
-<link rel="stylesheet" href="css/pvp-lobby.css?v=3.75.8">
+<style id="pvpSurfaceGateStyles">
+#pvpV6Surface[hidden],#pvpV351Surface[hidden]{display:none!important}
+#pvpV351Surface{min-height:100vh}
+body:not(.pvp-stage-gameplay) [class^="ob-"]:not(.ob-engine-host),
+body:not(.pvp-stage-gameplay) [class*=" ob-"]:not(.ob-engine-host){display:none!important}
+body.pvp-stage-lobby #pvpV351Surface{display:none!important}
+body.pvp-stage-pregame #pvpV351Surface{display:block!important}
+body.pvp-stage-gameplay #pvpV351Surface{display:none!important}
+</style>
+<link id="pvpV351AppCss" rel="stylesheet" href="css/app.css?v=3.75.9">
+<link id="pvpV351AuthorityCss" rel="stylesheet" href="css/battlefield-authority.css?v=3.75.9">
+<link id="pvpV351SharedUiCss" rel="stylesheet" href="shared-ui/battlefield-ui.css?v=3.75.9">
+<link id="pvpV6UiCss" rel="stylesheet" media="not all" href="css/pvp-ui.css?v=3.75.9">
+<link rel="stylesheet" href="css/pvp-lobby.css?v=3.75.9">
 </head>
 <body class="pvp-booting">
+<div id="pvpV6Surface" hidden aria-hidden="true">
 <div class="app ob-lobby-hidden">
   <main class="battlefield">
     <div class="concept" aria-hidden="true"></div>
@@ -461,6 +474,7 @@ html,body{width:100%;height:100%;overflow:hidden}
     </div></section>
   </aside>
 </div>
+</div><!-- /#pvpV6Surface -->
 <script id="gl-stepped-physical-responsive-js">
 (() => {
   const REF_PHYSICAL_W = 1600;
@@ -522,7 +536,7 @@ html,body{width:100%;height:100%;overflow:hidden}
 </script>
 
 
-  <div class="ob-engine-host" aria-hidden="true">
+  <div id="pvpV351Surface" class="ob-engine-host" aria-hidden="false">
     <div id="app"></div>
     <div id="choiceOverlay"><section><h2 id="choiceTitle"></h2><button id="choiceClose"></button><div id="choiceBody"></div><button id="choiceConfirm"></button></section></div>
     <div id="infoOverlay"><section><h2 id="infoTitle"></h2><button id="infoClose"></button><div id="infoBody"></div></section></div>
@@ -532,15 +546,15 @@ html,body{width:100%;height:100%;overflow:hidden}
     <div id="glAnimationLayer"></div>
   </div>
   <script>window.GL_APP_MODE="PVP";window.GL_PVP_CLIENT_MODE=true;window.GL_PVP_SHARED_BOARD_ACTIVE=true;</script>
-  <script src="config.js?v=3.75.8"></script>
-  <script src="shared-ui/battlefield-ui.js?v=3.75.8"></script>
-  <script src="js/static-data.js?v=3.75.8"></script>
-  <script src="js/pvp-presentation-adapter.js?v=3.75.8"></script>
-  <script src="js/runtime-authority.js?v=3.75.8"></script>
-  <script src="js/app.bundle.js?v=3.75.8"></script>
-  <script src="js/pvp-ui-runtime.js?v=3.75.8"></script>
-  <script src="js/pvp-network.js?v=3.75.8"></script>
-  <script src="js/mobile-app-nav.js?v=3.75.8"></script>
+  <script src="config.js?v=3.75.9"></script>
+  <script src="shared-ui/battlefield-ui.js?v=3.75.9"></script>
+  <script src="js/static-data.js?v=3.75.9"></script>
+  <script src="js/pvp-presentation-adapter.js?v=3.75.9"></script>
+  <script src="js/runtime-authority.js?v=3.75.9"></script>
+  <script src="js/app.bundle.js?v=3.75.9"></script>
+  <script src="js/pvp-ui-runtime.js?v=3.75.9"></script>
+  <script src="js/pvp-network.js?v=3.75.9"></script>
+  <script src="js/mobile-app-nav.js?v=3.75.9"></script>
 
 </body>
 </html>

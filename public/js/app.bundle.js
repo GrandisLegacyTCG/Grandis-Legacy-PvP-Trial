@@ -739,6 +739,23 @@
   function queueDrawEvents(events,state,options){
     options=options||{};
     events=(events||[]).filter(function(e){return e&&e.type==='CARD_DRAWN';});
+    /* PvP v3.75.9 approved opening choreography: Opening Hand is visibly dealt
+       one card at a time, PLAYER then opponent, for each of the six pairs.
+       Gameplay/ordinary Draw animations keep the canonical v3.51 timing. */
+    var hasOpeningHand=events.some(function(e){return e&&e.reason==='OPENING_HAND';});
+    if(hasOpeningHand){
+      function openingGroupIndex(e){
+        if(e&&e.group_index!=null&&Number.isFinite(Number(e.group_index)))return Number(e.group_index);
+        var m=String(e&&e.group_id||'').match(/OPENING_PAIR_(\d+)/);return m?Math.max(0,Number(m[1])-1):999;
+      }
+      events.sort(function(a,b){
+        var ag=openingGroupIndex(a),bg=openingGroupIndex(b);
+        if(ag!==bg)return ag-bg;
+        var as=a&&a.side==='PLAYER'?0:1,bs=b&&b.side==='PLAYER'?0:1;
+        if(as!==bs)return as-bs;
+        return Number(a&&a.hand_index||0)-Number(b&&b.hand_index||0);
+      });
+    }
     var openingViewportBatch=events.some(function(e){return e&&e.side==='PLAYER'&&e.reason==='OPENING_HAND';});
     var latestPlayerDraw=events.filter(function(e){return e&&e.side==='PLAYER';}).sort(function(a,b){return Number(a.hand_index)-Number(b.hand_index);}).pop()||null;
     function finishSequence(){
@@ -757,7 +774,10 @@
     if(openingPlayerEvents.length)focusMobilePlayerHand({targetIndex:Number(openingPlayerEvents[0].hand_index),ensureVisible:true});
     var groups=[],byKey={};
     events.forEach(function(e){
-      var key=(e.reason==='OPENING_HAND'&&e.group_id)?String(e.group_id):('SEQ:'+String(e.id));
+      /* Never parallelize the two sides during the PvP Opening Hand.  The server
+         may tag the pair with one group_id for authority bookkeeping, but the
+         presentation is deliberately PLAYER #n -> opponent #n. */
+      var key=e.reason==='OPENING_HAND'?('OPENING_SEQ:'+String(e.id)):('SEQ:'+String(e.id));
       if(!byKey[key]){byKey[key]=[];groups.push(byKey[key]);}
       byKey[key].push(e);
     });
@@ -775,8 +795,9 @@
         var parts=group.map(function(e){return{event:e,src:'https://grandislegacytcg.github.io/shared/season1/v1/cards/ui/Back-of-Card-Main-Deck.webp',from:captureVisualRect('[data-zone-side="'+e.side+'"][data-zone-type="Main Deck"] .zoneCard'),to:captureHandSlotRect(e.side,e.hand_index)};});
         function done(){revealGroup(group);setTimeout(runNext,50);}
         if(parts.every(function(part){return part.from&&part.to;})){
-          if(parts.length>1)queueParallelVisualCardMotions(parts.map(function(part){return{src:part.src,from:part.from,to:part.to};}),360,{play_sound:true,onFinish:done});
-          else queueVisualCardMotion(parts[0].src,parts[0].from,[{rect:parts[0].to}],360,{play_sound:true,eager_start:isMobileViewport(),onFinish:done});
+          var drawDuration=group.some(function(e){return e&&e.reason==='OPENING_HAND';})?190:360;
+          if(parts.length>1)queueParallelVisualCardMotions(parts.map(function(part){return{src:part.src,from:part.from,to:part.to};}),drawDuration,{play_sound:true,onFinish:done});
+          else queueVisualCardMotion(parts[0].src,parts[0].from,[{rect:parts[0].to}],drawDuration,{play_sound:true,eager_start:isMobileViewport(),onFinish:done});
           queued=true;
         }else done();
       }
@@ -1669,14 +1690,24 @@
     function next(){if(index>=drawn.length)return;var sh=drawn[index++];nextVisualFrame(function(){var from=captureVisualRect('[data-zone-side="'+side+'"][data-zone-type="Shard Deck"] .zoneCard'),to=captureVisualRect('.gl-lab-mana-card[data-mana-side="'+side+'"][data-mana-uid="'+sh.uid+'"]');function done(){removeHiddenManaDrawToken(side,sh.uid,{suppressRender:true});if(appState&&matchStarted&&!SUPPRESS_RENDER)render();if(index<drawn.length)setTimeout(next,55);}if(from&&to)queueVisualCardMotion(back,from,[{rect:to}],390,{play_sound:true,eager_start:true,onFinish:done});else done();});}next();return true;
   }
   function prehideAuthoritativeShardEntries(entries){(entries||[]).forEach(function(e){if(e&&(e.side==='PLAYER'||e.side==='AI')&&Number.isFinite(Number(e.pool_index)))setAuthoritativeShardSlotHidden(e.side,Number(e.pool_index),true);});if(appState&&matchStarted&&!SUPPRESS_RENDER)render();return true;}
-  function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){
-    openingDrawEvents=clone(openingDrawEvents||[]);startingShardEntries=clone(startingShardEntries||[]);postOpeningDrawEvents=clone(postOpeningDrawEvents||[]);postOpeningShardEntries=clone(postOpeningShardEntries||[]);
+  function queueAuthoritativeOpeningSequence(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries,options){
+    options=options||{};openingDrawEvents=clone(openingDrawEvents||[]);startingShardEntries=clone(startingShardEntries||[]);postOpeningDrawEvents=clone(postOpeningDrawEvents||[]);postOpeningShardEntries=clone(postOpeningShardEntries||[]);
+    /* Opening Shards use the same readable round-robin deal as Opening Hand:
+       PLAYER #1 -> opponent #1 -> PLAYER #2 -> opponent #2 -> PLAYER #3 -> opponent #3.
+       Re-numbering group_index is presentation-only; Shard ownership/pool_index is untouched. */
+    startingShardEntries.sort(function(a,b){
+      var ag=Number(a&&a.group_index!=null?a.group_index:a&&a.pool_index||0),bg=Number(b&&b.group_index!=null?b.group_index:b&&b.pool_index||0);
+      if(ag!==bg)return ag-bg;
+      var as=a&&a.side==='PLAYER'?0:1,bs=b&&b.side==='PLAYER'?0:1;
+      return as-bs;
+    }).forEach(function(e,i){e.group_index=i;});
     prehideAuthoritativeShardEntries(startingShardEntries.concat(postOpeningShardEntries));
-    function postShards(){return queueAuthoritativeShardGainMotions(postOpeningShardEntries,{prehidden:true});}
+    var completed=false;function finish(){if(completed)return;completed=true;if(typeof options.onComplete==='function')options.onComplete();}
+    function postShards(){if(postOpeningShardEntries.length)return queueAuthoritativeShardGainMotions(postOpeningShardEntries,{prehidden:true,onComplete:finish});finish();return false;}
     function postDraw(){if(postOpeningDrawEvents.length)return queueDrawEvents(postOpeningDrawEvents,appState,{onComplete:postShards});return postShards();}
-    function startingShards(){if(startingShardEntries.length)return queueAuthoritativeShardGainMotions(startingShardEntries,{prehidden:true,onComplete:postDraw});return postDraw();}
+    function startingShards(){if(startingShardEntries.length)return queueAuthoritativeShardGainMotions(startingShardEntries,{prehidden:true,duration:190,gap:20,onComplete:postDraw});return postDraw();}
     if(openingDrawEvents.length)return queueDrawEvents(openingDrawEvents,appState,{onComplete:startingShards});
-    return startingShards();
+    var queued=startingShards();if(!openingDrawEvents.length&&!startingShardEntries.length&&!postOpeningDrawEvents.length&&!postOpeningShardEntries.length)finish();return queued;
   }
   function authoritativeDrawSpecsToEvents(specs){
     var out=[];(specs||[]).forEach(function(spec){if(!spec)return;var ids=Array.isArray(spec.card_ids)?spec.card_ids.slice():[],n=Math.max(1,Number(spec.count||ids.length||1)),hand=sideHand(appState,spec.actor_side)||[];while(ids.length<n)ids.push(spec.card_id||'__HIDDEN_CARD_BACK__');for(var i=0;i<n;i++)out.push({id:(spec.id||('external-'+(++GL_ANIMATION_SEQUENCE)))+'-'+i,type:'CARD_DRAWN',side:spec.actor_side,card_id:ids[i]||spec.card_id||'__HIDDEN_CARD_BACK__',hand_index:Math.max(0,hand.length-n+i),reason:spec.reason||'MANDATORY_DRAW_PHASE'});});return out;
@@ -1709,10 +1740,11 @@
       if(cursor>=groups.length){finish();return;}var group=groups[cursor++];
       nextVisualFrame(function(){
         var parts=group.map(function(e){return{event:e,src:back,from:captureVisualRect('[data-zone-side="'+e.side+'"][data-zone-type="Shard Deck"] .zoneCard'),to:captureVisualRect('.gl-lab-mana-card[data-mana-side="'+e.side+'"][data-mana-index="'+Number(e.pool_index)+'"]')};});
-        function done(){group.forEach(function(e){setAuthoritativeShardSlotHidden(e.side,Number(e.pool_index),false);});if(appState&&matchStarted&&!SUPPRESS_RENDER)render();if(cursor<groups.length)setTimeout(next,55);else finish();}
+        var duration=Math.max(80,Number(options.duration||390)),gap=Math.max(0,Number(options.gap!=null?options.gap:55));
+        function done(){group.forEach(function(e){setAuthoritativeShardSlotHidden(e.side,Number(e.pool_index),false);});if(appState&&matchStarted&&!SUPPRESS_RENDER)render();if(cursor<groups.length)setTimeout(next,gap);else finish();}
         if(parts.every(function(part){return part.from&&part.to;})){
-          if(parts.length>1)queueParallelVisualCardMotions(parts.map(function(part){return{src:part.src,from:part.from,to:part.to};}),390,{play_sound:true,onFinish:done});
-          else queueVisualCardMotion(parts[0].src,parts[0].from,[{rect:parts[0].to}],390,{play_sound:true,eager_start:true,onFinish:done});
+          if(parts.length>1)queueParallelVisualCardMotions(parts.map(function(part){return{src:part.src,from:part.from,to:part.to};}),duration,{play_sound:true,onFinish:done});
+          else queueVisualCardMotion(parts[0].src,parts[0].from,[{rect:parts[0].to}],duration,{play_sound:true,eager_start:true,onFinish:done});
           queued=true;
         }else done();
       });
@@ -10429,7 +10461,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     queueAuthoritativeDrawMotion:function(side,cardId,count,reason){var n=Math.max(1,Number(count||1)),events=[],hand=sideHand(appState,side)||[];for(var i=0;i<n;i++)events.push({id:'external-'+(++GL_ANIMATION_SEQUENCE),type:'CARD_DRAWN',side:side,card_id:cardId,hand_index:Math.max(0,hand.length-n+i),reason:reason||'CARD_EFFECT'});return queueDrawEvents(events,appState);},
     queueAuthoritativeDrawEvents:function(events){focusMobilePlayerHand({lockRight:true});return queueDrawEvents(clone(events||[]),appState);},
     queueAuthoritativeShardGainMotions:function(entries,options){return queueAuthoritativeShardGainMotions(clone(entries||[]),options||{});},
-    queueAuthoritativeOpeningSequence:function(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries){return queueAuthoritativeOpeningSequence(openingDrawEvents||[],startingShardEntries||[],postOpeningDrawEvents||[],postOpeningShardEntries||[]);},
+    queueAuthoritativeOpeningSequence:function(openingDrawEvents,startingShardEntries,postOpeningDrawEvents,postOpeningShardEntries,options){return queueAuthoritativeOpeningSequence(openingDrawEvents||[],startingShardEntries||[],postOpeningDrawEvents||[],postOpeningShardEntries||[],options||{});},
     queueAuthoritativeDrawThenShardMotions:function(drawSpecs,shardEntries){return queueAuthoritativeDrawThenShardMotions(drawSpecs||[],shardEntries||[]);},
     focusMobilePlayerHand:function(options){return focusMobilePlayerHand(options||{lockRight:true});},
     queueAuthoritativeDrawMotions:function(side,cardIds,count,reason){var ids=Array.isArray(cardIds)?cardIds.slice():[],n=Math.max(1,Number(count||ids.length||1)),events=[],hand=sideHand(appState,side)||[];while(ids.length<n)ids.push('__HIDDEN_CARD_BACK__');for(var i=0;i<n;i++)events.push({id:'external-'+(++GL_ANIMATION_SEQUENCE),type:'CARD_DRAWN',side:side,card_id:ids[i],hand_index:Math.max(0,hand.length-n+i),reason:reason||'CARD_EFFECT'});return queueDrawEvents(events,appState);},
@@ -10543,12 +10575,12 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
       }
     }
   };
-  /* GL_PVP_V3758_OPTION_B_ADAPTER
-     v3.75.8 donor boundary: PvP v3.51 remains the browser/server gameplay contract; VS AI v6.90.7 is presentation only.
+  /* GL_PVP_V3759_OPTION_B_ADAPTER
+     v3.75.9 donor boundary: PvP v3.51 remains the browser/server gameplay contract; VS AI v6.90.7 is presentation only.
      This adapter exposes read models and presentation controls required by the
      VS AI v6.90.7 Option-B UI without importing the v6 exact-payment engine. */
   window.GL_OPTION_B_ENGINE={
-    version:'Grandis Legacy PvP v3.75.8',
+    version:'Grandis Legacy PvP v3.75.9',
     getSnapshot:glPvpBridgeSnapshot,
     intent:function(name,args){
       args=args||[];

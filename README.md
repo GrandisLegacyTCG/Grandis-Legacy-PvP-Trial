@@ -1,4 +1,4 @@
-# Grandis Legacy PvP v3.75.8
+# Grandis Legacy PvP v3.75.9
 
 Server-authoritative two-player Grandis Legacy PvP.
 
@@ -24,4 +24,4 @@ WebSocket endpoint: `/ws`
 npm test
 ```
 
-See `ARCHITECTURE_DONOR_MAP.md`, `BUILD_NOTES_v3.75.8.md`, and `QA_v3.75.8.md`.
+See `ARCHITECTURE_DONOR_MAP.md`, `BUILD_NOTES_v3.75.9.md`, and `QA_v3.75.9.md`.

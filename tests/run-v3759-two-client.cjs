@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const ROOT=path.resolve(__dirname,'..');
-const TMP=path.join(ROOT,'.v3758-server-runtime-test.mjs');
+const TMP=path.join(ROOT,'.v3759-server-runtime-test.mjs');
 function transformServer(){
   let s=fs.readFileSync(path.join(ROOT,'server.js'),'utf8');
   s=s.replace("import { WebSocketServer, WebSocket } from 'ws';", `class WebSocketServer { constructor(){this.handlers={};this.clients=new Set();} on(ev,fn){this.handlers[ev]=fn;} emit(ev,...args){if(this.handlers[ev])return this.handlers[ev](...args);} handleUpgrade(){} }\nconst WebSocket={OPEN:1};`);
@@ -40,7 +40,7 @@ function playedEmpty(board){const a=board?.appState||{};return (a.playerPlayedEv
     starter(p1);starter(p2);
     p1.message({type:'ready',ready:true});p2.message({type:'ready',ready:true});
     assert.equal(p1.errors().length,0);assert.equal(p2.errors().length,0);
-    p1.message({type:'start-match',seed:'v3758-seed'});
+    p1.message({type:'start-match',seed:'v3759-seed'});
     assert.equal(p1.lastSnapshot().match.status,'coin-flip','v3.51 coin-flip did not start');
     assert.equal(p2.lastSnapshot().match.status,'coin-flip');
     p2.message({type:'choose-coin-flip',choice:'HEADS'});

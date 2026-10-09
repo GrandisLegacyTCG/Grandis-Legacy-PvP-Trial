@@ -1,4 +1,4 @@
-/* Grandis Legacy PvP v3.75.8 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
+/* Grandis Legacy PvP v3.75.9 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
 (()=>{
 'use strict';
 const E=()=>window.GL_OPTION_B_ENGINE;
@@ -1841,10 +1841,10 @@ function authoritativeOpeningAnchorReady(kind,event){
   }
   const fr=(from?.querySelector?.('.zoneCard')||from)?.getBoundingClientRect?.(),tr=to?.getBoundingClientRect?.();
   const ok=!!(fr&&tr&&fr.width>1&&fr.height>1&&tr.width>1&&tr.height>1);
-  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP v3.75.8] anchor FAIL:',JSON.stringify(dbg));}
+  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP v3.75.9] anchor FAIL:',JSON.stringify(dbg));}
   return ok;
 }
-/* PvP v3.75.8: authoritative opening sequence hides cards before presentation so they never
+/* PvP v3.75.9: authoritative opening sequence hides cards before presentation so they never
  * terlihat full sebelum animasi. primeAuthoritativeOpeningSequence() menyembunyikan
  * semua kartu opening dan me-render tangan/kolam kosong — dipanggil SEBELUM board
  * di-reveal. playPrimedOpeningSequence() menganimasikan reveal kartu satu per satu —
@@ -1870,8 +1870,8 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
       syntheticOpeningDraw2.push({side,hand_index:idx,id:'synthetic-draw2-'+side+'-'+idx});
     }
   }
-  if(syntheticOpeningDraw2.length)console.log('[PvP v3.75.8] synthesized draw2:',syntheticOpeningDraw2.length,'events');
-  console.log('[PvP v3.75.8] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
+  if(syntheticOpeningDraw2.length)console.log('[PvP v3.75.9] synthesized draw2:',syntheticOpeningDraw2.length,'events');
+  console.log('[PvP v3.75.9] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
@@ -1926,6 +1926,32 @@ function initStableBattlefieldReviewGestures(){
 
 
 function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};document.querySelector('.bottom-actions .danger').onclick=()=>{if(confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncSoundButton();}
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_PVP_CLIENT_MODE){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}else renderLobby();setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{lobbyIsOpen=true;renderLobby()},setPvpLobbyOpen:(open)=>{lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}},closeInspect:closeInspectModal};}
+let pvpGameplayUiActivated=false,pvpGameplayUiTimer=null;
+function activatePvpGameplayUi(){
+  if(pvpGameplayUiActivated)return true;
+  if(!E()||!B())return false;
+  pvpGameplayUiActivated=true;
+  B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);
+  document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();
+  lobbyIsOpen=false;lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow();
+  pvpGameplayUiTimer=setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);
+  window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});
+  return true;
+}
+function installPvpUiApi(){
+  window.GL_OPTION_B_UI={render:()=>pvpGameplayUiActivated?renderNow():false,state:st,intent,activatePvpGameplayUi,isPvpGameplayUiActive:()=>pvpGameplayUiActivated,openLobby:()=>{if(!pvpGameplayUiActivated)return false;lobbyIsOpen=true;renderLobby();return true;},setPvpLobbyOpen:(open)=>{if(!pvpGameplayUiActivated)return false;lobbyIsOpen=!!open;if(lobbyIsOpen){renderLobby()}else{lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');appRoot?.classList.remove('ob-lobby-hidden');renderNow()}return true;},closeInspect:closeInspectModal};
+}
+function boot(){
+  if(!E()||!B()){setTimeout(boot,50);return}
+  installPvpUiApi();
+  if(window.GL_PVP_CLIENT_MODE){
+    // PvP v3.75.9 boundary: v3.51 owns Lobby -> Coin Flip -> Opening.
+    // Keep the canonical v3.51 renderer live until the authoritative opening animation completes.
+    B().setRenderSuppressed(false);
+    lobbyIsOpen=false;lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');
+    return;
+  }
+  activatePvpGameplayUi();
+}
 boot();
 })();
