@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.76.4",
+  "version": "3.76.5",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.76.4 — UI restoration, single visible presentation ownership, and pre-game visual stabilization; PvP v3.51 authority preserved.",
+  "description": "Grandis Legacy PvP v3.76.5 \u2014 UI restoration, single visible presentation ownership, and pre-game visual stabilization; PvP v3.51 authority preserved.",
   "scripts": {
     "start": "node server.js",
     "check": "npm run build:data && npm run sync-lock && npm run check:syntax && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v343-candidate1-authority.cjs && node tests/run-v343-candidate1-assets.cjs && node tests/run-runtime-bridge-test.cjs && npm run test:architecture",
@@ -78,7 +78,10 @@
     "test:v3763:browser": "python tests/run-v3763-boot-browser.py",
     "test:v3763": "npm run test:v3763:static && npm run test:v3763:memory && npm run test:v3763:duplicates && npm run test:v3763:size",
     "test:v3764:ui": "node tests/run-v3764-ui-stabilization.cjs",
-    "test:v3764:memory": "node tests/run-v3764-static-memory-smoke.cjs"
+    "test:v3764:memory": "node tests/run-v3764-static-memory-smoke.cjs",
+    "test:v3765:static": "node tests/run-v3765-ui-isolation.cjs",
+    "test:v3765:browser": "python tests/run-v3765-responsive-browser.py",
+    "test:v3765:memory": "node tests/run-v3765-static-memory-smoke.cjs"
   },
   "engines": {
     "node": ">=18"

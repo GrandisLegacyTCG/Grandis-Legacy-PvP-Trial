@@ -12415,7 +12415,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
   };
 
 
-  // v3.76.4 presentation API bridge; authority remains this PvP v3.51 runtime.
+  // v3.76.5 presentation API bridge; authority remains this PvP v3.51 runtime.
   window.GL_OPTION_B_ENGINE={
     version:GL_VERSION,
     prepareOptionBLocalMatch:function(){

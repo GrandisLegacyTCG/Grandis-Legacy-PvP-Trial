@@ -1,5 +1,7 @@
-# Grandis Legacy PvP v3.76.4
+# Grandis Legacy PvP v3.76.5
 
-Targeted UI stabilization build. PvP v3.51 remains authoritative for gameplay/network/runtime; VS AI v6.90.7 remains the visible gameplay presentation reference.
+Authority remains PvP v3.51. Visible gameplay presentation remains VS AI v6.90.7.
 
-This build restores the final single-room Lobby, enforces a single visible gameplay presentation owner, stabilizes the Coin Flip/pre-game reveal state, and preserves the low-memory/static-delivery work from v3.76.3. See `release/PVP_v3.76.4_RELEASE_NOTES.md`.
+This build preserves the solved v3.76.4 Lobby and targets battlefield presentation only: native-renderer paint leakage is hard-blocked, legacy generic CSS is isolated from the external v6 shell, the Coin Flip background is fully opaque until the presentation is ready, and viewport scaling now supports tablet widths without using devicePixelRatio.
+
+See `release/PVP_v3.76.5_RELEASE_NOTES.md`.

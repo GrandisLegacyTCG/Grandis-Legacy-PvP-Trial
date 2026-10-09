@@ -1,0 +1,18 @@
+Grandis Legacy PvP v3.76.5 — changed/new files relative to v3.76.4
+
+package.json
+package-lock.json
+server.js
+README.md
+public/index.html
+public/js/pvp-network.js
+public/js/pvp-responsive-scale.js (new)
+public/js/pvp-presentation-adapter.js
+public/js/app.bundle.js (version comment only)
+public/css/gameplay-presentation.css (version comment only)
+public/css/pvp-shell-isolation.css (new)
+tests/run-v3765-ui-isolation.cjs (new)
+tests/run-v3765-responsive-browser.py (new)
+tests/run-v3765-static-memory-smoke.cjs (new)
+release/PVP_v3.76.5_RELEASE_NOTES.md (new)
+release/PVP_v3.76.5_CHANGED_FILES.txt (new)

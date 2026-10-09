@@ -684,10 +684,13 @@ body.pvp-lobby-mode{min-width:0!important;overflow-x:hidden!important;background
     return true;
   }
   function syncPresentationOwnership(m,showLobby){
-    m=m||match()||{};var active=['coin-flip','coin-result','started','finished'].indexOf(m.status)!==-1,owned=!!(active&&!showLobby),openingVisual=document.body.classList.contains('pvp-opening-presentation'),pregame=!!(owned&&(m.status==='coin-flip'||m.status==='coin-result'||openingVisual));
+    m=m||match()||{};var active=['coin-flip','coin-result','started','finished'].indexOf(m.status)!==-1,owned=!!(active&&!showLobby),openingVisual=document.body.classList.contains('pvp-opening-presentation'),coinGate=!!(owned&&(m.status==='coin-flip'||m.status==='coin-result')),pregame=!!(owned&&(coinGate||openingVisual));
     document.body.classList.toggle('pvp-presentation-owned',owned);
     document.body.classList.toggle('pvp-pregame',pregame);
-    if(!owned||pregame)document.body.classList.remove('pvp-gameplay-revealed');
+    document.body.classList.toggle('pvp-coin-gate',coinGate);
+    // Keep the battlefield fully covered only for the authoritative Coin Flip gate.
+    // Opening Hand / Shard choreography is itself presentation and must remain visible.
+    if(!owned||coinGate)document.body.classList.remove('pvp-gameplay-revealed');
     document.body.setAttribute('data-pvp-presentation-owner',owned?'external-v6':'native-lobby');
     document.body.setAttribute('data-pvp-match-stage',String(m.status||'setup'));
     if(owned)syncBattlefieldIdentityHeaders();
