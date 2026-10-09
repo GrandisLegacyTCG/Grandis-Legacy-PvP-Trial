@@ -280,3 +280,4 @@ public/js/pvp-presentation-adapter.js
 release/PVP_v3.76.2_RELEASE_NOTES.md
 server.js
 tests/run-v3762-stabilization-static.cjs
+sync/runtime-sync-lock.v2.63.json

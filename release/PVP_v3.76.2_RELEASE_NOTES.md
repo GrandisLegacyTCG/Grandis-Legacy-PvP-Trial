@@ -46,5 +46,13 @@ Fix: an initial parse-time boot veil hides raw UI until the bridge runtime is re
 - `npm run test:architecture`: fails an existing exact-source-string assertion for the current v3.51 masking function signature (`revision` parameter), not a runtime failure.
 - Real two-browser acceptance was not executed in this environment. It must still be performed before production sign-off.
 
+
+## Same-version deployment correction — 2026-10-09
+- Version remains **v3.76.2**. No version bump.
+- Root cause of `no healthy upstream`: `sync/runtime-sync-lock.v2.63.json` still contained pre-final hashes after the v3.76.2 source files were patched. The fail-closed startup gate therefore rejected `package.json`, `public/index.html`, `public/js/app.bundle.js`, and `server.js` before the HTTP server could listen.
+- Fix: regenerated the runtime sync lock from the final v3.76.2 source tree, then regenerated the repository SHA-256 manifest. No gameplay/network/UI behavior was changed by this correction.
+- Validation after correction: runtime sync verifier PASS (94 locked runtime files); repository/frontend manifest verifier PASS; `node --check` PASS for `server.js` and `public/js/app.bundle.js`.
+- A full HTTP/WebSocket boot with the real `ws` package was not counted as executed in this sandbox because the package registry dependency download was unavailable here. Northflank/Docker will still install the locked dependency through the existing `npm ci` step.
+
 ## Browser acceptance still required
 Run the 50-point acceptance list from the v3.76.2 task, with special attention to two-client Sound, authoritative Timer/reconnect, EXP stack/Reposition/Rank Up/Defeat, privacy, and cold-start/network 404 inspection.
