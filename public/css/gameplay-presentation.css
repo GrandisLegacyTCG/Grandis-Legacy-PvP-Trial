@@ -1,0 +1,1141 @@
+/* Grandis Legacy Option B runtime integration.
+   Option B owns geometry/card sizing. VS AI owns gameplay semantics and established micro-UI behavior. */
+
+/* ---------- base cleanup / hand ---------- */
+.concept,.lane-label,.action-flags,.mana-controls{display:none!important}
+.hand.bottom .hand-card,.hand.bottom .hand-card>img{border:0!important;outline:0!important;box-shadow:none!important}
+.hand.bottom .hand-card{filter:drop-shadow(0 5px 8px rgba(0,0,0,.55))!important;outline:0!important}
+.card-actions{opacity:0;pointer-events:none;bottom:calc(100% + 4px);z-index:180}
+.hand-card.ob-has-action .card-actions{opacity:1!important;pointer-events:auto!important}
+.card-actions button{display:block;height:16px;min-width:46px;font-size:7px;font-weight:950;text-transform:uppercase}
+.card-actions button.discard{border-color:#8b4249;background:#411920;color:#ffd8db}
+.card-actions button.tribute{border-color:#826d2c;background:#332b13;color:#ffe07a}
+.card-actions button.play{border-color:#4f8e69;background:#164e33;color:#fff;-webkit-text-stroke:.35px #b8952f;paint-order:stroke fill;text-shadow:none}
+/* Copy the approved Option B hover interaction unit: button + card share the extended hit area. */
+.hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected{z-index:80!important;transform:translateY(0) rotate(0deg) scale(1.04)!important}
+.hand.bottom .hand-card:after{content:""!important;position:absolute!important;left:-4px!important;right:-4px!important;top:-34px!important;bottom:-18px!important;z-index:-1!important;pointer-events:auto!important}
+
+/* ---------- hero area ---------- */
+/* v6.88: lane bottom aligns with the two-card deck rail (Legacy+Shard / Discard+Main),
+   while the 120% Hero visual is centered vertically inside that fixed responsive box. */
+.hero-lane{overflow:visible!important;height:calc((var(--zone-h) * 2) + var(--rail-gap))!important;max-height:calc((var(--zone-h) * 2) + var(--rail-gap))!important}
+/* Physical Hero + EXP package follows the established VS AI geometry. The enlarged Hero size is visual-only. */
+.ob-hero-physical-stack{
+  position:absolute!important;left:50%!important;top:50%!important;
+  width:var(--hero-w)!important;height:var(--hero-h)!important;transform:translate(-50%,-50%) rotate(0deg)!important;
+  transform-origin:center center!important;transition:transform .28s cubic-bezier(.2,.75,.2,1)!important;
+  display:grid!important;place-items:center!important;z-index:3!important;overflow:visible!important;pointer-events:none!important;
+}
+.ob-hero-physical-stack>.hero-card{
+  position:relative!important;left:auto!important;top:auto!important;width:var(--hero-w)!important;height:var(--hero-h)!important;
+  transform:none!important;margin:0!important;pointer-events:auto!important;transition:filter .28s ease!important;
+}
+.ob-hero-physical-stack.is-ready{transform:translate(-50%,-50%) rotate(0deg)!important}
+.ob-hero-physical-stack.is-ready>.hero-card{transform:none!important;filter:none!important}
+/* Rotate the physical Hero + EXP package as one unit so EXP stays attached during Ready/Exhaust. */
+.ob-hero-physical-stack.is-exhausted{transform:translate(-50%,-50%) rotate(-90deg)!important}
+.ob-hero-physical-stack.is-exhausted>.hero-card{transform:none!important;filter:saturate(.72) brightness(.84)!important}
+.hero-card.ob-selectable,.hero-card.ob-selected{filter:none!important;box-shadow:none!important;outline:0!important}
+/* VS AI v5.18 full-slot legality treatment. */
+.hero-lane.ob-selectable{cursor:pointer!important;background:rgba(35,116,77,.07)!important;box-shadow:inset 0 0 18px rgba(92,255,151,.54),inset 0 0 52px rgba(92,255,151,.24)!important;border-radius:14px!important}
+.hero-lane.ob-selected{background:rgba(168,129,27,.08)!important;box-shadow:inset 0 0 18px rgba(242,205,77,.58),inset 0 0 52px rgba(242,205,77,.24)!important;border-radius:14px!important}
+.hero-lane.ob-invalid{filter:saturate(.86) brightness(.88)!important}
+
+/* HP/state overlay stays upright; it is deliberately outside the physical package. */
+.ob-hp-overlay{position:absolute!important;left:calc(50% + (var(--hero-w) / 2) + 1px)!important;top:calc(var(--hero-layout-h) * .05 + 10px)!important;transform:translateX(-100%)!important;z-index:230!important;width:46px!important;height:21px!important;padding:0!important;border-radius:6px!important;background:rgba(2,8,12,.94)!important;color:#fff!important;white-space:nowrap!important;pointer-events:none!important;overflow:visible!important}
+.ob-hp-text{position:absolute!important;z-index:2!important;inset:0 0 auto 0!important;width:46px!important;height:14px!important;display:grid!important;place-items:center!important;padding:0 2px!important;color:#fff!important;font-size:9px!important;font-weight:950!important;line-height:14px!important;letter-spacing:-.2px!important;text-shadow:0 1px 2px #000!important}
+.ob-hp-track{position:absolute!important;left:6px!important;bottom:2px!important;width:34px!important;height:5px!important;border-radius:999px!important;background:rgba(0,0,0,.76)!important;overflow:hidden!important}
+.ob-hp-fill{display:block!important;width:100%!important;height:100%!important;border-radius:999px!important;background:#38d889!important;transform:scaleX(var(--hp-ratio,1))!important;transform-origin:left center!important}
+.ob-hp-overlay.is-warning .ob-hp-fill{background:#e9c34d!important}
+.ob-hp-overlay.is-low .ob-hp-fill{background:#e15b66!important}
+
+/* VS AI hero micro-UI placement: status/info upper-left, class/racial/legacy actions upper-right. */
+.ob-status-stack{position:absolute!important;left:6px!important;right:auto!important;top:6px!important;bottom:auto!important;z-index:220!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:3px!important;width:18px!important;max-width:18px!important;overflow:visible!important;pointer-events:auto!important}
+.ob-status-stack:empty{display:none!important}
+.ob-info-indicator,.ob-negative-status{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;position:relative!important;overflow:visible!important}
+.ob-info-indicator>button{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;padding:0!important;border-radius:50%!important;border:1px solid rgba(236,201,91,.78)!important;background:#182334!important;color:#f2ce5b!important;font-size:11px!important;font-weight:900!important;line-height:16px!important;display:grid!important;place-items:center!important;cursor:help!important}
+.ob-negative-status>.ob-status{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;display:grid!important;place-items:center!important}
+.ob-negative-status>.ob-status img{width:18px!important;height:18px!important;object-fit:contain!important;border:0!important;border-radius:0!important}
+.ob-negative-status>.ob-status.ob-clickable{cursor:pointer!important;box-shadow:0 0 0 1px rgba(244,211,94,.82)!important}
+.ob-negative-status>.ob-status small{position:absolute!important;right:-4px!important;bottom:-4px!important;min-width:10px!important;height:10px!important;border-radius:50%!important;background:#07111c!important;border:1px solid #d8bc55!important;color:#fff!important;font-size:6px!important;font-weight:950!important}
+.ob-indicator-tooltip{position:absolute;z-index:9999;left:23px;top:50%;transform:translateY(-50%);display:none;width:max-content;min-width:132px;max-width:260px;padding:8px 10px;border:1px solid #6a5514;border-radius:9px;background:#08131d;color:#dce8f5;box-shadow:0 14px 36px rgba(0,0,0,.78);pointer-events:none;white-space:pre-line;text-align:left}
+.ob-indicator-tooltip strong{display:block;margin-bottom:4px;color:#f4ca52;font-size:10px;text-transform:uppercase}
+.ob-indicator-tooltip span{display:block;font-size:9px;line-height:1.35}
+.ob-info-indicator:hover .ob-indicator-tooltip,.ob-info-indicator:focus-within .ob-indicator-tooltip,.ob-negative-status:hover .ob-indicator-tooltip,.ob-negative-status:focus-within .ob-indicator-tooltip{display:block}
+.ob-hero-actions{position:absolute!important;right:4px!important;left:auto!important;top:4px!important;bottom:auto!important;z-index:225!important;display:flex!important;flex-direction:column!important;align-items:flex-end!important;justify-content:flex-start!important;gap:3px!important;width:auto!important;max-width:132px!important;pointer-events:none!important}
+.ob-hero-actions:empty{display:none!important}
+.ob-hero-action{pointer-events:auto!important;max-width:132px!important;min-height:16px!important;height:auto!important;padding:2px 6px!important;border:1px solid rgba(184,153,50,.78)!important;border-radius:5px!important;background:#081522!important;color:#f3cf58!important;font-size:7px!important;line-height:1.1!important;font-weight:900!important;white-space:normal!important;text-align:right!important;cursor:pointer!important}
+.trait{display:none!important}
+
+/* Tribute EXP stack stays physically attached to the Hero package during Ready/Exhaust rotation. */
+.ob-hero-physical-stack>.ob-exp-stack{position:absolute!important;left:100%!important;top:50%!important;transform:translateY(-50%)!important;margin:0!important;padding:0!important;gap:0!important;overflow:visible!important;pointer-events:none!important;z-index:20!important;display:grid!important;grid-template-columns:repeat(4,7px)!important;grid-template-rows:1fr!important;width:28px!important;min-width:28px!important;max-width:28px!important;height:var(--gl-exp-stack-height,var(--hero-h))!important}
+.ob-exp-slot{position:relative!important;display:block!important;width:7px!important;min-width:7px!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;overflow:visible!important;background:none!important}
+.ob-exp-slot:before{content:""!important;position:absolute!important;left:50%!important;top:50%!important;width:7px!important;height:var(--gl-exp-stack-height,var(--hero-h))!important;transform:translate(-50%,-50%)!important;transform-origin:center center!important;background-color:transparent!important;background-image:url("../assets/exp/Stack 100-200EXP.png")!important;background-repeat:no-repeat!important;background-size:200% 100%!important;background-position:left center!important}
+.ob-exp-slot[data-exp-value="200"]:before{background-position:right center!important}
+.ob-exp-slot.is-empty{visibility:hidden!important}
+
+/* ---------- temporary action stack / VS AI target line ---------- */
+.ob-combat-stack{position:absolute;left:50%;top:calc(var(--hero-h) * .05 + 8px + (var(--hero-h) - var(--std-h)) / 2);width:var(--std-w);height:var(--std-h);transform:translateX(-50%)!important;z-index:32;pointer-events:none}
+.ob-combat-card{position:absolute;left:0;top:var(--ob-stack-y,0px);width:var(--std-w)!important;height:var(--std-h)!important;z-index:calc(33 + var(--ob-stack-i,0));filter:drop-shadow(0 5px 10px rgba(0,0,0,.58));transform:none!important}
+.ob-combat-card img{width:var(--std-w)!important;height:var(--std-h)!important;object-fit:cover;border-radius:5px;display:block;border:0;transform:none!important}
+/* Exact VS AI pending-attack visual language; fixed layer is intentionally above the phase tracker. */
+.ob-vsai-attack-direction-layer{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;z-index:11840!important;pointer-events:none!important;overflow:visible!important;color:rgba(244,202,82,.84)!important}
+.ob-vsai-attack-direction-layer .gl-pending-attack-line{stroke:currentColor!important;stroke-width:2.2!important;stroke-linecap:round!important;fill:none!important;vector-effect:non-scaling-stroke!important;filter:drop-shadow(0 0 3px rgba(0,0,0,.72))!important}
+.ob-vsai-attack-direction-layer .ob-target-arrow{fill:currentColor!important;stroke:none!important;filter:drop-shadow(0 0 2px rgba(0,0,0,.9))!important}
+.ob-vsai-attack-direction-layer .gl-pending-attack-line.is-looping{animation:obVsaiAttackLinePulse 1.05s ease-in-out infinite}
+@keyframes obVsaiAttackLinePulse{0%,100%{opacity:.72}50%{opacity:1}}
+/* ---------- phase/context action ---------- */
+/* Keep the phase tracker clear of the Deck/Pile count badges on both side rails. */
+.phase{position:relative!important;top:4px!important;z-index:110!important;height:32px!important;padding-top:2px!important;padding-bottom:2px!important}
+.phase:before{top:4px!important;bottom:4px!important}
+.phase-track{min-width:0!important}
+.phase-actions{flex:0 0 auto!important}
+.phase-action{height:24px!important}
+.phase-action.ob-pass{border-color:#96751f;background:#33280d;color:#ffe071}
+.phase-action.ob-cancel{border-color:#8b4249;background:#321016;color:#ffc0c6}
+.phase-action.ob-hidden{visibility:hidden!important}
+.phase-action:disabled{opacity:.38;cursor:not-allowed}
+
+/* ---------- reposition ---------- */
+.ob-swap-layer{position:absolute;inset:0;z-index:105;pointer-events:none}
+.ob-swap-button{position:absolute!important;transform:translate(-50%,-50%)!important;width:36px!important;height:36px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;pointer-events:auto!important;cursor:pointer!important;display:grid!important;place-items:center!important}
+.ob-swap-button img{display:block;width:100%!important;height:100%!important;object-fit:contain!important;filter:drop-shadow(0 4px 7px rgba(0,0,0,.65))}
+
+/* ---------- Mana / Shard payment ---------- */
+.mana-pool,.mana-cards{overflow:visible!important}
+.mana-pool>.count{z-index:5000!important;pointer-events:none!important}
+.mana-card{transition:transform .14s ease,filter .14s ease;cursor:default}
+.mana-card.ob-selected{transform:translateY(calc(-50% - 14px))!important;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))!important;z-index:300!important}
+.mana-card.ob-class-choice{cursor:pointer}
+.ob-pay-button{position:absolute;z-index:960;height:26px;padding:0 11px;border:1px solid #4f8e69;border-radius:6px;background:#164e33;color:#fff;font-size:8px;font-weight:950;-webkit-text-stroke:.35px #b8952f;paint-order:stroke fill;text-shadow:none;cursor:pointer;display:none;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 4px 12px rgba(0,0,0,.38)}
+.ob-pay-button.is-visible{display:block}
+.ob-pay-button:disabled{opacity:.42!important;filter:saturate(.55)!important;cursor:not-allowed!important}
+
+/* ---------- misc battlefield runtime ---------- */
+.ob-deck-actions{position:absolute;z-index:99;display:flex;flex-direction:column;gap:3px}
+.ob-deck-actions button{height:20px;padding:0 6px;border:1px solid #8a742c;border-radius:5px;background:#161307;color:#f5d65c;font-size:6px;font-weight:950;cursor:pointer}
+.ob-feedback{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:130;padding:5px 10px;border-radius:6px;background:rgba(3,12,20,.92);border:1px solid rgba(244,211,94,.35);font-size:8px;font-weight:900;opacity:0;pointer-events:none;transition:opacity .12s ease}.ob-feedback.show{opacity:1}
+.ob-engine-host{display:none!important}
+/* Sidebar stays on Option B authored geometry. */
+.played .ob-played-placeholder{visibility:hidden!important;pointer-events:none!important}
+.active-card-stage{align-items:flex-start!important;justify-content:center!important}
+.active-card-visual{width:calc(100% - 8px)!important;max-width:none!important;height:auto!important;max-height:none!important;aspect-ratio:5/7!important;flex:0 0 auto!important;align-self:flex-start!important}
+.active-card-visual img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;border-radius:6px!important;border:1px solid rgba(255,255,255,.12)!important;box-shadow:0 5px 12px rgba(0,0,0,.50)!important}
+.ob-active-empty{width:100%;height:100%;display:grid;place-items:center;color:#7890a5;font-size:7px;border:1px dashed rgba(88,118,145,.28);border-radius:6px}
+.ob-magic-scope-done{position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);z-index:190;height:20px;min-width:48px;padding:0 8px;border:1px solid #826d2c;border-radius:5px;background:#332b13;color:#ffe07a;font-size:6.6px;font-weight:950;cursor:pointer}
+
+/* ---------- VS AI choice popup, copied instead of redesigning ---------- */
+.ob-vsai-choice-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:1700;display:none;align-items:center;justify-content:center;padding:18px}
+.ob-vsai-choice-overlay.open{display:flex}
+.ob-vsai-choice-overlay .choice-panel{width:min(760px,92vw);max-height:84vh;display:flex;flex-direction:column;border:1px solid #6a5a19;border-radius:16px;background:#101923;box-shadow:0 18px 70px rgba(0,0,0,.62);overflow:hidden;color:#edf4fb}
+.ob-vsai-choice-overlay .choice-head,.ob-vsai-choice-overlay .choice-foot{background:#0b131c;border-bottom:1px solid #263d55;display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
+.ob-vsai-choice-overlay .choice-head h2{margin:0;color:#f4d35e;font-size:16px}
+.ob-vsai-choice-overlay .choice-body{overflow:auto;padding:12px}
+.ob-vsai-choice-overlay .choice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px}
+.ob-vsai-choice-overlay .choice-foot{border-top:1px solid #263d55;border-bottom:0;justify-content:flex-end}
+.ob-vsai-choice-overlay .choice-foot button{background:#132234;border:1px solid #45627e;border-radius:10px;padding:7px 12px;cursor:pointer;color:#edf4fb}
+.ob-vsai-choice-overlay .choice-foot button:disabled{opacity:.55;cursor:not-allowed}
+.ob-vsai-choice-overlay .choice-instruction{margin:0 0 10px;color:#dce8f5;font-size:11px;line-height:1.4}
+.ob-vsai-choice-overlay .card-search-choice,.ob-vsai-choice-overlay .discard-choice{border:1px solid #36536e;background:#0d1722;border-radius:10px;padding:5px;min-width:82px}
+.ob-vsai-choice-overlay .card-search-choice.selected,.ob-vsai-choice-overlay .discard-choice.selected{border-color:#f4d35e;box-shadow:0 0 0 2px rgba(244,211,94,.25)}
+.ob-vsai-choice-overlay .discard-preview{width:100%;background:transparent;border:0;padding:0;text-align:left;cursor:pointer;color:#fff}
+.ob-vsai-choice-overlay .discard-preview img{width:100%;height:102px;object-fit:cover;border-radius:6px;display:block}
+.ob-vsai-choice-overlay .discard-preview span{display:block;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.ob-vsai-choice-overlay .discard-select{width:100%;margin-top:5px;border:1px solid #45627e;background:#132234;color:#edf4fb;border-radius:7px;padding:4px;font-size:10px;cursor:pointer}
+.ob-vsai-choice-overlay .card-search-choice.selected .discard-select,.ob-vsai-choice-overlay .discard-choice.selected .discard-select{background:#4b3d0e;border-color:#d8bd46;color:#fff2a8}
+.ob-vsai-choice-overlay .card-search-choice-grid{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}
+.ob-vsai-choice-overlay .choice-footer-buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:5px}
+.ob-vsai-choice-overlay .choice-footer-buttons button{border:1px solid #45627e;background:#132234;color:#edf4fb;border-radius:7px;padding:4px 7px;font-size:10px;cursor:pointer}
+.ob-vsai-choice-overlay .choice-footer-buttons button:disabled{opacity:.45;cursor:not-allowed}
+
+/* ========================================================================== */
+/* Stage 1 parity — VS AI battlefield/application features                    */
+/* ========================================================================== */
+
+/* Multi-discard: a selected cost card stays visibly lifted and is reversible. */
+.card-actions button.cancel{border-color:#826d2c;background:#332b13;color:#ffe07a}
+.hand.bottom .hand-card.ob-discard-selected{z-index:82!important;transform:translateY(0) rotate(0deg) scale(1.04)!important}
+
+/* Public/private pile inspection reuses the established choice popup. */
+.inspect-card-grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))!important}
+.ob-inspect-card{border:1px solid #36536e;background:#0d1722;border-radius:10px;padding:5px;color:#eef5fc;cursor:default;min-width:0;text-align:left}
+.ob-inspect-card img{display:block;width:100%;aspect-ratio:5/7;object-fit:cover;border-radius:6px}
+.ob-inspect-card span{display:block;margin-top:5px;font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ob-inspect-empty{padding:24px 10px;text-align:center;color:#8fa4b8;font-size:12px}
+.zone[data-zone-type="Discard Pile"],.zone[data-zone-side="PLAYER"][data-zone-type="Legacy Deck"]{cursor:pointer}
+.zone[data-zone-type="Discard Pile"]:hover,.zone[data-zone-side="PLAYER"][data-zone-type="Legacy Deck"]:hover{filter:brightness(1.08)}
+
+/* VS AI parity: inspect the defeated Hero underneath a Legacy. */
+.ob-legacy-under-hero{position:absolute;right:-7px;top:-7px;z-index:95;width:19px;height:19px;padding:0;border:1px solid #f0c84e;border-radius:50%;background:#241d08;color:#ffe87a;font-size:11px;line-height:17px;font-weight:1000;text-align:center;cursor:pointer;box-shadow:0 2px 7px rgba(0,0,0,.58)}
+.ob-legacy-under-hero:hover{transform:scale(1.08);filter:brightness(1.12)}
+
+/* Mana Regen counter: top-left of each Shard Deck; pile/deck count remains top-right. */
+.zone[data-zone-type="Shard Deck"]{position:relative}
+.ob-regen-counter{position:absolute;left:-5px;top:-5px;z-index:35;width:20px;height:20px;display:block;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.65))}
+.ob-regen-counter img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+
+/* Deck Setup / Lobby — current VS AI logic, presented in the New UX shell. */
+.app.ob-lobby-hidden{visibility:hidden!important}
+.ob-lobby-overlay{position:fixed;inset:0;z-index:25000;display:none;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 28%,rgba(31,52,70,.72),rgba(3,8,13,.96) 62%);color:#edf4fb}
+.ob-lobby-overlay.open{display:flex}
+.ob-lobby-panel{width:min(980px,94vw);max-height:92vh;overflow:auto;border:1px solid #6f5c20;border-radius:16px;background:linear-gradient(180deg,#101c27,#08111a 76%);box-shadow:0 24px 90px rgba(0,0,0,.72)}
+.ob-lobby-head{padding:18px 22px 14px;border-bottom:1px solid #23384b;background:rgba(5,12,18,.54)}
+.ob-lobby-head small{display:block;color:#d9bd55;font-size:10px;letter-spacing:.18em;font-weight:950}
+.ob-lobby-head h1{margin:4px 0 0;color:#f4d35e;font-size:22px;line-height:1.1}
+.ob-lobby-error{display:none;margin:12px 18px 0;padding:8px 10px;border:1px solid #8a424a;border-radius:7px;background:#35141a;color:#ffc9cf;font-size:11px;font-weight:800}
+.ob-lobby-error.show{display:block}
+.ob-lobby-decks{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px}
+.ob-lobby-deck{min-width:0;border:1px solid #294257;border-radius:12px;background:#0b1621;padding:12px}
+.ob-lobby-deck>header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px}
+.ob-lobby-deck>header strong{color:#f4d35e;font-size:11px;letter-spacing:.08em}
+.ob-lobby-deck>header span{min-width:0;color:#9bb0c3;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ob-lobby-picker{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+.ob-lobby-picker select,.ob-lobby-picker button{height:32px;border:1px solid #3b5871;border-radius:7px;background:#101f2d;color:#eef5fb;font-size:11px;font-weight:800}
+.ob-lobby-picker select{min-width:0;padding:0 8px}
+.ob-lobby-picker button{padding:0 10px;cursor:pointer;color:#ffe071;border-color:#756022;background:#2a220d}
+.ob-lobby-formation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:11px}
+.ob-lobby-hero{min-width:0;text-align:center;border:1px solid #24394b;border-radius:8px;background:#09131c;padding:6px}
+.ob-lobby-hero small{display:block;margin-bottom:4px;color:#738ba0;font-size:8px;font-weight:900;letter-spacing:.08em}
+.ob-lobby-hero img{display:block;width:min(100%,92px);aspect-ratio:5/7;object-fit:cover;margin:auto;border-radius:5px}
+.ob-lobby-hero span{display:block;margin-top:4px;color:#dbe8f3;font-size:9px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ob-lobby-hero-empty{aspect-ratio:5/7;display:grid;place-items:center;color:#52687b}
+.ob-lobby-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px 17px;border-top:1px solid #23384b;background:#071018}
+.ob-lobby-foot nav{display:flex;gap:8px;flex-wrap:wrap}
+.ob-lobby-foot a{display:inline-grid;place-items:center;height:30px;padding:0 10px;border:1px solid #324b61;border-radius:7px;color:#c7d6e3;text-decoration:none;font-size:10px;font-weight:850}
+.ob-lobby-start{height:34px;padding:0 18px;border:1px solid #b28c29;border-radius:7px;background:#d3ad3b;color:#111;font-size:11px;font-weight:1000;cursor:pointer}
+@media(max-width:760px){.ob-lobby-decks{grid-template-columns:1fr}.ob-lobby-foot{align-items:stretch;flex-direction:column}.ob-lobby-start{width:100%}}
+
+/* Presentation layer: New UX-specific draw/resource/turn/reposition transitions. */
+.ob-animation-layer{position:fixed;inset:0;z-index:11845;pointer-events:none;overflow:visible}
+.ob-flying-card{position:fixed;z-index:11846;object-fit:cover;border-radius:5px;pointer-events:none;will-change:left,top,transform,opacity,width,height;filter:drop-shadow(0 5px 9px rgba(0,0,0,.55))}
+.ob-turn-banner{position:fixed;left:50%;top:49%;z-index:11920;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:150px;padding:8px 20px;transform:translate(-50%,-50%) scale(.94);border:1px solid rgba(222,187,73,.7);border-radius:8px;background:rgba(7,17,25,.92);box-shadow:0 12px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;color:#f5d65c}
+.ob-turn-banner strong{font-size:14px;letter-spacing:.12em}.ob-turn-banner small{margin-top:2px;color:#b8c7d4;font-size:8px;font-weight:900;letter-spacing:.1em}
+.ob-turn-banner.show{animation:obTurnBanner .9s ease both}
+@keyframes obTurnBanner{0%{opacity:0;transform:translate(-50%,-50%) scale(.92)}18%,74%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.025)}}
+.hero-lane.ob-reposition-flash{animation:obRepositionFlash .72s ease-out}
+@keyframes obRepositionFlash{0%{filter:brightness(1)}24%{filter:brightness(1.35) drop-shadow(0 0 7px rgba(244,211,94,.55))}100%{filter:brightness(1)}}
+
+/* Current VS AI battle VFX adapted to Option B Hero nesting. */
+.gl-battle-feedback-layer{position:fixed;inset:0;z-index:11850;pointer-events:none;overflow:hidden}
+.gl-battle-vfx-clip{position:fixed;overflow:hidden;pointer-events:none;user-select:none;z-index:11851}
+.gl-battle-vfx{position:absolute;display:block;object-fit:contain;pointer-events:none;user-select:none;transform-origin:center center;filter:drop-shadow(0 0 10px rgba(0,0,0,.28));will-change:transform,opacity,filter}
+.gl-battle-feedback-layer>.gl-battle-vfx{position:fixed}
+.gl-battle-pattack{animation:glBattlePAttack .64s cubic-bezier(.2,.78,.24,1) both}
+.gl-battle-mattack{animation:glBattleMAttack .66s cubic-bezier(.16,.76,.24,1) both}
+.gl-battle-pdef{animation:glBattlePDefense .64s cubic-bezier(.16,.78,.22,1) both}
+.gl-battle-mdef{animation:glBattleMDefense .68s cubic-bezier(.16,.78,.22,1) both}
+.gl-battle-heal{opacity:0;animation:glBattleHeal .82s ease-out both}
+.gl-battle-heal--left{animation-delay:0s}.gl-battle-heal--right{animation-delay:.15s}
+.gl-battle-dodge-card .hero-card.hero-main{animation:glBattleDodgeCard .7s cubic-bezier(.19,.72,.22,1) both}
+.gl-battle-damage-card .hero-card.hero-main{animation:glBattleDamageShake .44s ease-out both}
+@keyframes glBattlePAttack{0%{opacity:0;transform:translate3d(0,-46%,0) scale(.84)}16%{opacity:.96}62%{opacity:1;transform:translate3d(0,8%,0) scale(1.02)}100%{opacity:0;transform:translate3d(0,32%,0) scale(1.06)}}
+@keyframes glBattleMAttack{0%{opacity:0;transform:scale(.18) rotate(-120deg)}22%{opacity:.95}68%{opacity:1;transform:scale(.96) rotate(115deg)}100%{opacity:0;transform:scale(1.12) rotate(210deg)}}
+@keyframes glBattlePDefense{0%{opacity:0;transform:scale(.7)}24%{opacity:1;transform:scale(1.02)}72%{opacity:.96;transform:scale(1)}100%{opacity:0;transform:scale(1.03)}}
+@keyframes glBattleMDefense{0%{opacity:0;transform:scale(.48) rotate(-12deg)}26%{opacity:1;transform:scale(1.04) rotate(3deg)}72%{opacity:.95;transform:scale(.98) rotate(0)}100%{opacity:0;transform:scale(1.1) rotate(6deg)}}
+@keyframes glBattleDodgeCard{0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0) brightness(1)}14%{opacity:.22;transform:translate3d(46%,0,0) scale(.98);filter:blur(2px) brightness(1.2)}30%{opacity:.04;transform:translate3d(-34%,0,0) scale(.97);filter:blur(3px) brightness(1.28)}46%{opacity:.28;transform:translate3d(38%,0,0) scale(.98);filter:blur(2px) brightness(1.16)}64%{opacity:.06;transform:translate3d(-20%,0,0) scale(.99);filter:blur(2px) brightness(1.12)}82%{opacity:.78;transform:translate3d(6%,0,0) scale(1);filter:blur(.5px) brightness(1.05)}100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0) brightness(1)}}
+@keyframes glBattleDamageShake{0%,100%{transform:translate3d(0,0,0) rotate(0)}20%{transform:translate3d(-3px,1px,0) rotate(-.6deg)}40%{transform:translate3d(3px,-1px,0) rotate(.6deg)}60%{transform:translate3d(-2px,0,0) rotate(-.4deg)}80%{transform:translate3d(1px,0,0) rotate(.25deg)}}
+@keyframes glBattleHeal{0%{opacity:0;transform:translate3d(0,28%,0) scale(.72)}22%{opacity:.94}72%{opacity:.96;transform:translate3d(0,-12%,0) scale(.94)}100%{opacity:0;transform:translate3d(0,-28%,0) scale(1)}}
+@media(max-width:980px){.gl-battle-vfx{filter:drop-shadow(0 0 7px rgba(0,0,0,.24))}}
+@media(prefers-reduced-motion:reduce){.ob-turn-banner.show,.hero-lane.ob-reposition-flash,.gl-battle-pattack,.gl-battle-mattack,.gl-battle-pdef,.gl-battle-mdef,.gl-battle-heal,.gl-battle-dodge-card .hero-card.hero-main,.gl-battle-damage-card .hero-card.hero-main{animation-duration:.18s!important;animation-delay:0s!important}}
+
+/* ---------- Stage 1.2: Shard priority + Card Played detail ---------- */
+.mana-card.ob-class-shard{z-index:180}
+.mana-card.ob-class-shard:not(.ob-selected){transform:translateY(calc(-50% - 7px))!important}
+.played-card.ob-played-clickable{padding:0!important;border:0!important;background:transparent!important;color:inherit!important;cursor:pointer!important;font:inherit!important}
+.played-card.ob-played-clickable:focus-visible{outline:1px solid rgba(244,211,94,.85);outline-offset:2px;border-radius:6px}
+
+.ob-played-detail-overlay{position:fixed;inset:0;z-index:26000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.74);color:#edf4fb}
+.ob-played-detail-overlay.open{display:flex}
+.ob-played-detail-panel{width:min(980px,94vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;border:1px solid #6a5a19;border-radius:16px;background:#101923;box-shadow:0 18px 70px rgba(0,0,0,.62)}
+.ob-played-detail-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid #263d55;background:#0b131c}
+.ob-played-detail-head h2{margin:0;color:#f4d35e;font-size:16px}
+.ob-played-detail-close{height:28px;padding:0 12px;border:1px solid #45627e;border-radius:8px;background:#132234;color:#edf4fb;font-size:10px;font-weight:900;cursor:pointer}
+.ob-played-detail-body{min-height:0;overflow:auto;padding:14px}
+.ob-played-detail-body .played-detail-layout{display:grid;grid-template-columns:minmax(190px,280px) minmax(0,1fr);gap:18px;align-items:start;min-height:0}
+.ob-played-detail-body .played-detail-card{display:grid;place-items:center;position:sticky;top:0;align-self:start;min-width:0}
+.ob-played-detail-body .played-detail-card img{display:block;width:100%;max-height:68vh;object-fit:contain;border-radius:12px}
+.ob-played-detail-body .played-detail-copy{min-width:0;border:1px solid rgba(83,126,158,.38);border-radius:12px;background:rgba(9,21,31,.74);padding:14px;color:#dfe8f0;font-size:12px;line-height:1.45}
+.ob-played-detail-body .played-detail-copy h3{margin:0 0 12px;color:#f4d35e;font-size:17px}
+.ob-played-detail-body .played-detail-copy strong{color:#f0ce67}
+.ob-played-detail-body .played-detail-copy p,.ob-played-detail-body .played-detail-copy ul{margin:4px 0 10px}
+.ob-played-detail-body .played-detail-copy ul{padding-left:18px}
+.ob-played-detail-body .played-audit-block{margin-top:10px}
+.ob-played-detail-body .played-chain-block{margin-top:12px}
+.ob-played-detail-body .played-chain-cards{display:grid;gap:8px;margin-top:7px}
+.ob-played-detail-body .played-chain-step{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;align-items:start;padding:8px;border-radius:10px;background:rgba(255,255,255,.035)}
+.ob-played-detail-body .played-chain-step img{display:block;width:58px;aspect-ratio:63/88;object-fit:contain;border-radius:6px;background:#030b12}
+.ob-played-detail-body .played-chain-step span{display:block;color:#8fa2b5;font-size:8px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+.ob-played-detail-body .played-chain-step h4{margin:2px 0 4px;color:#f0ce67;font-size:13px}
+.ob-played-detail-body .played-chain-step p{margin:0;color:#dfe8f0;font-size:12px;line-height:1.45}
+.ob-played-detail-body .played-modifier-item{display:flex;align-items:center;gap:8px;margin:5px 0}
+.ob-played-detail-body .played-modifier-item>img{width:42px;height:auto;max-height:60px;object-fit:contain}
+.ob-played-detail-body .played-modifier-item p{margin:0}
+@media(max-width:720px){
+  .ob-played-detail-overlay{padding:10px}
+  .ob-played-detail-body .played-detail-layout{grid-template-columns:1fr}
+  .ob-played-detail-body .played-detail-card{position:static}
+  .ob-played-detail-body .played-detail-card img{width:min(230px,68vw);margin:auto;max-height:38vh}
+  .ob-played-detail-body .played-chain-step{grid-template-columns:48px minmax(0,1fr)}
+  .ob-played-detail-body .played-chain-step img{width:48px}
+}
+
+/* Stage 1.3 fixes: Shard grouping, sequential reveal, clean inspect/review, modal-context hover. */
+.mana-card.ob-class-shard:not(.ob-selected){transform:translateY(-50%)!important}
+
+/* Rank Up presentation owns the field swap for one short sequence. Keep the final HP overlay hidden
+   until the new Rank card actually arrives instead of flashing the final state early. */
+.hero-lane.ob-rank-transitioning>.ob-hp-overlay{opacity:0!important}
+.ob-presentation-deferred{display:none!important}
+.ob-presentation-hidden{opacity:0!important;pointer-events:none!important}
+
+.ob-inspect-card,.ob-inspect-card:hover,.ob-inspect-card:focus,.ob-inspect-card:focus-visible{
+  outline:0!important;box-shadow:none!important;filter:none!important;background:#0d1722!important;border-color:#36536e!important;transform:none!important;
+}
+.ob-inspect-card img,.ob-inspect-card:hover img,.ob-inspect-card:focus img{filter:none!important;opacity:1!important;box-shadow:none!important;outline:0!important;transform:none!important}
+.ob-played-detail-panel,.ob-played-detail-panel *{filter:none}
+
+.ob-modal-hover-preview{position:fixed;width:272px;height:381px;z-index:14050;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .08s ease;}
+.ob-modal-hover-preview.open{opacity:1;visibility:visible}
+.ob-modal-hover-preview img{width:100%;height:100%;display:block;object-fit:contain;border-radius:8px;box-shadow:0 12px 34px rgba(0,0,0,.68)}
+
+.zone.ob-empty-discard .zoneCard{visibility:hidden!important}
+
+/* Stage 1.5 non-Hand fix retained: Option B owns connector rendering. */
+#glPendingAttackDirectionLayer{display:none!important}
+
+/* ---------- Stage 1.5.8: final polish batch ---------- */
+/* Never allow native browser image-selection / drag ghosts to wash cards blue. */
+.app img,
+.ob-vsai-choice-overlay img,
+.ob-played-detail-overlay img,
+.ob-card-review-overlay img{
+  -webkit-user-drag:none!important;
+  -webkit-user-select:none!important;
+  -moz-user-select:none!important;
+  user-select:none!important;
+}
+.hero-card,.hand-card,.mana-card,.played-card,.attachment-card,.ob-combat-card,.ob-inspect-card{
+  -webkit-user-select:none!important;
+  -moz-user-select:none!important;
+  user-select:none!important;
+}
+
+/* During Rank Up the previous Hero remains visibly stacked in the battlefield slot until
+   the incoming Rank card reaches the same position. */
+.ob-hero-physical-stack>.ob-rank-old-hero{
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  width:var(--hero-w)!important;
+  height:var(--hero-h)!important;
+  object-fit:cover!important;
+  border-radius:5px!important;
+  z-index:4!important;
+  pointer-events:none!important;
+  filter:none!important;
+  transform:none!important;
+}
+
+/* Local Option B card-review surface. The engine preview lives inside the hidden engine host,
+   so battlefield/Hand double-clicks use this visible read-only modal instead. */
+.ob-card-review-overlay{
+  position:fixed;inset:0;z-index:27000;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(0,0,0,.76);color:#edf4fb;
+}
+.ob-card-review-overlay.open{display:flex}
+.ob-card-review-panel{
+  width:min(520px,92vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #6a5a19;border-radius:16px;background:#101923;box-shadow:0 18px 70px rgba(0,0,0,.62);
+}
+.ob-card-review-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;
+  border-bottom:1px solid #263d55;background:#0b131c;
+}
+.ob-card-review-head h2{margin:0;color:#f4d35e;font-size:16px}
+.ob-card-review-close{
+  height:28px;padding:0 12px;border:1px solid #45627e;border-radius:8px;background:#132234;
+  color:#edf4fb;font-size:10px;font-weight:900;cursor:pointer;
+}
+.ob-card-review-body{min-height:0;overflow:auto;padding:14px;display:grid;place-items:center}
+.ob-card-review-image{display:block;width:min(360px,74vw);height:auto;max-height:76vh;object-fit:contain;border-radius:10px}
+
+/* ========================================================================== */
+/* Stage 1.5.10 — conditional Hero/Casting glow + readable review refinements. */
+/* ========================================================================== */
+
+/* Glow is a state indicator on the Hero/position box only. Action buttons stay neutral. */
+.hero-lane.hero-panel::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:14px;
+  box-shadow:none;transition:box-shadow .16s ease,background .16s ease;
+}
+.hero-lane.ob-class-ability-ready::before{
+  background:rgba(45,194,255,.035);
+  box-shadow:inset 0 0 0 1px rgba(83,218,255,.62),inset 0 0 18px rgba(64,205,255,.48),inset 0 0 52px rgba(47,178,255,.20);
+}
+.hero-lane.ob-racial-trait-ready::before{
+  background:rgba(255,175,45,.038);
+  box-shadow:inset 0 0 0 1px rgba(255,199,80,.68),inset 0 0 18px rgba(255,177,53,.50),inset 0 0 52px rgba(235,139,35,.21);
+}
+/* Casting locks a position, not the Hero occupying it. Violet stays on the lane box. */
+.hero-lane.ob-casting-target::before{
+  background:rgba(164,85,255,.035);
+  box-shadow:inset 0 0 0 2px rgba(185,112,255,.78),inset 0 0 22px rgba(168,86,255,.52),inset 0 0 56px rgba(129,57,216,.24);
+}
+/* A Casting target can simultaneously open a racial/class response. Keep both cues legible. */
+.hero-lane.ob-casting-target.ob-racial-trait-ready::before{
+  box-shadow:inset 0 0 0 2px rgba(185,112,255,.80),inset 0 0 15px rgba(255,180,57,.56),inset 0 0 38px rgba(165,85,255,.34),inset 0 0 62px rgba(235,139,35,.14);
+}
+.hero-lane.ob-casting-target.ob-class-ability-ready::before{
+  box-shadow:inset 0 0 0 2px rgba(185,112,255,.80),inset 0 0 15px rgba(66,208,255,.56),inset 0 0 38px rgba(165,85,255,.34),inset 0 0 62px rgba(47,178,255,.14);
+}
+
+/* Alden Rank II/III Draw This Turn is now part of the existing Hero-information ! tooltip. */
+
+/* Casting source: only the active Casting attachment receives the violet outer glow. */
+.attachment-card.ob-casting-active{
+  box-shadow:0 0 0 1px rgba(194,126,255,.82),0 0 9px rgba(174,91,255,.78),0 0 18px rgba(132,55,222,.46)!important;
+  border-radius:6px!important;
+}
+
+/* Readable Card Review: reuse the engine's canonical readable-card HTML inside Option B. */
+.ob-card-review-panel{width:min(1040px,95vw)!important}
+.ob-card-review-body{display:block!important;place-items:initial!important;overflow:hidden!important;padding:18px!important}
+.ob-card-review-body .readable-card-preview{display:grid!important;grid-template-columns:minmax(230px,320px) minmax(0,1fr)!important;gap:22px!important;align-items:start!important;min-width:0!important;max-height:78vh!important;overflow:hidden!important}
+.ob-card-review-body .readable-card-art{margin:0!important;min-width:0!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;background:transparent!important;border:0!important;outline:0!important}
+.ob-card-review-body .readable-card-art img{display:block!important;width:100%!important;max-width:320px!important;max-height:76vh!important;object-fit:contain!important;border:0!important;outline:0!important;border-radius:14px!important;box-shadow:0 18px 48px rgba(0,0,0,.58)!important}
+.ob-card-review-body .readable-card-details{display:grid!important;grid-template-rows:auto auto minmax(0,1fr)!important;align-content:start!important;gap:12px!important;min-width:0!important;min-height:0!important;max-height:76vh!important;overflow:hidden!important}
+.ob-card-review-body .readable-card-name>span,.ob-card-review-body .readable-card-facts section>span,.ob-card-review-body .readable-card-label{display:block!important;margin:0 0 5px!important;color:#8fa2b5!important;font-size:10px!important;font-weight:900!important;letter-spacing:.08em!important;text-transform:uppercase!important}
+.ob-card-review-body .readable-card-name h2{margin:0!important;color:#f4d35e!important;font-size:clamp(22px,3vw,32px)!important;line-height:1.08!important}
+.ob-card-review-body .readable-card-facts{display:flex!important;flex-wrap:wrap!important;align-items:stretch!important;justify-content:flex-start!important;gap:10px!important;min-width:0!important}
+.ob-card-review-body .readable-card-mana,.ob-card-review-body .readable-card-field,.ob-card-review-body .readable-card-badges{box-sizing:border-box!important;border:0!important;outline:0!important;border-radius:11px!important;background:rgba(255,255,255,.035)!important;padding:11px 12px!important;min-width:0!important}
+.ob-card-review-body .readable-card-mana{flex:0 1 142px!important;width:142px!important;max-width:142px!important}
+.ob-card-review-body .readable-card-badges{flex:0 1 112px!important;width:112px!important;max-width:112px!important;align-self:stretch!important}
+.ob-card-review-body .readable-card-facts--hero .readable-card-field{flex:0 1 142px!important;width:142px!important;max-width:142px!important}
+.ob-card-review-body .readable-card-mana small{display:block!important;color:#c7d7e8!important;font-size:10px!important;font-weight:800!important;margin:0 0 3px!important}
+.ob-card-review-body .readable-card-mana strong,.ob-card-review-body .readable-card-field strong{display:block!important;color:#f4d35e!important;font-size:18px!important;line-height:1.25!important}
+.ob-card-review-body .readable-card-badges>div{display:flex!important;flex-wrap:wrap!important;gap:6px!important}
+.ob-card-review-body .preview-badge{display:inline-flex!important;align-items:center!important;min-height:22px!important;max-width:100%!important;padding:4px 7px!important;border:0!important;border-radius:999px!important;background:#172a3d!important;color:#e8f2fb!important;font-size:8px!important;line-height:1.2!important;white-space:normal!important;font-weight:850!important}
+.ob-card-review-body .readable-card-scroll{min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;padding-right:5px!important;scrollbar-gutter:stable!important}
+.ob-card-review-body .readable-card-text,.ob-card-review-body .readable-card-section{border:0!important;outline:0!important;border-radius:11px!important;background:rgba(255,255,255,.035)!important;padding:11px 12px!important;min-width:0!important}
+.ob-card-review-body .readable-card-scroll>.readable-card-section+ .readable-card-section{margin-top:10px!important}
+.ob-card-review-body .preview-effect-row{margin:8px 0 0!important;padding:10px 11px!important;border:0!important;border-radius:9px!important;background:rgba(2,9,15,.62)!important}
+.ob-card-review-body .preview-effect-row h3{margin:0 0 6px!important;color:#f0ce67!important;font-size:13px!important}
+.ob-card-review-body .preview-effect-row p,.ob-card-review-body .readable-card-section p{margin:0!important;color:#e0e8ef!important;font-size:14px!important;line-height:1.5!important;white-space:pre-wrap!important}
+.ob-card-review-body .readable-card-section h3{margin:0!important;color:#f0ce67!important;font-size:18px!important;line-height:1.25!important}
+.ob-card-review-body .readable-card-sublabel{display:block!important;margin:10px 0 3px!important;color:#8fa2b5!important;font-size:9px!important;font-weight:900!important;letter-spacing:.07em!important;text-transform:uppercase!important}
+.ob-card-review-body .readable-card-section h4{margin:2px 0 4px!important;color:#f4f7fb!important;font-size:14px!important;line-height:1.3!important}
+@media(max-width:760px){
+  .ob-card-review-panel{width:min(96vw,720px)!important}.ob-card-review-body{padding:12px!important;overflow-y:auto!important}
+  .ob-card-review-body .readable-card-preview{grid-template-columns:1fr!important;gap:14px!important;max-height:none!important;overflow:visible!important}
+  .ob-card-review-body .readable-card-art img{width:min(250px,72vw)!important;max-height:42vh!important}
+  .ob-card-review-body .readable-card-details{max-height:none!important;overflow:visible!important}.ob-card-review-body .readable-card-scroll{max-height:42vh!important}
+}
+
+/* If both an active Racial Trait and Class/Hero ability are legal at once, split the cue. */
+.hero-lane.ob-class-ability-ready.ob-racial-trait-ready::before{
+  background:linear-gradient(90deg,rgba(49,194,255,.05),rgba(49,194,255,.018) 48%,rgba(255,178,51,.018) 52%,rgba(255,178,51,.05));
+  box-shadow:inset 10px 0 24px rgba(56,204,255,.40),inset -10px 0 24px rgba(255,174,50,.42),inset 0 0 0 1px rgba(221,224,194,.34);
+}
+.hero-lane.ob-casting-target.ob-class-ability-ready.ob-racial-trait-ready::before{
+  background:linear-gradient(90deg,rgba(49,194,255,.04),rgba(164,85,255,.025) 50%,rgba(255,178,51,.04));
+  box-shadow:inset 0 0 0 2px rgba(185,112,255,.82),inset 10px 0 22px rgba(56,204,255,.36),inset -10px 0 22px rgba(255,174,50,.38),inset 0 0 46px rgba(150,72,238,.25);
+}
+
+/* ========================================================================== */
+/* Stage 1.5.11 — VS AI lobby/result parity + opening presentation refinements */
+/* ========================================================================== */
+
+/* Lobby formation follows the VS AI pattern: Hero — Swap — Hero — Swap — Hero. */
+.ob-lobby-formation{grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr) 32px minmax(0,1fr)!important;gap:7px!important;align-items:center!important}
+.ob-lobby-hero{padding:6px!important}
+.ob-lobby-hero>button{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;cursor:pointer}
+.ob-lobby-hero>button:focus-visible{outline:2px solid #f4d35e;outline-offset:3px;border-radius:6px}
+.ob-lobby-hero img{width:min(100%,94px)!important}
+.ob-lobby-hero small{margin:5px 0 0!important;color:#9cb0c2!important;font-size:8px!important}
+.ob-lobby-swap{width:30px;height:30px;padding:4px;border:1px solid #425a70;border-radius:50%;background:#0b1722;cursor:pointer;display:grid;place-items:center}
+.ob-lobby-swap:hover,.ob-lobby-swap:focus-visible{border-color:#d2ad44;filter:brightness(1.15);outline:none}
+.ob-lobby-swap img{display:block;width:18px;height:18px;object-fit:contain}
+.ob-lobby-rank-control{margin-top:9px;display:grid;grid-template-columns:30px minmax(0,1fr) 30px;align-items:center;gap:7px}
+.ob-lobby-rank-control button{height:29px;border:1px solid #3d566d;border-radius:7px;background:#101f2d;color:#f1d264;font-size:18px;font-weight:950;cursor:pointer}
+.ob-lobby-rank-control strong{display:grid;place-items:center;height:29px;border:1px solid #2e4558;border-radius:7px;background:#07121c;color:#dce8f3;font-size:9px;letter-spacing:.09em}
+
+/* Hero Progression copied into Option B without changing the battlefield review gesture. */
+.ob-progression-overlay{position:fixed;inset:0;z-index:26500;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(1,6,10,.88);color:#eef5fb}
+.ob-progression-overlay.open{display:flex}
+.ob-progression-card{width:min(820px,94vw);border:1px solid #705c21;border-radius:16px;background:linear-gradient(180deg,#101c27,#071019 78%);box-shadow:0 24px 90px rgba(0,0,0,.76);padding:17px}
+.ob-progression-card>header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:12px;border-bottom:1px solid #263a4b}
+.ob-progression-card>header span{display:block;color:#d5b74e;font-size:9px;font-weight:950;letter-spacing:.16em}
+.ob-progression-card>header h2{margin:3px 0 0;color:#f4d35e;font-size:20px}
+.ob-progression-close{height:31px;padding:0 12px;border:1px solid #3b5469;border-radius:7px;background:#0c1924;color:#dce8f3;font-size:10px;font-weight:900;cursor:pointer}
+.ob-progression-row{display:flex;align-items:center;justify-content:center;gap:16px;padding:20px 10px 14px;min-width:0}
+.ob-progression-hero{min-width:0;text-align:center}
+.ob-progression-card-button{display:block;padding:0;border:0;background:transparent;cursor:pointer}
+.ob-progression-card-button img{display:block;width:min(180px,24vw);aspect-ratio:5/7;object-fit:cover;border:1px solid #425d73;border-radius:10px;box-shadow:0 12px 26px rgba(0,0,0,.48)}
+.ob-progression-card-button:hover img,.ob-progression-card-button:focus-visible img{border-color:#e0bd53;filter:brightness(1.07)}
+.ob-progression-rank{margin-top:7px;color:#e3edf5;font-size:10px;font-weight:950;letter-spacing:.1em}
+.ob-progression-arrow{color:#d5b74e;font-size:26px;font-weight:900}
+.ob-progression-card>p{margin:2px 0 0;text-align:center;color:#8fa4b8;font-size:10px}
+
+/* Opening Coin Flip — same flow as VS AI, adapted to the Option B shell. */
+.ob-coin-overlay{position:fixed;inset:0;z-index:27000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(1,6,10,.91);color:#eef5fb}
+.ob-coin-overlay.open{display:flex}
+.ob-coin-card{width:min(520px,92vw);border:1px solid #725e23;border-radius:16px;background:linear-gradient(180deg,#101e2b,#071019 78%);box-shadow:0 24px 90px rgba(0,0,0,.78);padding:22px;text-align:center}
+.ob-coin-card h2{margin:0 0 9px;color:#f4d35e;font-size:22px}
+.ob-coin-card p{margin:5px 0 15px;color:#a9bdcf;font-size:11px;line-height:1.45}
+.ob-coin-actions{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.ob-coin-actions button{min-height:170px;border:1px solid #355169;border-radius:12px;background:#0a1722;color:#eef5fb;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px}
+.ob-coin-actions button:hover,.ob-coin-actions button:focus-visible{border-color:#d4ae42;filter:brightness(1.12);outline:none}
+.ob-coin-actions img,.ob-coin-flip-stage img,.ob-coin-result img{width:104px;height:104px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.45))}
+.ob-coin-actions strong{font-size:12px;letter-spacing:.1em}
+.ob-coin-flip-stage{min-height:132px;display:grid;place-items:center}
+.ob-coin-winner{margin:7px 0 14px;padding:12px;border:1px solid #375168;border-radius:10px;background:#08151f}
+.ob-coin-winner span{display:block;color:#8da3b6;font-size:8px;font-weight:950;letter-spacing:.16em}
+.ob-coin-winner strong{display:block;margin-top:4px;color:#f4d35e;font-size:16px}
+.ob-coin-winner p{margin:5px 0 0}
+.ob-coin-winner.player-wins{border-color:#8a7025}.ob-coin-winner.ai-wins{border-color:#495e70}
+.ob-coin-result{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:15px}
+.ob-coin-result>div{display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px;border:1px solid #263e52;border-radius:10px;background:#08141e}
+.ob-coin-result span{color:#9eb1c1;font-size:9px;font-weight:850}
+.ob-coin-result img{width:74px;height:74px}
+.ob-coin-start{height:36px;padding:0 20px;border:1px solid #b48c28;border-radius:8px;background:#d4ad3b;color:#111;font-size:11px;font-weight:1000;cursor:pointer}
+
+/* Game Result copied from current VS AI: winner, reason, round, Back to Lobby, 60s cleanup. */
+.ob-result-overlay{position:fixed;inset:0;z-index:28500;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(1,6,10,.91);color:#eef5fb}
+.ob-result-overlay.open{display:flex}
+.ob-result-card{width:min(610px,92vw);border:1px solid #735f25;border-radius:16px;background:linear-gradient(180deg,#111f2c,#071019 78%);box-shadow:0 26px 96px rgba(0,0,0,.82);overflow:hidden}
+.ob-result-card>header{padding:18px 20px 13px;border-bottom:1px solid #253b4d;background:#09141e}
+.ob-result-card>header span{display:block;color:#cfb24c;font-size:9px;font-weight:950;letter-spacing:.16em}
+.ob-result-card>header h2{margin:4px 0 0;color:#f4d35e;font-size:22px}
+.ob-result-body{padding:18px 20px 20px}
+.ob-result-summary{display:grid;grid-template-columns:1fr 1.6fr .8fr;gap:9px}
+.ob-result-summary section{min-width:0;border:1px solid #294155;border-radius:10px;background:#08151f;padding:11px}
+.ob-result-summary span{display:block;color:#89a0b4;font-size:8px;font-weight:950;letter-spacing:.11em;text-transform:uppercase}
+.ob-result-summary strong{display:block;margin-top:5px;color:#eef5fb;font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+.ob-result-winner strong{color:#f4d35e;font-size:18px}
+.ob-result-round strong{font-size:21px}
+.ob-result-round small{display:block;margin-top:3px;color:#98adbf;font-size:8px;line-height:1.35}
+.ob-result-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.ob-result-back{height:34px;padding:0 15px;border:1px solid #af8928;border-radius:7px;background:#d3ad3b;color:#101010;font-size:10px;font-weight:1000;cursor:pointer}
+.ob-result-actions small{color:#8499aa;font-size:9px}
+
+/* Legacy ! is a temporary in-slot Hero peek only. No modal/popup is opened. */
+.hero-lane.ob-legacy-peek .hero-card{filter:brightness(1.035)}
+
+@media(max-width:760px){
+  .ob-lobby-formation{grid-template-columns:minmax(0,1fr) 26px minmax(0,1fr) 26px minmax(0,1fr)!important;gap:4px!important}
+  .ob-lobby-swap{width:25px;height:25px;padding:3px}.ob-lobby-swap img{width:15px;height:15px}
+  .ob-progression-row{gap:7px}.ob-progression-arrow{font-size:18px}.ob-progression-card-button img{width:min(150px,25vw)}
+  .ob-result-summary{grid-template-columns:1fr}.ob-result-actions{align-items:stretch;flex-direction:column}.ob-result-back{width:100%}
+}
+
+
+/* ========================================================================== */
+/* Stage 1.5.12 — full VS AI lobby + strict opening presentation corrections. */
+/* ========================================================================== */
+
+/* Opponent Shard Deck: Mana Regen sits diagonally opposite its deck count. */
+.zone[data-zone-side="AI"][data-zone-type="Shard Deck"] > .ob-regen-counter{
+  left:auto!important;top:auto!important;right:-5px!important;bottom:-5px!important;
+}
+
+/* Full AI Lobby replacement, matching the current VS AI lobby composition. */
+.ob-lobby-overlay{
+  align-items:stretch!important;justify-content:stretch!important;padding:0!important;
+  overflow:auto!important;background:#07111f url('engine/assets/lobby/background.webp') center/cover fixed no-repeat!important;
+}
+.ob-lobby-panel{
+  width:100%!important;max-width:none!important;min-height:100%!important;max-height:none!important;
+  overflow:visible!important;margin:0!important;padding:20px 50px 28px!important;border:0!important;border-radius:0!important;
+  background:linear-gradient(180deg,rgba(3,8,14,.60),rgba(6,13,23,.32))!important;box-shadow:none!important;
+  display:grid!important;grid-template-rows:auto auto minmax(0,1fr) auto!important;gap:12px!important;
+}
+.ob-lobby-head{
+  min-height:72px!important;padding:0!important;border:0!important;background:transparent!important;
+  display:flex!important;align-items:center!important;gap:28px!important;
+}
+.ob-lobby-logo{display:block!important;width:210px!important;height:66px!important;object-fit:contain!important;object-position:left center!important;filter:drop-shadow(0 3px 8px rgba(0,0,0,.38))}
+.ob-lobby-head h1{margin:0!important;color:#f3f6fa!important;font-size:18px!important;line-height:1!important;font-weight:950!important;letter-spacing:.02em!important}
+.ob-lobby-error{margin:0!important}
+.ob-lobby-decks{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:20px!important;padding:0!important;min-height:0!important;align-items:start!important}
+.ob-lobby-deck{
+  min-width:0!important;padding:20px 18px 18px!important;border:1px solid rgba(255,255,255,.025)!important;border-radius:16px!important;
+  background:linear-gradient(180deg,rgba(4,9,16,.86),rgba(5,10,17,.80))!important;box-shadow:0 18px 48px rgba(0,0,0,.26)!important;backdrop-filter:blur(2px)!important;
+}
+.ob-lobby-deck>header{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 16px!important}
+.ob-lobby-deck>header h2{margin:0!important;color:#f1d481!important;font-size:21px!important;line-height:1!important;font-weight:900!important}
+.ob-lobby-valid{display:inline-grid!important;place-items:center!important;padding:4px 10px!important;border:1px solid #42d66f!important;border-radius:999px!important;background:#123d28!important;color:#74ff99!important;font-size:11px!important;font-weight:950!important}
+.ob-lobby-picker{display:grid!important;grid-template-columns:minmax(0,1fr) 138px!important;gap:12px!important;margin-bottom:16px!important}
+.ob-lobby-picker select,.ob-lobby-picker button{height:52px!important;border-radius:12px!important;background:rgba(4,8,14,.58)!important;border:1px solid rgba(229,234,243,.38)!important;color:#f2f6fb!important;font-size:15px!important;font-weight:700!important}
+.ob-lobby-picker select{padding:0 16px!important}
+.ob-lobby-picker button{padding:0 14px!important;color:#f4d87e!important;border-color:#d0ad53!important;cursor:pointer!important}
+.ob-lobby-formation{grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr) 32px minmax(0,1fr)!important;gap:12px!important;align-items:center!important;margin:0!important}
+.ob-lobby-hero{min-width:0!important;padding:10px 10px 9px!important;border:0!important;border-radius:13px!important;background:linear-gradient(180deg,#1c3040,#1a2b39)!important;box-shadow:0 10px 20px rgba(0,0,0,.18)!important}
+.ob-lobby-hero>button{width:100%!important;border-radius:9px!important;overflow:hidden!important;background:#0d141d!important;box-shadow:0 8px 15px rgba(0,0,0,.42)!important}
+.ob-lobby-hero img{display:block!important;width:100%!important;max-width:none!important;height:auto!important;aspect-ratio:320/448!important;object-fit:cover!important;object-position:center!important;margin:0!important;border-radius:0!important}
+.ob-lobby-hero small{display:block!important;margin:9px 0 0!important;color:#f1d481!important;font-size:15px!important;line-height:1.2!important;font-weight:900!important;letter-spacing:0!important;text-transform:capitalize!important}
+.ob-lobby-swap{width:32px!important;height:32px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.ob-lobby-swap img{width:32px!important;height:32px!important}
+.ob-lobby-rank-control{width:max-content!important;margin:18px auto 0!important;display:grid!important;grid-template-columns:34px 84px 34px!important;gap:0!important;border:1px solid #40424c!important;border-radius:8px!important;background:#121318!important;overflow:hidden!important}
+.ob-lobby-rank-control button{height:34px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#fff!important;font-size:23px!important;font-weight:400!important}
+.ob-lobby-rank-control button:hover{background:#24262e!important}
+.ob-lobby-rank-control strong{height:34px!important;border:0!important;border-radius:0!important;background:transparent!important;color:#f0d27f!important;font-size:10px!important;font-weight:700!important}
+.ob-lobby-foot{display:flex!important;justify-content:flex-end!important;align-items:center!important;margin-top:0!important;padding:14px 0 0!important;border-top:1px solid rgba(229,234,243,.20)!important;background:transparent!important}
+.ob-lobby-foot nav{display:none!important}
+.ob-lobby-start{width:auto!important;min-width:260px!important;height:56px!important;padding:0 28px!important;border:1px solid #f4d87e!important;border-radius:12px!important;background:linear-gradient(180deg,#f5dc91 0%,#c49b43 100%)!important;color:#11151c!important;font-size:15px!important;font-weight:950!important;box-shadow:inset 0 1px rgba(255,255,255,.42)!important}
+
+/* Coin flip is a dedicated pre-battlefield screen, not a transparent battlefield modal. */
+.ob-coin-overlay{padding:24px!important;background:#02070c!important}
+.ob-coin-card{width:min(624px,92vw)!important;padding:30px 26px 28px!important;border-color:#725e23!important;border-radius:18px!important;background:#101e2b!important;box-shadow:none!important}
+.ob-coin-card h2{margin:0 0 12px!important;font-size:28px!important}
+.ob-coin-card p{margin:4px 0 20px!important;font-size:14px!important}
+.ob-coin-actions{gap:16px!important}
+.ob-coin-actions button{min-height:204px!important;border-radius:14px!important;gap:11px!important}
+.ob-coin-actions img,.ob-coin-flip-stage img{width:132px!important;height:132px!important}
+.ob-coin-actions strong{font-size:15px!important}
+
+@media(max-width:1160px){
+  .ob-lobby-panel{padding:20px 24px 28px!important}
+  .ob-lobby-decks{grid-template-columns:1fr!important}
+  .ob-lobby-start{min-width:190px!important}
+}
+@media(max-width:760px){
+  .ob-lobby-panel{padding:14px 12px 20px!important;display:block!important}
+  .ob-lobby-head{min-height:58px!important;gap:14px!important;margin-bottom:12px!important}
+  .ob-lobby-logo{width:150px!important;height:50px!important}
+  .ob-lobby-head h1{font-size:15px!important}
+  .ob-lobby-decks{display:block!important}
+  .ob-lobby-deck{margin-bottom:12px!important;padding:14px 12px!important}
+  .ob-lobby-picker{grid-template-columns:minmax(0,1fr) 104px!important;gap:7px!important}
+  .ob-lobby-picker select,.ob-lobby-picker button{height:42px!important;font-size:11px!important}
+  .ob-lobby-formation{gap:6px!important;grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr) 25px minmax(0,1fr)!important}
+  .ob-lobby-swap,.ob-lobby-swap img{width:25px!important;height:25px!important}
+  .ob-lobby-hero{padding:6px!important}
+  .ob-lobby-hero small{font-size:10px!important;margin-top:6px!important}
+  .ob-lobby-foot{margin-top:12px!important}
+  .ob-lobby-start{width:100%!important;min-width:0!important;height:46px!important}
+}
+
+/* ========================================================================== */
+/* v6.80 UI patch — mirrored Class Shards, unified popup cards, safe previews. */
+/* ========================================================================== */
+
+/* Class Shards are foreground resources. Their physical left/right placement is
+   handled by the runtime; this rule ensures Mana cards never paint over them. */
+.mana-card.ob-class-shard:not(.ob-selected){z-index:220!important}
+
+/* All inspect/search/choice popups share one horizontal size. Height remains
+   content-driven until the viewport cap is reached, then only the body scrolls. */
+.ob-vsai-choice-overlay .choice-panel{
+  width:min(788px,calc(100vw - 330px))!important;
+  min-width:min(788px,92vw)!important;
+  height:auto!important;
+  max-height:84vh!important;
+}
+.ob-vsai-choice-overlay .choice-body{min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important}
+
+/* One thumbnail language across Legacy, Discard, Magic Compass, Déjà vu, and
+   other card-selection surfaces. More cards wrap/scroll instead of shrinking. */
+.ob-vsai-choice-overlay .choice-grid,
+.ob-vsai-choice-overlay .card-search-choice-grid,
+.ob-vsai-choice-overlay .reorder-choice-grid,
+.ob-vsai-choice-overlay .inspect-card-grid{
+  grid-template-columns:repeat(7,96px)!important;
+  grid-auto-columns:96px!important;
+  justify-content:start!important;
+  align-items:start!important;
+  gap:8px!important;
+}
+.ob-vsai-choice-overlay .card-search-choice,
+.ob-vsai-choice-overlay .discard-choice,
+.ob-vsai-choice-overlay .ob-inspect-card{
+  width:96px!important;
+  min-width:96px!important;
+  max-width:96px!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+}
+.ob-vsai-choice-overlay .discard-preview{width:100%!important;text-align:center!important}
+.ob-vsai-choice-overlay .discard-preview img,
+.ob-vsai-choice-overlay .ob-inspect-card img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:5/7!important;
+  object-fit:cover!important;
+}
+.ob-vsai-choice-overlay .discard-preview span,
+.ob-vsai-choice-overlay .ob-inspect-card span{
+  display:block!important;
+  width:100%!important;
+  margin-top:5px!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.ob-vsai-choice-overlay .discard-select{width:100%!important}
+
+/* Popup hover preview is exactly the same size as the battlefield hover preview.
+   Only its placement changes by context; component sizing elsewhere is untouched. */
+.ob-modal-hover-preview{
+  width:225px!important;
+  height:315px!important;
+  z-index:18050!important;
+}
+
+/* Game Result can be dismissed to inspect the frozen final battlefield. Back to
+   Lobby and the existing one-minute auto-return behavior are unchanged. */
+.ob-result-buttons{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ob-result-close{
+  height:34px;padding:0 15px;border:1px solid #45627e;border-radius:7px;
+  background:#132234;color:#edf4fb;font-size:10px;font-weight:1000;cursor:pointer;
+}
+.ob-result-back{height:34px}
+@media(max-width:760px){
+  .ob-result-buttons{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .ob-result-close,.ob-result-back{width:100%}
+}
+
+/* ========================================================================== */
+/* VS AI v6.83 — v6.82 review follow-up / hand, counter, phase, PAY, hover polish. */
+/* VS AI v6.85 — Scouting target metadata + PLAY/PAY polish + contextual Response focus. */
+/* VS AI v6.86 rebuild — v6.85 geometry rollback + isolated Hero scale / Tribute / Defense-arrow fixes. */
+/* ========================================================================== */
+
+/* Main Deck / Discard counters: Riftbound-like compact translucent rectangle. */
+.zone[data-zone-type="Main Deck"] > .count,
+.zone[data-zone-type="Discard Pile"] > .count,
+.zone[data-zone-type="Shard Deck"] > .count,
+.zone[data-zone-type="Legacy Deck"] > .count{
+  min-width:22px!important;
+  height:18px!important;
+  padding:0 5px!important;
+  border:0!important;
+  border-radius:3px!important;
+  background:rgba(3,10,17,.68)!important;
+  color:#fff!important;
+  font-size:12px!important;
+  line-height:18px!important;
+  font-weight:950!important;
+  box-shadow:0 2px 5px rgba(0,0,0,.34)!important;
+}
+/* Shard Pool count uses the same compact counter language. */
+.mana-pool > .count{
+  min-width:22px!important;
+  height:18px!important;
+  padding:0 5px!important;
+  border:0!important;
+  border-radius:3px!important;
+  background:rgba(3,10,17,.68)!important;
+  color:#fff!important;
+  font-size:12px!important;
+  line-height:18px!important;
+  font-weight:950!important;
+  box-shadow:0 2px 5px rgba(0,0,0,.34)!important;
+}
+/* Remove written Deck / Discard zone labels (Main, Shard, Legacy, Discard); card backs/top cards and counters carry identity. */
+.zone > .zone-label{display:none!important}
+
+/* Mana Regen icon grows with the enlarged resource counter language. */
+.ob-regen-counter{width:26px!important;height:26px!important;left:-7px!important;top:-7px!important}
+.zone[data-zone-side="AI"][data-zone-type="Shard Deck"] > .ob-regen-counter{
+  left:auto!important;top:auto!important;right:-7px!important;bottom:-7px!important;
+}
+
+/* Hand size is independent from Standard size. v6.83 uses a small edge-only overlap. */
+.hand-track{gap:0!important}
+.hand.bottom .hand-card,.hand.top .hand-card{margin-left:-5px!important}
+.hand.bottom .hand-card:first-child,.hand.top .hand-card:first-child{margin-left:0!important}
+
+/* v6.87: non-Hero preview stays 115%; Hero preview uses 110%; all floating previews must cover HP/status overlays. */
+.ob-battlefield-hover-preview{
+  position:fixed;left:0;top:0;z-index:24000!important;display:none;
+  width:var(--hover-preview-w);height:var(--hover-preview-h);
+  pointer-events:none;overflow:visible;
+}
+.ob-battlefield-hover-preview.open{display:block}
+.ob-battlefield-hover-preview.is-hero{width:var(--hero-hover-preview-w)!important;height:var(--hero-hover-preview-h)!important}
+.ob-battlefield-hover-preview img{
+  display:block;width:100%;height:100%;object-fit:contain;border-radius:9px;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.64));
+}
+/* Existing popup/sidebar preview cards use the same enlarged card-review footprint. */
+.preview-card,.ob-sidebar-hover-preview,.ob-sidebar-hover-preview img,.ob-modal-hover-preview{
+  width:var(--hover-preview-w)!important;height:var(--hover-preview-h)!important;
+}
+
+/* v6.87: sidebar hover is promoted to a viewport layer so Hero HP/status overlays can never cover it. */
+.ob-sidebar-hover-preview{position:fixed!important;right:auto!important;z-index:26000!important;pointer-events:none!important}
+
+
+/* Active phase: text-width underline + exactly centered diamond. */
+.phase-track{position:relative!important;overflow:visible!important}
+.phase-label{position:relative;z-index:3;transition:color .24s ease,text-shadow .24s ease,filter .24s ease}
+.phase-label.active{color:#f0cf58!important;text-shadow:0 0 9px rgba(240,207,88,.30)!important}
+.ob-phase-tint,.ob-phase-underline,.ob-phase-diamond{position:absolute;pointer-events:none;z-index:1}
+.ob-phase-tint{
+  top:2px;bottom:2px;left:0;width:0;border-radius:6px;background:rgba(232,196,79,.07);
+  transition:left .48s cubic-bezier(.2,.75,.2,1),width .48s cubic-bezier(.2,.75,.2,1);
+}
+.ob-phase-underline{
+  left:0;top:0;width:0;height:2px;border-radius:999px;background:#e8c44f;
+  transition:left .48s cubic-bezier(.2,.75,.2,1),width .48s cubic-bezier(.2,.75,.2,1);
+  box-shadow:0 0 7px rgba(232,196,79,.25);
+}
+.ob-phase-diamond{
+  left:0;top:0;width:7px;height:7px;background:#e8c44f;
+  transform:translateX(-50%) rotate(45deg);
+  transition:left .48s cubic-bezier(.2,.75,.2,1);
+  box-shadow:0 0 7px rgba(232,196,79,.28);
+}
+.phase-label.ob-phase-enter{animation:obPhaseEnter .52s ease-out}
+@keyframes obPhaseEnter{0%{filter:brightness(1)}45%{filter:brightness(1.55)}100%{filter:brightness(1)}}
+
+/* Match timer shares the bottom sidebar control rail. */
+.bottom-actions{grid-template-columns:.82fr 1fr 1fr!important}
+.match-timer{
+  width:100%;height:22px;min-height:22px;display:grid;place-items:center;
+  border:1px solid #334b61;border-radius:6px;background:rgba(11,23,34,.84);
+  color:#dce8f2;font-size:7px;font-weight:950;line-height:1;font-variant-numeric:tabular-nums;
+  letter-spacing:.04em;white-space:nowrap;
+}
+
+/* Payment / Response attention focus. 65% modal-like global dimmer; only the current decision surface stays bright. */
+.ob-focus-dimmer{
+  position:fixed;inset:0;z-index:900;display:none;pointer-events:none;
+  background:rgba(0,0,0,.65);border-radius:0;
+  opacity:0;transition:opacity .18s ease;
+}
+.ob-focus-dimmer.is-visible{display:block;opacity:1}
+.battlefield.ob-focus-payment .player-mana-pool{z-index:940!important;box-shadow:0 0 0 1px rgba(46,199,122,.52),0 0 20px rgba(46,199,122,.18),inset 0 0 0 1px rgba(255,255,255,.02)!important}
+.battlefield.ob-focus-blind-mana .opponent-mana-pool{z-index:940!important;box-shadow:0 0 0 1px rgba(244,211,94,.62),0 0 22px rgba(244,211,94,.22),inset 0 0 0 1px rgba(255,255,255,.03)!important}
+.battlefield.ob-focus-blind-mana .opponent-mana-pool::before{content:"CHOOSE SHARD";position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);z-index:3;padding:3px 7px;border-radius:5px;background:rgba(4,13,21,.94);color:#f4d35e;font-size:7px;font-weight:950;letter-spacing:.04em;white-space:nowrap;box-shadow:0 0 0 1px rgba(244,211,94,.55)}
+.battlefield.ob-focus-payment .ob-pay-button{z-index:970!important}
+/* Keep only CANCEL legible in the phase rail during payment. The rest of the rail receives the same local 65% dim treatment. */
+.battlefield.ob-focus-payment .phase,
+.battlefield.ob-focus-response .phase{z-index:940!important}
+.battlefield.ob-focus-payment .phase::after,
+.battlefield.ob-focus-response .phase::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:rgba(0,0,0,.65);border-radius:inherit}
+.battlefield.ob-focus-payment #phasePrimaryAction.ob-cancel,
+.battlefield.ob-focus-response #phasePrimaryAction.ob-pass{position:relative;z-index:4!important;opacity:1!important}
+.battlefield.ob-focus-response .bottom-hud{z-index:940!important}
+/* Response focus keeps the action itself readable: Active Card, source Hero (when any), and target Hero/zone remain above the 65% dimmer. */
+.battlefield.ob-focus-response .ob-focus-lit{z-index:950!important;filter:none!important}
+.sidebar.ob-focus-response-sidebar{z-index:940!important}
+.sidebar.ob-focus-response-sidebar::after{content:"";position:absolute;inset:0;z-index:40;pointer-events:none;background:rgba(0,0,0,.65)}
+.sidebar.ob-focus-response-sidebar .active-card-pane{z-index:50!important}
+.ob-attention-enter{animation:obActionAttention .46s cubic-bezier(.2,.8,.2,1)}
+@keyframes obActionAttention{
+  0%{transform:scale(.94);filter:brightness(1);box-shadow:0 0 0 rgba(244,211,94,0)}
+  48%{transform:scale(1.06);filter:brightness(1.2);box-shadow:0 0 18px rgba(244,211,94,.58)}
+  100%{transform:scale(1);filter:brightness(1);box-shadow:none}
+}
+.ob-pay-button.ob-attention-enter{transform-origin:center center}
+
+/* Selected Shards lift above the pool without clipping. Reserve visible headroom while keeping pool geometry fixed. */
+.player-mana-pool,.opponent-mana-pool,.mana-cards{overflow:visible!important}
+.mana-card.ob-selected{z-index:520!important}
+@media (prefers-reduced-motion:reduce){
+  .ob-phase-tint,.ob-phase-underline,.ob-phase-diamond,.phase-label,.ob-attention-enter{transition:none!important;animation:none!important}
+}
+
+
+/* ==========================================================================
+   v6.89 CENTER CHOICE UX + v6.83 CONTEXTUAL HOVER RESTORE
+   ========================================================================== */
+
+/* Hero/Legacy contextual popup previews use the v6.83 Hero footprint (110%).
+   Main Deck-derived search previews keep the fixed 115% preview. */
+.ob-modal-hover-preview.is-context-hero{
+  width:var(--hero-hover-preview-w)!important;
+  height:var(--hero-hover-preview-h)!important;
+}
+
+/* Center Choice is deliberately not a popup: no panel/container background.
+   The global 65% focus dimmer remains the only backdrop. */
+.ob-center-choice-stage{
+  position:fixed;
+  inset:0;
+  z-index:24500;
+  display:none;
+  grid-template-rows:auto auto auto;
+  align-content:center;
+  justify-items:center;
+  gap:18px;
+  padding:28px 22px;
+  pointer-events:none;
+  color:#f3f7fb;
+}
+.ob-center-choice-stage.open{display:grid}
+.ob-center-choice-copy{
+  display:grid;
+  justify-items:center;
+  gap:5px;
+  text-align:center;
+  pointer-events:none;
+  transition:opacity .16s ease;
+}
+.ob-center-choice-title{
+  margin:0;
+  color:#f4d35e;
+  font-size:clamp(17px,1.55vw,24px);
+  line-height:1.05;
+  font-weight:1000;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+  text-shadow:0 2px 8px rgba(0,0,0,.95);
+}
+.ob-center-choice-helper{
+  margin:0;
+  color:#e4edf5;
+  font-size:clamp(10px,.82vw,13px);
+  line-height:1.25;
+  font-weight:800;
+  text-shadow:0 2px 6px rgba(0,0,0,.95);
+}
+.ob-center-choice-status{
+  display:inline-grid;
+  place-items:center;
+  min-height:24px;
+  margin-top:2px;
+  padding:4px 10px;
+  border-radius:6px;
+  background:rgba(3,10,16,.72);
+  color:#fff;
+  font-size:clamp(10px,.85vw,13px);
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:.04em;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 0 0 1px rgba(244,211,94,.22);
+}
+.ob-center-choice-cards{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:clamp(5px,.58vw,10px);
+  width:min(94vw,1220px);
+  min-height:142px;
+  padding:26px 6px 4px;
+  overflow:visible;
+  pointer-events:auto;
+  perspective:1100px;
+}
+.ob-center-choice-card{
+  position:relative;
+  flex:0 0 auto;
+  width:clamp(54px,5.25vw,76px);
+  aspect-ratio:5/7;
+  padding:0;
+  border:0;
+  outline:0;
+  border-radius:8px;
+  background:transparent;
+  cursor:default;
+  overflow:visible;
+  transform:translateY(0);
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.62));
+  transition:transform .16s ease,filter .16s ease;
+  pointer-events:none;
+}
+.ob-center-mode-opponent-hand .ob-center-choice-card,
+.ob-center-mode-magic-scope .ob-center-choice-card{
+  width:clamp(64px,6vw,88px);
+}
+.ob-center-choice-card.is-clickable{cursor:pointer;pointer-events:auto}
+.ob-center-choice-card.is-clickable:hover{transform:translateY(-8px);filter:drop-shadow(0 10px 17px rgba(0,0,0,.72))}
+.ob-center-choice-card.is-selected{
+  transform:translateY(-20px)!important;
+  filter:drop-shadow(0 0 4px rgba(244,211,94,.95)) drop-shadow(0 11px 18px rgba(0,0,0,.75));
+}
+.ob-center-choice-card.is-selected::after{
+  content:"";
+  position:absolute;
+  inset:-3px;
+  z-index:4;
+  border:2px solid rgba(244,211,94,.95);
+  border-radius:10px;
+  pointer-events:none;
+}
+.ob-center-choice-flip{
+  position:absolute;
+  inset:0;
+  display:block;
+  transform-style:preserve-3d;
+  transition:transform .34s cubic-bezier(.2,.75,.2,1);
+}
+.ob-center-choice-card.is-face-up .ob-center-choice-flip{transform:rotateY(180deg)}
+.ob-center-choice-face{
+  position:absolute;
+  inset:0;
+  display:block;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  border-radius:8px;
+  overflow:hidden;
+  background:#071019;
+}
+.ob-center-choice-front{transform:rotateY(180deg)}
+.ob-center-choice-face img{display:block;width:100%;height:100%;object-fit:contain;border-radius:8px}
+.ob-center-choice-actions{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  min-height:34px;
+  pointer-events:auto;
+  transition:opacity .16s ease;
+}
+.ob-center-choice-actions button{
+  min-width:92px;
+  height:34px;
+  padding:0 16px;
+  border-radius:7px;
+  font-size:11px;
+  font-weight:1000;
+  letter-spacing:.04em;
+  cursor:pointer;
+}
+.ob-center-choice-primary{
+  border:1px solid rgba(244,211,94,.72);
+  background:#16844d;
+  color:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.44);
+}
+.ob-center-choice-primary:hover:not(:disabled){filter:brightness(1.12)}
+.ob-center-choice-primary:disabled{opacity:.42;filter:saturate(.5);cursor:not-allowed}
+.ob-center-choice-cancel{
+  border:1px solid #516a80;
+  background:rgba(13,29,43,.92);
+  color:#e8f1f8;
+}
+.ob-center-choice-cancel:hover{background:#173047}
+.ob-center-choice-stage.is-busy{pointer-events:none}
+.ob-center-choice-stage.is-busy .ob-center-choice-card,
+.ob-center-choice-stage.is-busy .ob-center-choice-actions{pointer-events:none}
+.ob-center-choice-copy.is-fading,.ob-center-choice-actions.is-fading{opacity:0}
+
+/* The original source zones remain part of battlefield layout, but their cards disappear
+   while their visual clones are in the center. This keeps layout stable across browsers. */
+body.ob-center-pay .player-mana-pool .mana-cards,
+body.ob-center-opponent-hand .hand.top .hand-track,
+body.ob-center-magic-scope .hand.top .hand-track{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+body.ob-center-pay .player-mana-pool{
+  z-index:auto!important;
+  box-shadow:none!important;
+}
+/* v6.90.5 root fix: blind-mana focus must NEVER change the opponent pool's positioning mode.
+   .mana-pool is position:absolute by design. Changing it to relative moved the real opponent
+   pool into the first grid cell (upper-left), so every later animation measured the wrong origin.
+   Keep the pool absolute/right-anchored and use only overlay clones for center selection. */
+body.ob-center-opponent-shard .battlefield.ob-focus-blind-mana .opponent-mana-pool::before{display:none!important}
+
+/* Opponent Shard center-choice is clone-only: keep the real opponent pool,
+   cards, counter, width, and battlefield placement untouched. */
+body.ob-center-pay .ob-pay-button{display:none!important}
+body.ob-center-pay #phasePrimaryAction.ob-cancel{visibility:hidden!important}
+body.ob-center-magic-scope .ob-magic-scope-done{display:none!important}
+
+@media(max-width:900px){
+  .ob-center-choice-stage{gap:12px;padding:18px 10px}
+  .ob-center-choice-cards{gap:4px;width:96vw;min-height:116px;padding-top:20px}
+  .ob-center-choice-card{width:clamp(46px,6vw,62px)}
+  .ob-center-mode-opponent-hand .ob-center-choice-card,
+  .ob-center-mode-magic-scope .ob-center-choice-card{width:clamp(52px,7vw,68px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .ob-center-choice-card,.ob-center-choice-flip,.ob-center-choice-copy,.ob-center-choice-actions{transition:none!important}
+}
+
+.ob-center-mode-magic-scope .ob-center-choice-card{pointer-events:auto!important;cursor:default!important}
+.ob-center-mode-opponent-hand .ob-center-choice-card.is-face-up{pointer-events:auto!important}
+/* Context/fixed list previews must also float above the v6.89 center-choice cards. */
+.ob-modal-hover-preview{z-index:25500!important}
+
+/* v6.90 center-choice focus: background previews are suppressed by runtime while
+   the decision layer is active; center-stage cards themselves remain interactive. */
+body.ob-center-choice-active #sharedPreviewBox.previewing{opacity:0!important;pointer-events:none!important}
+
+
+/* v6.90.7 — Main Deck candidate lists use a REAL reserved preview column.
+   Preview layout is selected by the candidate source zone, never by the caller/effect.
+   This replaces the old floating/body-level preview that could cover the card grid. */
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{
+  width:min(1068px,calc(100vw - 36px))!important;
+  min-width:0!important;
+  transform:none!important;
+}
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) var(--hover-preview-w)!important;
+  gap:16px!important;
+  align-items:start!important;
+  overflow:hidden!important;
+}
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .ob-choice-list-pane{
+  min-width:0!important;
+  min-height:0!important;
+  max-height:calc(84vh - 112px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:3px;
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{
+  width:var(--hover-preview-w);
+  height:var(--hover-preview-h);
+  align-self:start;
+  position:sticky;
+  top:0;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:rgba(5,12,18,.42);
+  overflow:hidden;
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot img{
+  width:100%;
+  height:100%;
+  display:none;
+  object-fit:contain;
+  border-radius:8px;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.64));
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot.has-card img{display:block}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-placeholder{
+  color:#7890a5;
+  font-size:10px;
+  font-weight:800;
+  text-align:center;
+  padding:18px;
+}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot.has-card .ob-choice-fixed-preview-placeholder{display:none}
+@media(max-width:1120px){
+  .ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{width:calc(100vw - 24px)!important}
+  .ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{grid-template-columns:minmax(0,1fr) min(28vw,var(--hover-preview-w))!important}
+  .ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{width:min(28vw,var(--hover-preview-w));height:auto;aspect-ratio:5/7}
+}
+
+
+/* ========================================================================== */
+/* VS AI v6.90.7 — popup preview routing + visible Shard-to-Deck resolution.   */
+/* Main Deck candidates restore v6.88: 7-column popup, preview floats outside. */
+/* Legacy Deck / Discard candidates remain contextual outside the popup edge.  */
+/* ========================================================================== */
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-panel{
+  width:min(788px,calc(100vw - 330px))!important;
+  min-width:min(788px,92vw)!important;
+  max-height:84vh!important;
+}
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .choice-body{
+  display:block!important;
+  grid-template-columns:none!important;
+  gap:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:12px!important;
+}
+.ob-vsai-choice-overlay.ob-choice-main-deck-preview .ob-choice-list-pane{display:contents!important}
+.ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{display:none!important}

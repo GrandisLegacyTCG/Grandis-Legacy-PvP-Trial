@@ -1,27 +1,22 @@
-# Grandis Legacy PvP v3.76.1
+# Grandis Legacy PvP v3.76.2
 
-Server-authoritative two-player Grandis Legacy PvP.
+Stabilization build: PvP v3.51 remains gameplay/network authority; VS AI v6.90.7 supplies the external gameplay presentation shell. See `release/PVP_v3.76.2_RELEASE_NOTES.md`.
 
-**Active architecture**
-- PvP v3.51: multiplayer/gameplay/network authority.
-- VS AI v6.90.7: UI/UX presentation.
+# Grandis Legacy PvP — v3.51
 
-The build uses one visible PvP lobby. The gameplay UI is the newer VS AI presentation adapted to authoritative two-player snapshots rather than a second local game engine.
+## Release identity
 
-## Run
+- PvP Version: **v3.51**
+- Package Version: **3.0.51**
+- Website mirror target: **v1.40**
+- Date: **2026-09-28**
 
-```bash
-npm ci
-npm start
-```
+## What v3.51 means
 
-Health endpoint: `/health`  
-WebSocket endpoint: `/ws`
+v3.51 is a **version promotion of the completed v3.50 staged correction** so the final corrected build has a distinct release number and is not confused with earlier v3.50 packages. No new gameplay rule is introduced by this promotion.
 
-## QA
+The promoted build retains the completed correction set: render continuity, stable Timer/Connection presentation, authoritative mobile Main Deck Draw animation, nested Response and held-Attack lifecycle fixes, authoritative battle VFX/SFX delivery, custom PvP Main Deck legality of **50–60 inclusive**, 25-character visible deck names, and the external Connection Bar layout.
 
-```bash
-npm test
-```
+Official Starter Deck definitions remain 60 cards. PvP remains server authoritative. Source Authority remains v1.9.5. VS AI v6.46 / Tutorial v0.69 remain reference-only and are not modified by this release promotion.
 
-See `ARCHITECTURE_DONOR_MAP.md`, `BUILD_NOTES_v3.76.1.md`, and `QA_v3.76.1.md`.
+See `release/PVP_v3.51_RELEASE_NOTES.md` and `release/PVP_v3.51_VERSION_PROMOTION_AUDIT_2026-09-28.md`.

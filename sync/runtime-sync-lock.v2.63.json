@@ -2,7 +2,7 @@
   "version": "v2.63",
   "schema_version": "2.63-pvp-v351-consumer",
   "policy": "RUNTIME_FIRST_FAIL_CLOSED_SYNC",
-  "application": "Grandis Legacy PvP v3.76.1 — v3.51 Authority + VS AI v6.90.7 Presentation",
+  "application": "PvP v3.51 Final Stability Release 2026-09-28",
   "releaseReady": true,
   "sourceAuthority": "v1.9.5",
   "sharedRuntime": "v1.94.2",
@@ -15,7 +15,7 @@
   "canonicalRegistryHash": "7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389",
   "heroComponentRegistryHash": "f36f1cc83eb9845743176c3af71f7823125353eae73e832588e9d8b42c6818be",
   "requiredSourceStack": {
-    "behaviorReference": "PvP v3.51 is the authoritative multiplayer/gameplay donor. VS AI v6.90.7 is the UI/UX presentation donor.",
+    "behaviorReference": "PvP v3.51 same-version correction preserves the completed v3.51 server-authoritative gameplay/runtime while correcting only Hero EXP Ready/Exhausted physical-size parity and invalid custom Deck Import interaction/retry. VS AI v6.48/v0.71 is presentation/interaction reference only.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
@@ -30,11 +30,7 @@
     "uiLock": "2.53",
     "starter60": "1.6.1",
     "applicationRuntimeSync": "2.63",
-    "activeStarterCount": 5,
-    "activeDonors": [
-      "Grandis Legacy PvP v3.51",
-      "Grandis Legacy VS AI v6.90.7"
-    ]
+    "activeStarterCount": 5
   },
   "runtimeFiles": [
     {
@@ -95,27 +91,19 @@
     },
     {
       "path": "package.json",
-      "sha256": "6ca11bd1b420482a8f6a36942d15fe769211a034986778e2a1761d70ea8506b4"
+      "sha256": "7704d7223ffb18b656d44f73b3f210de21d35c3cd10355ddb7711caec9855169"
     },
     {
       "path": "public/css/app.css",
       "sha256": "9a18121ba0cf3644207a7f8bc8e2073413ae6f08aa987effb077ea110ba739a8"
     },
     {
-      "path": "public/css/pvp-lobby.css",
-      "sha256": "6ceec466b5ec0ddd66248c5fe4efdd8fff2d8e059571800f3c476eece59a0f31"
-    },
-    {
-      "path": "public/css/pvp-ui.css",
-      "sha256": "84d9782ca9fc96b35b6d6bb14ce6b824882441a3f1abb250dbf469314e31554c"
-    },
-    {
       "path": "public/index.html",
-      "sha256": "8c9404b7b8baaf82a75d2336a20e2ac1bd0d379c59304f7c19818be42dbbe771"
+      "sha256": "f38b24c3678d53e3610442309caa43d4ec23892cd2d46b34ca179c72a9726834"
     },
     {
       "path": "public/js/app.bundle.js",
-      "sha256": "d5a1fb2a9b5b29fe621a8eab8412fbf78d300199014176f118846916691596b2"
+      "sha256": "ff42da9f22fedb80dda944df28699a6d3eeae9d1fa8fb5aa05321abd766713e7"
     },
     {
       "path": "public/js/mobile-app-nav.js",
@@ -123,11 +111,7 @@
     },
     {
       "path": "public/js/pvp-network.js",
-      "sha256": "77769dc266b62265a6471361198ae336c116ba8f004867db6db4b64d24b0408d"
-    },
-    {
-      "path": "public/js/pvp-ui-runtime.js",
-      "sha256": "04a2cc6064388f99009974e0ce2706b5d912a5d4be64bc4883b49c4cbce21985"
+      "sha256": "9f4e9b0897a0b1268cc8ae8d45236ba44cee09077ef2a8993720802e0c4a7d31"
     },
     {
       "path": "public/js/runtime-authority.js",
@@ -411,7 +395,7 @@
     },
     {
       "path": "server.js",
-      "sha256": "d595ba64f7e8dce5e5f2e9cc146a666450d22ff828fde790e9431ab459861401"
+      "sha256": "080678887b5197a2306c6479d3ce150ad7798d09ea737c5c65faa5330e6aa9f8"
     },
     {
       "path": "server/gameplay-intent-router.mjs",
