@@ -44,7 +44,7 @@ const animationLayer=document.createElement('div');animationLayer.className='ob-
 const modalHoverPreview=document.createElement('div');modalHoverPreview.className='ob-modal-hover-preview';modalHoverPreview.setAttribute('aria-hidden','true');const modalHoverImg=document.createElement('img');modalHoverPreview.appendChild(modalHoverImg);document.body.appendChild(modalHoverPreview);
 const sidebarHoverPreview=document.createElement('div');sidebarHoverPreview.className='ob-sidebar-hover-preview';sidebarHoverPreview.setAttribute('aria-hidden','true');const sidebarHoverImg=document.createElement('img');sidebarHoverPreview.appendChild(sidebarHoverImg);document.body.appendChild(sidebarHoverPreview);
 const turnBanner=document.createElement('div');turnBanner.className='ob-turn-banner';turnBanner.setAttribute('aria-live','polite');document.body.appendChild(turnBanner);
-const lobbyOverlay=document.createElement('div');lobbyOverlay.className='ob-lobby-overlay';lobbyOverlay.innerHTML='<section class="ob-lobby-panel" role="dialog" aria-modal="true" aria-labelledby="obLobbyTitle"><header class="ob-lobby-head"><img class="ob-lobby-logo" src="engine/assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"><h1 id="obLobbyTitle">VS AI LOBBY</h1></header><div class="ob-lobby-error" id="obLobbyError"></div><div class="ob-lobby-decks" id="obLobbyDecks"></div><footer class="ob-lobby-foot"><button type="button" class="ob-lobby-start" id="obLobbyStart">Start Match</button></footer></section>';document.body.appendChild(lobbyOverlay);
+const lobbyOverlay=document.createElement('div');lobbyOverlay.className='ob-lobby-overlay';lobbyOverlay.innerHTML='<section class="ob-lobby-panel" role="dialog" aria-modal="true" aria-labelledby="obLobbyTitle"><header class="ob-lobby-head"><img class="ob-lobby-logo" alt="Grandis Legacy"><h1 id="obLobbyTitle">VS AI LOBBY</h1></header><div class="ob-lobby-error" id="obLobbyError"></div><div class="ob-lobby-decks" id="obLobbyDecks"></div><footer class="ob-lobby-foot"><button type="button" class="ob-lobby-start" id="obLobbyStart">Start Match</button></footer></section>';document.body.appendChild(lobbyOverlay);if(!IS_PVP)lobbyOverlay.querySelector('.ob-lobby-logo').src='assets/lobby/grandis-legacy-logo.webp';
 const coinOverlay=document.createElement('div');coinOverlay.className='ob-coin-overlay';coinOverlay.innerHTML='<section class="ob-coin-card" role="dialog" aria-modal="true" aria-labelledby="obCoinTitle"><h2 id="obCoinTitle">Opening Coin Flip</h2><div class="ob-coin-body"></div></section>';document.body.appendChild(coinOverlay);
 const progressionOverlay=document.createElement('div');progressionOverlay.className='ob-progression-overlay';progressionOverlay.innerHTML='<section class="ob-progression-card" role="dialog" aria-modal="true" aria-labelledby="obProgressionTitle"><header><div><span>HERO PROGRESSION</span><h2 id="obProgressionTitle">Hero Progression</h2></div><button type="button" class="ob-progression-close">Close</button></header><div class="ob-progression-row"></div><p>Select a Rank card to open Card Review.</p></section>';document.body.appendChild(progressionOverlay);
 const resultOverlay=document.createElement('div');resultOverlay.className='ob-result-overlay';resultOverlay.innerHTML='<section class="ob-result-card" role="dialog" aria-modal="true" aria-labelledby="obResultTitle"><header><span>GAME RESULT</span><h2 id="obResultTitle">Match Complete</h2></header><div class="ob-result-body"></div></section>';document.body.appendChild(resultOverlay);
@@ -72,8 +72,8 @@ let obExternalDrawSequence=Promise.resolve();
 const laneOrder=['LEFT','CENTER','RIGHT'];
 function st(){const snap=E()?.getSnapshot?.();return snap?.appState||snap?.state||snap||null;}
 function cv(id){return id?E().cardView(id):null;}
-function art(id){return id?'card-art/'+encodeURIComponent(id)+'.webp':'';}
-function shardArt(sh){if(!sh||sh.kind!=='CLASS')return 'assets/shards/Generic.webp';const n=String(sh.class_name||'').trim();return 'assets/shards/'+(n||'Generic')+'.webp';}
+function art(id){if(!id)return '';const view=E()?.cardView?.(id);return view?.full||view?.thumb||'';}
+function shardArt(sh){if(!sh||sh.kind!=='CLASS')return 'assets/mana-shards/Generic.webp';const n=String(sh.class_name||'').trim();return 'assets/mana-shards/'+(n||'Generic')+'.webp';}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cloneLite(v){try{return JSON.parse(JSON.stringify(v))}catch{return null}}
 function intent(name,args=[]){const r=(IS_PVP&&window.GL_PVP_NETWORK?.sendIntent)?window.GL_PVP_NETWORK.sendIntent(name,args):E().intent(name,args);setTimeout(renderNow,0);return r;}
@@ -127,7 +127,7 @@ function resolveActionSourceLane(s,a){
   const lane=currentLaneForSourceCard(s,a.side,a.source_card_id,a.lane);
   return lane===a.lane?a:{...a,lane};
 }
-function statusIcon(name){return 'engine/assets/status-icons/Icon-'+String(name||'').replace(/[^A-Za-z]/g,'')+'.png';}
+function statusIcon(name){return 'assets/status-icons/Icon-'+String(name||'').replace(/[^A-Za-z]/g,'')+'.png';}
 function getStatusName(x){try{return E().getStatusLabel(x)||x?.name||x?.status||''}catch{return x?.name||x?.status||''}}
 function isPrecommitCancelable(s){const p=s?.pending;if(!p||s?.responseWindow)return false;return ['warp_scroll_selection','source_selection','target_selection','scouting_target_selection','exact_two_target_selection','double_casting_target_selection','mana_spend_choice','mana_shard_payment_choice','optional_magical_surge','status_removal_choice','tribute_target','racial_target_selection','hero_ability_target_selection','legacy_cost_selection','legacy_hero_target_selection','manual_reposition'].includes(p.type);}
 function pendingOwner(p){return p&&(p.decision_side||p.response_owner||p.side||p.source_side||(p.type==='hand_limit_discard'?'PLAYER':null));}
@@ -381,7 +381,7 @@ function zoneEl(side,type){
 }
 function configureStaticZones(){
   [['PLAYER','Legacy Deck'],['PLAYER','Shard Deck'],['PLAYER','Discard Pile'],['PLAYER','Main Deck'],['AI','Main Deck'],['AI','Discard Pile'],['AI','Shard Deck'],['AI','Legacy Deck']].forEach(([side,type])=>{
-    const z=zoneEl(side,type);if(!z)return;z.dataset.zoneSide=side;z.dataset.zoneType=type;z.querySelector('img')?.classList.add('zoneCard');
+    const z=zoneEl(side,type);if(!z)return;z.dataset.zoneSide=side;z.dataset.zoneType=type;const im=z.querySelector('img');im?.classList.add('zoneCard');if(im&&!im.getAttribute('src')){const back=type==='Main Deck'?'assets/ui/back-main.webp':(type==='Shard Deck'?'assets/ui/back-shard.webp':(type==='Legacy Deck'?'assets/ui/back-legacy.webp':''));if(back)im.src=back;}
   });
   const pd=zoneEl('PLAYER','Discard Pile'),ad=zoneEl('AI','Discard Pile'),pl=zoneEl('PLAYER','Legacy Deck');
   if(pd&&!pd.dataset.obInspectBound){pd.dataset.obInspectBound='1';pd.addEventListener('click',()=>openInspectCards('Your Discard Pile — '+(st()?.playerDiscard||[]).length+' Cards',(st()?.playerDiscard||[]).slice(),'Discard Piles are public.','contextual'))}
@@ -417,7 +417,7 @@ function openLobbyHeroProgression(side,rankOneId){
 }
 function deckFormationHtml(side){
   const view=E()?.getOptionBLobbyFormationView?.(side)||{rank:1,lanes:{}},parts=[];
-  laneOrder.forEach((lane,index)=>{const row=view.lanes?.[lane]||{},id=row.previewId||row.rankOneId||'',v=cv(id),r1=row.rankOneId||id;parts.push('<article class="ob-lobby-hero"><button type="button" data-lobby-progression-side="'+esc(side)+'" data-lobby-progression="'+esc(r1)+'" aria-label="View '+esc(lane)+' Hero Progression">'+(id?'<img src="'+art(id)+'" alt="'+esc(v?.name||id)+'">':'<span class="ob-lobby-hero-empty">—</span>')+'</button><small>'+(lane.charAt(0)+lane.slice(1).toLowerCase())+'</small></article>');if(index<laneOrder.length-1){const next=laneOrder[index+1];parts.push('<button class="ob-lobby-swap" type="button" data-lobby-swap-side="'+esc(side)+'" data-lobby-swap-left="'+lane+'" data-lobby-swap-right="'+next+'" aria-label="Swap '+lane+' and '+next+'"><img src="engine/assets/lobby/Swap.png" alt="" aria-hidden="true"></button>')}});
+  laneOrder.forEach((lane,index)=>{const row=view.lanes?.[lane]||{},id=row.previewId||row.rankOneId||'',v=cv(id),r1=row.rankOneId||id;parts.push('<article class="ob-lobby-hero"><button type="button" data-lobby-progression-side="'+esc(side)+'" data-lobby-progression="'+esc(r1)+'" aria-label="View '+esc(lane)+' Hero Progression">'+(id?'<img src="'+art(id)+'" alt="'+esc(v?.name||id)+'">':'<span class="ob-lobby-hero-empty">—</span>')+'</button><small>'+(lane.charAt(0)+lane.slice(1).toLowerCase())+'</small></article>');if(index<laneOrder.length-1){const next=laneOrder[index+1];parts.push('<button class="ob-lobby-swap" type="button" data-lobby-swap-side="'+esc(side)+'" data-lobby-swap-left="'+lane+'" data-lobby-swap-right="'+next+'" aria-label="Swap '+lane+' and '+next+'"><img src="assets/lobby/swap.png" alt="" aria-hidden="true"></button>')}});
   return '<div class="ob-lobby-formation">'+parts.join('')+'</div><div class="ob-lobby-rank-control" data-lobby-rank-side="'+esc(side)+'"><button type="button" data-lobby-rank-delta="-1" data-lobby-rank-side="'+esc(side)+'" aria-label="Previous rank">‹</button><strong>RANK '+['I','II','III'][Math.max(1,Math.min(3,Number(view.rank||1)))-1]+'</strong><button type="button" data-lobby-rank-delta="1" data-lobby-rank-side="'+esc(side)+'" aria-label="Next rank">›</button></div>';
 }
 function renderLobby(){
@@ -1508,7 +1508,7 @@ function renderSwap(s){
     swapRenderKey=sig;swapLayer.innerHTML='';
     descriptors.forEach((d,i)=>{
       const btn=document.createElement('button');btn.type='button';btn.className='ob-swap-button';btn.setAttribute('aria-label','Swap positions');btn.dataset.swapIndex=String(i);
-      const im=document.createElement('img');im.src='engine/assets/lobby/Swap.png';im.alt='Swap';btn.appendChild(im);
+      const im=document.createElement('img');im.src='assets/lobby/swap.png';im.alt='Swap';btn.appendChild(im);
       if(d.kind==='manual')btn.onclick=()=>intent('performManualReposition',[d.a+'|'+d.b]);
       else if(d.kind==='optional-source')btn.onclick=()=>intent('performOptionalSwapDecision',[d.b]);
       else btn.onclick=()=>intent('performOptionalTargetSwapDecision',[d.b]);
@@ -1662,7 +1662,7 @@ function autoSpecialChoices(s){
 function renderRacialTokens(s){const set=(sel,n)=>{const row=document.querySelector(sel);if(!row)return;row.innerHTML='';for(let i=0;i<2;i++){const im=document.createElement('img');im.className='racial-token';im.src=i<n?'assets/ui/Racial-Token-Head.webp':'assets/ui/Racial-Token-Tail.webp';row.appendChild(im)}};set('.player-right-rail .racial-row',Number(s.racial||0));set('.opponent-left-rail .racial-row',Number(s.aiRacial||0))}
 function renderRegenCounter(side,value){
   const zone=zoneEl(side,'Shard Deck');if(!zone)return;let badge=zone.querySelector(':scope > .ob-regen-counter');if(!badge){badge=document.createElement('span');badge.className='ob-regen-counter';const im=document.createElement('img');badge.appendChild(im);zone.appendChild(badge)}
-  const n=Math.max(1,Math.min(6,Number(value||1))),im=badge.querySelector('img');im.src='engine/assets/counters/Counter-'+n+'.png';im.alt='Mana Regen '+n;badge.title='Mana Regen +'+n;
+  const n=Math.max(1,Math.min(6,Number(value||1))),im=badge.querySelector('img');im.src='assets/counters/Counter-'+n+'.png';im.alt='Mana Regen '+n;badge.title='Mana Regen +'+n;
 }
 function renderRails(s){
   configureStaticZones();
@@ -1764,6 +1764,27 @@ function initStableBattlefieldReviewGestures(){
 
 
 function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};document.querySelector('.bottom-actions .danger').onclick=()=>{if(!confirm('Surrender this match?'))return;if(IS_PVP&&window.GL_PVP_NETWORK?.send)window.GL_PVP_NETWORK.send('surrender-match',{});else intent('executeConfirmedSurrender',[])};syncSoundButton();}
-function boot(){if(!E()||!B()||(IS_PVP&&!window.GL_PVP_NETWORK)){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(IS_PVP){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('ob-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(IS_PVP){const active=!!window.GL_PVP_SHARED_BOARD_ACTIVE&&!!st();document.body.classList.toggle('pvp-external-gameplay',active);appRoot?.classList.toggle('ob-lobby-hidden',!active);if(active)renderNow();}else if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen&&!IS_PVP)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{if(!IS_PVP){lobbyIsOpen=true;renderLobby()}},closeInspect:closeInspectModal};document.documentElement.classList.add('gl-runtime-ready');}
+const PRESENTATION_BOOT_DEADLINE_MS=8000;
+let presentationBootStartedAt=performance.now(),presentationBootTimer=null,presentationBootDone=false;
+function missingPresentationDependencies(){const missing=[];if(!E())missing.push('GL_OPTION_B_ENGINE');if(!B())missing.push('GL_LOCAL_AI_BRIDGE');if(IS_PVP&&!window.GL_PVP_NETWORK)missing.push('GL_PVP_NETWORK');return missing;}
+function reportPresentationBootFailure(missing){
+  const detail={missing:missing.slice(),elapsedMs:Math.round(performance.now()-presentationBootStartedAt)};
+  console.error('[Grandis Legacy PvP] Gameplay presentation boot timed out; Lobby remains available.',detail);
+  document.documentElement.classList.add('gl-presentation-degraded');
+  try{window.dispatchEvent(new CustomEvent('gl-pvp-gameplay-presentation-failed',{detail}));}catch(e){}
+}
+function boot(){
+  if(presentationBootDone)return true;
+  const missing=missingPresentationDependencies();
+  if(missing.length){
+    if(performance.now()-presentationBootStartedAt>=PRESENTATION_BOOT_DEADLINE_MS){presentationBootTimer=null;reportPresentationBootFailure(missing);return false;}
+    if(!presentationBootTimer)presentationBootTimer=setTimeout(()=>{presentationBootTimer=null;boot()},100);
+    return false;
+  }
+  presentationBootDone=true;if(presentationBootTimer){clearTimeout(presentationBootTimer);presentationBootTimer=null;}
+  document.documentElement.classList.remove('gl-presentation-degraded');
+  B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(IS_PVP){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('ob-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(IS_PVP){const active=!!window.GL_PVP_SHARED_BOARD_ACTIVE&&!!st();document.body.classList.toggle('pvp-external-gameplay',active);appRoot?.classList.toggle('ob-lobby-hidden',!active);if(active)renderNow();}else if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen&&!IS_PVP)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{if(!IS_PVP){lobbyIsOpen=true;renderLobby()}},closeInspect:closeInspectModal};document.documentElement.classList.add('gl-runtime-ready');try{window.dispatchEvent(new CustomEvent('gl-pvp-gameplay-presentation-ready'));}catch(e){}return true;
+}
+window.GL_PVP_RETRY_GAMEPLAY_PRESENTATION=()=>{if(presentationBootDone)return true;if(presentationBootTimer){clearTimeout(presentationBootTimer);presentationBootTimer=null;}presentationBootStartedAt=performance.now();document.documentElement.classList.remove('gl-presentation-degraded');return boot();};
 boot();
 })();

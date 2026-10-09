@@ -111,6 +111,7 @@
   var importedDecks={PLAYER:null, AI:null};
   var decks={PLAYER:clone(STARTER_DECK_OPTIONS[selectedDeckKey.PLAYER].deck), AI:clone(STARTER_DECK_OPTIONS[selectedDeckKey.AI].deck)};
   var SUPPRESS_RENDER=false;
+  var EXTERNAL_HUMAN_UI=false;
   var matchStarted=false;
   var setupError='';
   var appState=null;
@@ -12414,7 +12415,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
   };
 
 
-  // v3.76.2 thin presentation API imported from VS AI v6.90.7; authority remains this PvP v3.51 runtime.
+  // v3.76.3 presentation API bridge; authority remains this PvP v3.51 runtime.
   window.GL_OPTION_B_ENGINE={
     version:GL_VERSION,
     prepareOptionBLocalMatch:function(){

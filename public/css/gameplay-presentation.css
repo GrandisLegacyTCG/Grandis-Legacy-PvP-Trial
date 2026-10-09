@@ -541,7 +541,7 @@
 /* Full AI Lobby replacement, matching the current VS AI lobby composition. */
 .ob-lobby-overlay{
   align-items:stretch!important;justify-content:stretch!important;padding:0!important;
-  overflow:auto!important;background:#07111f url('engine/assets/lobby/background.webp') center/cover fixed no-repeat!important;
+  overflow:auto!important;background:#07111f url('assets/lobby/background.webp') center/cover fixed no-repeat!important;
 }
 .ob-lobby-panel{
   width:100%!important;max-width:none!important;min-height:100%!important;max-height:none!important;

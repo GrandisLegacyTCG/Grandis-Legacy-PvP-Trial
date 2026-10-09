@@ -1,7 +1,6 @@
 import http from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
-import { brotliCompressSync, gzipSync } from 'node:zlib';
-import { readFileSync } from 'node:fs';
+import { stat } from 'node:fs/promises';
+import { createReadStream, readFileSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
@@ -15,8 +14,8 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').trim() || '0.0.0.0';
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
-const VERSION = 'Grandis Legacy PvP v3.76.2 — Stabilization / Presentation Bridge Fix — PvP v3.51 authority + VS AI v6.90.7 presentation';
-const BUILD_ID = 'gl-pvp-3.76.2-stabilization-2026-10-09';
+const VERSION = 'Grandis Legacy PvP v3.76.3 — Boot / Low-Memory Stabilization — PvP v3.51 authority + VS AI v6.90.7 presentation';
+const BUILD_ID = 'gl-pvp-3.76.3-boot-low-memory-2026-10-09';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
@@ -1567,6 +1566,7 @@ const server = http.createServer(async (req, res) => {
         mode: 'server-authoritative-human-vs-human',
         rooms: rooms.size,
         deckOptions: STARTER_DECK_OPTIONS.length,
+        memory: (() => { const m = process.memoryUsage(); return { rss: m.rss, heapUsed: m.heapUsed, heapTotal: m.heapTotal, external: m.external }; })(),
         activeSources: {
           cards: { version: 'v0.16.2', schema: ACTIVE_RUNTIME_SOURCES.cards.schema_version, count: ACTIVE_RUNTIME_SOURCES.cardCount, path: 'data/season1/cards.runtime.v0.16.2.json', canonicalHash: ACTIVE_RUNTIME_SOURCES.cards.canonical_registry_hash },
           effects: { version: 'v0.15.2', schema: ACTIVE_RUNTIME_SOURCES.effects.schema_version, count: ACTIVE_RUNTIME_SOURCES.effectCount, path: 'data/season1/effect-recipes.runtime.v0.15.2.json' },
@@ -1594,18 +1594,19 @@ const server = http.createServer(async (req, res) => {
     const info = await stat(file);
     if (!info.isFile()) throw new Error('Not a file');
     const ext = extname(file).toLowerCase();
-    const body = await readFile(file);
-    const textual = ['.js','.css','.json','.html','.svg','.txt','.md'].includes(ext);
     const versioned = url.searchParams.has('v') || /\.(?:[a-f0-9]{8,}|v?\d+(?:\.\d+){1,})\./i.test(url.pathname);
-    const headers = { 'content-type': mime[ext] || 'application/octet-stream', 'cache-control': versioned ? 'public, max-age=31536000, immutable' : 'public, max-age=300', 'vary': 'Accept-Encoding' };
-    let payload = body;
-    if (textual && body.length > 1024) {
-      const ae = String(req.headers['accept-encoding'] || '');
-      if (/\bbr\b/.test(ae)) { payload = brotliCompressSync(body); headers['content-encoding'] = 'br'; }
-      else if (/\bgzip\b/.test(ae)) { payload = gzipSync(body); headers['content-encoding'] = 'gzip'; }
-    }
+    const isIndex = url.pathname === '/' || url.pathname === '/index.html';
+    const cacheControl = isIndex ? 'no-store' : (versioned ? 'public, max-age=31536000, immutable' : 'public, max-age=86400');
+    const headers = {
+      'content-type': mime[ext] || 'application/octet-stream',
+      'cache-control': cacheControl,
+      'content-length': String(info.size)
+    };
     res.writeHead(200, headers);
-    res.end(payload);
+    if (req.method === 'HEAD') { res.end(); return; }
+    const stream = createReadStream(file);
+    stream.on('error', () => { if (!res.headersSent) res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }); res.end(); });
+    stream.pipe(res);
   } catch {
     res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
     res.end('Not found');

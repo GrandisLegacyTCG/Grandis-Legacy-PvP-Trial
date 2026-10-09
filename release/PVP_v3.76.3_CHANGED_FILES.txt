@@ -1,0 +1,42 @@
+Grandis Legacy PvP v3.76.3 — Changed Files
+
+Summary: 14 modified/regenerated entries, 8 added files, 263 removed files compared with v3.76.2.
+
+MODIFIED / REGENERATED:
+- FILE_MANIFEST_SHA256.csv (regenerated after this report)
+- README.md
+- package-lock.json
+- package.json
+- public/PVP_FRONTEND_SHA256.csv
+- public/css/gameplay-presentation.css
+- public/css/gameplay-shell.css
+- public/index.html
+- public/js/app.bundle.js
+- public/js/pvp-gameplay-presentation.js
+- public/js/pvp-network.js
+- public/js/pvp-presentation-adapter.js
+- server.js
+- sync/runtime-sync-lock.v2.63.json
+
+ADDED:
+- release/PVP_v3.76.3_CHANGED_FILES.txt
+- release/PVP_v3.76.3_RELEASE_NOTES.md
+- release/PVP_v3.76.3_SIZE_AND_DUPLICATE_AUDIT.json
+- tests/run-v3763-boot-browser.py
+- tests/run-v3763-stabilization-static.cjs
+- tests/run-v3763-static-memory-smoke.cjs
+- tools/audit-public-duplicates.cjs
+- tools/audit-repository-size.cjs
+
+REMOVED DIRECTORIES / DUPLICATE TREES:
+- public/engine/ — entire duplicate donor asset tree removed
+- public/card-art/ — entire copied local card-art library removed
+- public/assets/cards/ — 19 dummy-only sample card images removed
+- public/assets/shards/ — duplicate Shard art removed; canonical public/assets/mana-shards/ retained
+
+OTHER REMOVED DUPLICATE FILES:
+- public/assets/ui/Background.png
+- public/assets/fonts/NotoSans-Variable.woff2
+
+Exact removed-file count: 263.
+Exact removed paths are represented by the v3.76.2 and v3.76.3 SHA-256 manifests; tree removals are summarized here to keep this release note readable.

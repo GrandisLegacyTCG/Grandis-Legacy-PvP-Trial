@@ -671,10 +671,20 @@ body.pvp-lobby-mode{min-width:0!important;overflow-x:hidden!important;background
   }
   window.GL_PVP_QA_SYNC_CROSS_APP_NAV=syncCrossAppMobileNavVisibility;
   window.GL_PVP_QA_SYNC_BATTLEFIELD_IDENTITY=syncBattlefieldIdentityHeaders;
+  var LOBBY_READY_SIGNALED=false;
+  function signalLobbyReady(){
+    if(LOBBY_READY_SIGNALED)return true;
+    var overlay=$('pvpSetupOverlay');if(!overlay)return false;
+    LOBBY_READY_SIGNALED=true;
+    document.documentElement.classList.add('gl-lobby-ready');
+    document.documentElement.classList.remove('gl-lobby-failed');
+    try{window.dispatchEvent(new CustomEvent('gl-pvp-lobby-ready',{detail:{build:CLIENT_BUILD_ID}}));}catch(e){}
+    return true;
+  }
   function renderLobby(){
     var overlay=$('pvpSetupOverlay');if(!overlay)return;
     var snap=state.snapshot,me=snap&&snap.local,m=snap&&snap.match||{},active=['coin-flip','coin-result','started','finished'].indexOf(m.status)!==-1,spectator=!!(me&&me.role==='spectator'),showSpectatorSelect=!!(active&&spectator&&state.spectatorLobbyView),showLobby=!active||showSpectatorSelect;
-    overlay.classList.toggle('open',showLobby);overlay.classList.toggle('pvp-spectator-room-select',showSpectatorSelect);document.body.classList.toggle('pvp-lobby-mode',showLobby);document.body.classList.toggle('pvp-booting',showLobby);syncCrossAppMobileNavVisibility(active&&!showLobby);
+    overlay.classList.toggle('open',showLobby);overlay.classList.toggle('pvp-spectator-room-select',showSpectatorSelect);document.body.classList.toggle('pvp-lobby-mode',showLobby);document.body.classList.toggle('pvp-booting',showLobby);if(showLobby)signalLobbyReady();syncCrossAppMobileNavVisibility(active&&!showLobby);
     var leave=$('pvpLeaveSpectatorViewButton');if(leave)leave.hidden=!(active&&spectator&&!showSpectatorSelect);
     if(!showLobby)return;
     var nameInput=$('pvpSetupName');if(nameInput&&document.activeElement!==nameInput)nameInput.value=state.nameDraft||state.name;
