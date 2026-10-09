@@ -1,0 +1,22 @@
+Grandis Legacy PvP v3.76.4 — changed/new files relative to v3.76.3
+
+README.md
+package.json
+package-lock.json
+server.js
+public/index.html
+public/css/gameplay-shell.css
+public/css/gameplay-presentation.css
+public/js/app.bundle.js
+public/js/pvp-network.js
+public/js/pvp-gameplay-presentation.js
+public/js/pvp-presentation-adapter.js
+tests/run-v3764-ui-stabilization.cjs
+tests/run-v3764-static-memory-smoke.cjs
+sync/runtime-sync-lock.v2.63.json
+release/PVP_v3.76.4_RELEASE_NOTES.md
+release/PVP_v3.76.4_CHANGED_FILES.txt
+
+Generated package integrity files (regenerated for the final ZIP):
+FILE_MANIFEST_SHA256.csv
+public/FRONTEND_ASSET_MANIFEST_SHA256.csv

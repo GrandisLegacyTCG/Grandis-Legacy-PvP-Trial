@@ -9,11 +9,11 @@
   <link rel="stylesheet" href="css/app.css?v=gl-pvp-3.51-minor-correction-r2-2026-09-28">
   <link rel="stylesheet" href="css/battlefield-authority.css?v=gl-pvp-3.51-minor-correction-r2-2026-09-28">
   <link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=2.53">
-  <link rel="stylesheet" href="css/gameplay-shell.css?v=3.76.3">
-  <link rel="stylesheet" href="css/gameplay-presentation.css?v=3.76.3">
+  <link rel="stylesheet" href="css/gameplay-shell.css?v=3.76.4">
+  <link rel="stylesheet" href="css/gameplay-presentation.css?v=3.76.4">
   <style>body.pvp-booting #app{visibility:hidden!important}</style>
-  <style id="gl-v3763-boot">html:not(.gl-lobby-ready) body{overflow:hidden}#glBootVeil{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;background:#03080d;color:#f1d481;font:800 12px Arial,sans-serif;letter-spacing:.12em;text-align:center;padding:24px}#glBootVeil .gl-boot-error{display:none;max-width:520px;line-height:1.55;letter-spacing:.04em;color:#f5f7fb}#glBootVeil button{display:none;margin:14px auto 0;min-width:120px;height:38px;border:1px solid #dcbf68;border-radius:8px;background:#f1d481;color:#11151c;font-weight:900;cursor:pointer}html.gl-lobby-failed #glBootVeil .gl-boot-loading{display:none}html.gl-lobby-failed #glBootVeil .gl-boot-error,html.gl-lobby-failed #glBootVeil button{display:block}html.gl-lobby-ready #glBootVeil{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease,visibility 0s linear .16s}body:not(.pvp-external-gameplay)>.app.ob-pvp-shell{visibility:hidden!important;pointer-events:none!important}body.pvp-external-gameplay>#app{visibility:hidden!important;pointer-events:none!important;position:fixed!important;inset:0!important}body.pvp-external-gameplay>.app.ob-pvp-shell{visibility:visible!important}.ob-pvp-shell{position:fixed;inset:0;z-index:10}.pvp-coin-modal,.gl-opening-coin-modal{z-index:12000!important}</style>
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=3.76.3">
+  <style id="gl-v3764-boot">html:not(.gl-lobby-ready) body{overflow:hidden}#glBootVeil{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;background:#03080d;color:#f1d481;font:800 12px Arial,sans-serif;letter-spacing:.12em;text-align:center;padding:24px}#glBootVeil .gl-boot-error{display:none;max-width:520px;line-height:1.55;letter-spacing:.04em;color:#f5f7fb}#glBootVeil button{display:none;margin:14px auto 0;min-width:120px;height:38px;border:1px solid #dcbf68;border-radius:8px;background:#f1d481;color:#11151c;font-weight:900;cursor:pointer}html.gl-lobby-failed #glBootVeil .gl-boot-loading{display:none}html.gl-lobby-failed #glBootVeil .gl-boot-error,html.gl-lobby-failed #glBootVeil button{display:block}html.gl-lobby-ready #glBootVeil{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease,visibility 0s linear .16s}body:not(.pvp-presentation-owned)>.app.ob-pvp-shell{visibility:hidden!important;pointer-events:none!important}body.pvp-presentation-owned>#app{visibility:hidden!important;pointer-events:none!important;position:fixed!important;inset:0!important;overflow:hidden!important}body.pvp-presentation-owned>.app.ob-pvp-shell{visibility:visible!important}.ob-pvp-shell{position:fixed;inset:0;z-index:10}body.pvp-presentation-owned:not(.pvp-gameplay-revealed)>.app.ob-pvp-shell{filter:brightness(.28) saturate(.72);pointer-events:none!important}body.pvp-pregame>.app.ob-pvp-shell{user-select:none!important}body.pvp-pregame .phase-actions{visibility:hidden!important;pointer-events:none!important}body.pvp-pregame .phase-track .phase-label{opacity:.42!important}body.pvp-pregame .phase-track .phase-label.active{color:inherit!important;text-shadow:none!important}body.pvp-pregame .ob-phase-tint,body.pvp-pregame .ob-phase-underline,body.pvp-pregame .ob-phase-diamond{display:none!important}.pvp-coin-modal,.gl-opening-coin-modal{z-index:12000!important}</style>
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=3.76.4">
 </head>
 <body class="pvp-booting">
   <div id="glBootVeil" role="status" aria-live="polite"><div><span class="gl-boot-loading">GRANDIS LEGACY · LOADING</span><div class="gl-boot-error">Lobby failed to initialize. Check the browser console/network, then retry.</div><button id="glBootRetry" type="button">RETRY</button></div></div>
@@ -22,7 +22,7 @@
   <div class="app ob-lobby-hidden ob-pvp-shell" aria-hidden="true">
     <main class="battlefield">
       <div class="concept" aria-hidden="true"></div>
-      <section class="hand top"><div class="hand-title">OPPONENT</div><div class="hand-track"></div></section>
+      <section class="hand top"><div class="hand-title pvp-player-identity-row pvp-external-identity opponent-identity" data-pvp-identity-side="AI"><span class="pvp-player-identity-container"><strong class="pvp-player-display-name">Opponent</strong><small class="pvp-player-deck-name">Opponent Deck</small></span><span class="pvp-connection-bar connecting" data-pvp-signal-side="AI" data-pvp-signal-state="connecting" aria-label="Connecting"><span></span><span></span><span></span><span></span></span></div><div class="hand-track"></div></section>
       <section class="field-row opponent-field">
         <div class="rail-pair opponent-left-rail"><div class="racial-row"></div><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">MAIN<br>DECK</span></div><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">DISCARD<br>PILE</span></div></div>
         <div class="hero-grid"><div class="hero-lane"><span class="lane-label">HERO RIGHT</span><div class="hero-card"></div></div><div class="hero-lane"><span class="lane-label">HERO CENTER</span><div class="hero-card"></div></div><div class="hero-lane"><span class="lane-label">HERO LEFT</span><div class="hero-card"></div></div></div>
@@ -37,13 +37,13 @@
         <div class="mana-pool player-mana-pool"><div class="mana-cards" id="manaCards"></div><span class="count" id="manaCount"></span></div><div class="mana-controls"><button id="manaAdd" title="Add Shard">+</button><button id="manaRemove" title="Remove Shard">−</button></div>
       </section>
       <section class="bottom-hud"><div class="action-feedback" id="actionFeedback"></div><section class="hand bottom"><div class="hand-track"></div></section></section>
-      <div class="player-name">PLAYER</div>
+      <div class="player-name pvp-player-identity-row pvp-external-identity local-identity" data-pvp-identity-side="PLAYER"><span class="pvp-connection-bar connecting" data-pvp-signal-side="PLAYER" data-pvp-signal-state="connecting" aria-label="Connecting"><span></span><span></span><span></span><span></span></span><span class="pvp-player-identity-container"><strong class="pvp-player-display-name">Player</strong><small class="pvp-player-deck-name">Your Deck</small></span></div>
     </main>
     <aside class="sidebar">
       <section class="sidebox"><h3 class="gold"></h3><div class="tiny"></div></section>
       <section class="sidebox played-box"><h3>Card Played</h3><div class="played"></div><button class="history-btn" id="fullHistoryBtn" type="button">Full Card History</button></section>
       <section class="sidebox shared-box" id="sharedPreviewBox"><div class="active-card-pane"><h3>Active Card</h3><div class="active-card-stage"></div></div><button class="battle-log-btn" id="battleLogBtn" type="button">Battle Log</button><div class="preview-overlay"><img id="hoverPreviewCard" class="preview-card" alt="Card preview"></div></section>
-      <div class="bottom-actions"><span class="match-timer" id="matchTimer" data-pvp-match-timer aria-label="Match duration">00:00</span><button type="button">Sound On</button><button class="danger" type="button">Surrender</button></div>
+      <div class="bottom-actions"><span class="match-timer" id="matchTimer" data-pvp-match-timer aria-label="Match timer inactive"></span><button type="button">Sound On</button><button class="danger" type="button">Surrender</button></div>
       <section class="battlelog-panel" id="battleLogPanel" aria-hidden="true"><div class="history-head"><h3>Battle Log</h3><button class="history-close" id="battleLogClose" type="button">Close</button></div></section>
       <section class="history-panel" id="historyPanel" aria-hidden="true"><div class="history-head"><h3>Full Card History</h3><button class="history-close" id="historyClose" type="button">Close</button></div><div class="history-grid"></div></section>
     </aside>
@@ -60,11 +60,11 @@
   <script src="shared-ui/battlefield-ui.js?v=2.53"></script>
   <script src="config.js?v=gl-pvp-3.51-minor-correction-r2-2026-09-28"></script>
   <script src="js/static-data.js?v=gl-pvp-3.51-minor-correction-r2-2026-09-28"></script>
-  <script src="js/pvp-presentation-adapter.js?v=3.76.3"></script>
+  <script src="js/pvp-presentation-adapter.js?v=3.76.4"></script>
   <script src="js/runtime-authority.js?v=gl-pvp-3.51-minor-correction-r2-2026-09-28"></script>
-  <script src="js/app.bundle.js?v=3.76.3"></script>
-  <script src="js/pvp-network.js?v=3.76.3"></script>
-  <script src="js/pvp-gameplay-presentation.js?v=3.76.3"></script>
+  <script src="js/app.bundle.js?v=3.76.4"></script>
+  <script src="js/pvp-network.js?v=3.76.4"></script>
+  <script src="js/pvp-gameplay-presentation.js?v=3.76.4"></script>
   <script src="js/mobile-app-nav.js?v=gl-pvp-3.51-minor-correction-r2-2026-09-28"></script>
 </body>
 </html>

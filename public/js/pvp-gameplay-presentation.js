@@ -185,7 +185,7 @@ function bindBattlefieldPreview(img,kind,anchor){
   img.addEventListener('mouseenter',show);img.addEventListener('mousemove',()=>{if(!backgroundPreviewSuppressed(anchor||img))placeBattlefieldHoverPreview(kind,anchor||img)});img.addEventListener('mouseleave',hideBattlefieldHoverPreview);
 }
 function formatMatchTime(ms){const total=Math.max(0,Math.floor(Number(ms||0)/1000)),m=Math.floor(total/60),sec=total%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
-function updateMatchTimer(){if(!matchTimer)return;if(IS_PVP){const text=String(window.GL_PVP_MATCH_TIMER_TEXT||'00:00');matchTimer.textContent=text;matchTimer.setAttribute('aria-label','Match duration '+text);return;}const elapsed=matchStartedAt?(matchStoppedElapsed||Date.now()-matchStartedAt):0;matchTimer.textContent=formatMatchTime(elapsed);matchTimer.setAttribute('aria-label','Match time '+matchTimer.textContent)}
+function updateMatchTimer(){if(!matchTimer)return;if(IS_PVP){const active=!!window.GL_PVP_MATCH_STARTED_AT,text=active?String(window.GL_PVP_MATCH_TIMER_TEXT||''):'';matchTimer.textContent=text;matchTimer.classList.toggle('is-inactive',!active);matchTimer.setAttribute('aria-label',active?('Match duration '+text):'Match timer inactive');return;}const elapsed=matchStartedAt?(matchStoppedElapsed||Date.now()-matchStartedAt):0;matchTimer.textContent=formatMatchTime(elapsed);matchTimer.setAttribute('aria-label','Match time '+matchTimer.textContent)}
 function resetMatchTimer(){matchStartedAt=0;matchStoppedElapsed=0;updateMatchTimer()}
 function startMatchTimer(){matchStartedAt=Date.now();matchStoppedElapsed=0;updateMatchTimer()}
 function stopMatchTimer(){if(matchStartedAt&&!matchStoppedElapsed)matchStoppedElapsed=Date.now()-matchStartedAt;updateMatchTimer()}
@@ -355,7 +355,7 @@ function openPlayedDetail(side,eventId){
 playedDetailOverlay.querySelector('.ob-played-detail-close').onclick=closePlayedDetail;
 playedDetailOverlay.addEventListener('click',e=>{if(e.target===playedDetailOverlay)closePlayedDetail()});
 function currentUiScale(){return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui-scale'))||1;}
-function syncPlayerNameBox(){const ai=document.querySelector('.hand.top .hand-title'),player=document.querySelector('.player-name');if(!ai||!player)return;const scale=currentUiScale(),r=ai.getBoundingClientRect();if(r.width>0&&r.height>0){player.style.width=(r.width/scale)+'px';player.style.height=(r.height/scale)+'px';}}
+function syncPlayerNameBox(){syncExternalIdentity();}
 function lockPrimaryActionWidth(){
   if(!primary)return;
   const label=primary.textContent,cls=primary.className;
@@ -768,7 +768,8 @@ function renderPool(host,countEl,pool,side){
       });
     }
   });
-  countEl.textContent=(pool||[]).length;
+  const poolEl=host.closest('.mana-pool');if(poolEl)poolEl.classList.toggle('is-empty',!(pool||[]).length);
+  countEl.textContent=(pool||[]).length?String((pool||[]).length):'';
   requestAnimationFrame(()=>layoutManaPoolCards(host));
 }
 function renderMana(){
@@ -1464,8 +1465,29 @@ function renderOpponentHand(s){
   applyHandFan(oppHandTrack,'AI');
   requestAnimationFrame(syncOpponentHand);
 }
+function pvpMatchStatus(){return IS_PVP?String(window.GL_PVP_NETWORK?.getSnapshot?.()?.match?.status||'setup'):'';}
+function pvpCoinGateActive(){const x=pvpMatchStatus();return x==='coin-flip'||x==='coin-result';}
+function pvpPregameActive(){return pvpCoinGateActive()||document.body.classList.contains('pvp-opening-presentation');}
+function syncExternalIdentity(){if(IS_PVP)window.GL_PVP_NETWORK?.syncIdentity?.();}
+function presentationReadyForReveal(){
+  if(!IS_PVP)return true;
+  const shell=document.querySelector('.ob-pvp-shell'),native=document.getElementById('app');if(!shell||!document.body.classList.contains('pvp-presentation-owned'))return false;
+  const required=['.opponent-field .hero-grid','.player-field .hero-grid','.hand.top .hand-track','.hand.bottom .hand-track','.opponent-mana-pool','.player-mana-pool','.phase','.sidebar','.bottom-actions','[data-pvp-identity-side="AI"]','[data-pvp-identity-side="PLAYER"]'];
+  if(required.some(sel=>!shell.querySelector(sel)))return false;
+  if(native&&getComputedStyle(native).visibility!=='hidden'&&getComputedStyle(native).display!=='none')return false;
+  return shell.querySelectorAll('.opponent-field .hero-lane').length===3&&shell.querySelectorAll('.player-field .hero-lane').length===3;
+}
+function syncPvpRevealGate(){
+  if(!IS_PVP)return;
+  const status=pvpMatchStatus(),ready=presentationReadyForReveal();
+  document.body.classList.toggle('pvp-presentation-ready',ready);
+  if(status==='started'&&ready&&!pvpCoinGateActive())document.body.classList.add('pvp-gameplay-revealed');
+  else document.body.classList.remove('pvp-gameplay-revealed');
+}
 function renderPhase(s){
-  const labels=[...document.querySelectorAll('.phase-label')];labels.forEach(x=>x.classList.toggle('active',x.textContent.trim().toUpperCase().startsWith(phaseName(s.phase).toUpperCase())));
+  const labels=[...document.querySelectorAll('.phase-label')];
+  if(IS_PVP&&pvpPregameActive()){labels.forEach(x=>x.classList.remove('active'));lastPhaseIndicatorKey='';const turn=document.querySelector('.phase-turn .turn');if(turn)turn.innerHTML='OPENING MATCH<small>PRE-GAME</small>';primary.className='phase-action ob-hidden';primary.textContent='REPOSITION';primary.disabled=true;primary.onclick=null;nextBtn.disabled=true;nextBtn.textContent='NEXT PHASE';nextBtn.onclick=null;renderSwap({...s,pending:null,responseWindow:null});return;}
+  labels.forEach(x=>x.classList.toggle('active',x.textContent.trim().toUpperCase().startsWith(phaseName(s.phase).toUpperCase())));
   const activeLabel=labels.find(x=>x.classList.contains('active'))||labels[0],phaseIndicatorKey=String(s.turn||'')+'|'+Number(s.round||1)+'|'+String(s.phase||''),phaseChanged=!!lastPhaseIndicatorKey&&phaseIndicatorKey!==lastPhaseIndicatorKey;lastPhaseIndicatorKey=phaseIndicatorKey;
   requestAnimationFrame(()=>placePhaseIndicator(activeLabel,phaseChanged));
   const turn=document.querySelector('.phase-turn .turn');turn.innerHTML=(s.turn==='PLAYER'?'YOUR TURN':'AI TURN')+'<small>TURN '+Number(s.round||1)+'</small>';
@@ -1715,7 +1737,7 @@ function renderNow(){
   autoSpecialChoices(s);const chain=renderCombatStacks(s);
   for(const side of ['PLAYER','AI'])for(const lane of laneOrder)renderHero(side,lane,sideHeroes(s,side)?.[lane],s);
   renderHand(s);renderOpponentHand(s);renderMana();renderCenterChoiceStage(s);renderPhase(s);renderPay(s);renderInteractionFocus(s);renderDeckActions(s);renderSidebar(s,chain);renderAttackLine(s,chain);renderAllowedModal(s);renderRails(s);syncSoundButton();preparePresentationTargets(presentationPlan);showGameResult(s);
-  requestAnimationFrame(()=>{syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);runPresentationPlan(presentationPlan,s)});
+  requestAnimationFrame(()=>{syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);syncPvpRevealGate();runPresentationPlan(presentationPlan,s)});
 }
 function clearAuthoredDummyState(){
   document.querySelectorAll('.hand-track').forEach(x=>x.innerHTML='');
@@ -1783,7 +1805,7 @@ function boot(){
   }
   presentationBootDone=true;if(presentationBootTimer){clearTimeout(presentationBootTimer);presentationBootTimer=null;}
   document.documentElement.classList.remove('gl-presentation-degraded');
-  B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(IS_PVP){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('ob-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(IS_PVP){const active=!!window.GL_PVP_SHARED_BOARD_ACTIVE&&!!st();document.body.classList.toggle('pvp-external-gameplay',active);appRoot?.classList.toggle('ob-lobby-hidden',!active);if(active)renderNow();}else if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen&&!IS_PVP)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{if(!IS_PVP){lobbyIsOpen=true;renderLobby()}},closeInspect:closeInspectModal};document.documentElement.classList.add('gl-runtime-ready');try{window.dispatchEvent(new CustomEvent('gl-pvp-gameplay-presentation-ready'));}catch(e){}return true;
+  B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(IS_PVP){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('ob-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(IS_PVP){window.GL_PVP_NETWORK?.syncPresentationOwnership?.();const owned=document.body.classList.contains('pvp-presentation-owned'),stateReady=!!st();appRoot?.classList.toggle('ob-lobby-hidden',!owned);if(owned&&stateReady)renderNow();else if(!owned)document.body.classList.remove('pvp-gameplay-revealed','pvp-presentation-ready');}else if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen&&!IS_PVP)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_OPTION_B_UI={render:renderNow,state:st,intent,openLobby:()=>{if(!IS_PVP){lobbyIsOpen=true;renderLobby()}},closeInspect:closeInspectModal};document.documentElement.classList.add('gl-runtime-ready');try{window.dispatchEvent(new CustomEvent('gl-pvp-gameplay-presentation-ready'));}catch(e){}return true;
 }
 window.GL_PVP_RETRY_GAMEPLAY_PRESENTATION=()=>{if(presentationBootDone)return true;if(presentationBootTimer){clearTimeout(presentationBootTimer);presentationBootTimer=null;}presentationBootStartedAt=performance.now();document.documentElement.classList.remove('gl-presentation-degraded');return boot();};
 boot();

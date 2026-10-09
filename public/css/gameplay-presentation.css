@@ -792,7 +792,6 @@
 @keyframes obPhaseEnter{0%{filter:brightness(1)}45%{filter:brightness(1.55)}100%{filter:brightness(1)}}
 
 /* Match timer shares the bottom sidebar control rail. */
-.bottom-actions{grid-template-columns:.82fr 1fr 1fr!important}
 .match-timer{
   width:100%;height:22px;min-height:22px;display:grid;place-items:center;
   border:1px solid #334b61;border-radius:6px;background:rgba(11,23,34,.84);
@@ -1139,3 +1138,20 @@ body.ob-center-choice-active #sharedPreviewBox.previewing{opacity:0!important;po
 }
 .ob-vsai-choice-overlay.ob-choice-main-deck-preview .ob-choice-list-pane{display:contents!important}
 .ob-vsai-choice-overlay .ob-choice-fixed-preview-slot{display:none!important}
+
+/* v3.76.4 — single-owner PvP identity + pre-game presentation state. */
+.ob-pvp-shell .pvp-external-identity{box-sizing:border-box;display:flex;align-items:center;gap:7px;color:#f7f9fc;background:rgba(3,10,17,.88);border:1px solid rgba(244,211,94,.34);border-radius:7px;z-index:92;pointer-events:none}
+.ob-pvp-shell .pvp-external-identity .pvp-player-identity-container{display:flex;min-width:0;flex-direction:column;gap:2px;line-height:1}
+.ob-pvp-shell .pvp-external-identity .pvp-player-display-name{max-width:118px;color:#f7f9fc;font-size:8px;font-weight:900;line-height:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ob-pvp-shell .pvp-external-identity .pvp-player-deck-name{display:block;max-width:118px;color:#9ca9b7;font-size:5.5px;font-weight:750;line-height:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ob-pvp-shell .hand.top>.pvp-external-identity{left:8px;top:4px;padding:4px 5px 4px 7px;border-radius:7px}
+.ob-pvp-shell .player-name.pvp-external-identity{width:auto!important;height:auto!important;min-width:132px;max-width:176px;padding:4px 7px 4px 5px;justify-content:flex-end;text-align:right}
+.ob-pvp-shell .player-name.pvp-external-identity .pvp-player-identity-container{align-items:flex-end}
+.ob-pvp-shell .pvp-connection-bar{flex:0 0 25px;width:25px;height:18px;padding:2px 3px;display:flex;align-items:flex-end;justify-content:center;gap:2px;border:1px solid rgba(100,123,145,.64);border-radius:6px;background:rgba(5,14,22,.92);color:#6f7d8b;box-sizing:border-box}
+.ob-pvp-shell .pvp-connection-bar span{display:block;width:2px;border-radius:2px 2px 0 0;background:currentColor;opacity:.20}.ob-pvp-shell .pvp-connection-bar span:nth-child(1){height:3px}.ob-pvp-shell .pvp-connection-bar span:nth-child(2){height:5px}.ob-pvp-shell .pvp-connection-bar span:nth-child(3){height:8px}.ob-pvp-shell .pvp-connection-bar span:nth-child(4){height:11px}
+.ob-pvp-shell .pvp-connection-bar.excellent,.ob-pvp-shell .pvp-connection-bar.good,.ob-pvp-shell .pvp-connection-bar.online{color:#54d77c}.ob-pvp-shell .pvp-connection-bar.fair{color:#e1bd58}.ob-pvp-shell .pvp-connection-bar.poor{color:#e16b67}.ob-pvp-shell .pvp-connection-bar.connecting{color:#8795a3}.ob-pvp-shell .pvp-connection-bar.offline{color:#56616b}
+.ob-pvp-shell .pvp-connection-bar.excellent span,.ob-pvp-shell .pvp-connection-bar.online span{opacity:1}.ob-pvp-shell .pvp-connection-bar.good span:nth-child(-n+3){opacity:1}.ob-pvp-shell .pvp-connection-bar.fair span:nth-child(-n+2){opacity:1}.ob-pvp-shell .pvp-connection-bar.poor span:first-child{opacity:1}.ob-pvp-shell .pvp-connection-bar.connecting span:first-child,.ob-pvp-shell .pvp-connection-bar.offline span:first-child{opacity:.45}
+.ob-pvp-shell .match-timer.is-inactive{opacity:.28;color:#8b98a6}
+body.pvp-pregame .ob-pvp-shell .hand-card,body.pvp-pregame .ob-pvp-shell .hero-card,body.pvp-pregame .ob-pvp-shell .mana-card{pointer-events:none!important}
+
+.ob-pvp-shell .mana-pool.is-empty{background:rgba(4,10,17,.12)!important;border-color:rgba(244,211,94,.10)!important;box-shadow:none!important}.ob-pvp-shell .mana-pool.is-empty>.count{display:none!important}
