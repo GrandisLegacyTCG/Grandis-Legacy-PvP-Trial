@@ -37,6 +37,7 @@
     "v351": true,
     "v6": false,
     "modal": true,
+    "modalBg": "rgba(0, 0, 0, 0.84)",
     "v6CoinOpen": false,
     "heroCount": 0,
     "animationChildren": 0,
@@ -49,16 +50,18 @@
   },
   "handoff": {
     "before": {
-      "stage": "gl-ui-desktop pvp-match-active pvp-stage-pregame gl-animation-scroll-locked",
-      "v351": true,
-      "v6": false,
-      "ui": false
+      "stage": "gl-ui-desktop pvp-match-active pvp-stage-gameplay",
+      "v351": false,
+      "v6": true,
+      "ui": true,
+      "veil": true
     },
     "after": {
       "stage": "gl-ui-desktop pvp-match-active pvp-stage-gameplay",
       "v351": false,
       "v6": true,
       "ui": true,
+      "veil": false,
       "playedReal": 0,
       "opName": "Player 2",
       "opDeck": "Starter 2",
@@ -66,7 +69,18 @@
       "plDeck": "Starter 1",
       "opSignalAfterCopy": true,
       "plSignalBeforeCopy": true,
-      "screenshot": "tests/artifacts/v3761-pregame/post-opening-v6907.png"
+      "screenshot": "tests/artifacts/v3761-pregame/opening-and-gameplay-v6907.png"
+    }
+  },
+  "orientation": {
+    "portrait": {
+      "mobile": true,
+      "portrait": true,
+      "gate": "flex"
+    },
+    "landscape": {
+      "portrait": false,
+      "gate": "none"
     }
   }
 }

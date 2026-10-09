@@ -14,8 +14,8 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').trim() || '0.0.0.0';
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
-const VERSION = 'Grandis Legacy PvP v3.75.9 — PvP v3.51 server-authoritative gameplay + VS AI v6.90.7 presentation';
-const BUILD_ID = 'gl-pvp-3.75.9-v351-authority-v6907-ui-2026-10-09';
+const VERSION = 'Grandis Legacy PvP v3.76.1 — PvP v3.51 server-authoritative gameplay + VS AI v6.90.7 presentation';
+const BUILD_ID = 'gl-pvp-3.76.1-v351-authority-v6907-ui-2026-10-09';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
@@ -1623,7 +1623,7 @@ wss.on('connection', (ws, req) => {
   // PvP favors interaction latency over bulk throughput; keep tiny intent/ack frames off Nagle queues.
   try { ws._socket?.setNoDelay?.(true); } catch {}
   const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-  // v3.75.9 product policy: one public PvP lobby/room only. Ignore legacy room query values.
+  // v3.76.1 product policy: one public PvP lobby/room only. Ignore legacy room query values.
   const requestedRoom = 'LOBBY';
   const room = roomState(requestedRoom);
   // A visitor arriving after the finished-match TTL must never receive the stale battlefield.

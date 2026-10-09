@@ -1,4 +1,4 @@
-/* Grandis Legacy PvP v3.75.9
+/* Grandis Legacy PvP v3.76.1
    Small PvP-specific adjustments on top of the VS AI v6.90.7 presentation.
    Gameplay/network authority remains PvP v3.51. */
 
@@ -66,3 +66,17 @@ body.pvp-lobby-mode .app,body.pvp-booting .app{visibility:hidden!important;point
 .hand.top .pvp-identity-opponent{left:8px!important;right:auto!important;top:5px!important;}
 .player-name.pvp-identity-local{right:8px!important;left:auto!important;bottom:2px!important;}
 
+
+/* v3.76.1 — Coin Flip remains the PvP v3.51 flow, but the battlefield behind it is
+   deliberately dark so the v6.90.7 gameplay surface can be mounted invisibly during handoff. */
+.gl-opening-coin-modal{background:rgba(0,0,0,.84)!important;backdrop-filter:brightness(.38) saturate(.82)}
+#pvpGameplayHandoffVeil{
+  position:fixed;inset:0;z-index:10019;pointer-events:none;opacity:0;
+  background:#020508;transition:opacity .18s ease;
+}
+#pvpGameplayHandoffVeil.is-visible{opacity:1}
+
+/* No portrait/mobile lobby variant and no lobby scrolling. A portrait phone/tablet is
+   blocked by #pvpLandscapeRequired; once landscape, the same lobby composition is used. */
+body.pvp-lobby-mode{overflow:hidden!important;overscroll-behavior:none!important}
+.pvp-v260-lobby{overflow:hidden!important;overscroll-behavior:none!important}

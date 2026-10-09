@@ -1,4 +1,4 @@
-/* Grandis Legacy PvP v3.75.9 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
+/* Grandis Legacy PvP v3.76.1 — VS AI v6.90.7 presentation controller on PvP v3.51 gameplay authority. */
 (()=>{
 'use strict';
 const E=()=>window.GL_OPTION_B_ENGINE;
@@ -1841,10 +1841,10 @@ function authoritativeOpeningAnchorReady(kind,event){
   }
   const fr=(from?.querySelector?.('.zoneCard')||from)?.getBoundingClientRect?.(),tr=to?.getBoundingClientRect?.();
   const ok=!!(fr&&tr&&fr.width>1&&fr.height>1&&tr.width>1&&tr.height>1);
-  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP v3.75.9] anchor FAIL:',JSON.stringify(dbg));}
+  if(!ok){dbg.fr=fr?{w:Math.round(fr.width),h:Math.round(fr.height)}:null;dbg.tr=tr?{w:Math.round(tr.width),h:Math.round(tr.height)}:null;console.log('[PvP v3.76.1] anchor FAIL:',JSON.stringify(dbg));}
   return ok;
 }
-/* PvP v3.75.9: authoritative opening sequence hides cards before presentation so they never
+/* PvP v3.76.1: authoritative opening sequence hides cards before presentation so they never
  * terlihat full sebelum animasi. primeAuthoritativeOpeningSequence() menyembunyikan
  * semua kartu opening dan me-render tangan/kolam kosong — dipanggil SEBELUM board
  * di-reveal. playPrimedOpeningSequence() menganimasikan reveal kartu satu per satu —
@@ -1870,8 +1870,8 @@ function hideAuthoritativeOpeningCards(openingDrawEvents,startingShardEntries,po
       syntheticOpeningDraw2.push({side,hand_index:idx,id:'synthetic-draw2-'+side+'-'+idx});
     }
   }
-  if(syntheticOpeningDraw2.length)console.log('[PvP v3.75.9] synthesized draw2:',syntheticOpeningDraw2.length,'events');
-  console.log('[PvP v3.75.9] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
+  if(syntheticOpeningDraw2.length)console.log('[PvP v3.76.1] synthesized draw2:',syntheticOpeningDraw2.length,'events');
+  console.log('[PvP v3.76.1] opening hidden: '+allDraw.length+' draws + '+allShard.length+' shards (from blank, before reveal)');
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   return true;
 }
@@ -1945,8 +1945,8 @@ function boot(){
   if(!E()||!B()){setTimeout(boot,50);return}
   installPvpUiApi();
   if(window.GL_PVP_CLIENT_MODE){
-    // PvP v3.75.9 boundary: v3.51 owns Lobby -> Coin Flip -> Opening.
-    // Keep the canonical v3.51 renderer live until the authoritative opening animation completes.
+    // PvP v3.76.1 boundary: v3.51 owns Lobby -> Coin Flip.
+    // v6.90.7 is activated by pvp-network after Coin Flip so Opening Hand/Shard presentation already uses the final gameplay UI.
     B().setRenderSuppressed(false);
     lobbyIsOpen=false;lobbyOverlay.classList.remove('open');coinOverlay.classList.remove('open');
     return;

@@ -2,11 +2,14 @@
 import re,json,sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-ROOT=Path(__file__).resolve().parents[1]; P=ROOT/'public'; OUT=ROOT/'tests/artifacts/v3759-pregame'; OUT.mkdir(parents=True,exist_ok=True)
-BUILD='gl-pvp-3.75.9-v351-authority-v6907-ui-2026-10-09'
+ROOT=Path(__file__).resolve().parents[1]; P=ROOT/'public'; OUT=ROOT/'tests/artifacts/v3761-pregame'; OUT.mkdir(parents=True,exist_ok=True)
+BUILD='gl-pvp-3.76.1-v351-authority-v6907-ui-2026-10-09'
+RAW=(P/'index.html').read_text()
+_ORIENTATION=re.search(r'<script id="pvp-mobile-orientation-detect">([\s\S]*?)</script>',RAW,re.I)
+ORIENTATION_JS=_ORIENTATION.group(1) if _ORIENTATION else ''
 
 def stripped_html():
-    s=(P/'index.html').read_text()
+    s=RAW
     s=re.sub(r'<script[\s\S]*?</script>','',s,flags=re.I)
     s=re.sub(r'<link[^>]+rel=["\']stylesheet["\'][^>]*>','',s,flags=re.I)
     return s
@@ -18,6 +21,7 @@ MOCK_JS="""()=>{const store=new Map();Object.defineProperty(window,'localStorage
 def boot(page):
     page.route('**/*',lambda r:r.abort())
     page.set_content(HTML)
+    if ORIENTATION_JS: page.add_script_tag(content=ORIENTATION_JS)
     for elid,rel,media in STYLES:
         h=page.add_style_tag(content=(P/rel).read_text());h.evaluate('(el,x)=>{el.id=x.id;el.media=x.media}',{'id':elid,'media':media})
     page.add_style_tag(content=(P/'css/pvp-lobby.css').read_text())
@@ -38,7 +42,7 @@ def player_rows():
       {'clientId':'p2','name':'Player 2','role':'player','seat':2,'seatLabel':'Player 2','ready':True,'connected':True,'hasDeck':True,'deckKey':'starter_02_saint_crusader_grand_ranger','deckName':'Starter 2'}]
 
 def main():
-    result={'ok':True,'lobby':{},'coin':{},'handoff':{}}
+    result={'ok':True,'lobby':{},'coin':{},'handoff':{},'orientation':{}}
     with sync_playwright() as pw:
       browser=pw.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
       # Lobby: exact requested desktop behavior + canonical v3.51 kick visual.
@@ -54,6 +58,16 @@ def main():
         assert not metrics['roomText'] and not metrics['topActionsVisible'],(label,'removed lobby controls visible')
         shot=OUT/f'lobby-{label}-{w}x{h}.png';page.screenshot(path=str(shot),full_page=False)
         result['lobby'][label]={**metrics,'screenshot':str(shot.relative_to(ROOT))};ctx.close()
+
+      # Mobile/tablet has no portrait UI: portrait is gated, landscape restores the same composition.
+      mctx=browser.new_context(viewport={'width':768,'height':1024},user_agent='Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148')
+      mp=mctx.new_page();boot(mp);mp.wait_for_timeout(30)
+      portrait=mp.evaluate("()=>({mobile:document.documentElement.classList.contains('pvp-mobile-device'),portrait:document.documentElement.classList.contains('pvp-mobile-portrait'),gate:getComputedStyle(document.querySelector('#pvpLandscapeRequired')).display})")
+      assert portrait['mobile'] and portrait['portrait'] and portrait['gate']=='flex',portrait
+      mp.set_viewport_size({'width':1024,'height':768});mp.wait_for_timeout(80)
+      landscape=mp.evaluate("()=>({portrait:document.documentElement.classList.contains('pvp-mobile-portrait'),gate:getComputedStyle(document.querySelector('#pvpLandscapeRequired')).display})")
+      assert not landscape['portrait'] and landscape['gate']=='none',landscape
+      result['orientation']={'portrait':portrait,'landscape':landscape};mctx.close()
 
       # Player 2 is the chooser in the canonical v3.51 Coin Flip UI.
       ctx2=browser.new_context(viewport={'width':1600,'height':720});p2=ctx2.new_page();boot(p2)
@@ -76,9 +90,10 @@ def main():
       initial=page.evaluate("""()=>{const b=GL_LOCAL_AI_BRIDGE;b.startSharedMatch({playerDeckKey:'starter_01_elemental_lord_conqueror_renegade',player2DeckKey:'starter_02_saint_crusader_grand_ranger',player1Name:'JenoZ',player2Name:'Player 2'});const x=b.getCanonicalSnapshot(1);x.pvpPrivateStateMasked=true;return x;}""")
       deckChoices={'1':{'deckKey':players[0]['deckKey'],'deckName':'Starter 1'},'2':{'deckKey':players[1]['deckKey'],'deckName':'Starter 2'}}
       feed(page,{'status':'coin-flip','serverBoardRevision':1,'serverBoard':initial,'coinFlip':{'pending':True,'chooserSeat':2,'chooserLabel':'Player 2','awaitingChoice':True},'playerNames':{'1':'JenoZ','2':'Player 2'},'deckChoices':deckChoices,'lastAnimationEvents':[]},players,local)
-      coin=page.evaluate("""()=>{const m=document.querySelector('#pvpBattlefieldCoinModal'),r=m&&m.getBoundingClientRect();return{stage:document.body.className,v351:!document.querySelector('#pvpV351Surface').hidden,v6:!document.querySelector('#pvpV6Surface').hidden,modal:!!m&&getComputedStyle(m).display==='flex'&&r.width>500&&r.height>300,v6CoinOpen:document.querySelector('.ob-coin-overlay')?.classList.contains('open')||false,heroCount:document.querySelectorAll('#pvpV351Surface .heroCard,[data-hero-side]').length,animationChildren:document.querySelectorAll('#glAnimationLayer>*').length,uiActive:GL_OPTION_B_UI?.isPvpGameplayUiActive?.()||false}}""")
+      coin=page.evaluate("""()=>{const m=document.querySelector('#pvpBattlefieldCoinModal'),r=m&&m.getBoundingClientRect(),cs=m&&getComputedStyle(m);return{stage:document.body.className,v351:!document.querySelector('#pvpV351Surface').hidden,v6:!document.querySelector('#pvpV6Surface').hidden,modal:!!m&&cs.display==='flex'&&r.width>500&&r.height>300,modalBg:cs?.backgroundColor||'',v6CoinOpen:document.querySelector('.ob-coin-overlay')?.classList.contains('open')||false,heroCount:document.querySelectorAll('#pvpV351Surface .heroCard,[data-hero-side]').length,animationChildren:document.querySelectorAll('#glAnimationLayer>*').length,uiActive:GL_OPTION_B_UI?.isPvpGameplayUiActive?.()||false}}""")
       assert 'pvp-stage-pregame' in coin['stage'] and coin['v351'] and not coin['v6'],coin
       assert coin['modal'] and not coin['v6CoinOpen'] and not coin['uiActive'],coin
+      assert '0.84' in coin['modalBg'] or coin['modalBg'].endswith(', 0.84)'),coin['modalBg']
       assert coin['animationChildren']==0,('Hero/Legacy animation must not run during Coin Flip',coin)
       coinShot=OUT/'coin-v351-background.png';page.screenshot(path=str(coinShot),full_page=False);coin['screenshot']=str(coinShot.relative_to(ROOT));coin.update(result.get('coin',{}));result['coin']=coin
 
@@ -91,17 +106,18 @@ def main():
       for i in range(3): starts += [{'side':'PLAYER','pool_index':i,'group_index':i},{'side':'AI','pool_index':i,'group_index':i}]
       evt={'id':'opening-sequence-r3','kind':'opening_sequence','opening_draw_events':opened['opening'],'starting_shard_entries':starts,'post_opening_draw_events':opened['post'],'post_opening_shard_entries':[{'side':'PLAYER','pool_index':3,'group_index':0}]}
       feed(page,{'status':'started','serverBoardRevision':3,'serverBoard':opened['board'],'coinFlip':{'pending':False,'awaitingConfirmation':False,'choice':'HEADS','outcome':'HEADS','firstSeat':1,'firstPlayerName':'JenoZ'},'openingCoinFlip':flip,'deckChoices':deckChoices,'lastAnimationEvents':[evt]},players,local)
-      before=page.evaluate("()=>({stage:document.body.className,v351:!pvpV351Surface.hidden,v6:!pvpV6Surface.hidden,ui:GL_OPTION_B_UI.isPvpGameplayUiActive()})")
-      assert 'pvp-stage-pregame' in before['stage'] and before['v351'] and not before['v6'] and not before['ui'],before
-      # Opening is intentionally visible; wait for its real completion callback, then v6 may mount.
-      page.wait_for_function("document.body.classList.contains('pvp-stage-gameplay')",timeout=10000)
+      before=page.evaluate("()=>({stage:document.body.className,v351:!pvpV351Surface.hidden,v6:!pvpV6Surface.hidden,ui:GL_OPTION_B_UI.isPvpGameplayUiActive(),veil:!!document.querySelector('#pvpGameplayHandoffVeil.is-visible')})")
+      assert 'pvp-stage-gameplay' in before['stage'] and not before['v351'] and before['v6'] and before['ui'] and before['veil'],before
+      # v6 is already mounted under the dark handoff veil. Opening Hand/Shard presentation is owned by v6.
+      page.wait_for_function("!document.querySelector('#pvpGameplayHandoffVeil.is-visible')",timeout=5000)
+      page.wait_for_function("!GL_OPTION_B_PRESENTATION.isBusy()",timeout=12000)
       page.wait_for_timeout(180)
-      after=page.evaluate("""()=>{const played=document.querySelector('.played');const op=document.querySelector('[data-pvp-identity-side=\"AI\"]'),pl=document.querySelector('[data-pvp-identity-side=\"PLAYER\"]');return{stage:document.body.className,v351:!pvpV351Surface.hidden,v6:!pvpV6Surface.hidden,ui:GL_OPTION_B_UI.isPvpGameplayUiActive(),playedReal:played?[...played.children].filter(x=>!x.classList.contains('ob-played-placeholder')).length:-1,opName:op?.querySelector('.pvp-player-display-name')?.textContent||'',opDeck:op?.querySelector('.pvp-player-deck-name')?.textContent||'',plName:pl?.querySelector('.pvp-player-display-name')?.textContent||'',plDeck:pl?.querySelector('.pvp-player-deck-name')?.textContent||'',opSignalAfterCopy:!!(op&&op.querySelector('.pvp-identity-copy')?.nextElementSibling?.matches('[data-pvp-signal-side=\"AI\"]')),plSignalBeforeCopy:!!(pl&&pl.firstElementChild?.matches('[data-pvp-signal-side=\"PLAYER\"]'))}}""")
-      assert 'pvp-stage-gameplay' in after['stage'] and not after['v351'] and after['v6'] and after['ui'],after
+      after=page.evaluate("""()=>{const played=document.querySelector('.played');const op=document.querySelector('[data-pvp-identity-side=\"AI\"]'),pl=document.querySelector('[data-pvp-identity-side=\"PLAYER\"]');return{stage:document.body.className,v351:!pvpV351Surface.hidden,v6:!pvpV6Surface.hidden,ui:GL_OPTION_B_UI.isPvpGameplayUiActive(),veil:!!document.querySelector('#pvpGameplayHandoffVeil.is-visible'),playedReal:played?[...played.children].filter(x=>!x.classList.contains('ob-played-placeholder')).length:-1,opName:op?.querySelector('.pvp-player-display-name')?.textContent||'',opDeck:op?.querySelector('.pvp-player-deck-name')?.textContent||'',plName:pl?.querySelector('.pvp-player-display-name')?.textContent||'',plDeck:pl?.querySelector('.pvp-player-deck-name')?.textContent||'',opSignalAfterCopy:!!(op&&op.querySelector('.pvp-identity-copy')?.nextElementSibling?.matches('[data-pvp-signal-side=\"AI\"]')),plSignalBeforeCopy:!!(pl&&pl.firstElementChild?.matches('[data-pvp-signal-side=\"PLAYER\"]'))}}""")
+      assert 'pvp-stage-gameplay' in after['stage'] and not after['v351'] and after['v6'] and after['ui'] and not after['veil'],after
       assert after['playedReal']==0,('Opening/normal draws leaked to Card Played',after)
       assert after['opName']=='Player 2' and after['plName']=='JenoZ',after
       assert after['opDeck'] and after['plDeck'] and after['opSignalAfterCopy'] and after['plSignalBeforeCopy'],after
-      gameShot=OUT/'post-opening-v6907.png';page.screenshot(path=str(gameShot),full_page=False);after['screenshot']=str(gameShot.relative_to(ROOT));result['handoff']={'before':before,'after':after}
+      gameShot=OUT/'opening-and-gameplay-v6907.png';page.screenshot(path=str(gameShot),full_page=False);after['screenshot']=str(gameShot.relative_to(ROOT));result['handoff']={'before':before,'after':after}
       ctx.close();browser.close()
     (OUT/'results.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2));return 0
 

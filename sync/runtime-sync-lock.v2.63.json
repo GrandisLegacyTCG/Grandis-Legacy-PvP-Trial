@@ -2,7 +2,7 @@
   "version": "v2.63",
   "schema_version": "2.63-pvp-v351-consumer",
   "policy": "RUNTIME_FIRST_FAIL_CLOSED_SYNC",
-  "application": "Grandis Legacy PvP v3.75.9 — v3.51 Authority + VS AI v6.90.7 Presentation",
+  "application": "Grandis Legacy PvP v3.76.1 — v3.51 Authority + VS AI v6.90.7 Presentation",
   "releaseReady": true,
   "sourceAuthority": "v1.9.5",
   "sharedRuntime": "v1.94.2",
@@ -95,7 +95,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "f2cf2a4c0a89aaa49bf42bf6d3bb4db338f2ca8b95387d693fa8f619c7791c70"
+      "sha256": "6ca11bd1b420482a8f6a36942d15fe769211a034986778e2a1761d70ea8506b4"
     },
     {
       "path": "public/css/app.css",
@@ -103,7 +103,7 @@
     },
     {
       "path": "public/css/pvp-lobby.css",
-      "sha256": "9b79d03961c30608c1816a0e1b53db28eb61da7436f5bf0713d7ae3af133212f"
+      "sha256": "6ceec466b5ec0ddd66248c5fe4efdd8fff2d8e059571800f3c476eece59a0f31"
     },
     {
       "path": "public/css/pvp-ui.css",
@@ -111,11 +111,11 @@
     },
     {
       "path": "public/index.html",
-      "sha256": "ba037b611bfcc5ff69fdf54621124ddb137815e0f40ca9df38f24c5a7f60d276"
+      "sha256": "8c9404b7b8baaf82a75d2336a20e2ac1bd0d379c59304f7c19818be42dbbe771"
     },
     {
       "path": "public/js/app.bundle.js",
-      "sha256": "7f1f2ac6dfe9ab7b2b74c089be078306a6007098350e54d156e4e9bc948de461"
+      "sha256": "d5a1fb2a9b5b29fe621a8eab8412fbf78d300199014176f118846916691596b2"
     },
     {
       "path": "public/js/mobile-app-nav.js",
@@ -123,11 +123,11 @@
     },
     {
       "path": "public/js/pvp-network.js",
-      "sha256": "51c4a9b98d063326006c2adc0cc5eced3e68b1acd11273d78960026a9a2b8552"
+      "sha256": "77769dc266b62265a6471361198ae336c116ba8f004867db6db4b64d24b0408d"
     },
     {
       "path": "public/js/pvp-ui-runtime.js",
-      "sha256": "417c4bebd5db7f9f1110126e2d61ee8ec919c12df599f7a186a18cfadccfd37e"
+      "sha256": "04a2cc6064388f99009974e0ce2706b5d912a5d4be64bc4883b49c4cbce21985"
     },
     {
       "path": "public/js/runtime-authority.js",
@@ -411,7 +411,7 @@
     },
     {
       "path": "server.js",
-      "sha256": "2933b8c54bf8d5e1f857644a9df10d63ccebd83985441ffacb06c816f6699977"
+      "sha256": "d595ba64f7e8dce5e5f2e9cc146a666450d22ff828fde790e9431ab459861401"
     },
     {
       "path": "server/gameplay-intent-router.mjs",

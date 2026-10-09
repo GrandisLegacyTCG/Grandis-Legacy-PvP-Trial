@@ -4,7 +4,7 @@
    PvP presentation adapter before the shared VS AI v6.42 Candidate 15 renderer. */
 (function(){
   'use strict';
-  var VERSION='Grandis Legacy PvP v3.75.9 · PvP v3.51 Authority · VS AI v6.90.7 UI/UX';
+  var VERSION='Grandis Legacy PvP v3.76.1 · PvP v3.51 Authority · VS AI v6.90.7 UI/UX';
   var STORE_KEY='grandis_legacy_pvp_v20_client_id';
   var NAME_KEY='grandis_legacy_pvp_v20_name';
   var ROLE_KEY='grandis_legacy_pvp_v20_role';
@@ -14,6 +14,12 @@
   var uiStage='lobby',openingHandoffPending=false;
   function setStylesheetActive(id,active){var el=$(id);if(!el)return;try{el.disabled=!active;}catch(e){}if(el.tagName==='STYLE'||el.tagName==='LINK')el.media=active?'all':'not all';}
   function setSurfaceHidden(id,hidden){var el=$(id);if(!el)return;el.hidden=!!hidden;el.setAttribute('aria-hidden',hidden?'true':'false');}
+  function ensureGameplayHandoffVeil(){
+    var el=$('pvpGameplayHandoffVeil');if(el)return el;
+    el=document.createElement('div');el.id='pvpGameplayHandoffVeil';el.setAttribute('aria-hidden','true');document.body.appendChild(el);return el;
+  }
+  function showGameplayHandoffVeil(){var el=ensureGameplayHandoffVeil();el.classList.add('is-visible');el.setAttribute('aria-hidden','false');return true;}
+  function hideGameplayHandoffVeil(){var el=$('pvpGameplayHandoffVeil');if(!el)return false;el.classList.remove('is-visible');el.setAttribute('aria-hidden','true');setTimeout(function(){if(el&&!el.classList.contains('is-visible'))el.remove();},260);return true;}
   function applyUiStage(stage){
     stage=(stage==='pregame'||stage==='gameplay')?stage:'lobby';uiStage=stage;
     if(document.body){document.body.classList.remove('pvp-stage-lobby','pvp-stage-pregame','pvp-stage-gameplay');document.body.classList.add('pvp-stage-'+stage);}
@@ -25,13 +31,8 @@
     if(gameplay&&window.GL_OPTION_B_UI&&window.GL_OPTION_B_UI.activatePvpGameplayUi)window.GL_OPTION_B_UI.activatePvpGameplayUi();
     return stage;
   }
-  function completeOpeningUiHandoff(){
-    if(!openingHandoffPending&&uiStage==='gameplay')return true;
-    openingHandoffPending=false;
-    setTimeout(function(){applyUiStage('gameplay');syncBattlefieldIdentityHeaders();if(window.GL_OPTION_B_UI&&window.GL_OPTION_B_UI.render)window.GL_OPTION_B_UI.render();},90);
-    return true;
-  }
-  var CLIENT_BUILD_ID=String(DEPLOY_CONFIG.buildId||'gl-pvp-3.75.9-v351-authority-v6907-ui-2026-10-09');
+  function completeOpeningUiHandoff(){openingHandoffPending=false;hideGameplayHandoffVeil();return true;}
+  var CLIENT_BUILD_ID=String(DEPLOY_CONFIG.buildId||'gl-pvp-3.76.1-v351-authority-v6907-ui-2026-10-09');
   function roomNumber(){return 1;}
   function roomDisplayName(){return 'PvP Lobby';}
   function deckBuilderUrl(){return DEPLOY_CONFIG.deckBuilderUrl||'https://grandislegacytcg.github.io/Grandis-Legacy-Deck-Builder/style-1/';}
@@ -283,7 +284,15 @@
       else if(evt.kind==='tribute'&&plan.captured&&b.queueAuthoritativeTributeMotion)ok=b.queueAuthoritativeTributeMotion(plan.captured)||ok;
       else if(evt.kind==='rank_up'&&plan.captured&&b.queueCapturedAuthoritativeRankUpMotion)ok=b.queueCapturedAuthoritativeRankUpMotion(plan.captured)||ok;
       else if(evt.kind==='rank_up'&&b.queueAuthoritativeRankUpMotion)ok=b.queueAuthoritativeRankUpMotion(evt.actor_side,evt.lane,evt.to_card_id,evt.exp_card_ids||[])||ok;
-      else if(evt.kind==='opening_sequence'&&plan.captured&&b.queueAuthoritativeOpeningSequence){openingHandoffPending=true;ok=b.queueAuthoritativeOpeningSequence(plan.captured.opening_draw_events||[],plan.captured.starting_shard_entries||[],plan.captured.post_opening_draw_events||[],plan.captured.post_opening_shard_entries||[],{onComplete:completeOpeningUiHandoff})||ok;}
+      else if(evt.kind==='opening_sequence'&&plan.captured){
+        var obp=window.GL_OPTION_B_PRESENTATION;
+        if(uiStage==='gameplay'&&obp&&obp.queueAuthoritativeOpeningSequence){
+          var startOpening=function(){hideGameplayHandoffVeil();obp.queueAuthoritativeOpeningSequence(plan.captured.opening_draw_events||[],plan.captured.starting_shard_entries||[],plan.captured.post_opening_draw_events||[],plan.captured.post_opening_shard_entries||[]);};
+          var scheduleOpening=function(){setTimeout(startOpening,140);};
+          if(typeof requestAnimationFrame==='function')requestAnimationFrame(function(){requestAnimationFrame(scheduleOpening);});else setTimeout(scheduleOpening,34);
+          openingHandoffPending=false;ok=true;
+        }else if(b.queueAuthoritativeOpeningSequence){openingHandoffPending=true;ok=b.queueAuthoritativeOpeningSequence(plan.captured.opening_draw_events||[],plan.captured.starting_shard_entries||[],plan.captured.post_opening_draw_events||[],plan.captured.post_opening_shard_entries||[],{onComplete:completeOpeningUiHandoff})||ok;}
+      }
       else if(evt.kind==='draw_then_shards'&&plan.captured&&b.queueAuthoritativeDrawThenShardMotions)ok=b.queueAuthoritativeDrawThenShardMotions(plan.captured.draw_specs||[],plan.captured.shard_entries||[])||ok;
       else if(evt.kind==='shard_gain'&&plan.captured&&b.queueAuthoritativeShardGainMotions)ok=b.queueAuthoritativeShardGainMotions(plan.captured.entries||[])||ok;
       else if(evt.kind==='draw_batch'&&plan.captured&&b.queueAuthoritativeDrawEvents)ok=b.queueAuthoritativeDrawEvents(plan.captured.events)||ok;
@@ -339,8 +348,13 @@
       var firstNotice=(rev<=2&&!m.lastIntent&&openingFlipText(m))||'';
       var notice=firstNotice||('Server authoritative board r'+rev+' applied.');
       adapter.importViewerSafeSnapshot(m.serverBoard,seat,{notice:notice,skipImportAnimations:true});
+      var openingPlan=animationPlans.find(function(plan){return plan&&plan.event&&plan.event.kind==='opening_sequence'&&plan.captured;});
+      if(uiStage==='gameplay'&&openingPlan&&window.GL_OPTION_B_PRESENTATION&&window.GL_OPTION_B_PRESENTATION.hideAuthoritativeOpeningCards){
+        window.GL_OPTION_B_PRESENTATION.hideAuthoritativeOpeningCards(openingPlan.captured.opening_draw_events||[],openingPlan.captured.starting_shard_entries||[],openingPlan.captured.post_opening_draw_events||[],openingPlan.captured.post_opening_shard_entries||[]);
+        if(window.GL_OPTION_B_UI&&window.GL_OPTION_B_UI.render)window.GL_OPTION_B_UI.render();
+      }
       scheduleMobileHandPosition(localDraw?'follow-latest':'preserve',savedHandScroll);
-      var hasOpeningPlan=animationPlans.some(function(plan){return plan&&plan.event&&plan.event.kind==='opening_sequence';});
+      var hasOpeningPlan=!!openingPlan;
       playAuthoritativeAnimations(animationPlans);
       if(openingHandoffPending&&!hasOpeningPlan)completeOpeningUiHandoff();
       var currentCanonical=b.snapshot&&b.snapshot().appState;
@@ -731,7 +745,7 @@ body.pvp-lobby-mode{min-width:0!important;overflow-x:hidden!important;background
     if(msg.deckOptions&&msg.deckOptions.length)DECK_OPTIONS=msg.deckOptions;
     var incomingGeneration=Number(msg&&msg.room&&msg.room.generation||1);if(state.roomGeneration&&incomingGeneration!==state.roomGeneration){state.seatToken='';state.spectatorBattlefieldEntered=false;try{localStorage.removeItem(seatTokenStorageKey());}catch(e){}}state.roomGeneration=incomingGeneration;var m=msg.match||{},active=(m.status==='coin-flip'||m.status==='coin-result'||m.status==='started'||m.status==='finished');if(me.role==='spectator'&&active&&!state.spectatorBattlefieldEntered)state.spectatorLobbyView=true;if(!active){state.spectatorLobbyView=false;state.spectatorBattlefieldEntered=false;}
     if(m.status==='coin-flip'||m.status==='coin-result'){openingHandoffPending=false;applyUiStage('pregame');}
-    else if(m.status==='started'&&previousStatus==='coin-result'){openingHandoffPending=true;applyUiStage('pregame');}
+    else if(m.status==='started'&&previousStatus==='coin-result'){openingHandoffPending=false;showGameplayHandoffVeil();applyUiStage('gameplay');}
     else if(m.status==='started'||m.status==='finished'){applyUiStage('gameplay');}
     else applyUiStage('lobby');
     if(active){

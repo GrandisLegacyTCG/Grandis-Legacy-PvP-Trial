@@ -739,7 +739,7 @@
   function queueDrawEvents(events,state,options){
     options=options||{};
     events=(events||[]).filter(function(e){return e&&e.type==='CARD_DRAWN';});
-    /* PvP v3.75.9 approved opening choreography: Opening Hand is visibly dealt
+    /* PvP v3.76.1 approved opening choreography: Opening Hand is visibly dealt
        one card at a time, PLAYER then opponent, for each of the six pairs.
        Gameplay/ordinary Draw animations keep the canonical v3.51 timing. */
     var hasOpeningHand=events.some(function(e){return e&&e.reason==='OPENING_HAND';});
@@ -10575,12 +10575,12 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
       }
     }
   };
-  /* GL_PVP_V3759_OPTION_B_ADAPTER
-     v3.75.9 donor boundary: PvP v3.51 remains the browser/server gameplay contract; VS AI v6.90.7 is presentation only.
+  /* GL_PVP_V3761_OPTION_B_ADAPTER
+     v3.76.1 donor boundary: PvP v3.51 remains the browser/server gameplay contract; VS AI v6.90.7 is presentation only.
      This adapter exposes read models and presentation controls required by the
      VS AI v6.90.7 Option-B UI without importing the v6 exact-payment engine. */
   window.GL_OPTION_B_ENGINE={
-    version:'Grandis Legacy PvP v3.75.9',
+    version:'Grandis Legacy PvP v3.76.1',
     getSnapshot:glPvpBridgeSnapshot,
     intent:function(name,args){
       args=args||[];
