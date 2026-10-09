@@ -1,72 +1,511 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Grandis Legacy PvP</title>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6JD5Q48SXN"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-6JD5Q48SXN');</script>
-  <link rel="stylesheet" href="css/app.css?v=gl-pvp-3.51-minor-correction-r2-2026-09-28">
-  <link rel="stylesheet" href="css/battlefield-authority.css?v=gl-pvp-3.51-minor-correction-r2-2026-09-28">
-  <link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=2.53">
-  <link rel="stylesheet" href="css/gameplay-shell.css?v=3.76.6">
-  <link rel="stylesheet" href="css/gameplay-presentation.css?v=3.76.6">
-  <link rel="stylesheet" href="css/pvp-shell-isolation.css?v=3.76.6">
-  <style>body.pvp-booting #app{visibility:hidden!important}</style>
-  <style id="gl-v3766-boot">html:not(.gl-lobby-ready) body{overflow:hidden}#glBootVeil{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;background:#03080d;color:#f1d481;font:800 12px Arial,sans-serif;letter-spacing:.12em;text-align:center;padding:24px}#glBootVeil .gl-boot-error{display:none;max-width:520px;line-height:1.55;letter-spacing:.04em;color:#f5f7fb}#glBootVeil button{display:none;margin:14px auto 0;min-width:120px;height:38px;border:1px solid #dcbf68;border-radius:8px;background:#f1d481;color:#11151c;font-weight:900;cursor:pointer}html.gl-lobby-failed #glBootVeil .gl-boot-loading{display:none}html.gl-lobby-failed #glBootVeil .gl-boot-error,html.gl-lobby-failed #glBootVeil button{display:block}html.gl-lobby-ready #glBootVeil{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease,visibility 0s linear .16s}body:not(.pvp-presentation-owned)>.app.ob-pvp-shell{visibility:hidden!important;pointer-events:none!important}body.pvp-presentation-owned>#app{display:none!important;visibility:hidden!important;pointer-events:none!important;position:fixed!important;inset:0!important;overflow:hidden!important}body.pvp-presentation-owned>.app.ob-pvp-shell{visibility:visible!important}.ob-pvp-shell{position:fixed;inset:0;z-index:10}body.pvp-presentation-owned:not(.pvp-gameplay-revealed)>.app.ob-pvp-shell{pointer-events:none!important}body.pvp-pregame>.app.ob-pvp-shell{user-select:none!important}body.pvp-pregame .phase-actions{visibility:hidden!important;pointer-events:none!important}body.pvp-pregame .phase-track .phase-label{opacity:.42!important}body.pvp-pregame .phase-track .phase-label.active{color:inherit!important;text-shadow:none!important}body.pvp-pregame .ob-phase-tint,body.pvp-pregame .ob-phase-underline,body.pvp-pregame .ob-phase-diamond{display:none!important}.pvp-coin-modal,.gl-opening-coin-modal{z-index:12000!important;background:#000!important}</style>
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=3.76.6">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Grandis Legacy — VS AI v6.90.9</title>
+<style>
+@font-face{font-family:Noto;src:url('assets/fonts/NotoSans-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+:root{
+  --sidebar-w:15vw;
+  --hero-base-w:clamp(84px,7.25vw,112px);
+  --hero-ratio:.68;
+  --hero-base-h:calc(var(--hero-base-w) / var(--hero-ratio));
+  /* v6.90.5: root fix for opponent Shard center choice — preserve the real opponent pool as absolute/right-anchored; center selection uses overlay clones only. */
+  --hero-layout-w:calc(var(--hero-base-w) * 1.10);
+  --hero-layout-h:calc(var(--hero-layout-w) / var(--hero-ratio));
+  --hero-w:calc(var(--hero-base-w) * 1.20);
+  --hero-h:calc(var(--hero-w) / var(--hero-ratio));
+  --std-w:calc(var(--hero-base-w) * .65);
+  --std-h:calc(var(--hero-base-h) * .65);
+  --hand-w:calc(var(--hero-base-w) * .75);
+  --hand-h:calc(var(--hero-base-h) * .75);
+  --hover-preview-w:259px;
+  --hover-preview-h:362px;
+  --hero-hover-preview-w:248px;
+  --hero-hover-preview-h:347px;
+  --attach-w:calc(var(--hero-layout-w) * .70);
+  --attach-h:calc(var(--hero-layout-h) * .70);
+  --zone-w:calc(var(--std-w) / .90);
+  --zone-h:calc(var(--std-h) + 8px);
+  --rail-gap:4px;
+  --gold:#f3cf58;--gold2:#9d7b1d;--text:#f2f6fb;--muted:#8ca0b5;
+}
+@media(max-height:820px){:root{--hero-base-w:clamp(77px,6.75vw,98px)}}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07111c;color:var(--text);font-family:Noto,Arial,sans-serif}
+body{background-image:linear-gradient(rgba(3,10,18,.30),rgba(3,10,18,.30)),url('assets/ui/Background.png');background-size:cover;background-position:center}
+button{font:inherit}
+.app{width:100vw;height:100vh;display:grid;grid-template-columns:85vw 15vw;overflow:hidden}
+.battlefield{position:relative;height:100vh;min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr) 39px minmax(0,1fr) auto;overflow:hidden;border-right:1px solid rgba(244,211,94,.20);padding:0 8px}
+
+/* Hands: default 85% visible. */
+.hand{position:relative;display:flex;justify-content:center;overflow:hidden;min-height:calc(var(--hand-h) * .85 + 7px);z-index:40}
+.hand.top{align-items:flex-start}.hand.bottom{align-items:flex-end}
+.hand-track{height:calc(var(--hand-h) * .85 + 7px);display:flex;justify-content:center;align-items:flex-end;gap:0;overflow:visible;min-width:0;padding:0 10px}
+.hand.top .hand-track{align-items:flex-start}
+.hand.top .hand-track{transform:translateX(var(--opponent-hand-align-shift,0px))}
+.hand-card{position:relative;width:var(--hand-w);height:var(--hand-h);flex:0 0 var(--hand-w);margin-left:-5px;filter:drop-shadow(0 5px 8px rgba(0,0,0,.55));transition:.14s ease;z-index:1}
+.hand-card:first-child{margin-left:0}
+.hand-card>img{display:block;width:100%;height:100%;object-fit:cover;border-radius:5px;border:1px solid rgba(255,255,255,.14)}
+.hand.bottom .hand-card{transform:translateY(calc(var(--hand-h) * .15))}
+.hand.top .hand-card{transform:translateY(calc(var(--hand-h) * -.15))}
+.hand-card:hover,.hand-card.is-hovered,.hand-card.is-selected{z-index:80}
+.hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected,.hand.top .hand-card:hover{transform:translateY(0) scale(1.04)}
+.hand.bottom .hand-card:after{content:"";position:absolute;left:-4px;right:-4px;top:-34px;bottom:-18px;z-index:-1;pointer-events:auto}
+/* v6.90.9: identity-only UI update. Max 25 visible characters for each name/deck line. */
+.identity-card{position:absolute;z-index:90;width:max-content;max-width:calc(100% - 16px);height:32px;display:flex;align-items:center;padding:4px 7px;border:1px solid rgba(244,211,94,.34);border-radius:7px;background:rgba(3,10,17,.90);color:#dbe7f1;overflow:hidden}
+.identity-copy{min-width:0;width:100%;display:flex;flex-direction:column;justify-content:center;line-height:1.02}
+.identity-name{font-size:9px;font-weight:900;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f4f7fb}
+.identity-deck{margin-top:2px;font-size:8px;font-weight:720;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#9eb2c4}
+.hand-title.identity-card{left:8px;top:5px;text-align:right}
+.player-name.identity-card{right:8px;bottom:2px;text-align:left}
+
+/* v6.83: player Hand keeps the light fan with a small edge-only overlap. */
+.hand.bottom .hand-card{margin-left:-5px;transform-origin:50% 100%;}
+.hand.bottom .hand-card:first-child{margin-left:0}
+.hand.bottom .hand-card:nth-child(1){--fan-rot:-4deg;--fan-lift:3px}
+.hand.bottom .hand-card:nth-child(2){--fan-rot:-3deg;--fan-lift:1px}
+.hand.bottom .hand-card:nth-child(3){--fan-rot:-1.5deg;--fan-lift:0px}
+.hand.bottom .hand-card:nth-child(4){--fan-rot:0deg;--fan-lift:0px}
+.hand.bottom .hand-card:nth-child(5){--fan-rot:1.5deg;--fan-lift:0px}
+.hand.bottom .hand-card:nth-child(6){--fan-rot:3deg;--fan-lift:1px}
+.hand.bottom .hand-card:nth-child(7){--fan-rot:4deg;--fan-lift:3px}
+.hand.bottom .hand-card{transform:translateY(calc(var(--hand-h) * .15 + var(--fan-lift,0px))) rotate(var(--fan-rot,0deg));}
+.hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected{transform:translateY(0) rotate(0deg) scale(1.04)}
+
+/* v6.83: opponent Hand mirrors the same small edge-only overlap and fan treatment. */
+.hand.top .hand-card{
+  margin-left:-5px;
+  transform-origin:50% 0%;
+}
+.hand.top .hand-card:first-child{margin-left:0}
+.hand.top .hand-card:nth-child(1){--opp-fan-rot:4deg;--opp-fan-lift:3px}
+.hand.top .hand-card:nth-child(2){--opp-fan-rot:3deg;--opp-fan-lift:1px}
+.hand.top .hand-card:nth-child(3){--opp-fan-rot:1.5deg;--opp-fan-lift:0px}
+.hand.top .hand-card:nth-child(4){--opp-fan-rot:.5deg;--opp-fan-lift:0px}
+.hand.top .hand-card:nth-child(5){--opp-fan-rot:-.5deg;--opp-fan-lift:0px}
+.hand.top .hand-card:nth-child(6){--opp-fan-rot:-1.5deg;--opp-fan-lift:0px}
+.hand.top .hand-card:nth-child(7){--opp-fan-rot:-3deg;--opp-fan-lift:1px}
+.hand.top .hand-card:nth-child(8){--opp-fan-rot:-4deg;--opp-fan-lift:3px}
+.hand.top .hand-card{
+  transform:translateY(calc(var(--hand-h) * -.15 - var(--opp-fan-lift,0px))) rotate(var(--opp-fan-rot,0deg));
+}
+.hand.top .hand-card:hover{
+  transform:translateY(0) rotate(0deg) scale(1.04);
+}
+
+/* Player-hand legality + actions. Small play marker remains visible before hover;
+   full buttons stack vertically above the active card and are clickable. */
+.action-flags{position:absolute;right:2px;top:2px;z-index:95;display:flex;flex-direction:column;gap:2px;pointer-events:none;transition:opacity .12s ease}
+.action-flag{width:14px;height:14px;border-radius:4px;display:grid;place-items:center;font-size:7px;line-height:1;font-weight:950;color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.58)}
+.action-flag.play{border:1px solid #4f8e69;background:#1a6d40}
+.hand-card:hover .action-flags,.hand-card.is-hovered .action-flags,.hand-card.is-selected .action-flags{opacity:.18}
+.card-actions{position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:stretch;gap:2px;opacity:0;pointer-events:none;transition:.12s ease;white-space:nowrap;z-index:140}
+.hand.bottom .hand-card:hover .card-actions,.hand.bottom .hand-card.is-hovered .card-actions,.hand.bottom .hand-card:focus-within .card-actions,.hand.bottom .hand-card.is-selected .card-actions{opacity:1;pointer-events:auto}
+.card-actions button{height:14px;min-width:42px;padding:0 6px;border:1px solid #426581;border-radius:5px;background:#0d2740;color:#fff;font-size:6.4px;font-weight:950;box-shadow:0 5px 10px rgba(0,0,0,.45);cursor:pointer}
+.card-actions button:hover,.card-actions button:focus-visible{filter:brightness(1.16);outline:1px solid rgba(255,255,255,.35);outline-offset:1px}
+.card-actions .play{border-color:#4f8e69;background:linear-gradient(180deg,#267f4d,#155b35)}
+.card-actions .tribute{border-color:#a98a27;background:linear-gradient(180deg,#755900,#4b3905);color:#ffe98b}
+.action-feedback{position:absolute;left:50%;top:1px;transform:translateX(-50%);z-index:160;min-width:150px;max-width:320px;padding:4px 8px;border:1px solid rgba(244,211,94,.38);border-radius:6px;background:rgba(3,12,20,.96);color:#f4e29a;font-size:7px;font-weight:850;text-align:center;opacity:0;pointer-events:none;transition:opacity .12s ease}
+.action-feedback.show{opacity:1}
+
+/* Main field: order preserved. Hero background itself is deliberately shorter. */
+.field-row{position:relative;min-height:0;display:grid;grid-template-columns:calc(var(--zone-w) + 7px) minmax(0,1fr) calc(var(--zone-w) + 7px);gap:7px;padding:2px 0;overflow:visible}
+.player-field{padding-top:2px}.opponent-field{padding-bottom:2px}
+.rail-pair{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:var(--rail-gap);position:relative;z-index:10}
+.zone{position:relative;width:var(--zone-w);height:var(--zone-h);border:1px solid rgba(244,211,94,.28);border-radius:8px;background:linear-gradient(180deg,rgba(9,19,30,.92),rgba(4,10,17,.96));display:flex;align-items:flex-start;justify-content:center;padding-top:3px;padding-bottom:3px;overflow:visible;box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)}
+.zone img{width:var(--std-w);height:var(--std-h);flex:0 0 auto;object-fit:cover;border-radius:5px;box-shadow:0 4px 10px rgba(0,0,0,.52)}
+.zone.empty:before{content:"";width:var(--std-w);height:var(--std-h);flex:0 0 auto;border:1px dashed rgba(118,149,177,.48);border-radius:5px}
+.zone-label{position:absolute;left:2px;right:2px;bottom:1px;z-index:4;padding:0 2px;border-radius:0;background:transparent;font-size:6.6px;line-height:.90;font-weight:950;text-align:center;white-space:normal;overflow:visible;color:#fff;text-shadow:0 1px 2px #000,0 0 3px #000}
+.count{position:absolute;right:-4px;top:-4px;z-index:5;min-width:20px;height:20px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:#07131f;border:1px solid var(--gold);color:#ffe16b;font-size:9px;font-weight:900}
+.hero-grid{min-width:0;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;align-items:center}
+.opponent-field .hero-grid{align-items:end}.opponent-field>.rail-pair{justify-content:flex-end}
+.player-field .hero-grid{align-items:start}.player-field>.rail-pair{justify-content:flex-start}
+/* v20 opponent-only geometry fix: on short viewports the opponent rail content used
+   to enlarge the internal grid row beyond .opponent-field. That pushed Hero lanes
+   into the Phase Tracker while the absolutely positioned Mana Pool kept tracking
+   the smaller field box. Constrain only the opponent internal row to the actual
+   field height; oversized mirrored rail content is allowed to overflow upward
+   toward the opponent hand, never downward into the Phase Tracker. Player geometry
+   is intentionally unchanged. */
+.opponent-field{grid-template-rows:minmax(0,1fr)}
+.opponent-field .hero-grid,.opponent-field>.rail-pair{height:100%;min-height:0}
+.opponent-field>.rail-pair .zone{flex:0 0 var(--zone-h)}
+/* v18: both fields use the same locked hero-lane height; opponent placement is the 180° positional mirror. */
+.hero-lane{position:relative;min-width:0;height:calc(var(--hero-layout-h) * 1.15 + 10px);max-height:calc(var(--hero-layout-h) * 1.15 + 10px);border:1px solid rgba(88,118,145,.24);border-radius:11px;background:rgba(5,14,23,.58);display:block;overflow:visible}
+.lane-label{position:absolute;top:5px;left:7px;color:#8ea5ba;font-size:7.5px;font-weight:900;letter-spacing:.08em}
+.hero-card{position:absolute;left:50%;top:calc(var(--hero-layout-h) * .03 + 5px);transform:translateX(-50%);width:var(--hero-w);height:var(--hero-h);display:grid;place-items:center;z-index:3}
+.hero-card img{display:block;width:100%;height:100%;object-fit:contain;border-radius:7px;filter:drop-shadow(0 7px 10px rgba(0,0,0,.56))}
+.attachment-card{position:absolute;top:calc(var(--hero-layout-h) * .50 + 6px);width:var(--attach-w);height:var(--attach-h);z-index:2;filter:drop-shadow(0 5px 8px rgba(0,0,0,.52));transform-origin:center center}
+.attachment-card.left{left:5%;transform:rotate(-2deg)}.attachment-card.right{right:5%;transform:rotate(2deg)}
+.attachment-card img{display:block;width:100%;height:100%;object-fit:contain;border-radius:5px;border:1px solid rgba(255,255,255,.14)}
+.attachment-turn{position:absolute;right:-4px;top:-4px;z-index:12;min-width:17px;height:17px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:#07131f;border:1px solid var(--gold);color:#ffe16b;font-size:8px;line-height:1;font-weight:950;box-shadow:0 2px 5px rgba(0,0,0,.55);pointer-events:none}
+.hp{position:absolute;right:-7px;top:2px;z-index:8;padding:1px 4px;border-radius:5px;background:rgba(2,8,12,.94);font-size:9px;font-weight:950;line-height:13px}
+.hp:after{content:"";display:block;width:32px;height:5px;border-radius:999px;background:#2ed98b;margin-top:-1px}
+.trait{position:absolute;right:5px;top:5px;z-index:4;padding:2px 5px;border-radius:6px;border:1px solid rgba(244,211,94,.38);background:rgba(24,18,4,.86);color:#ffd44b;font-size:6.7px;font-weight:900}
+
+/* Phase tracker: 75% of previous height. */
+.phase{position:relative;height:39px;margin:0 0 2px;display:flex;align-items:center;min-width:0;padding:4px 8px 4px 15px;border:0;border-radius:10px;background:linear-gradient(90deg,rgba(11,24,36,.98),rgba(6,15,24,.96));box-shadow:0 5px 14px rgba(0,0,0,.23),inset 0 0 0 1px rgba(62,82,101,.11);z-index:30}
+.phase:before{content:"";position:absolute;left:4px;top:5px;bottom:5px;width:3px;border-radius:999px;background:#f0ca56;box-shadow:0 0 7px rgba(240,202,86,.20)}
+.phase-turn{flex:0 0 150px;min-width:0;display:flex;align-items:center;align-self:stretch}
+.turn{font-size:10px;font-weight:950;line-height:1.05}.turn small{display:block;margin-top:2px;color:#aebdca;font-size:7px;font-weight:500}
+.phase-track{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:space-around;gap:10px;padding:0 26px}
+.phase-label{display:block;padding:0;border:0;background:none;color:#697785;font-size:7.4px;font-weight:850;letter-spacing:.025em;line-height:1;white-space:nowrap;text-align:center;cursor:default;user-select:none}
+.phase-label.active{color:#efcb5f;font-weight:950;text-shadow:0 0 7px rgba(239,203,95,.12)}
+.phase-actions{flex:0 0 auto;display:flex;align-items:center;gap:8px}
+.phase-action{width:auto;min-width:0;height:27px;padding:0 12px;border:1px solid #9b8030;border-radius:7px;background:rgba(9,19,28,.36);color:#ffe47a;font-size:7.4px;font-weight:950;letter-spacing:.025em;line-height:1;white-space:nowrap;box-shadow:none}
+.phase-action.next{border-color:#f4d35e;background:#f4d35e;color:#181305;padding-left:13px;padding-right:13px}
+.phase-action:hover,.phase-action:focus-visible{filter:brightness(1.10);outline:1px solid rgba(255,231,137,.20);outline-offset:1px}
+.phase-action.cancel-mode{border-color:#9a4149;background:rgba(56,14,19,.72);color:#ffc0c6}
+
+/* Bottom HUD holds only the centered hand; resource pools are anchored to their battlefield rail so deck -> deck -> pool gaps stay equal. */
+.bottom-hud{position:relative;min-height:calc(var(--hand-h) * .85 + 7px);overflow:visible;z-index:60}
+.bottom-hud .hand{height:100%;min-height:inherit;position:absolute;inset:0;pointer-events:none;overflow:visible;justify-content:center}
+.bottom-hud .hand-track{pointer-events:auto}
+.mana-pool{position:absolute;width:21.5%;height:var(--zone-h);border:1px solid rgba(244,211,94,.28);border-radius:8px;background:linear-gradient(180deg,rgba(9,19,30,.92),rgba(4,10,17,.96));box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);display:flex;align-items:center;padding:3px 6px;z-index:65;overflow:visible}
+.player-mana-pool{left:4px;top:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2))}
+.opponent-mana-pool{right:4px;bottom:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2))}
+.mana-pool .count{right:-4px;top:-4px}
+.mana-cards{position:relative;height:100%;width:100%;min-width:0;overflow:hidden;padding-left:2px;padding-right:2px}.mana-card{position:absolute;top:50%;left:2px;width:var(--std-w);height:var(--std-h);margin:0;transform:translateY(-50%);filter:drop-shadow(0 3px 5px rgba(0,0,0,.55));transition:left .14s ease}.mana-card img{width:100%;height:100%;object-fit:cover;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
+.mana-controls{position:absolute;left:calc(21.5% + 12px);top:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2) + (var(--zone-h) - 49px)/2);display:flex;flex-direction:column;gap:5px;z-index:85}.mana-controls button{width:27px;height:22px;border:1px solid #315b7f;border-radius:5px;background:#0a2238;color:#dff0ff;font-size:12px;font-weight:900;line-height:1;box-shadow:0 3px 8px rgba(0,0,0,.45)}
+/* v30 Option 1: extend only the PLAYER Mana Pool to the right edge of HERO LEFT.
+   Width is synced in JS so it stays aligned across responsive 5% scale steps. */
+.player-mana-pool{width:var(--player-mana-pool-w,21.5%)}
+.bottom-hud .hand{transform:translateX(var(--hand-align-shift,0px))}
+
+/* Racial Tokens are part of both mirrored battlefield rails. */
+.player-right-rail{justify-content:flex-start;padding-top:0;overflow:visible}
+.opponent-left-rail{justify-content:flex-end;padding-bottom:0;overflow:visible}
+.racial-row{width:var(--zone-w);display:flex;justify-content:center;gap:5px;flex:0 0 auto}
+/* Keep the normal 4px deck-to-deck rhythm, but give Main Deck -> Racial Token 8px. */
+.player-right-rail .racial-row{margin-top:4px}
+.opponent-left-rail .racial-row{margin-bottom:4px}
+.racial-token{width:28px;height:28px;border-radius:50%;border:1px solid rgba(244,211,94,.55);background:#15120a;box-shadow:0 3px 7px rgba(0,0,0,.5);object-fit:cover}
+
+.cancel-action{position:absolute;display:none;width:66px;height:24px;padding:0 8px;border:1px solid #8b4249;border-radius:6px;background:rgba(38,13,17,.94);color:#ffbbc1;font-size:7px;font-weight:950;letter-spacing:.035em;line-height:1;z-index:98;box-shadow:0 4px 10px rgba(0,0,0,.42);cursor:pointer}
+.cancel-action.is-visible{display:block}
+.cancel-action:hover,.cancel-action:focus-visible{filter:brightness(1.14);outline:1px solid rgba(255,190,197,.30);outline-offset:1px}
+
+/* Sidebar: compact turn panel, larger Card Played, shared Battle Log / Preview area. */
+.sidebar{position:relative;z-index:120;height:100vh;min-width:0;display:grid;grid-template-rows:76px auto minmax(0,1fr) 22px;gap:6px;padding:4px 3px 5px;background:rgba(3,10,17,.91);overflow:visible}
+.sidebox{min-height:0;border:1px solid rgba(244,211,94,.34);border-radius:9px;background:rgba(3,12,20,.88);padding:8px;overflow:hidden}
+.sidebox h3{margin:0 0 5px;font-size:12px}.gold{color:#ffd64d}.tiny{font-size:7.3px;line-height:1.28;color:#d3e0ed}
+.played-box{padding:8px 8px 7px;display:grid;grid-template-rows:auto auto 24px;gap:6px;overflow:hidden}.played-box h3{margin:0}.played{min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,auto);column-gap:6px;row-gap:6px;align-items:start;justify-items:center;overflow:hidden}.played-card{width:100%;max-width:72px;min-width:0;height:auto;aspect-ratio:5/7;position:relative;overflow:visible;align-self:start;justify-self:center}.played-card img{display:block;width:100%;height:100%;aspect-ratio:5/7;object-fit:cover;border-radius:5px;border:1px solid rgba(255,255,255,.10);box-shadow:0 3px 7px rgba(0,0,0,.38)}.played-owner{position:absolute;right:2px;top:2px;z-index:8;padding:1px 3px;border-radius:4px;background:rgba(2,9,15,.90);border:1px solid rgba(244,211,94,.42);color:#ffe06b;font-size:5px;line-height:1.15;font-weight:950;letter-spacing:.02em;text-shadow:0 1px 2px #000;pointer-events:none}.history-btn{width:100%;height:24px;min-height:24px;border:1px solid #38536d;border-radius:6px;background:#0c1926;color:#fff;font-size:6.5px;font-weight:950;line-height:1;cursor:pointer}.history-btn:hover,.history-btn:focus-visible{filter:brightness(1.16);outline:1px solid rgba(255,255,255,.28);outline-offset:1px}.history-panel{position:absolute;inset:4px 3px 32px;z-index:30;display:none;padding:10px;border:1px solid rgba(244,211,94,.34);border-radius:8px;background:rgba(3,10,17,.995);overflow:hidden}.sidebar.history-open .history-panel{display:block}.history-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.history-head h3{margin:0}.history-close{height:22px;padding:0 9px;border:1px solid #38536d;border-radius:6px;background:#0c1926;color:#fff;font-size:6.5px;font-weight:900;cursor:pointer}.history-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;align-content:start;overflow:hidden}.history-grid .played-card{width:min(70px,100%);height:auto;aspect-ratio:5/7;justify-self:center}
+/* v33: keep v30 sidebar geometry. Active Card has its own compact size; Hover Preview remains the separate 225x315 v30 preview. */
+.shared-box{position:relative;padding:2px;overflow:visible}
+.active-card-pane{position:absolute;inset:8px 8px 38px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.active-card-pane h3{margin:0 0 6px}
+.active-card-stage{position:relative;flex:1;min-height:0;display:flex;align-items:flex-start;justify-content:center;padding:0 4px 2px}
+.active-card-visual{position:relative;width:calc(100% - 8px);max-width:none;aspect-ratio:5/7;flex:0 0 auto}
+.active-card-visual img{display:block;width:100%;height:100%;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,.12);box-shadow:0 5px 12px rgba(0,0,0,.50)}
+.active-owner{position:absolute;right:3px;top:3px;z-index:2;padding:1px 4px;border-radius:4px;background:rgba(2,9,15,.92);border:1px solid rgba(244,211,94,.46);color:#ffe06b;font-size:5px;line-height:1.15;font-weight:950;text-shadow:0 1px 2px #000;pointer-events:none}
+.battle-log-btn{position:absolute;left:8px;right:8px;bottom:8px;height:24px;min-height:24px;border:1px solid #38536d;border-radius:6px;background:#0c1926;color:#fff;font-size:6.5px;font-weight:950;line-height:1;cursor:pointer}
+.battle-log-btn:hover,.battle-log-btn:focus-visible{filter:brightness(1.16);outline:1px solid rgba(255,255,255,.28);outline-offset:1px}
+.battlelog-panel{position:absolute;inset:4px 3px 32px;z-index:31;display:none;padding:10px;border:1px solid rgba(244,211,94,.34);border-radius:8px;background:rgba(3,10,17,.995);overflow:hidden}
+.sidebar.battlelog-open .battlelog-panel{display:block}
+.battlelog-panel .logline{padding:7px 0;border-bottom:1px solid rgba(94,121,145,.16);font-size:7.5px;color:#c9d6e4}
+.battlelog-panel .logline b{color:#f1d154}
+.preview-overlay{position:absolute;inset:0;display:none;align-items:flex-end;justify-content:flex-end;background:rgba(3,12,20,.998);padding:0 4px 5px;overflow:visible;z-index:8}
+.shared-box.previewing .preview-overlay{display:flex}
+.preview-card{flex:0 0 auto;width:225px;height:315px;max-width:none;max-height:none;aspect-ratio:5/7;object-fit:contain;border-radius:8px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.58));transform:none}
+.ob-sidebar-hover-preview{position:fixed;left:0;top:0;z-index:26000;display:none;width:225px;height:315px;pointer-events:none}.ob-sidebar-hover-preview.open{display:block}.ob-sidebar-hover-preview img{display:block;width:225px;height:315px;aspect-ratio:5/7;object-fit:contain;border-radius:8px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.58))}
+.bottom-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;height:22px;min-height:22px}.bottom-actions button{width:100%;height:22px;min-height:22px;border:1px solid #334b61;border-radius:6px;background:#0b1722;color:#fff;font-size:6px;font-weight:900;line-height:1;padding:2px;white-space:nowrap}.bottom-actions .danger{border-color:#783a42;background:#241014;color:#ffb7bf}
+.concept{position:absolute;right:calc(15vw + 14px);top:6px;z-index:100;padding:3px 8px;border-radius:999px;border:1px solid rgba(106,139,166,.30);background:rgba(2,8,14,.82);font-size:7.5px;color:#afd0e8;pointer-events:none}
+@media(max-height:820px){
+  .sidebar{grid-template-rows:72px auto minmax(0,1fr) 22px}
+  .played-box{padding-top:7px;padding-bottom:6px;gap:5px}
+  .played{column-gap:5px;row-gap:5px}
+}
+@media(max-width:1250px){.phase{padding-left:12px;padding-right:5px}.phase-turn{flex-basis:112px}.phase-track{gap:5px;padding:0 12px}.phase-label{font-size:6.5px}.phase-actions{gap:5px}.phase-action{height:25px;padding-left:9px;padding-right:9px;font-size:6.6px}.phase-action.next{padding-left:10px;padding-right:10px}.mana-pool{width:22.5%}.mana-controls{left:calc(22.5% + 12px)}}
+</style>
+
+<style id="gl-stepped-physical-responsive">
+/*
+  Shared desktop responsiveness for the two redesign options.
+  Reference: 1600 x 747 physical browser-content pixels = 100%.
+  Normal scaling is bounded to 85%-120% and snaps in 5% steps.
+  On unusually short windows only, a stepped height safety may go below 85%
+  (down to 75%) to protect the no-scroll battlefield contract.
+*/
+:root{
+  --ui-scale:1;
+  --logical-w:100vw;
+  --logical-h:100vh;
+  --logical-sidebar-w:15vw;
+  --hero-base-w-logical:98px;
+}
+html,body{width:100%;height:100%;overflow:hidden}
+.app{
+  width:var(--logical-w) !important;
+  height:var(--logical-h) !important;
+  grid-template-columns:85% 15% !important;
+  transform:scale(var(--ui-scale));
+  transform-origin:top left;
+  overflow:hidden;
+}
+.battlefield,.sidebar{height:100% !important}
+:root{
+  --sidebar-w:var(--logical-sidebar-w) !important;
+  --hero-base-w:var(--hero-base-w-logical) !important;
+}
+.concept{right:calc(var(--logical-sidebar-w) + 14px) !important}
+
+/* v39 opponent adjustment only:
+   keep the proven v30-v36 field/card geometry untouched.
+   Opponent circular counters use the mirrored bottom-left corner position. */
+.opponent-field .zone>.count,
+.opponent-field .opponent-mana-pool>.count{
+  left:-4px;
+  right:auto;
+  top:auto;
+  bottom:-4px;
+}
+
+</style>
+
+<link rel="stylesheet" href="option-b-integration.css">
+
+<style id="gl-pvp-v3770-shell-gate">
+body.pvp-lobby-mode > .app{display:none!important}
+body.pvp-lobby-mode{background:#07111d}
+</style>
 </head>
-<body class="pvp-booting">
-  <div id="glBootVeil" role="status" aria-live="polite"><div><span class="gl-boot-loading">GRANDIS LEGACY · LOADING</span><div class="gl-boot-error">Lobby failed to initialize. Check the browser console/network, then retry.</div><button id="glBootRetry" type="button">RETRY</button></div></div>
-  <script>(function(){var done=false,t=setTimeout(function(){if(!document.documentElement.classList.contains('gl-lobby-ready'))document.documentElement.classList.add('gl-lobby-failed')},12000);window.addEventListener('gl-pvp-lobby-ready',function(){if(done)return;done=true;clearTimeout(t);document.documentElement.classList.remove('gl-lobby-failed')},{once:true});document.getElementById('glBootRetry').addEventListener('click',function(){location.reload()})})();</script>
+<body class="pvp-lobby-mode">
+<div class="app ob-lobby-hidden">
+  <main class="battlefield">
+    <div class="concept" aria-hidden="true"></div>
 
-  <div class="app ob-lobby-hidden ob-pvp-shell" aria-hidden="true">
-    <main class="battlefield">
-      <div class="concept" aria-hidden="true"></div>
-      <section class="hand top"><div class="hand-title pvp-player-identity-row pvp-external-identity opponent-identity" data-pvp-identity-side="AI"><span class="pvp-player-identity-container"><strong class="pvp-player-display-name">Opponent</strong><small class="pvp-player-deck-name">Opponent Deck</small></span><span class="pvp-connection-bar connecting" data-pvp-signal-side="AI" data-pvp-signal-state="connecting" aria-label="Connecting"><span></span><span></span><span></span><span></span></span></div><div class="hand-track"></div></section>
-      <section class="field-row opponent-field">
-        <div class="rail-pair opponent-left-rail"><div class="racial-row"></div><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">MAIN<br>DECK</span></div><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">DISCARD<br>PILE</span></div></div>
-        <div class="hero-grid"><div class="hero-lane"><span class="lane-label">HERO RIGHT</span><div class="hero-card"></div></div><div class="hero-lane"><span class="lane-label">HERO CENTER</span><div class="hero-card"></div></div><div class="hero-lane"><span class="lane-label">HERO LEFT</span><div class="hero-card"></div></div></div>
-        <div class="rail-pair opponent-right-rail"><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">SHARD<br>DECK</span></div><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">LEGACY<br>DECK</span></div></div>
-        <div class="mana-pool opponent-mana-pool"><div class="mana-cards" id="opponentManaCards"></div><span class="count" id="opponentManaCount"></span></div>
+    <section class="hand top">
+      <div class="hand-title identity-card" data-ob-identity="opponent"><span class="identity-copy"><strong class="identity-name" id="opponentPlayerIdentityName">LOCAL AI</strong><span class="identity-deck" id="opponentDeckIdentity">AI Deck</span></span></div>
+      <div class="hand-track">
+        <div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div>
+      </div>
+    </section>
+
+    <section class="field-row opponent-field">
+      <!-- Opponent layout is the 180° positional counterpart of the player side.
+           Visuals remain upright; only placement/order is rotated. -->
+      <div class="rail-pair opponent-left-rail">
+        <div class="racial-row"><img class="racial-token" src="assets/ui/Racial-Token-Head.webp" alt="Opponent racial token"><img class="racial-token" src="assets/ui/Racial-Token-Tail.webp" alt="Opponent racial token"></div>
+        <div class="zone"><img src="assets/ui/back-main.webp"><span class="count">51</span><span class="zone-label">MAIN<br>DECK</span></div>
+        <div class="zone"><img src="assets/cards/S1-ARC-006.webp"><span class="count">1</span><span class="zone-label">DISCARD<br>PILE</span></div>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-lane"><span class="lane-label">HERO RIGHT</span><div class="hero-card"><img src="assets/cards/S1-ARC-H001.webp"><span class="hp">90/90</span></div></div>
+        <div class="hero-lane"><span class="lane-label">HERO CENTER</span><div class="hero-card"><img src="assets/cards/S1-WAR-H004.webp"><span class="hp">100/100</span></div></div>
+        <div class="hero-lane"><span class="lane-label">HERO LEFT</span><div class="hero-card"><img src="assets/cards/S1-CLE-H004.webp"><span class="hp">100/100</span></div></div>
+      </div>
+      <div class="rail-pair opponent-right-rail">
+        <div class="zone"><img src="assets/ui/back-shard.webp"><span class="count">12</span><span class="zone-label">SHARD<br>DECK</span></div>
+        <div class="zone"><img src="assets/ui/back-legacy.webp"><span class="count">12</span><span class="zone-label">LEGACY<br>DECK</span></div>
+      </div>
+      <div class="mana-pool opponent-mana-pool">
+        <div class="mana-cards" id="opponentManaCards"></div>
+        <span class="count" id="opponentManaCount">12</span>
+      </div>
+    </section>
+
+    <section class="phase" aria-label="Turn phase tracker">
+      <div class="phase-turn"><div class="turn">YOUR TURN<small>TURN 16</small></div></div>
+      <div class="phase-track" aria-label="Turn phases">
+        <span class="phase-label active">DRAW PHASE</span>
+        <span class="phase-label">DEPLOY PHASE</span>
+        <span class="phase-label">BATTLE PHASE</span>
+        <span class="phase-label">REFORM PHASE</span>
+        <span class="phase-label">END PHASE</span>
+        <span class="ob-phase-tint" aria-hidden="true"></span>
+        <span class="ob-phase-underline" aria-hidden="true"></span>
+        <span class="ob-phase-diamond" aria-hidden="true"></span>
+      </div>
+      <div class="phase-actions">
+        <button class="phase-action" id="phasePrimaryAction" type="button">REPOSITION</button>
+        <button class="phase-action next" type="button">NEXT PHASE</button>
+      </div>
+    </section>
+
+    <section class="field-row player-field">
+      <div class="rail-pair">
+        <div class="zone"><img src="assets/ui/back-legacy.webp"><span class="count">12</span><span class="zone-label">LEGACY<br>DECK</span></div>
+        <div class="zone"><img src="assets/ui/back-shard.webp"><span class="count">8</span><span class="zone-label">SHARD<br>DECK</span></div>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-lane"><span class="lane-label">HERO LEFT</span><span class="trait">Ancestral Focus</span><div class="hero-card"><img src="assets/cards/S1-MAG-H001.webp"><span class="hp">80/80</span></div></div>
+        <div class="hero-lane"><span class="lane-label">HERO CENTER</span><span class="trait">Human Ambition</span><div class="attachment-card left"><img src="assets/cards/S1-WAR-005.webp" alt="Taunt attachment"><span class="attachment-turn" title="1 turn remaining">1</span></div><div class="hero-card"><img src="assets/cards/S1-WAR-H001.webp"><span class="hp">90/90</span></div><div class="attachment-card right"><img src="assets/cards/S1-WAR-013.webp" alt="Enrage attachment"><span class="attachment-turn" title="1 turn remaining">1</span></div></div>
+        <div class="hero-lane"><span class="lane-label">HERO RIGHT</span><div class="hero-card"><img src="assets/cards/S1-THF-H001.webp"><span class="hp">80/80</span></div></div>
+      </div>
+      <div class="rail-pair player-right-rail">
+        <div class="zone"><img src="assets/cards/S1-WAR-002.webp" alt="Player discard top card"><span class="count">1</span><span class="zone-label">DISCARD<br>PILE</span></div>
+        <div class="zone"><img src="assets/ui/back-main.webp"><span class="count">53</span><span class="zone-label">MAIN<br>DECK</span></div>
+        <div class="racial-row"><img class="racial-token" src="assets/ui/Racial-Token-Head.webp" alt="Player racial token"><img class="racial-token" src="assets/ui/Racial-Token-Tail.webp" alt="Player racial token"></div>
+      </div>
+      <div class="mana-pool player-mana-pool">
+        <div class="mana-cards" id="manaCards"></div>
+        <span class="count" id="manaCount">12</span>
+      </div>
+      <div class="mana-controls"><button id="manaAdd" title="Add Shard">+</button><button id="manaRemove" title="Remove Shard">−</button></div>
+    </section>
+
+    <section class="bottom-hud">
+      <div class="action-feedback" id="actionFeedback">Action selected</div>
+      <section class="hand bottom">
+        <div class="hand-track">
+          <div class="hand-card" data-card-name="Health Potion" data-actions="play">
+            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
+            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-ITM-001.webp">
+          </div>
+          <div class="hand-card" data-card-name="Flash Heal" data-actions="play tribute">
+            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
+            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button><button class="tribute" type="button" data-action="Tribute">Tribute</button></div><img src="assets/cards/S1-CLE-005.webp">
+          </div>
+          <div class="hand-card" data-card-name="Tornado" data-actions="play">
+            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
+            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-MAG-007.webp">
+          </div>
+          <div class="hand-card" data-card-name="Poison Mist" data-actions="play">
+            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
+            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-THF-012.webp">
+          </div>
+          <div class="hand-card" data-card-name="Frostbite" data-actions="play">
+            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
+            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-MAG-008.webp">
+          </div>
+          <div class="hand-card" data-card-name="Evasion" data-actions="play">
+            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
+            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-THF-003.webp">
+          </div>
+          <div class="hand-card" data-card-name="Power Slash" data-actions="play">
+            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
+            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-WAR-002.webp">
+          </div>
+        </div>
       </section>
-      <section class="phase" aria-label="Turn phase tracker"><div class="phase-turn"><div class="turn"><small></small></div></div><div class="phase-track" aria-label="Turn phases"><span class="phase-label active">DRAW PHASE</span><span class="phase-label">DEPLOY PHASE</span><span class="phase-label">BATTLE PHASE</span><span class="phase-label">REFORM PHASE</span><span class="phase-label">END PHASE</span><span class="ob-phase-tint" aria-hidden="true"></span><span class="ob-phase-underline" aria-hidden="true"></span><span class="ob-phase-diamond" aria-hidden="true"></span></div><div class="phase-actions"><button class="phase-action" id="phasePrimaryAction" type="button">REPOSITION</button><button class="phase-action next" id="nextPhaseButton" type="button">NEXT PHASE</button></div></section>
-      <section class="field-row player-field">
-        <div class="rail-pair"><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">LEGACY<br>DECK</span></div><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">SHARD<br>DECK</span></div></div>
-        <div class="hero-grid"><div class="hero-lane"><span class="lane-label">HERO LEFT</span><div class="hero-card"></div></div><div class="hero-lane"><span class="lane-label">HERO CENTER</span><div class="hero-card"></div></div><div class="hero-lane"><span class="lane-label">HERO RIGHT</span><div class="hero-card"></div></div></div>
-        <div class="rail-pair player-right-rail"><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">DISCARD<br>PILE</span></div><div class="zone"><img alt=""><span class="count"></span><span class="zone-label">MAIN<br>DECK</span></div><div class="racial-row"></div></div>
-        <div class="mana-pool player-mana-pool"><div class="mana-cards" id="manaCards"></div><span class="count" id="manaCount"></span></div><div class="mana-controls"><button id="manaAdd" title="Add Shard">+</button><button id="manaRemove" title="Remove Shard">−</button></div>
-      </section>
-      <section class="bottom-hud"><div class="action-feedback" id="actionFeedback"></div><section class="hand bottom"><div class="hand-track"></div></section></section>
-      <div class="player-name pvp-player-identity-row pvp-external-identity local-identity" data-pvp-identity-side="PLAYER"><span class="pvp-connection-bar connecting" data-pvp-signal-side="PLAYER" data-pvp-signal-state="connecting" aria-label="Connecting"><span></span><span></span><span></span><span></span></span><span class="pvp-player-identity-container"><strong class="pvp-player-display-name">Player</strong><small class="pvp-player-deck-name">Your Deck</small></span></div>
-    </main>
-    <aside class="sidebar">
-      <section class="sidebox"><h3 class="gold"></h3><div class="tiny"></div></section>
-      <section class="sidebox played-box"><h3>Card Played</h3><div class="played"></div><button class="history-btn" id="fullHistoryBtn" type="button">Full Card History</button></section>
-      <section class="sidebox shared-box" id="sharedPreviewBox"><div class="active-card-pane"><h3>Active Card</h3><div class="active-card-stage"></div></div><button class="battle-log-btn" id="battleLogBtn" type="button">Battle Log</button><div class="preview-overlay"><img id="hoverPreviewCard" class="preview-card" alt="Card preview"></div></section>
-      <div class="bottom-actions"><span class="match-timer" id="matchTimer" data-pvp-match-timer aria-label="Match timer inactive"></span><button type="button">Sound On</button><button class="danger" type="button">Surrender</button></div>
-      <section class="battlelog-panel" id="battleLogPanel" aria-hidden="true"><div class="history-head"><h3>Battle Log</h3><button class="history-close" id="battleLogClose" type="button">Close</button></div></section>
-      <section class="history-panel" id="historyPanel" aria-hidden="true"><div class="history-head"><h3>Full Card History</h3><button class="history-close" id="historyClose" type="button">Close</button></div><div class="history-grid"></div></section>
-    </aside>
+    </section>
+    <div class="player-name identity-card" data-ob-identity="player"><span class="identity-copy"><strong class="identity-name" id="playerIdentityName">PLAYER</strong><span class="identity-deck" id="playerDeckIdentity">Player Deck</span></span></div>
+  </main>
+
+  <aside class="sidebar">
+    <section class="sidebox"><h3 class="gold">Your Turn</h3><div class="tiny">Round 1 · Player<br>Phase: Draw<br>AI: Waiting<br><span style="color:#70bfff">PLAYER · Draw Phase</span></div></section>
+    <section class="sidebox played-box"><h3>Card Played</h3><div class="played">
+      <div class="played-card"><img src="assets/cards/S1-THF-003.webp"><span class="played-owner">YOU</span></div>
+      <div class="played-card"><img src="assets/cards/S1-WAR-013.webp"><span class="played-owner">YOU</span></div>
+      <div class="played-card"><img src="assets/cards/S1-CLE-010.webp"><span class="played-owner">OPPONENT</span></div>
+      <div class="played-card"><img src="assets/cards/S1-ARC-006.webp"><span class="played-owner">OPPONENT</span></div>
+      <div class="played-card"><img src="assets/cards/S1-THF-012.webp"><span class="played-owner">YOU</span></div>
+      <div class="played-card"><img src="assets/cards/S1-WAR-002.webp"><span class="played-owner">YOU</span></div>
+    </div><button class="history-btn" id="fullHistoryBtn" type="button">Full Card History</button></section>
+    <section class="sidebox shared-box" id="sharedPreviewBox">
+      <div class="active-card-pane">
+        <h3>Active Card</h3>
+        <div class="active-card-stage">
+          <div class="active-card-visual">
+            <img src="assets/cards/S1-ITM-018.webp" alt="Magic Compass">
+            <span class="active-owner">YOU</span>
+          </div>
+        </div>
+      </div>
+      <button class="battle-log-btn" id="battleLogBtn" type="button">Battle Log</button>
+      <div class="preview-overlay"><img id="hoverPreviewCard" class="preview-card" alt="Card preview"></div>
+    </section>
+    <div class="bottom-actions"><span class="match-timer" id="matchTimer" aria-label="Match time">00:00</span><button>Sound On</button><button class="danger">Surrender</button></div>
+    <section class="battlelog-panel" id="battleLogPanel" aria-hidden="true">
+      <div class="history-head"><h3>Battle Log</h3><button class="history-close" id="battleLogClose" type="button">Close</button></div>
+      <div class="logline"><b>Player</b> entered Draw Phase.</div>
+      <div class="logline">Vaelis Stormweave is Ready.</div>
+      <div class="logline">Draxen Blacksand is Ready.</div>
+      <div class="logline">Finnian Copperpot is Ready.</div>
+      <div class="logline"><b>AI</b> completed its previous turn.</div>
+    </section>
+    <section class="history-panel" id="historyPanel" aria-hidden="true"><div class="history-head"><h3>Full Card History</h3><button class="history-close" id="historyClose" type="button">Close</button></div><div class="history-grid">
+      <div class="played-card"><img src="assets/cards/S1-THF-003.webp"><span class="played-owner">YOU</span></div>
+      <div class="played-card"><img src="assets/cards/S1-WAR-013.webp"><span class="played-owner">YOU</span></div>
+      <div class="played-card"><img src="assets/cards/S1-CLE-010.webp"><span class="played-owner">OPPONENT</span></div>
+      <div class="played-card"><img src="assets/cards/S1-ARC-006.webp"><span class="played-owner">OPPONENT</span></div>
+      <div class="played-card"><img src="assets/cards/S1-THF-012.webp"><span class="played-owner">YOU</span></div>
+      <div class="played-card"><img src="assets/cards/S1-WAR-002.webp"><span class="played-owner">YOU</span></div>
+      <div class="played-card"><img src="assets/cards/S1-MAG-008.webp"><span class="played-owner">YOU</span></div>
+      <div class="played-card"><img src="assets/cards/S1-ITM-001.webp"><span class="played-owner">YOU</span></div>
+    </div></section>
+  </aside>
+</div>
+<script id="gl-stepped-physical-responsive-js">
+(() => {
+  const REF_PHYSICAL_W = 1600;
+  const REF_PHYSICAL_H = 747;
+  const STEP = 0.05;
+  const NORMAL_MIN = 0.85;
+  const NORMAL_MAX = 1.20;
+  const EMERGENCY_MIN = 0.75;
+  const root = document.documentElement;
+
+  const round2 = v => Math.round(v * 100) / 100;
+  const snapNearest = v => round2(Math.round(v / STEP) * STEP);
+  const snapDown = v => round2(Math.floor((v + 1e-9) / STEP) * STEP);
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(v, hi));
+
+  function updateResponsiveScale(){
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    const cssW = Math.max(1, window.innerWidth);
+    const cssH = Math.max(1, window.innerHeight);
+    const physicalW = cssW * dpr;
+    const physicalH = cssH * dpr;
+
+    // Width determines the intended visual size and changes only in 5% steps.
+    let scale = clamp(snapNearest(physicalW / REF_PHYSICAL_W), NORMAL_MIN, NORMAL_MAX);
+
+    // Height only acts as a no-scroll safety ceiling. It also moves in 5% steps,
+    // so small browser-chrome/resize changes do not make the whole UI jitter.
+    const heightCeiling = snapDown(physicalH / REF_PHYSICAL_H);
+    if (heightCeiling < scale) scale = Math.max(EMERGENCY_MIN, heightCeiling);
+    scale = round2(scale);
+
+    // Inverse logical canvas keeps the composition filling the browser area.
+    const logicalW = cssW / scale;
+    const logicalH = cssH / scale;
+
+    root.style.setProperty('--ui-scale', String(scale));
+    root.style.setProperty('--logical-w', logicalW + 'px');
+    root.style.setProperty('--logical-h', logicalH + 'px');
+    root.style.setProperty('--logical-sidebar-w', (logicalW * 0.15) + 'px');
+    root.style.setProperty('--hero-base-w-logical', (logicalW * 0.0675) + 'px');
+    root.dataset.uiScale = String(Math.round(scale * 100));
+    if(window.syncPlayerManaPoolToHeroLeft){
+      requestAnimationFrame(()=>window.syncPlayerManaPoolToHeroLeft());
+    }
+    if(window.syncPlayerHandToHeroCenter){
+      requestAnimationFrame(()=>window.syncPlayerHandToHeroCenter());
+    }
+    if(window.syncOpponentHand){
+      requestAnimationFrame(()=>window.syncOpponentHand());
+    }
+  }
+
+  updateResponsiveScale();
+  window.addEventListener('resize', updateResponsiveScale, {passive:true});
+})();
+</script>
+
+
+  <div class="ob-engine-host" aria-hidden="true">
+    <div id="app"></div>
+    <div id="choiceOverlay"><section><h2 id="choiceTitle"></h2><button id="choiceClose"></button><div id="choiceBody"></div><button id="choiceConfirm"></button></section></div>
+    <div id="infoOverlay"><section><h2 id="infoTitle"></h2><button id="infoClose"></button><div id="infoBody"></div></section></div>
+    <div id="responseOverlay"><section><button id="responseClose"></button><div id="responseBody"></div><footer id="responseFooter"></footer></section></div>
+    <div id="previewOverlay"><section><button id="previewClose"></button><div id="previewBody"></div></section></div>
+    <div id="hoverCardZoom" hidden><img id="hoverCardZoomImage" alt=""></div>
+    <div id="glAnimationLayer"></div>
   </div>
-
-  <div id="app" aria-live="polite"><noscript>Grandis Legacy PvP requires JavaScript enabled.</noscript></div>
-  <div id="choiceOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Card Choice"><section class="choice-panel"><header class="choice-head"><h2 id="choiceTitle">Choice</h2><button id="choiceClose" type="button">Close</button></header><div id="choiceBody" class="choice-body"></div><footer class="choice-foot"><button id="choiceConfirm" type="button">Confirm</button></footer></section></div>
-  <div id="infoOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Information"><section class="info-panel"><header class="info-head"><h2 id="infoTitle">Info</h2><button id="infoClose" type="button">Close</button></header><div id="infoBody" class="info-body"></div></section></div>
-  <div id="responseOverlay" class="modal-overlay response-overlay" role="dialog" aria-modal="true" aria-label="Response Window"><section class="response-panel"><header class="response-head"><h2>Response Window</h2><button id="responseClose" type="button">Close</button></header><div id="responseBody" class="response-body"></div><footer id="responseFooter" class="response-foot"></footer></section></div>
-  <div id="previewOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Card Preview"><section class="preview-panel"><header class="preview-head"><h2>Card Preview</h2><button id="previewClose" type="button">Close</button></header><div id="previewBody" class="preview-body"></div></section></div>
-  <div id="hoverCardZoom" class="hover-card-zoom" hidden aria-hidden="true"><img id="hoverCardZoomImage" alt="Card zoom"></div>
-  <div id="glAnimationLayer" class="gl-animation-layer" aria-hidden="true"></div>
   <script>window.GL_APP_MODE="PVP";</script>
-  <script src="shared-ui/battlefield-ui.js?v=2.53"></script>
-  <script src="config.js?v=gl-pvp-3.51-minor-correction-r2-2026-09-28"></script>
-  <script src="js/static-data.js?v=gl-pvp-3.51-minor-correction-r2-2026-09-28"></script>
-  <script src="js/pvp-presentation-adapter.js?v=3.76.6"></script>
-  <script src="js/runtime-authority.js?v=gl-pvp-3.51-minor-correction-r2-2026-09-28"></script>
-  <script src="js/app.bundle.js?v=3.76.6"></script>
-  <script src="js/pvp-network.js?v=3.76.6"></script>
-  <script src="js/pvp-responsive-scale.js?v=3.76.6"></script>
-  <script src="js/pvp-gameplay-presentation.js?v=3.76.6"></script>
-  <script src="js/mobile-app-nav.js?v=gl-pvp-3.51-minor-correction-r2-2026-09-28"></script>
+  <script src="config.js"></script>
+  <script src="engine/shared-ui/battlefield-ui.js"></script>
+  <script src="engine/js/static-data.js"></script>
+  <script src="engine/js/runtime-authority.js"></script>
+  <script src="engine/shared-app/active-starters.js"></script>
+  <script>window.GL_PVP_STARTER_DECK_OPTIONS=window.GL_ACTIVE_STARTER_DECKS||{};</script>
+  <script src="engine/shared-app/app.bundle.js"></script>
+  <script src="js/pvp-presentation-adapter.js"></script>
+  <script src="js/pvp-network.js"></script>
+  <script src="option-b-runtime.js"></script>
+
 </body>
 </html>

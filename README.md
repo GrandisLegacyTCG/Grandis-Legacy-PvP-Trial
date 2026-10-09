@@ -1,7 +1,18 @@
-# Grandis Legacy PvP v3.76.6
+# Grandis Legacy PvP — v3.51
 
-Authority remains PvP v3.51. Visible gameplay presentation remains VS AI v6.90.7.
+## Release identity
 
-This build preserves the solved v3.76.4 Lobby and targets battlefield presentation only: native-renderer paint leakage is hard-blocked, legacy generic CSS is isolated from the external v6 shell, the Coin Flip background is fully opaque until the presentation is ready, and viewport scaling now supports tablet widths without using devicePixelRatio.
+- PvP Version: **v3.51**
+- Package Version: **3.0.51**
+- Website mirror target: **v1.40**
+- Date: **2026-09-28**
 
-See `release/PVP_v3.76.6_RELEASE_NOTES.md`.
+## What v3.51 means
+
+v3.51 is a **version promotion of the completed v3.50 staged correction** so the final corrected build has a distinct release number and is not confused with earlier v3.50 packages. No new gameplay rule is introduced by this promotion.
+
+The promoted build retains the completed correction set: render continuity, stable Timer/Connection presentation, authoritative mobile Main Deck Draw animation, nested Response and held-Attack lifecycle fixes, authoritative battle VFX/SFX delivery, custom PvP Main Deck legality of **50–60 inclusive**, 25-character visible deck names, and the external Connection Bar layout.
+
+Official Starter Deck definitions remain 60 cards. PvP remains server authoritative. Source Authority remains v1.9.5. VS AI v6.46 / Tutorial v0.69 remain reference-only and are not modified by this release promotion.
+
+See `release/PVP_v3.51_RELEASE_NOTES.md` and `release/PVP_v3.51_VERSION_PROMOTION_AUDIT_2026-09-28.md`.

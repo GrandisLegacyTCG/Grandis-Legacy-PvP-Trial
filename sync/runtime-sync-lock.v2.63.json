@@ -91,7 +91,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "afd0febcdef17fc6bd6ee76a480041ebd18678e18202c17c6dac58889a5ad184"
+      "sha256": "7cb8f44bc66d3453ca403eebe43fc8747e5ceec6d5fe841468e629f76bfc4e65"
     },
     {
       "path": "public/css/app.css",
@@ -99,11 +99,11 @@
     },
     {
       "path": "public/index.html",
-      "sha256": "46ca45be70002225bbf10a3e58dc0a32484f8d7575eb61f55f644c996bd3cd0f"
+      "sha256": "fc59aa45a7bd795662ef2203302f6277d8ff43800b1b01e29f3b60e3a406ac2a"
     },
     {
       "path": "public/js/app.bundle.js",
-      "sha256": "0bfbbbd8301c7356aeebd1a76bd7fbee2ade5821d916f05f59fed4aa768ef826"
+      "sha256": "ff42da9f22fedb80dda944df28699a6d3eeae9d1fa8fb5aa05321abd766713e7"
     },
     {
       "path": "public/js/mobile-app-nav.js",
@@ -111,7 +111,7 @@
     },
     {
       "path": "public/js/pvp-network.js",
-      "sha256": "90d552b6bb5dcb8a0b918608dfb77c2368479a7cd70c8f42e09f96cc40cccc20"
+      "sha256": "c2ec4d1402f5939f3918ee23564b6ccb483cabed1800212a3844b3a039aa9419"
     },
     {
       "path": "public/js/runtime-authority.js",
@@ -395,7 +395,7 @@
     },
     {
       "path": "server.js",
-      "sha256": "8d9671da0aad5740889d2dc502b7479a44cbc247e8963db43915aa01ababc96d"
+      "sha256": "080678887b5197a2306c6479d3ce150ad7798d09ea737c5c65faa5330e6aa9f8"
     },
     {
       "path": "server/gameplay-intent-router.mjs",
