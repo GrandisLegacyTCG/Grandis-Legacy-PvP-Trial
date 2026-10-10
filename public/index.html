@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Grandis Legacy — PvP v3.79.0</title>
+<title>Grandis Legacy — PvP v3.80.0</title>
 <style>
 @font-face{font-family:Noto;src:url('assets/fonts/NotoSans-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 :root{
@@ -54,13 +54,6 @@ button{font:inherit}
 .hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected,.hand.top .hand-card:hover{transform:translateY(0) scale(1.04)}
 .hand.bottom .hand-card:after{content:"";position:absolute;left:-4px;right:-4px;top:-34px;bottom:-18px;z-index:-1;pointer-events:auto}
 /* v6.91.3: root-cause correction — moved-stylesheet asset URLs fixed; PLAYER Draw keeps the external staged Main Deck + Shard presentation before Deploy. */
-/* Identity UI remains the approved v6.90.9 behavior: max 25 visible characters for each name/deck line. */
-.identity-card{position:absolute;z-index:90;width:max-content;max-width:calc(100% - 16px);height:32px;display:flex;align-items:center;padding:4px 7px;border:1px solid rgba(244,211,94,.34);border-radius:7px;background:rgba(3,10,17,.90);color:#dbe7f1;overflow:hidden}
-.identity-copy{min-width:0;width:100%;display:flex;flex-direction:column;justify-content:center;line-height:1.02}
-.identity-name{font-size:9px;font-weight:900;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f4f7fb}
-.identity-deck{margin-top:2px;font-size:8px;font-weight:720;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#9eb2c4}
-.hand-title.identity-card{left:8px;top:5px;text-align:right}
-.player-name.identity-card{right:8px;bottom:2px;text-align:left}
 
 /* v6.83: player Hand keeps the light fan with a small edge-only overlap. */
 .hand.bottom .hand-card{margin-left:-5px;transform-origin:50% 100%;}
@@ -272,7 +265,6 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     <div class="concept" aria-hidden="true"></div>
 
     <section class="hand top">
-      <div class="hand-title identity-card" data-gl-identity="opponent"><span class="identity-copy"><strong class="identity-name" id="opponentPlayerIdentityName">LOCAL AI</strong><span class="identity-deck" id="opponentDeckIdentity">AI Deck</span></span></div>
       <div class="hand-track">
         <div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div>
       </div>
@@ -376,7 +368,6 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
         </div>
       </section>
     </section>
-    <div class="player-name identity-card" data-gl-identity="player"><span class="identity-copy"><strong class="identity-name" id="playerIdentityName">PLAYER</strong><span class="identity-deck" id="playerDeckIdentity">Player Deck</span></span></div>
   </main>
 
   <aside class="sidebar">

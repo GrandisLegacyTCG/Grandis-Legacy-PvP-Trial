@@ -1,6 +1,6 @@
-# Grandis Legacy PvP v3.79.0
+# Grandis Legacy PvP v3.80.0
 
-Grandis Legacy PvP v3.79.0 is an **architecture reset**. It is not a continuation of the v3.78.x compatibility stack.
+Grandis Legacy PvP v3.80.0 is a **privacy/lifecycle hardening release** on the v6.91.3-native PvP handshake introduced in v3.79. It does not return to the v3.78.x compatibility stack.
 
 ## Locked bases
 
@@ -34,7 +34,7 @@ v6.91.3 desktop / tablet / mobile UI
 
 The active remote human is always executed as v6.91.3's local `PLAYER` in an actor-local seat orientation. This prevents the multiplayer server from invoking v6 Local AI for Player 2.
 
-See `ARCHITECTURE_V379.md` for the full contract.
+See `ARCHITECTURE_V380.md` for the full contract.
 
 ## Asset policy
 

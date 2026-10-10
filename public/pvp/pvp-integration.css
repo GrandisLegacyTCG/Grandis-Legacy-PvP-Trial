@@ -1,4 +1,4 @@
-/* v3.79.0 integration boundary: v6.91.3 owns gameplay presentation; PvP only gates transport/lifecycle. */
+/* v3.80.0 integration boundary: v6.91.3 owns gameplay presentation; PvP only gates transport/lifecycle. */
 html.gl-pvp-game-active .gl-lobby-overlay,
 .gl-lobby-overlay{display:none!important}
 

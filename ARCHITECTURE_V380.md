@@ -1,8 +1,8 @@
-# PvP v3.79.0 Architecture
+# PvP v3.80.0 Architecture
 
 ## 1. Purpose
 
-v3.79.0 resets the PvP integration around the current VS AI runtime rather than forcing the old PvP browser engine into a newer presentation family.
+v3.80.0 hardens the v6.91.3-native PvP integration introduced in v3.79. The architecture continues to use the current VS AI runtime rather than forcing the old PvP browser engine into a newer presentation family.
 
 ### Bases
 
@@ -17,7 +17,7 @@ PvP v3.51 contributes **ideas only** in this release. No v3.51 runtime/authority
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.79.0 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.0 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -26,7 +26,7 @@ The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapt
 - presentation renders the authoritative result;
 - private information is masked before it crosses the viewer boundary.
 
-The exact evidence hashes are recorded in `release/V379_DONOR_PARITY.json`.
+The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
 
 ## 3. Current handshake
 
@@ -158,7 +158,7 @@ The exact donor engine remains the gameplay/read surface; the PvP layer does not
 
 ## 9. Asset boundary
 
-Standalone v3.79.0 resolves visible media locally:
+Standalone v3.80.0 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -171,7 +171,7 @@ Exact donor files may contain dormant website/CDN strings. Those do not define t
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.79.0 deliberately does not ship
+## 10. What v3.80.0 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;

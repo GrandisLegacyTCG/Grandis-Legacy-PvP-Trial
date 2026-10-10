@@ -165,7 +165,7 @@ function placeBattlefieldHoverPreview(kind,anchor){
   const cs=getComputedStyle(battlefieldHoverPreview),w=parseFloat(cs.width)||259,h=parseFloat(cs.height)||362,g=8,vp=uiViewportSize(),vw=vp.width,vh=vp.height;
   let left=g,top=g;
   if(kind==='hand'){
-    const playerBox=uiRect(document.querySelector('.player-name'));if(!playerBox)return;
+    const playerBox=uiRect(document.querySelector('.hand.bottom'));if(!playerBox)return;
     const centerX=playerBox.left+playerBox.width/2;left=centerX-w/2+68;top=playerBox.top-6-h;
   }else if(kind==='hero'){
     // v6.89: restore the v6.83 contextual Hero/Legacy hover. Keep the preview close
@@ -373,18 +373,7 @@ function uiRect(el){
     return{left,right,top,bottom,width:right-left,height:bottom-top,x:left,y:top};
   }catch(_){return r;}
 }
-const IDENTITY_MAX_CHARS=25,IDENTITY_VISIBLE_PREFIX=22;
-function clampIdentityText(value,fallback){const raw=String(value==null||value===''?fallback:value).trim(),chars=Array.from(raw);if(chars.length<=IDENTITY_MAX_CHARS)return raw;return chars.slice(0,IDENTITY_VISIBLE_PREFIX).join('').replace(/\s+$/u,'')+'...';}
-function syncBattlefieldIdentity(){
-  const setup=E()?.getDeckSetupState?.()||{};
-  const playerName=document.getElementById('playerIdentityName'),opponentName=document.getElementById('opponentPlayerIdentityName');
-  const playerDeck=document.getElementById('playerDeckIdentity'),opponentDeck=document.getElementById('opponentDeckIdentity');
-  if(playerName)playerName.textContent=clampIdentityText('PLAYER','PLAYER');
-  if(opponentName)opponentName.textContent=clampIdentityText('LOCAL AI','LOCAL AI');
-  if(playerDeck){const full=String(setup.player?.deck_name||'Player Deck');playerDeck.textContent=clampIdentityText(full,'Player Deck');playerDeck.title=full;}
-  if(opponentDeck){const full=String(setup.ai?.deck_name||'AI Deck');opponentDeck.textContent=clampIdentityText(full,'AI Deck');opponentDeck.title=full;}
-}
-function syncPlayerNameBox(){syncBattlefieldIdentity();}
+function syncPlayerNameBox(){}
 function lockPrimaryActionWidth(){
   if(!primary)return;
   const label=primary.textContent,cls=primary.className;
@@ -454,7 +443,7 @@ function renderLobby(){
   lobbyOverlay.classList.add('open');appRoot?.classList.add('gl-lobby-hidden');
   const opts=B()?.getStarterDeckOptions?.()||{},state=E()?.getDeckSetupState?.()||{},keys=Object.keys(opts);
   const host=document.getElementById('glLobbyDecks'),err=document.getElementById('glLobbyError');if(!host||!err)return;err.textContent=lobbyErrorText||'';err.classList.toggle('show',!!lobbyErrorText);
-  const sideBlock=(side,data)=>{const selected=state.selectedDeckKey?.[side]||keys[0]||'',imported=selected==='IMPORTED',optionHtml=keys.map(k=>'<option value="'+esc(k)+'" '+(selected===k?'selected':'')+'>'+esc(opts[k]?.label||k)+'</option>').join('')+(imported?'<option value="IMPORTED" selected>'+esc(data?.deck_name||'Imported Deck')+'</option>':'');return '<section class="gl-lobby-deck" data-lobby-side="'+side+'"><header><h2>'+(side==='PLAYER'?'Player Deck':'AI Deck')+'</h2><span class="gl-lobby-valid">VALID</span></header><div class="gl-lobby-picker"><select aria-label="'+(side==='PLAYER'?'Player':'AI')+' deck selector" data-lobby-select="'+side+'">'+optionHtml+'</select><button type="button" data-lobby-import="'+side+'">Import Deck</button><input type="file" data-lobby-file="'+side+'" accept="application/json,.json" hidden></div>'+deckFormationHtml(side)+'</section>'};
+  const sideBlock=(side,data)=>{const selected=state.selectedDeckKey?.[side]||keys[0]||'',imported=selected==='IMPORTED',optionHtml=keys.map(k=>'<option value="'+esc(k)+'" '+(selected===k?'selected':'')+'>'+esc(opts[k]?.label||k)+'</option>').join('')+(imported?'<option value="IMPORTED" selected>'+esc(data?.deck_name||'Imported Deck')+'</option>':'');return '<section class="gl-lobby-deck" data-lobby-side="'+side+'"><header><h2>'+(side==='PLAYER'?'Your Deck':'Opponent Deck')+'</h2><span class="gl-lobby-valid">VALID</span></header><div class="gl-lobby-picker"><select aria-label="'+(side==='PLAYER'?'Player':'AI')+' deck selector" data-lobby-select="'+side+'">'+optionHtml+'</select><button type="button" data-lobby-import="'+side+'">Import Deck</button><input type="file" data-lobby-file="'+side+'" accept="application/json,.json" hidden></div>'+deckFormationHtml(side)+'</section>'};
   host.innerHTML=sideBlock('PLAYER',state.player)+sideBlock('AI',state.ai);
   host.querySelectorAll('[data-lobby-select]').forEach(sel=>sel.onchange=()=>{const side=sel.dataset.lobbySelect,r=E().selectDeck?.(side,sel.value);if(!r?.ok)lobbyErrorText=r?.error||'Could not select deck.';else lobbyErrorText='';renderLobby()});
   host.querySelectorAll('[data-lobby-import]').forEach(btn=>btn.onclick=()=>host.querySelector('[data-lobby-file="'+btn.dataset.lobbyImport+'"]')?.click());
@@ -469,7 +458,7 @@ function fairCoinOutcome(){try{const a=new Uint32Array(1);crypto.getRandomValues
 function renderCoinChoice(){const body=coinOverlay.querySelector('.gl-coin-body');body.innerHTML='<p>Choose Heads or Tails. The winner takes the first Draw Phase.</p><div class="gl-coin-actions"><button type="button" data-coin-choice="HEADS"><img src="'+coinFaceSrc('HEADS')+'" alt="Heads"><span>Heads</span></button><button type="button" data-coin-choice="TAILS"><img src="'+coinFaceSrc('TAILS')+'" alt="Tails"><span>Tails</span></button></div>';body.querySelectorAll('[data-coin-choice]').forEach(btn=>btn.onclick=()=>runCoinFlip(btn.dataset.coinChoice));coinOverlay.classList.add('open')}
 function animateCoinFlipResolved(choice,outcome,done){openingChoice=choice==='TAILS'?'TAILS':'HEADS';openingOutcome=outcome==='TAILS'?'TAILS':'HEADS';openingFirstSide=openingChoice===openingOutcome?'PLAYER':'AI';const body=coinOverlay.querySelector('.gl-coin-body');let face=openingOutcome==='HEADS'?'TAILS':'HEADS';body.innerHTML='<p>Flipping the coin...</p><div class="gl-coin-flip-stage"><img src="'+coinFaceSrc(face)+'" alt="Coin"></div>';const im=body.querySelector('img');let step=0;const totalSteps=8,halfDuration=72;B()?.playOpeningCoinSound?.();const runStep=()=>{if(step>=totalSteps){im.src=coinFaceSrc(openingOutcome);im.alt=openingOutcome==='HEADS'?'Heads':'Tails';im.style.transition='none';im.style.transform='translateY(0) scaleX(1)';const text=body.querySelector('p');if(text)text.textContent=(openingOutcome==='HEADS'?'Heads':'Tails')+'!';setTimeout(()=>done?.(),1000);return}const progress=(step+1)/totalSteps,lift=Math.round(Math.sin(progress*Math.PI)*22);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.45,0,.55,1)';im.style.transform='translateY(-'+lift+'px) scaleX(.04)';setTimeout(()=>{face=face==='HEADS'?'TAILS':'HEADS';im.src=coinFaceSrc(face);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.2,.75,.3,1)';im.style.transform='translateY(-'+lift+'px) scaleX(1)';setTimeout(()=>{step++;runStep()},halfDuration)},halfDuration)};runStep()}
 function runCoinFlip(choice){const outcome=fairCoinOutcome();animateCoinFlipResolved(choice,outcome,renderCoinResult)}
-function renderCoinResult(){const body=coinOverlay.querySelector('.gl-coin-body'),won=openingFirstSide==='PLAYER';body.innerHTML='<div class="gl-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+(won?'YOU WON THE COIN FLIP':'LOCAL AI WON THE COIN FLIP')+'</strong><p>'+(won?'You will take the first turn.':'Local AI will take the first turn.')+'</p></div><div class="gl-coin-result"><div><span>Your choice</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+(openingChoice==='TAILS'?'Tails':'Heads')+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+(openingOutcome==='TAILS'?'Tails':'Heads')+'"></div></div><button class="gl-coin-start" type="button">Start Game</button>';body.querySelector('.gl-coin-start').onclick=beginOpeningPresentation}
+function renderCoinResult(){const body=coinOverlay.querySelector('.gl-coin-body'),won=openingFirstSide==='PLAYER',opp=window.GL_APP_MODE==='PVP'?(window.GL_PVP_HOST?.identity?.().opponentName||'OPPONENT'):'OPPONENT';body.innerHTML='<div class="gl-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+(won?'YOU WON THE COIN FLIP':esc(opp)+' WON THE COIN FLIP')+'</strong><p>'+(won?'You will take the first turn.':esc(opp)+' will take the first turn.')+'</p></div><div class="gl-coin-result"><div><span>Your choice</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+(openingChoice==='TAILS'?'Tails':'Heads')+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+(openingOutcome==='TAILS'?'Tails':'Heads')+'"></div></div><button class="gl-coin-start" type="button">Start Game</button>';body.querySelector('.gl-coin-start').onclick=beginOpeningPresentation}
 function resetPresentationState(){presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;glPendingDrawReservations.PLAYER.length=0;glPendingDrawReservations.AI.length=0;glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();glOpeningHiddenShardUids.clear();glExternalDrawSequence=Promise.resolve();glExternalManaDrawSequence=Promise.resolve();glExternallyPresentedShardUids.clear();resultShown=false;clearResultTimer();resultOverlay.classList.remove('open');closeLobbyProgression();resetMatchTimer()}
 function startMatchFromLobby(){
   lobbyErrorText='';const r=E().prepareLocalMatch?.();if(!r?.ok){lobbyErrorText=r?.error||'Could not start match.';renderLobby();return}
@@ -816,11 +805,11 @@ function renderPool(host,countEl,pool,side){
     const openingHidden=glOpeningHiddenShardUids.has((side==='AI'?'AI':'PLAYER')+'|'+String(sh.uid));
     wrap.className='mana-card'+(selected.has(String(sh.uid))||isBlindSelected?' gl-selected':'')+(selectable.has(String(sh.uid))||(blindOpponent&&!blindInCenter)?' gl-class-choice':'')+(sh?.kind==='CLASS'&&!(blindOpponent&&!blindInCenter)?' gl-class-shard':'')+(openingHidden?' gl-presentation-hidden':'');
     wrap.dataset.uid=sh.uid||'';wrap.dataset.shardKind=sh?.kind||'';
-    const im=document.createElement('img');
-    im.src=(blindOpponent&&!blindInCenter)?'assets/ui/back-shard.webp':shardArt(sh);
-    im.alt=(blindOpponent&&!blindInCenter)?'Face-down opponent Shard':((sh.class_name||'Mana')+' Shard');
+    const im=document.createElement('img'),hiddenShard=!!sh?.hidden_identity;
+    im.src=((blindOpponent&&!blindInCenter)||hiddenShard)?'assets/ui/back-shard.webp':shardArt(sh);
+    im.alt=((blindOpponent&&!blindInCenter)||hiddenShard)?'Face-down Shard':((sh.class_name||'Mana')+' Shard');
     wrap.appendChild(im);host.appendChild(wrap);cards.push(wrap);
-    if(!(blindOpponent&&!blindInCenter)){if(side==='PLAYER')bindBattlefieldPreview(im,'shard',wrap);else bindPreview(im);}
+    if(!(blindOpponent&&!blindInCenter)&&!hiddenShard){if(side==='PLAYER')bindBattlefieldPreview(im,'shard',wrap);else bindPreview(im);}
     if(blindOpponent&&!blindInCenter){
       wrap.addEventListener('click',()=>{intent('selectOpponentManaChoice',[blindIdx])});
     }else if(selectable.has(String(sh.uid))&&!blindInCenter){
@@ -1546,7 +1535,7 @@ function renderPhase(s){
     else if(mode==='decline-swap'){if(p?.type==='optional_swap')intent('performOptionalSwapDecision',[false]);else if(p?.type==='optional_target_swap')intent('performOptionalTargetSwapDecision',[false])}
     else if(mode==='reposition')intent('openManualRepositionChoice',[]);
   };
-  const blocked=s.turn!=='PLAYER'||!!s.pending||!!s.responseWindow||!!uiResponseSourceChoice||s.gameOver||s.phase==='Draw';nextBtn.disabled=blocked;nextBtn.textContent=s.phase==='End'?'END TURN':'NEXT PHASE';nextBtn.onclick=()=>intent('advancePhase',[]);renderSwap(s);
+  const drawWaiting=s.phase==='Draw'&&(s.drawPresentationPending||s.drawPhaseResolvedFor!=='PLAYER');const blocked=s.turn!=='PLAYER'||!!s.pending||!!s.responseWindow||!!uiResponseSourceChoice||s.gameOver||drawWaiting;nextBtn.disabled=blocked;nextBtn.textContent=s.phase==='End'?'END TURN':'NEXT PHASE';nextBtn.onclick=()=>intent('advancePhase',[]);renderSwap(s);
 }
 function renderSwap(s){
   const p=s.pending,descriptors=[];
@@ -1747,16 +1736,18 @@ function repairBlockingStateIfNeeded(s){
   return !!rv?.ok;
 }
 function clearResultTimer(){if(resultCleanupTimer){clearTimeout(resultCleanupTimer);resultCleanupTimer=null;}}
-function returnToLobbyAfterResult(){clearResultTimer();resultOverlay.classList.remove('open');try{window.location.reload()}catch{location.href=location.href}}
+function returnToLobbyAfterResult(){clearResultTimer();resultOverlay.classList.remove('open');if(window.GL_APP_MODE==='PVP'&&window.GL_PVP_HOST?.returnToLobby){window.GL_PVP_HOST.returnToLobby();return}try{window.location.reload()}catch{location.href=location.href}}
 function showGameResult(s){
+  if(window.GL_APP_MODE==='PVP'&&window.GL_PVP_HOST?.getSnapshot?.()?.match?.status!=='finished'){resultOverlay.classList.remove('open');return}
   if(!s?.gameOver||resultShown)return;
   resultShown=true;clearResultTimer();stopMatchTimer();
-  const winner=s.winner==='PLAYER'?'YOU':(s.winner==='AI'?'LOCAL AI':String(s.winner||'UNKNOWN'));
+  const pvpIdentity=window.GL_APP_MODE==='PVP'?window.GL_PVP_HOST?.identity?.():null;
+  const winner=s.winner==='PLAYER'?'YOU':(s.winner==='AI'?(pvpIdentity?.opponentName||'OPPONENT'):String(s.winner||'UNKNOWN'));
   const reason=String(s.gameEndReason||'Game ended.');
   const phase=phaseName(s.phase)||'Unknown';
   const body=resultOverlay.querySelector('.gl-result-body');
   resultOverlay.querySelector('#glResultTitle').textContent='Game Result';
-  body.innerHTML='<div class="gl-result-summary"><section class="gl-result-winner"><span>Winner</span><strong>'+esc(winner)+'</strong></section><section class="gl-result-reason"><span>Reason</span><strong>'+esc(reason)+'</strong></section><section class="gl-result-round"><span>Round</span><strong>'+Number(s.round||1)+'</strong><small>'+esc((s.turn==='PLAYER'?'Player':s.turn==='AI'?'Local AI':String(s.turn||''))+' · '+phase+' Phase')+'</small></section></div><div class="gl-result-actions"><div class="gl-result-buttons"><button type="button" class="gl-result-close">CLOSE</button><button type="button" class="gl-result-back">BACK TO LOBBY</button></div><small>Returns to the lobby automatically after 1 minute.</small></div>';
+  body.innerHTML='<div class="gl-result-summary"><section class="gl-result-winner"><span>Winner</span><strong>'+esc(winner)+'</strong></section><section class="gl-result-reason"><span>Reason</span><strong>'+esc(reason)+'</strong></section><section class="gl-result-round"><span>Round</span><strong>'+Number(s.round||1)+'</strong><small>'+esc((s.turn==='PLAYER'?'Player':s.turn==='AI'?(pvpIdentity?.opponentName||'Opponent'):String(s.turn||''))+' · '+phase+' Phase')+'</small></section></div><div class="gl-result-actions"><div class="gl-result-buttons"><button type="button" class="gl-result-close">CLOSE</button><button type="button" class="gl-result-back">BACK TO LOBBY</button></div><small>Returns to the lobby automatically after 1 minute.</small></div>';
   body.querySelector('.gl-result-close').onclick=()=>resultOverlay.classList.remove('open');
   body.querySelector('.gl-result-back').onclick=returnToLobbyAfterResult;
   resultOverlay.classList.add('open');
@@ -1840,6 +1831,6 @@ function initStableBattlefieldReviewGestures(){
 
 
 function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};document.querySelector('.bottom-actions .danger').onclick=()=>{if(confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncSoundButton();}
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden')}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:renderNow,state:st,intent,intentBatch,openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal,openCardReview};window.addEventListener('gl-pvp-intent-error',()=>{centerChoiceBusy=false;centerChoiceStage?.classList.remove('is-busy');centerChoiceRenderSig='';setTimeout(renderNow,0)});}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden')}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:renderNow,state:st,intent,intentBatch,resetForLobby:()=>{resetPresentationState();resultOverlay.classList.remove('open')},openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal,openCardReview};window.addEventListener('gl-pvp-intent-error',()=>{centerChoiceBusy=false;centerChoiceStage?.classList.remove('is-busy');centerChoiceRenderSig='';setTimeout(renderNow,0)});}
 boot();
 })();

@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('assert/strict'),fs=require('fs'),path=require('path'),crypto=require('crypto');
-const root=path.resolve(__dirname,'..'),parity=JSON.parse(fs.readFileSync(path.join(root,'release/V379_DONOR_PARITY.json'),'utf8'));
+const root=path.resolve(__dirname,'..'),parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const sha=f=>crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
 for(const [name,row] of Object.entries(parity.lobby_assets)){
  const file=path.join(root,'public/assets/lobby',name);assert.ok(fs.existsSync(file),`Lobby asset missing: ${name}`);assert.equal(sha(file),row.donor_sha256,`Lobby donor hash mismatch: ${name}`);

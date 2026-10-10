@@ -10,8 +10,8 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.79.0';
-const BUILD_ID='gl-pvp-3.79.0-v6913-native-handshake-2026-10-11';
+const VERSION='3.80.0';
+const BUILD_ID='gl-pvp-3.80.0-privacy-lifecycle-v6913-2026-10-11';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 
@@ -30,7 +30,7 @@ const token=()=>randomBytes(24).toString('base64url');
 const tokenHash=v=>v?createHash('sha256').update(String(v)).digest('hex'):'';
 
 function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,coinPresented:[],openingPresented:[],startedAt:null,finishedAt:null,lastError:null}}
-const room={players:new Map(),spectators:new Map(),authority:null,match:freshMatch(),ledger:new Map(),createdAt:now()};
+const room={players:new Map(),spectators:new Map(),authority:null,match:freshMatch(),ledger:new Map(),kickedClients:new Set(),createdAt:now()};
 
 function playerBySeat(seat){return [...room.players.values()].find(p=>Number(p.seat)===Number(seat))||null}
 function chooseSeat(){return !playerBySeat(1)?1:!playerBySeat(2)?2:null}
@@ -42,10 +42,10 @@ function bothPlayersReady(){return bothPlayersPresent()&&sortedPlayers().every(p
 function allPlayerSeatsAck(list){return [1,2].every(s=>list.includes(s))}
 function selectionOf(p){return{name:p.name,deckKey:p.deckKey||null,customDeck:p.customDeck?clone(p.customDeck):null,formation:p.formation?clone(p.formation):null}}
 function closeClientSocket(p,code=4000,reason='Reconnected elsewhere'){try{if(p?.ws?.readyState===WebSocket.OPEN)p.ws.close(code,reason)}catch{}}
-function clearMatch(){room.authority=null;room.match=freshMatch();room.ledger.clear();for(const p of room.players.values())p.ready=false}
+function clearMatch(){room.authority=null;room.match=freshMatch();room.ledger.clear();room.kickedClients.clear();for(const p of room.players.values())p.ready=false}
 
 function viewFor(client){
-  const local=client?{clientId:client.clientId,name:client.name,role:client.role,seat:client.seat||null,seatToken:client.role==='player'?client.seatToken:null,ready:!!client.ready,deckKey:client.deckKey||null,deckName:client.deckName||null,formation:client.formation?clone(client.formation):null}:null;
+  const local=client?{clientId:client.clientId,name:client.name,role:client.role,seat:client.seat||null,seatToken:client.role==='player'?client.seatToken:null,ready:!!client.ready,hasDeck:!!(client.deckKey||client.customDeck),deckKey:client.deckKey||null,deckName:client.deckName||null,customDeck:room.match.status==='setup'&&client.customDeck?clone(client.customDeck):null,formation:client.formation?clone(client.formation):null}:null;
   let board=null,opening=null;
   if(room.authority){
     if(client?.role==='player'&&client.seat){board=room.authority.viewForSeat(client.seat);opening=room.authority.openingForSeat(client.seat)}
@@ -119,8 +119,12 @@ function openingPresented(client){
 function applyIntent(client,msg,batch=false){
   if(client.role!=='player')throw new Error('Spectators are read-only.');
   if(room.match.status!=='started')throw new Error('Gameplay is not ready.');
+  const actionId=safeText(msg.clientActionId,160);
+  if(actionId&&room.ledger.has(actionId)){
+    const prior=room.ledger.get(actionId);if(prior?.clientId!==client.clientId)throw new Error('Duplicate action id belongs to another client.');
+    send(client.ws,{type:'intent-ack',clientActionId:actionId,revision:Number(prior?.revision||room.authority.revision)});return;
+  }
   const base=Number(msg.baseRevision);if(base!==room.authority.revision)throw Object.assign(new Error('STALE_REVISION'),{code:'STALE_REVISION'});
-  const actionId=safeText(msg.clientActionId,160);if(actionId&&room.ledger.has(actionId)){const prior=room.ledger.get(actionId);send(client.ws,{type:'intent-ack',clientActionId:actionId,revision:Number(prior?.revision||room.authority.revision)});return;}
   if(batch){
     const steps=Array.isArray(msg.steps)?msg.steps.slice(0,8):[];if(!steps.length)throw new Error('Intent batch is empty.');
     room.authority.applyIntentBatch(client.seat,steps);
@@ -128,24 +132,26 @@ function applyIntent(client,msg,batch=false){
     const name=safeText(msg.intent,100);if(!name)throw new Error('Intent name is required.');
     room.authority.applyIntent(client.seat,name,Array.isArray(msg.args)?msg.args:[]);
   }
-  if(actionId){room.ledger.set(actionId,{revision:room.authority.revision,at:Date.now()});if(room.ledger.size>512){const first=room.ledger.keys().next().value;room.ledger.delete(first)}send(client.ws,{type:'intent-ack',clientActionId:actionId,revision:room.authority.revision})}
+  if(actionId){room.ledger.set(actionId,{revision:room.authority.revision,clientId:client.clientId,at:Date.now()});if(room.ledger.size>512){const first=room.ledger.keys().next().value;room.ledger.delete(first)}send(client.ws,{type:'intent-ack',clientActionId:actionId,revision:room.authority.revision})}
   if(room.authority.canonical?.appState?.gameOver){room.match.status='finished';room.match.finishedAt=now()}
 }
-function resetRoom(client){if(client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can reset the room.');clearMatch()}
+function resetRoom(client){if(client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can reset the room.');if(room.match.status!=='setup')throw new Error('Room reset is only available during setup.');clearMatch()}
+function returnToLobby(client){if(client.role!=='player')throw new Error('Only players can return the room to lobby.');if(room.match.status!=='finished')throw new Error('Match is not finished.');clearMatch()}
 function kickSeat2(client){
   if(room.match.status!=='setup'||client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can kick Player 2 during setup.');
-  const p=playerBySeat(2);if(!p)throw new Error('Player 2 seat is empty.');room.players.delete(p.clientId);closeClientSocket(p,4002,'Removed by Player 1');p.role='spectator';delete p.seat;p.ready=false;p.connected=false;
+  const p=playerBySeat(2);if(!p)throw new Error('Player 2 seat is empty.');room.kickedClients.add(p.clientId);room.players.delete(p.clientId);room.spectators.delete(p.clientId);closeClientSocket(p,4002,'Removed by Player 1');p.role='spectator';delete p.seat;p.ready=false;p.connected=false;
 }
 
 function handle(client,msg){
   if(!msg||typeof msg!=='object')throw new Error('Invalid message.');
+  if(String(msg.clientBuildId||'')!==BUILD_ID)throw Object.assign(new Error('CLIENT_BUILD_MISMATCH'),{code:'CLIENT_BUILD_MISMATCH'});
   switch(msg.type){
     case 'ping': send(client.ws,{type:'pong',serverTime:now()}); return false;
     case 'rename': if(room.match.status!=='setup')throw new Error('Name is locked after match start.'); client.name=safeText(msg.name,20)||client.name;client.ready=false;break;
     case 'switch-role':{
       if(room.match.status!=='setup')throw new Error('Role is locked after match start.');const role=safeRole(msg.role);if(role===client.role)break;
       if(role==='spectator'){if(client.role==='player')room.players.delete(client.clientId);client.role='spectator';delete client.seat;client.ready=false;room.spectators.set(client.clientId,client)}
-      else{const seat=chooseSeat();if(!seat)throw new Error('Both player seats are occupied.');room.spectators.delete(client.clientId);client.role='player';client.seat=seat;client.ready=false;client.seatToken=token();client.seatTokenHash=tokenHash(client.seatToken);room.players.set(client.clientId,client)}
+      else{if(room.kickedClients.has(client.clientId))throw new Error('Player 2 was removed from this setup.');const seat=chooseSeat();if(!seat)throw new Error('Both player seats are occupied.');room.spectators.delete(client.clientId);client.role='player';client.seat=seat;client.ready=false;client.seatToken=token();client.seatTokenHash=tokenHash(client.seatToken);room.players.set(client.clientId,client)}
       break;
     }
     case 'set-deck': if(client.role!=='player')throw new Error('Spectators cannot choose a deck.');setDeckFast(client,msg);break;
@@ -160,6 +166,7 @@ function handle(client,msg){
     case 'surrender-match': applyIntent(client,{...msg,intent:'executeConfirmedSurrender',args:[]},false);break;
     case 'kick-seat-2': kickSeat2(client);break;
     case 'reset-room': resetRoom(client);break;
+    case 'return-to-lobby': returnToLobby(client);break;
     default: throw new Error('Unknown message type: '+safeText(msg.type,80));
   }
   return true;
@@ -176,20 +183,22 @@ const server=http.createServer(async(req,res)=>{
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);
     if(!file.startsWith(PUBLIC+path.sep)&&file!==PUBLIC){res.writeHead(403);res.end('Forbidden');return}
     const s=await stat(file);if(!s.isFile())throw new Error('not-file');const data=await readFile(file);const ext=path.extname(file).toLowerCase();
-    res.writeHead(200,{'content-type':mime[ext]||'application/octet-stream','content-length':data.length,'cache-control':ext==='.html'?'no-store':'public, max-age=300'});res.end(data);
+    const noStoreCode=ext==='.html'||ext==='.js'||ext==='.mjs';res.writeHead(200,{'content-type':mime[ext]||'application/octet-stream','content-length':data.length,'cache-control':noStoreCode?'no-store':'public, max-age=300'});res.end(data);
   }catch{res.writeHead(404,{'content-type':'text/plain; charset=utf-8'});res.end('Not found')}
 });
 const wss=new WebSocketServer({server,path:'/ws',maxPayload:MAX_WS_PAYLOAD,perMessageDeflate:false});
 wss.on('connection',(ws,req)=>{
   let client=null;
   try{
-    const url=new URL(req.url||'/ws','http://localhost'),clientId=safeClient(url.searchParams.get('client')),name=safeText(url.searchParams.get('name')||'Player',20)||'Player',requested=safeRole(url.searchParams.get('role')),seatToken=url.searchParams.get('seatToken')||'';
+    const url=new URL(req.url||'/ws','http://localhost'),clientId=safeClient(url.searchParams.get('client')),name=safeText(url.searchParams.get('name')||'Player',20)||'Player',requested=safeRole(url.searchParams.get('role')),seatToken=url.searchParams.get('seatToken')||'',clientBuildId=String(url.searchParams.get('buildId')||'');
+    if(clientBuildId!==BUILD_ID)throw Object.assign(new Error('CLIENT_BUILD_MISMATCH'),{code:'CLIENT_BUILD_MISMATCH'});
     const existing=room.players.get(clientId)||room.spectators.get(clientId);
-    if(existing&&existing.role==='player'&&seatToken&&existing.seatTokenHash===tokenHash(seatToken)){
+    if(existing&&existing.role==='player'){
+      if(!seatToken||existing.seatTokenHash!==tokenHash(seatToken))throw new Error('SEAT_TOKEN_MISMATCH');
       client=existing;closeClientSocket(client);client.ws=ws;client.connected=true;client.name=name;
     }else if(existing&&existing.role==='spectator'){
       client=existing;closeClientSocket(client);client.ws=ws;client.connected=true;client.name=name;
-    }else if(requested==='player'&&room.match.status==='setup'&&chooseSeat()){
+    }else if(requested==='player'&&!room.kickedClients.has(clientId)&&room.match.status==='setup'&&chooseSeat()){
       const seat=chooseSeat(),seatTokenNew=token();client={clientId,name,role:'player',seat,seatToken:seatTokenNew,seatTokenHash:tokenHash(seatTokenNew),ready:false,deckKey:null,customDeck:null,deckName:null,formation:null,connected:true,ws};room.players.set(clientId,client);
     }else{
       if(room.spectators.size>=MAX_SPECTATORS)throw new Error('Spectator capacity reached.');client={clientId,name,role:'spectator',ready:false,connected:true,ws};room.spectators.set(clientId,client);
@@ -198,6 +207,6 @@ wss.on('connection',(ws,req)=>{
     ws.on('message',raw=>{try{const msg=JSON.parse(String(raw));const changed=handle(client,msg);if(changed)broadcast()}catch(err){fail(client,err?.message||err,err?.code||'REQUEST_REJECTED')}});
     ws.on('close',()=>{if(client&&client.ws===ws){client.connected=false;client.ws=null;broadcast()}});
     ws.on('error',()=>{});
-  }catch(err){send(ws,{type:'error',code:'CONNECT_REJECTED',message:String(err?.message||err)});try{ws.close(4001,'Connection rejected')}catch{}}
+  }catch(err){const code=err?.code||'CONNECT_REJECTED';send(ws,{type:'error',code,message:String(err?.message||err)});try{ws.close(code==='CLIENT_BUILD_MISMATCH'?4003:4001,code==='CLIENT_BUILD_MISMATCH'?'Client build mismatch':'Connection rejected')}catch{}}
 });
 server.listen(PORT,HOST,()=>console.log(`[Grandis Legacy PvP v${VERSION}] Listening on http://${HOST}:${PORT}`));

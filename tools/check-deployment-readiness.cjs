@@ -2,7 +2,7 @@
 const fs=require('fs'),path=require('path'),{spawnSync}=require('child_process');
 const root=path.resolve(__dirname,'..'),failures=[],passes=[];const read=r=>fs.readFileSync(path.join(root,r),'utf8'),exists=r=>fs.existsSync(path.join(root,r));const pass=x=>passes.push('PASS: '+x),fail=x=>failures.push(x);
 const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.json')),docker=read('Dockerfile'),server=read('server.js'),auth=read('server/v6913-authority.mjs'),readme=read('README.md');
-if(pkg.version==='3.79.0')pass('package version is v3.79.0');else fail(`package version ${pkg.version}`);
+if(pkg.version==='3.80.0')pass('package version is v3.80.0');else fail(`package version ${pkg.version}`);
 if(pkg.dependencies?.ws)pass(`production ws dependency declared ${pkg.dependencies.ws}`);else fail('production dependency ws missing');
 if(lock.packages?.['']?.dependencies?.ws)pass('package-lock root locks ws');else fail('package-lock root ws missing');
 if(/npm\s+ci\s+--omit=dev/.test(docker))pass('Docker production install uses npm ci --omit=dev');else fail('Docker npm ci --omit=dev missing');
