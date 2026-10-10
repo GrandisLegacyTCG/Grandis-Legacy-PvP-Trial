@@ -1,18 +1,18 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.77.0",
+  "version": "3.77.1",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.77.0 — v3.76.6 Lobby + locked VS AI v6.90.9 presentation + PvP v3.51 headless server authority.",
+  "description": "Grandis Legacy PvP v3.77.1 \u2014 exact PvP v3.76.6 Lobby donor + locked VS AI v6.90.9 post-Lobby donor UI/timing + PvP v3.51 headless network/server authority.",
   "scripts": {
     "start": "node server.js",
     "check": "npm run build:data && npm run sync-lock && npm run check:syntax && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v343-candidate1-authority.cjs && node tests/run-v343-candidate1-assets.cjs && node tests/run-runtime-bridge-test.cjs && npm run test:architecture",
-    "test:package": "node tests/run-package-check.cjs",
+    "test:package": "node tests/run-v3771-donor-exact-integration.cjs",
     "test:bridge": "node tests/run-runtime-bridge-test.cjs",
     "test:ui": "node tests/run-v343-candidate2-browser.cjs && python tests/run-v343-candidate3b-ui-corrections.py",
     "test:server": "node tests/run-server-health-test.cjs",
     "test:room": "node tests/run-pvp-room-sync-test.cjs",
-    "test": "npm run test:v351:release",
+    "test": "npm run test:v3771",
     "test:gameplay-foundation": "node tests/run-v2616-gameplay-foundation.cjs",
     "sync-lock": "node tools/build-runtime-sync-lock.cjs",
     "manifest": "node tools/build-file-manifest.cjs",
@@ -70,7 +70,8 @@
     "test:v350:locked-shard": "node tests/run-v350-locked-shard-regression.cjs && python tests/run-v349-shard-parity-final-browser.py",
     "test:v350:maintenance": "node tests/run-v350-same-version-maintenance.cjs && python tests/run-v350-maintenance-lobby-browser.py",
     "test:v350:correction": "node tests/run-v350-maintenance-correction.cjs && python tests/run-v350-maintenance-correction-browser.py && node tests/run-v350-same-version-maintenance.cjs && python tests/run-v350-maintenance-lobby-browser.py",
-    "test:v351:release": "node tests/run-v351-version-promotion.cjs && node tests/run-v350-maintenance-correction.cjs && node tests/run-v350-same-version-maintenance.cjs && node tests/run-v350-animation-parity-static.cjs && node tests/run-package-check.cjs"
+    "test:v351:release": "node tests/run-v351-version-promotion.cjs && node tests/run-v350-maintenance-correction.cjs && node tests/run-v350-same-version-maintenance.cjs && node tests/run-v350-animation-parity-static.cjs && node tests/run-package-check.cjs",
+    "test:v3771": "node tests/run-v3771-donor-exact-integration.cjs && node tests/run-v343-candidate3a-intent-router.mjs && node tests/run-v343-candidate3a-headless-runtime.mjs && node tests/run-v343-candidate3a-canonical-gameplay.cjs && node tests/run-v343-candidate3c-lifecycle.cjs"
   },
   "engines": {
     "node": ">=18"

@@ -91,7 +91,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "7cb8f44bc66d3453ca403eebe43fc8747e5ceec6d5fe841468e629f76bfc4e65"
+      "sha256": "803b00fab904a02acb7d5e5e0554527494728b9893b6ea8cd22cb33b9a840da8"
     },
     {
       "path": "public/css/app.css",
@@ -99,7 +99,7 @@
     },
     {
       "path": "public/index.html",
-      "sha256": "fc59aa45a7bd795662ef2203302f6277d8ff43800b1b01e29f3b60e3a406ac2a"
+      "sha256": "080384b1b707620be89cbb76f3e2d240ef254969b5cd0de8389ea0d249a6cca4"
     },
     {
       "path": "public/js/app.bundle.js",
@@ -111,7 +111,7 @@
     },
     {
       "path": "public/js/pvp-network.js",
-      "sha256": "c2ec4d1402f5939f3918ee23564b6ccb483cabed1800212a3844b3a039aa9419"
+      "sha256": "9c56e6b8790f1db148f7db098475e1978bc7d4dc2e8e3ac3d490e76aefba754b"
     },
     {
       "path": "public/js/runtime-authority.js",

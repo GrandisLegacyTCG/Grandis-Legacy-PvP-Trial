@@ -4,16 +4,16 @@
    PvP presentation adapter before the shared VS AI v6.42 Candidate 15 renderer. */
 (function(){
   'use strict';
-  var VERSION='Grandis Legacy PvP v3.77.0 · v6.90.9 Presentation · v3.51 Server Authority';
+  var VERSION='Grandis Legacy PvP v3.77.1 · v3.76.6 Lobby · v6.90.9 Donor Presentation · v3.51 Server Authority';
   var STORE_KEY='grandis_legacy_pvp_v20_client_id';
   var ROOM_KEY='grandis_legacy_pvp_v20_room';
   var NAME_KEY='grandis_legacy_pvp_v20_name';
   var ROLE_KEY='grandis_legacy_pvp_v20_role';
   var ws=null,reconnectTimer=null,reconnectDelay=1200,intentTimeoutTimer=null,connectTimeoutTimer=null,matchTimerInterval=null;
   var openingPresentationWatchdog=null,openingPresentationStartedAt=0,openingPresentationFinish=null;
-  var state={connected:false,connectionState:'idle',connectionMessage:'',connectionUrl:'',snapshot:null,room:'LOBBY',name:'',role:'player',deckKey:'',loadedDeckKey:'',customDeck:null,customDeckName:'',clientId:'',lobbyRankPreview:1,lobbyFormation:null,lastAppliedRevision:0,applyingServer:false,intentInFlight:false,intentBaseRevision:0,intentName:'',intentActionId:'',intentSentAt:0,actionSequence:0,seatToken:'',lastMatchStatus:'setup',seenAnimationIds:{},lastCoinAnimationKey:'',coinResultReadyKey:'',mobileHandScrollLeft:0,mobileHandMode:'preserve',mobileHandApplyToken:0,mobileHandHooksInstalled:false,spectatorLobbyView:false,spectatorBattlefieldEntered:false,nameDraft:'',roomGeneration:0,reloadAfterRoomReset:false,latencyMs:null,opponentLatencyMs:null,lastPingSentAt:0,lastPongAt:0};
+  var state={connected:false,connectionState:'idle',connectionMessage:'',connectionUrl:'',snapshot:null,room:'LOBBY',name:'',role:'player',deckKey:'',loadedDeckKey:'',customDeck:null,customDeckName:'',clientId:'',lobbyRankPreview:1,lobbyFormation:null,lastAppliedRevision:0,applyingServer:false,intentInFlight:false,intentBaseRevision:0,intentName:'',intentActionId:'',intentSentAt:0,actionSequence:0,seatToken:'',lastMatchStatus:'setup',seenAnimationIds:{},lastCoinAnimationKey:'',coinResultReadyKey:'',mobileHandScrollLeft:0,mobileHandMode:'preserve',mobileHandApplyToken:0,mobileHandHooksInstalled:false,spectatorLobbyView:false,spectatorBattlefieldEntered:false,nameDraft:'',roomGeneration:0,reloadAfterRoomReset:false,latencyMs:null,opponentLatencyMs:null,lastPingSentAt:0,lastPongAt:0,lobbyWasVisible:false,openingPlaybackIds:{}};
   var DEPLOY_CONFIG=window.GL_PVP_CONFIG||window.GL_CONFIG||{};
-  var CLIENT_BUILD_ID=String(DEPLOY_CONFIG.buildId||'gl-pvp-3.77.0-v6909-authority351-2026-10-10');
+  var CLIENT_BUILD_ID=String(DEPLOY_CONFIG.buildId||'gl-pvp-3.77.1-v3766-lobby-v6909-donor-v351-authority-2026-10-10');
   function fixedDeploymentRoom(){var n=Number(DEPLOY_CONFIG.roomId||0);return n===1||n===2?n:0;}
   function roomNumber(){var fixed=fixedDeploymentRoom();if(fixed)return fixed;try{return Number(new URL(location.href).searchParams.get('server'))===2?2:1;}catch(e){return 1;}}
   function roomDisplayName(){return DEPLOY_CONFIG.roomName||('PvP Room '+roomNumber());}
@@ -50,7 +50,7 @@
   function starterDeckData(key){var o=starterObject(key);return o&&o.deck?o.deck:null;}
   function cardLookup(id){var defs=window.GL_CARD_DEFINITIONS;if(!defs)return null;if(!cardLookup._map){var map={};if(Array.isArray(defs.cards))defs.cards.forEach(function(c){if(c&&c.card_id)map[c.card_id]=c;});else Object.keys(defs.families||{}).forEach(function(f){((defs.families[f]&&defs.families[f].cards)||[]).forEach(function(c){if(c&&c.card_id)map[c.card_id]=c;});});cardLookup._map=map;}return cardLookup._map[id]||null;}
   function cardDisplayName(id){var c=cardLookup(id);return (c&&(c.name||c.card_name))||id||'Unknown';}
-  function thumbFor(id){var root=window.GL_ASSET_MANIFEST||{},ui=root.ui||{},cards=root.cards||{};var p;if(id==='__HIDDEN_CARD_BACK__'||id==='__HIDDEN_CARD__')p=ui.main_deck_card_back;else{var m=cards[id]||root[id]||{};p=m.thumb_url||m.full_url;}p=p||ui.main_deck_card_back||'https://grandislegacytcg.github.io/shared/season1/v1/cards/ui/Back-of-Card-Main-Deck.webp';return p+(p.indexOf('?')===-1?'?':'&')+'v=gl-pvp-3.43-candidate1';}
+  function thumbFor(id){var root=window.GL_ASSET_MANIFEST||{},ui=root.ui||{},cards=root.cards||{};var p;if(id==='__HIDDEN_CARD_BACK__'||id==='__HIDDEN_CARD__')p=ui.main_deck_card_back;else{var m=cards[id]||root[id]||{};p=m.thumb_url||m.local_thumb_path||m.full_url||m.local_full_path;}p=p||ui.main_deck_card_back||'https://grandislegacytcg.github.io/shared/season1/v1/cards/ui/Back-of-Card-Main-Deck.webp';return p+(p.indexOf('?')===-1?'?':'&')+'v=gl-pvp-3.43-candidate1';}
   function currentSelectedDeckData(){return state.customDeck||starterDeckData(state.deckKey)||starterDeckData(activeLoadedDeckKey());}
   var LOBBY_FORMATION_LANES=['LEFT','CENTER','RIGHT'];
   function baseLobbyFormation(deck){var f=deck&&deck.default_formation||{};return {LEFT:String(f.LEFT||''),CENTER:String(f.CENTER||''),RIGHT:String(f.RIGHT||'')};}
@@ -141,9 +141,11 @@
       ui.showCoinChoice&&ui.showCoinChoice({canChoose:me.role==='player'&&Number(me.seat)===2,chooserName:chooser});return true;
     }
     if(status==='coin-result'&&m.openingCoinFlip){
-      var f=m.openingCoinFlip;ui.showCoinResult&&ui.showCoinResult({choice:f.choice,outcome:f.outcome,firstSeat:f.firstSeat,firstPlayerName:f.firstPlayerName||playerNameForSeat(f.firstSeat),localWon:me.role==='player'&&Number(me.seat)===Number(f.firstSeat),canConfirm:me.role==='player'});return true;
+      var f=m.openingCoinFlip;ui.showCoinResult&&ui.showCoinResult({choice:f.choice,outcome:f.outcome,firstSeat:f.firstSeat,firstPlayerName:f.firstPlayerName||playerNameForSeat(f.firstSeat),choiceLabel:(playerNameForSeat(Number(m.coinFlip&&m.coinFlip.chooserSeat||2))||'Player 2')+' choice',localWon:me.role==='player'&&Number(me.seat)===Number(f.firstSeat),canConfirm:me.role==='player'});return true;
     }
-    ui.hideCoin&&ui.hideCoin();ui.render&&ui.render();return true;
+    // started/finished transitions are owned by handleSnapshot so the locked v6.90.9
+    // donor opening sequence is not bypassed by an eager hide/reveal here.
+    return true;
   }
   function initState(){installMobileHandHooks();var u=new URL(location.href);state.clientId=id();try{state.seatToken=localStorage.getItem(seatTokenStorageKey())||'';}catch(e){state.seatToken='';}state.room='LOBBY';state.name=safeName(u.searchParams.get('name')||localStorage.getItem(NAME_KEY)||'');state.nameDraft=state.name;state.role=(u.searchParams.get('role')||localStorage.getItem(ROLE_KEY)||'player').toLowerCase()==='spectator'?'spectator':'player';state.deckKey=String(u.searchParams.get('deck')||localStorage.getItem(DECK_KEY)||'');if(!DECK_OPTIONS.some(function(d){return d.key===state.deckKey;}))state.deckKey=DECK_OPTIONS[0]&&DECK_OPTIONS[0].key||'';state.loadedDeckKey=String(u.searchParams.get('deck')||localStorage.getItem(LOADED_DECK_KEY)||state.deckKey||'');if(!DECK_OPTIONS.some(function(d){return d.key===state.loadedDeckKey;}))state.loadedDeckKey=state.deckKey;try{localStorage.setItem(DECK_KEY,state.deckKey);localStorage.setItem(LOADED_DECK_KEY,state.loadedDeckKey);}catch(e){}}
   function wsUrl(){var q=new URLSearchParams({room:state.room,client:state.clientId,name:state.name||'Player',role:state.role,buildId:CLIENT_BUILD_ID});if(state.seatToken)q.set('seatToken',state.seatToken);var dk=activeLoadedDeckKey()||state.deckKey;if(dk)q.set('deck',dk);return websocketBase()+(DEPLOY_CONFIG.wsPath||'/ws')+'?'+q.toString();}
@@ -242,6 +244,15 @@
     }
     return x;
   }
+  function authoritativeOpeningPayload(m,seat){
+    var list=Array.isArray(m&&m.lastAnimationEvents)?m.lastAnimationEvents.slice():((m&&m.lastAnimationEvent)?[m.lastAnimationEvent]:[]),raw=null;
+    for(var i=list.length-1;i>=0;i--){if(list[i]&&list[i].kind==='opening_sequence'){raw=list[i];break;}}
+    if(!raw)return null;
+    var id=String(raw.id||'');if(id&&state.openingPlaybackIds[id])return null;
+    var evt=localizeAnimationEvent(raw,seat||1)||{};
+    return {eventId:id,openingDrawEvents:Array.isArray(evt.opening_draw_events)?evt.opening_draw_events.slice():[],startingShardEntries:Array.isArray(evt.starting_shard_entries)?evt.starting_shard_entries.slice():[],postOpeningDrawEvents:Array.isArray(evt.post_opening_draw_events)?evt.post_opening_draw_events.slice():[],postOpeningShardEntries:Array.isArray(evt.post_opening_shard_entries)?evt.post_opening_shard_entries.slice():[],firstSide:Number(m&&m.firstSeat||0)===Number(seat||1)?'PLAYER':'AI'};
+  }
+  function revealV6909Gameplay(){var ui=window.GL_OPTION_B_PVP_UI;if(ui&&typeof ui.revealGameplay==='function')return !!ui.revealGameplay();var root=document.querySelector('.v96-app');if(root)root.classList.remove('ob-lobby-hidden');if(ui&&ui.hideCoin)ui.hideCoin();if(ui&&ui.render)ui.render();return true;}
   function unseenAnimationEvents(m){
     var list=Array.isArray(m&&m.lastAnimationEvents)?m.lastAnimationEvents.slice():((m&&m.lastAnimationEvent)?[m.lastAnimationEvent]:[]);
     return list.filter(function(raw){return raw&&raw.id&&!state.seenAnimationIds[raw.id];});
@@ -688,7 +699,7 @@ body.pvp-lobby-mode{min-width:0!important;overflow-x:hidden!important;background
   function renderLobby(){
     var overlay=$('pvpSetupOverlay');if(!overlay)return;
     var snap=state.snapshot,me=snap&&snap.local,m=snap&&snap.match||{},active=['coin-flip','coin-result','started','finished'].indexOf(m.status)!==-1,spectator=!!(me&&me.role==='spectator'),showSpectatorSelect=!!(active&&spectator&&state.spectatorLobbyView),showLobby=!active||showSpectatorSelect;
-    overlay.classList.toggle('open',showLobby);overlay.classList.toggle('pvp-spectator-room-select',showSpectatorSelect);document.body.classList.toggle('pvp-lobby-mode',showLobby);document.body.classList.toggle('pvp-booting',showLobby);syncPresentationOwnership(m,showLobby);if(showLobby)signalLobbyReady();syncCrossAppMobileNavVisibility(active&&!showLobby);
+    var lobbyJustOpened=showLobby&&!state.lobbyWasVisible;overlay.classList.toggle('open',showLobby);overlay.classList.toggle('pvp-spectator-room-select',showSpectatorSelect);document.body.classList.toggle('pvp-lobby-mode',showLobby);document.body.classList.toggle('pvp-booting',showLobby);syncPresentationOwnership(m,showLobby);if(showLobby){if(lobbyJustOpened){try{overlay.scrollTop=0;}catch(e){}}signalLobbyReady();}state.lobbyWasVisible=showLobby;syncCrossAppMobileNavVisibility(active&&!showLobby);
     var leave=$('pvpLeaveSpectatorViewButton');if(leave)leave.hidden=!(active&&spectator&&!showSpectatorSelect);
     if(!showLobby)return;
     var nameInput=$('pvpSetupName');if(nameInput&&document.activeElement!==nameInput)nameInput.value=state.nameDraft||state.name;
@@ -698,10 +709,10 @@ body.pvp-lobby-mode{min-width:0!important;overflow-x:hidden!important;background
     var complete=!!(state.name&&(state.customDeck||activeLoadedDeckKey()));$('pvpSetupReadyButton').textContent=me&&me.ready?'UNREADY':'READY';$('pvpSetupReadyButton').disabled=spectator||!state.connected||!complete||m.status!=='setup';$('pvpSetupSpectatorButton').textContent=showSpectatorSelect?'SPECTATE MATCH':(spectator?'JOIN AS PLAYER':'SPECTATE');$('pvpSetupStartButton').disabled=!(me&&me.seat===1)||!state.connected||m.status!=='setup'||!bothPlayersReadyAndDecked(snap);
     var icon=$('pvpNameStateIcon');icon.className='pvp-v260-name-icon'+(spectator?' spectate':(me&&me.ready?' ready':''));var hint=$('pvpSetupHint');if(hint){if(!state.connected)hint.textContent=state.connectionMessage||'Connecting to PvP service…';else if(showSpectatorSelect)hint.textContent=m.status==='finished'?'Match finished. View the result or battlefield.':'Match in progress. Spectate this match.';else if(spectator)hint.textContent=teaching?'Teaching View is active. Spectator mode remains read-only.':'Spectator mode is read-only. Both Hands remain hidden.';else if(!complete)hint.textContent='Enter your name and choose a deck before Ready.';else if(me&&me.seat===1&&!bothPlayersReadyAndDecked(snap))hint.textContent='Waiting for both players to be ready.';else hint.textContent='';}
   }
-  function installPanel(){var wrap=document.createElement('div');wrap.innerHTML='<aside id="pvpNetworkPanel" class="pvp-net-panel"><div class="pvp-net-head"><h3 id="pvpPanelRoomName">PVP MATCH</h3><button id="pvpNetworkClose" type="button">Close</button></div><div id="pvpNetworkStatus" class="pvp-net-status">Connecting…</div><div id="pvpBoardStatus" class="pvp-net-small"></div><div id="pvpCoinFlipPanel"></div><div class="pvp-net-row"><button id="pvpPullBoardButton" type="button">Sync Board</button><button id="pvpReconnectButton" type="button">Reconnect</button></div><button id="pvpLeaveSpectatorViewButton" type="button" hidden>Back to Lobby</button></aside>';document.body.appendChild(wrap);$('pvpNetworkClose').onclick=function(){$('pvpNetworkPanel').classList.remove('open');};$('pvpPullBoardButton').onclick=function(){importServerBoard(true);};$('pvpReconnectButton').onclick=function(){connect(true);};$('pvpLeaveSpectatorViewButton').onclick=function(){$('pvpNetworkPanel').classList.remove('open');returnSpectatorToLobby();};}
+  function installPanel(){var wrap=document.createElement('div');wrap.innerHTML='<aside id="pvpNetworkPanel" class="pvp-net-panel"><div class="pvp-net-head"><h3 id="pvpPanelRoomName">PVP MATCH</h3><button id="pvpNetworkClose" type="button">Close</button></div><div id="pvpNetworkStatus" class="pvp-net-status">Connecting…</div><div id="pvpBoardStatus" class="pvp-net-small"></div><div class="pvp-net-row"><button id="pvpPullBoardButton" type="button">Sync Board</button><button id="pvpReconnectButton" type="button">Reconnect</button></div><button id="pvpLeaveSpectatorViewButton" type="button" hidden>Back to Lobby</button></aside>';document.body.appendChild(wrap);$('pvpNetworkClose').onclick=function(){$('pvpNetworkPanel').classList.remove('open');};$('pvpPullBoardButton').onclick=function(){importServerBoard(true);};$('pvpReconnectButton').onclick=function(){connect(true);};$('pvpLeaveSpectatorViewButton').onclick=function(){$('pvpNetworkPanel').classList.remove('open');returnSpectatorToLobby();};}
   function toggleReady(){var me=localPlayer();if(!me||me.role!=='player'){setStatus('offline','Spectator is read-only.');return;}var nameInput=$('pvpSetupName'),typedName=safeName(nameInput&&nameInput.value||state.nameDraft||state.name);if(typedName&&typedName!==state.name){state.name=typedName;state.nameDraft=typedName;try{localStorage.setItem(NAME_KEY,state.name);}catch(e){}send('rename',{name:state.name});}if(!state.name){state.name=(me&&me.seatLabel)||selfLabel()||'Player';localStorage.setItem(NAME_KEY,state.name);send('rename',{name:state.name});}if(!state.customDeck&&!activeLoadedDeckKey()){setStatus('offline','Choose a deck before Ready.');return;}if(state.customDeck)send('set-deck',{customDeck:state.customDeck,deckName:state.customDeckName});else send('set-deck',{deckKey:activeLoadedDeckKey(),formation:currentLobbyFormation(starterDeckData(activeLoadedDeckKey()))});send('ready',{ready:!(me&&me.ready)});}
   function bothPlayersReadyAndDecked(snap){var ps=snap&&snap.players||[];return ps.length===2&&ps.every(function(p){return p.connected&&p.ready&&p.hasDeck&&p.name;});}
-  function renderPanel(){var snap=state.snapshot,me=snap&&snap.local,m=snap&&snap.match||{};var panel=$('pvpNetworkPanel');if(panel){var coin=$('pvpCoinFlipPanel');if(coin){coin.innerHTML=coinFlipControlHtml(m,me);wireCoinButtons();}var st=$('pvpBoardStatus');if(st)st.textContent='Status: '+(m.status||'setup')+' · Server board r'+Number(m.serverBoardRevision||0)+'.';var pull=$('pvpPullBoardButton');if(pull)pull.disabled=!m.serverBoard;}renderLobby();}
+  function renderPanel(){var snap=state.snapshot,me=snap&&snap.local,m=snap&&snap.match||{};var panel=$('pvpNetworkPanel');if(panel){var st=$('pvpBoardStatus');if(st)st.textContent='Status: '+(m.status||'setup')+' · Server board r'+Number(m.serverBoardRevision||0)+'.';var pull=$('pvpPullBoardButton');if(pull)pull.disabled=!m.serverBoard;}renderLobby();}
   function renderPeople(){return;}
   function handleSnapshot(msg){
     noteServerBuild(msg);var previousStatus=state.lastMatchStatus,hadSnapshot=!!state.snapshot,incomingMatch=msg&&msg.match||{},incomingStatus=incomingMatch.status||'setup',incomingRevision=Number(incomingMatch.serverBoardRevision||0),lastIntent=incomingMatch.lastIntent||null;
@@ -711,7 +722,20 @@ body.pvp-lobby-mode{min-width:0!important;overflow-x:hidden!important;background
     if(me.name){state.name=me.name;var nameInput=$('pvpSetupName');if(!nameInput||document.activeElement!==nameInput)state.nameDraft=me.name;}if(me.role){state.role=me.role;try{localStorage.setItem(ROLE_KEY,me.role);}catch(e){}}if(me.seatToken){state.seatToken=me.seatToken;try{localStorage.setItem(seatTokenStorageKey(),me.seatToken);}catch(e){}}
     if(me.deckKey){state.loadedDeckKey=me.deckKey==='CUSTOM'?'':me.deckKey;if(me.deckKey!=='CUSTOM')state.deckKey=me.deckKey;if(me.deckName&&me.deckKey==='CUSTOM')state.customDeckName=me.deckName;if(me.deckKey!=='CUSTOM'&&me.formation&&formationIsValid(starterDeckData(me.deckKey),me.formation))state.lobbyFormation=clone(me.formation);}
     if(msg.deckOptions&&msg.deckOptions.length)DECK_OPTIONS=msg.deckOptions;
-    var active=['coin-flip','coin-result','started','finished'].indexOf(incomingStatus)!==-1;if(active&&incomingMatch.serverBoard){if(window.GL_PVP_PRESENTATION_ADAPTER)window.GL_PVP_PRESENTATION_ADAPTER.setSharedBoardMode(true);importServerBoard(false);}else if(!active){state.lastAppliedRevision=0;if(window.GL_PVP_PRESENTATION_ADAPTER)window.GL_PVP_PRESENTATION_ADAPTER.setSharedBoardMode(false);}
+
+    var started=incomingStatus==='started'||incomingStatus==='finished',seat=me.seat||(me.role==='spectator'?1:null),opening=(incomingStatus==='started'&&incomingMatch.serverBoard&&seat)?authoritativeOpeningPayload(incomingMatch,seat):null,ui=window.GL_OPTION_B_PVP_UI;
+    // Coin Flip is presentation-only until Start Game is confirmed. Do not hydrate the
+    // gameplay board during coin-flip / coin-result; this preserves the locked donor timing
+    // and prevents Draw/Card SFX from firing before Start Game.
+    if(started&&incomingMatch.serverBoard){
+      if(window.GL_PVP_PRESENTATION_ADAPTER)window.GL_PVP_PRESENTATION_ADAPTER.setSharedBoardMode(true);
+      if(opening&&ui&&ui.prepareOpening)ui.prepareOpening(opening);
+      importServerBoard(false);
+      if(opening&&ui&&ui.startOpening){if(opening.eventId)state.openingPlaybackIds[opening.eventId]=true;ui.startOpening(opening);}
+      else if(!(ui&&typeof ui.isOpeningActive==='function'&&ui.isOpeningActive()))revealV6909Gameplay();
+    }else if(incomingStatus==='setup'){
+      state.lastAppliedRevision=0;if(window.GL_PVP_PRESENTATION_ADAPTER)window.GL_PVP_PRESENTATION_ADAPTER.setSharedBoardMode(false);
+    }
     syncBattlefieldIdentityHeaders();syncV6909Stage(incomingMatch);setStatus('online','Connected · '+(me.role==='player'?(me.seatLabel||('Player '+me.seat)):'Spectator')+' · authoritative board r'+incomingRevision);renderLobby();
   }
   var lastActivitySentAt=0;
