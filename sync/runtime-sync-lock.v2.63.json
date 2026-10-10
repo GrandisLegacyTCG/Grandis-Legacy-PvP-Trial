@@ -107,7 +107,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "aba565a87e63f15d640955472249ee33f943fb8f78ee166bd359011ad209baf0"
+      "sha256": "aab032a22aa4051d8e52661200f6613796eb42524a62c141dcc241caff51c8c5"
     },
     {
       "path": "public/engine/js/app.bundle.js",

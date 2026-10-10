@@ -44,6 +44,19 @@ PASS:
 - defeat / cleanup / terminal state
 - genuine authoritative Draw handoff (`Draw` -> server acknowledgement -> Draw+Regen -> `Deploy`)
 
+## Deployment correction — no healthy upstream guard
+The first packaged v3.78.0 Dockerfile omitted `authority/` even though `server.js` and the fail-closed runtime-sync verifier require `authority/browser-runtime/*` at process boot. In a Northflank Docker deployment this causes the Node process to exit before `server.listen(...)`, so `/health` never becomes available and the reverse proxy reports `no healthy upstream`.
+
+Correction in the same v3.78.0 release line:
+- `Dockerfile` now copies `authority/` into the production image.
+- Root `README.md` now contains a mandatory deployment warning/checklist.
+- Added `DEPLOYMENT_GUARDRAILS.md`; future PvP packages must preserve it.
+- Added `tools/check-deployment-readiness.cjs`, which verifies Docker COPY coverage for every file in the runtime sync lock plus package/port/health requirements.
+- Added `tests/run-deployment-startup-live.cjs`, which must be run after production dependencies are installed; it starts the real server and requires a real `/health` PASS.
+- Added `release:seal`, `check:deployment`, `test:startup`, and `verify:deployment` npm scripts.
+
+Static deployment topology now passes and a simulated Docker COPY context passes the runtime-sync verifier with all 104 locked files present. Real live startup with the actual `ws` package remains environment-dependent and must be executed in the deployment/CI context after `npm ci --omit=dev`.
+
 ## Browser QA
 **UNVERIFIED for required real two-client end-to-end browser acceptance.** The build environment has Chromium available, but the production Node server cannot be started here because the external `ws` dependency is not installed and package installation is unavailable in this sandbox. Static/authority tests are not reported as browser PASS.
 

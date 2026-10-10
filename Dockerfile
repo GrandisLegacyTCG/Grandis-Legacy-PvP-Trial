@@ -8,6 +8,7 @@ RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 COPY server.js ./server.js
 COPY server ./server
+COPY authority ./authority
 COPY public ./public
 COPY data ./data
 COPY runtime ./runtime

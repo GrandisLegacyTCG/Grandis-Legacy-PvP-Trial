@@ -3,7 +3,7 @@
   "version": "3.78.0",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.78.0 \u2014 clean three-donor integration: v3.76.6 Lobby + VS AI v6.91.3 game client + PvP v3.51 authority.",
+  "description": "Grandis Legacy PvP v3.78.0 — clean three-donor integration: v3.76.6 Lobby + VS AI v6.91.3 game client + PvP v3.51 authority.",
   "scripts": {
     "start": "node server.js",
     "check": "npm run build:data && npm run sync-lock && npm run check:syntax && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v343-candidate1-authority.cjs && node tests/run-v343-candidate1-assets.cjs && node tests/run-runtime-bridge-test.cjs && npm run test:architecture",
@@ -74,7 +74,11 @@
     "test:v378:architecture": "node tests/run-v378-clean-integration.cjs",
     "test:v378:authority": "node tests/run-v343-candidate3a-intent-router.mjs && node tests/run-v343-candidate3a-headless-runtime.mjs && node tests/run-v343-candidate3a-canonical-gameplay.cjs && node tests/run-v343-candidate3b-advanced-runtime.cjs && node tests/run-v343-candidate3c-lifecycle.cjs && node tests/run-v378-authority-draw-handoff.cjs",
     "test:v378": "npm run check:syntax && npm run test:v378:architecture && npm run test:v378:authority",
-    "verify:v378": "npm run test:v378 && npm run sync-lock && node sync/runtime-sync-verifier.mjs --self-test && npm run frontend-manifest && npm run manifest && npm run verify:manifest"
+    "verify:v378": "npm run test:v378 && npm run sync-lock && node sync/runtime-sync-verifier.mjs --self-test && npm run frontend-manifest && npm run manifest && npm run verify:manifest && npm run check:deployment",
+    "check:deployment": "node tools/check-deployment-readiness.cjs",
+    "test:startup": "node tests/run-deployment-startup-live.cjs",
+    "verify:deployment": "npm run check:deployment && npm run test:startup",
+    "release:seal": "npm run sync-lock && npm run frontend-manifest && npm run manifest && node sync/runtime-sync-verifier.mjs --self-test && npm run verify:manifest && npm run check:deployment"
   },
   "engines": {
     "node": ">=18"

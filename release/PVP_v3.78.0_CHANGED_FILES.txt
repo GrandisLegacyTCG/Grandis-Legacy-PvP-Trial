@@ -36,3 +36,12 @@ TEST / RELEASE
  release/PVP_v3.78.0_QA_REPORT.json
 
 APPROVED V6.91.3 GAME FILES ARE COPIED INTACT EXCEPT THE TWO EXPLICIT INTEGRATION SEAMS ABOVE.
+
+DEPLOYMENT CORRECTION / GUARDRAILS
+- Dockerfile — copy authority/ into production image.
+- README.md — current v3.78.0 identity + mandatory no-healthy-upstream deployment checklist.
+- DEPLOYMENT_GUARDRAILS.md — permanent release/deployment guardrail document.
+- tools/check-deployment-readiness.cjs — static Docker/runtime-sync/package/health topology verification.
+- tests/run-deployment-startup-live.cjs — real server + /health startup smoke test.
+- package.json — deployment/release verification scripts; verify:v378 now includes deployment topology check.
+- tools/build-file-manifest.cjs — current release identity in output message.
