@@ -1,0 +1,110 @@
+{
+  "release": "v3.79.0",
+  "generated_from": {
+    "presentation": "VS AI v6.91.3",
+    "lobby": "PvP v3.76.6",
+    "architecture_reference": "VS AI Tutorial v6.48 ↔ PvP v3.51 (reference only)"
+  },
+  "exact_v6913_trees": {
+    "engine": {
+      "files": 55,
+      "bytes": 31157247,
+      "new_fingerprint": "da0bacf2a447652ae19e1fc1e76d9a6f0b16e8448aa31512799d56ffb8bfd159",
+      "donor_fingerprint": "da0bacf2a447652ae19e1fc1e76d9a6f0b16e8448aa31512799d56ffb8bfd159",
+      "exact": true
+    },
+    "card-art": {
+      "files": 200,
+      "bytes": 14335118,
+      "new_fingerprint": "29fa7cee25d6d39cd5199bb8c3bc976fe8796b3e24d4caf086260d6952a3eacb",
+      "donor_fingerprint": "29fa7cee25d6d39cd5199bb8c3bc976fe8796b3e24d4caf086260d6952a3eacb",
+      "exact": true
+    },
+    "shared-ui": {
+      "files": 1,
+      "bytes": 81317,
+      "new_fingerprint": "85eecc393a54d9d48714fb4afdd4016a59d6f379c049cc82e2b18f0584ad1d66",
+      "donor_fingerprint": "85eecc393a54d9d48714fb4afdd4016a59d6f379c049cc82e2b18f0584ad1d66",
+      "exact": true
+    },
+    "runtime": {
+      "files": 3,
+      "bytes": 2067,
+      "new_fingerprint": "5041e4c4572dce72b5587c3f03716b77b3bbeb08fcd7d41077623fadfd4213ee",
+      "donor_fingerprint": "5041e4c4572dce72b5587c3f03716b77b3bbeb08fcd7d41077623fadfd4213ee",
+      "exact": true
+    },
+    "assets_v6913_subset": {
+      "files": 32,
+      "bytes": 5054138,
+      "new_fingerprint": "a8e0860a399b8fac8c01a727836242dd36f4548886813974fc27343f9c2d1918",
+      "donor_fingerprint": "a8e0860a399b8fac8c01a727836242dd36f4548886813974fc27343f9c2d1918",
+      "exact": true
+    }
+  },
+  "lobby_assets": {
+    "background.webp": {
+      "sha256": "487496dc5ac86b037002a196d17062da05ca925ea16253a0a9532e008bfe44b0",
+      "donor_sha256": "487496dc5ac86b037002a196d17062da05ca925ea16253a0a9532e008bfe44b0",
+      "exact": true,
+      "bytes": 32642
+    },
+    "chevron-down.png": {
+      "sha256": "ffb2be69858295e8dc51841c035a6d0f717447e786394f43edf9aa6abf938fac",
+      "donor_sha256": "ffb2be69858295e8dc51841c035a6d0f717447e786394f43edf9aa6abf938fac",
+      "exact": true,
+      "bytes": 319
+    },
+    "exit.png": {
+      "sha256": "7ab49d201942b7334867609ad6152e894b25a46fac465c461faccd177ed3bd46",
+      "donor_sha256": "7ab49d201942b7334867609ad6152e894b25a46fac465c461faccd177ed3bd46",
+      "exact": true,
+      "bytes": 439
+    },
+    "grandis-legacy-logo.webp": {
+      "sha256": "c62604a77d5307612c10e47a5eba0337d01b4bb1bb801d97dc4fe844208de8d0",
+      "donor_sha256": "c62604a77d5307612c10e47a5eba0337d01b4bb1bb801d97dc4fe844208de8d0",
+      "exact": true,
+      "bytes": 132856
+    },
+    "swap.png": {
+      "sha256": "b9e181e1fc207a223f2fb615ed0dc851812ef93acfedb6088a5e5b8714e9034f",
+      "donor_sha256": "b9e181e1fc207a223f2fb615ed0dc851812ef93acfedb6088a5e5b8714e9034f",
+      "exact": true,
+      "bytes": 1089970
+    }
+  },
+  "reference_handshake_evidence": {
+    "runtime/adapters/pvp-adapter.js": {
+      "v648_sha256": "f5775dbbd2c4cc53b8bfab954bcaa1c15f0c6963880bb79f0e959dd3b0384fed",
+      "v351_sha256": "f5775dbbd2c4cc53b8bfab954bcaa1c15f0c6963880bb79f0e959dd3b0384fed",
+      "byte_identical": true
+    },
+    "runtime/contracts/runtime-api-contract.js": {
+      "v648_sha256": "1279db4f19afa85fa62154a66b94a66c0c2e9313544af3f748606703e21b6055",
+      "v351_sha256": "1279db4f19afa85fa62154a66b94a66c0c2e9313544af3f748606703e21b6055",
+      "byte_identical": true
+    },
+    "runtime/browser/runtime-authority.browser.js": {
+      "v648_sha256": "bacafbe720fa83ddb68267114ba7a718f16c44a4b20453decc86ed63b190c8f4",
+      "v351_sha256": "bacafbe720fa83ddb68267114ba7a718f16c44a4b20453decc86ed63b190c8f4",
+      "byte_identical": true
+    }
+  },
+  "intentional_seams": [
+    "public/index.html",
+    "public/shared-app/app-runtime.js",
+    "public/pvp/pvp-host.js",
+    "public/pvp/pvp-integration.css",
+    "public/lobby/pvp-lobby-v3.76.6.css",
+    "server.js",
+    "server/v6913-authority.mjs"
+  ],
+  "authority_source_hashes": {
+    "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
+    "engine/js/runtime-authority.js": "58a09b947a1d25b2e5e6018c6e0dac9508b5d534dd2a51192cd6dbaf2e1d4399",
+    "engine/shared-app/active-starters.js": "9d536dffd4aa811428285c8db1652b8b509b61dadc2b3e200042a85289a09cfe",
+    "engine/shared-app/app.bundle.js": "7253f45e57eee3c083e6877b8062fca7210034409e089cbdd4d88622a5569e93"
+  },
+  "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6913_subset excludes assets/lobby/"
+}

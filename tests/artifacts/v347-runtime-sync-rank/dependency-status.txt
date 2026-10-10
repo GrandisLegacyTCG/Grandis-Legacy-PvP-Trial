@@ -1,3 +1,0 @@
-ws@8.21.0 canonical install attempt: BLOCKED by execution environment DNS EAI_AGAIN
-Command: npm_config_fetch_retries=0 npm_config_fetch_timeout=10000 npm ci
-Production server boot/health: EXTERNAL VERIFICATION REQUIRED in dependency-capable environment

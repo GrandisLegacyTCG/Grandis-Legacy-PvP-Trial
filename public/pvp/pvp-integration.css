@@ -1,27 +1,17 @@
-html:not(.gl-pvp-game-active) .app{visibility:hidden!important;pointer-events:none!important}
-html.gl-pvp-game-active .app{visibility:visible}
-html .gl-lobby-overlay{display:none!important}
+/* v3.79.0 integration boundary: v6.91.3 owns gameplay presentation; PvP only gates transport/lifecycle. */
+html.gl-pvp-game-active .gl-lobby-overlay,
+.gl-lobby-overlay{display:none!important}
 
-/* v3.78.2 PvP Coin Flip gate.
-   The v6 battlefield stays mounted and visible underneath a fully opaque black
-   overlay. During the entire Coin Flip / result gate it is deliberately inert:
-   no pointer hit-testing, hover previews, focus, clicks, or keyboard focus can
-   leak through before Start Game hands presentation ownership to v6. */
-html.gl-pvp-coin-gated .app{
-  visibility:visible!important;
-  pointer-events:none!important;
-  user-select:none!important;
-}
-html.gl-pvp-coin-gated .gl-coin-overlay.open{
-  background:#000!important;
-  pointer-events:auto!important;
-}
-html.gl-pvp-coin-gated .gl-battlefield-hover-preview,
-html.gl-pvp-coin-gated .gl-modal-hover-preview,
-html.gl-pvp-coin-gated .gl-sidebar-hover-preview,
-html.gl-pvp-coin-gated .preview-card{
-  display:none!important;
-  opacity:0!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-}
+/* The gameplay DOM is always mounted. Coin Flip is an opaque modal gate, never an app visibility toggle. */
+.app{visibility:visible!important}
+.gl-coin-overlay{background:#000!important;z-index:30000!important}
+html.gl-pvp-coin-gated .app{pointer-events:none!important;user-select:none!important}
+html.gl-pvp-coin-gated .hand-card:hover,
+html.gl-pvp-coin-gated .hand-card.is-hovered,
+html.gl-pvp-coin-gated .hand-card.is-selected{transform:none!important;filter:none!important}
+html.gl-pvp-coin-gated .card-actions,
+html.gl-pvp-coin-gated #hoverCardZoom{display:none!important}
+html.gl-pvp-coin-gated .app *{cursor:default!important}
+
+/* Keep the approved donor lobby button label on one line at every supported width. */
+.pvp-v260-actions .pvp-v260-btn{white-space:nowrap}

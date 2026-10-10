@@ -1,13 +1,0 @@
-Grandis Legacy PvP v3.44 external room DNS/connection probe
-UTC 2026-09-24T13:27:25Z
-Room 1: https://p01--grandis-legacy-pvp--2kwws8nzlcc2.code.run/health
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: p01--grandis-legacy-pvp--2kwws8nzlcc2.code.run
-curl_exit=6
-
-Room 2: https://p01--grandis-legacy-pvp-room2--2kwws8nzlcc2.code.run/health
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0curl: (6) Could not resolve host: p01--grandis-legacy-pvp-room2--2kwws8nzlcc2.code.run
-curl_exit=6

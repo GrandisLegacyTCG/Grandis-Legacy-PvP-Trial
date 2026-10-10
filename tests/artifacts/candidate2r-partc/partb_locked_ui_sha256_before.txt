@@ -1,5 +1,0 @@
-73eaf9393699290301abb5144e51f5bdff6fc5c8a3c140641d3f2c5f30b4ffc8  public/js/app.bundle.js
-ef18a8803d9783262241125c512fcbdffe290b60d0c8728254363ee070997530  public/js/pvp-presentation-adapter.js
-5e488276b429cd8caf1f291cfc016c625e3f889349f39c4bead493013f3ba995  public/js/pvp-network.js
-a4bd309daf2904dc08020606e5ff690cbee8e2c064e6785eb2f1398cd239bdbd  public/css/app.css
-916a82f96b88fb6523d14646e6740d95b0ba2be86306b0cc457a49351eff565d  public/css/battlefield-authority.css

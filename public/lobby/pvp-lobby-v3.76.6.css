@@ -171,3 +171,6 @@ body.deck-setup-active #previewOverlay{z-index:10060!important}
   .pvp-progression-card header h2{font-size:18px!important}
   .pvp-progression-card .pvp-v260-position{font-size:9px!important}
 }
+
+/* v3.79 PvP lobby parity guard: the donor renders JOIN AS PLAYER on one line. */
+.pvp-v260-actions .pvp-v260-btn{white-space:nowrap}
