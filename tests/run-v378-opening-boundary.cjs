@@ -1,0 +1,43 @@
+'use strict';
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const R=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(R,p),'utf8');
+const app=read('public/shared-app/app-runtime.js');
+const host=read('public/pvp/pvp-host.js');
+const auth=read('authority/browser-runtime/app.bundle.js');
+function has(src,needle,msg){assert.ok(src.includes(needle),msg||('Missing: '+needle));}
+
+has(app,"pvpOpeningStarted=false,pvpOpeningStartRequested=false,pvpCoinResultPresented=false",'PvP opening state must be explicitly declared');
+has(app,"if(window.GL_APP_MODE==='PVP')pvpOpeningStartRequested=true",'Start Game must explicitly arm opening presentation');
+has(app,"if(window.GL_APP_MODE==='PVP'&&!pvpOpeningStarted){previousVisualState=cur;return plan;}",'Normal presentation plan must not emit Draw/card motions before local Start Game');
+has(app,"window.GL_PVP_OPENING_PRESENTATION_COMPLETE=true;E().beginFirstTurn?.(openingFirstSide)",'First-turn acknowledgement must occur only after Opening Hand + Starting Shards presentation completes');
+has(host,"window.GL_PVP_OPENING_PRESENTATION_COMPLETE===true",'Automatic Draw acknowledgement must be gated by opening presentation completion');
+has(host,"sendIntent('acknowledgePvpTurnStart',[])",'First-turn handoff must use authoritative intent');
+has(host,"openingSequenceEvent:null",'Opening sequence must be cached for a client that presses Start Game after the other client has already advanced authority');
+has(host,"||state.openingSequenceEvent||{}",'Late local Start Game must retain the authoritative opening payload');
+has(auth,"if(opts.holdAtDraw&&window.GL_PVP_SHARED_BOARD_ACTIVE&&state.pvpHumanVsHuman){state.pvpTurnReady=true",'Authority must support a real held Draw state');
+has(auth,"holdAtDraw:!!options.holdAtDraw",'Bridge must forward holdAtDraw rather than forcing immediate Draw resolution');
+
+const {loadCandidate3aRuntime}=require('./candidate3a-runtime-harness.cjs');
+const {bridge}=loadCandidate3aRuntime(R);
+bridge.startSharedMatch({playerDeckKey:'starter_01_elemental_lord_conqueror_renegade',aiDeckKey:'starter_02_saint_crusader_grand_ranger',firstPlayerSide:'PLAYER'});
+bridge.completeOpeningFlow('PLAYER',{choice:'HEADS',outcome:'HEADS'},{holdAtDraw:true,bridgeImmediate:false});
+let s=bridge.getSnapshot().appState;
+assert.strictEqual(s.phase,'Draw');
+assert.strictEqual(s.turn,'PLAYER');
+assert.strictEqual(s.pvpTurnReady,true);
+assert.strictEqual(s.playerHand.length,6);
+assert.strictEqual(s.aiHand.length,6);
+assert.strictEqual(s.playerManaPoolCards.length,3);
+assert.strictEqual(s.aiManaPoolCards.length,3);
+assert.strictEqual((s.presentationEvents||[]).filter(e=>e?.reason==='MANDATORY_DRAW_PHASE').length,0,'Mandatory Draw must not exist before opening presentation acknowledgement');
+const beforeDrawRev=Number(s.actualDrawRevision||0);
+const r=bridge.applyServerIntent('acknowledgePvpTurnStart',[]);assert.strictEqual(r.ok,true);
+s=bridge.getSnapshot().appState;
+assert.strictEqual(s.phase,'Deploy');
+assert.strictEqual(s.pvpTurnReady,false);
+assert.strictEqual(s.playerHand.length,7);
+assert.strictEqual(s.playerManaPoolCards.length,4);
+assert.ok(Number(s.actualDrawRevision||0)>beforeDrawRev);
+assert.strictEqual((s.presentationEvents||[]).filter(e=>e?.reason==='MANDATORY_DRAW_PHASE').length,1);
+console.log(JSON.stringify({ok:true,pvpOpeningVariableDeclared:true,noMandatoryDrawBeforeStartPresentation:true,authorityHeldAtDraw:true,openingHandBeforeAck:[6,6],startingShardsBeforeAck:[3,3],mandatoryDrawAfterAck:true,regenAfterAck:true},null,2));

@@ -8,9 +8,21 @@
   "syntax": "PASS",
   "architecture_test": "PASS",
   "asset_audit": {
+    "active_production_graph": "PASS",
+    "broken_html_refs": 0,
     "broken_css_urls": 0,
-    "broken_html_local_refs": 0,
-    "broken_loaded_script_asset_refs": 0
+    "broken_active_integration_asset_refs": 0,
+    "broken_v6_engine_media_refs": 0,
+    "broken_dynamic_runtime_asset_paths": 0,
+    "card_art_files_verified": 200,
+    "v6_engine_assets_verified": 36,
+    "v6_shared_assets_verified": 32,
+    "v3766_lobby_assets_verified": 5,
+    "dormant_locked_donor_fallback_refs": [
+      "assets/lobby/Swap.png",
+      "assets/counters/Counter-{1..6}.png"
+    ],
+    "dormant_reason": "Locked v6 standalone Lobby/native-renderer fallback paths; those presentation owners are disabled in PvP. Active external v6 presentation paths were separately verified with zero broken refs."
   },
   "donor_parity": {
     "v6913_exact_files": 290,
@@ -56,7 +68,7 @@
   },
   "browser_qa": {
     "status": "UNVERIFIED",
-    "reason": "Required real two-client end-to-end browser test could not run because production Node WebSocket dependency ws is unavailable in the sandbox; static/authority tests are not counted as browser PASS."
+    "reason": "Required real two-client WebSocket/browser acceptance was not available. Chromium localhost HTTP navigation is blocked by administrator policy, and actual ws dependency/server startup remains unavailable in this sandbox. Static/authority tests are not counted as browser PASS."
   },
   "mobile_tablet": {
     "shared_v6913_architecture_preserved": true,
@@ -69,7 +81,8 @@
   },
   "known_remaining": [
     "Real two-client browser/WebSocket acceptance",
-    "Real physical mobile/tablet validation"
+    "Real physical mobile/tablet validation",
+    "Real browser network-404 audit against deployed/locally served page"
   ],
   "runtime_sync": {
     "status": "PASS",
@@ -77,10 +90,23 @@
   },
   "package_manifest": {
     "status": "PASS",
-    "root_files": 798,
+    "root_files": 807,
     "frontend_files": 308,
     "missing": 0,
     "hash_mismatch": 0,
     "size_mismatch": 0
+  },
+  "opening_boundary": {
+    "status": "PASS_STATIC_AND_AUTHORITY",
+    "pvpOpeningStarted_declared": true,
+    "opening_confirmation_holds_at_authoritative_Draw": true,
+    "opening_hand_before_ack": "6/6",
+    "starting_shards_before_ack": "3/3",
+    "mandatory_draw_events_before_ack": 0,
+    "mandatory_draw_after_opening_ack": true,
+    "regen_after_opening_ack": true,
+    "auto_ack_gated_by_presentation_complete": true,
+    "normal_draw_presentation_gated_before_local_Start_Game": true,
+    "opening_payload_cached_for_late_second_client_Start_Game": true
   }
 }

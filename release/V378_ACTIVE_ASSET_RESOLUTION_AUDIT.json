@@ -1,0 +1,52 @@
+{
+  "ok": true,
+  "loadedStylesheets": [
+    "shared-ui/battlefield-ui.css",
+    "lobby/pvp-lobby-v3.76.6.css",
+    "pvp/pvp-integration.css"
+  ],
+  "loadedScripts": [
+    "config.js",
+    "engine/shared-ui/battlefield-ui.js",
+    "engine/js/static-data.js",
+    "engine/js/runtime-authority.js",
+    "engine/shared-app/active-starters.js",
+    "engine/shared-app/app.bundle.js",
+    "runtime/adapters/authority-adapter.js",
+    "pvp/pvp-host.js",
+    "runtime/adapters/pvp-adapter.js",
+    "shared-app/app-runtime.js"
+  ],
+  "htmlRefsChecked": 13,
+  "brokenHtmlRefs": 0,
+  "cssLocalUrlsChecked": 6,
+  "brokenCssUrls": 0,
+  "activeIntegrationAssetLiteralsChecked": 31,
+  "brokenActiveIntegrationAssetRefs": 0,
+  "v6EngineMediaLiteralsChecked": 20,
+  "brokenV6EngineMediaRefs": 0,
+  "dynamicRuntimeAssetPathsChecked": 25,
+  "brokenDynamicRuntimeAssetPaths": 0,
+  "v6DonorAssetTrees": {
+    "cardArt": {
+      "count": 200,
+      "sha256": "b881c200f0915f0b930a8ffa3759f16bd4f847805696d216a519eb7a04f62e64"
+    },
+    "engineAssets": {
+      "count": 36,
+      "sha256": "4ce74e3e1b6ae13d67f2017e4bbf5a84f831f10f42ed779e2281693dbd384844"
+    },
+    "v6Assets": {
+      "count": 32,
+      "sha256": "95b53dce20c1bac3c23075d9cb56d03a151b45a275a4142bfd241f15ff1afd73"
+    }
+  },
+  "lobbyAssetsHashIdentical": 5,
+  "cardArtRuntimeFiles": 200,
+  "dormantLockedDonorFallbackRefs": [
+    "assets/lobby/Swap.png",
+    "assets/counters/Counter-{1..6}.png"
+  ],
+  "canonicalLobbyCardResolver": "cardView() / donor canonical manifest (remote website URLs where specified by donor)",
+  "browserNetworkSmoke": "BLOCKED_BY_ADMINISTRATOR"
+}

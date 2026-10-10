@@ -1,0 +1,76 @@
+{
+  "build": "Grandis Legacy PvP v3.78.0 same-version maintenance",
+  "root_causes": {
+    "join_as_player_wrap": "The isolated Lobby omitted the donor global typography context. In v3.76.6 app.css, Noto Sans is applied globally and html/body base font-size is 13px. The extracted Lobby retained `.pvp-v260-lobby button{font:inherit}`, so under the v6 page it inherited 16px instead and JOIN AS PLAYER wrapped.",
+    "kick_button_oversize": "The isolated Lobby omitted donor app.css rules `.pvp-seat-kick` and `.pvp-seat-kick img`; the raw exit.png therefore rendered through generic button/image sizing instead of the donor 28x28 button / 16x16 icon."
+  },
+  "static_lobby_assets": [
+    {
+      "path": "assets/lobby/background.webp",
+      "expected_donor_sha256": "487496dc5ac86b037002a196d17062da05ca925ea16253a0a9532e008bfe44b0",
+      "build_sha256": "487496dc5ac86b037002a196d17062da05ca925ea16253a0a9532e008bfe44b0",
+      "identical": true
+    },
+    {
+      "path": "assets/lobby/chevron-down.png",
+      "expected_donor_sha256": "ffb2be69858295e8dc51841c035a6d0f717447e786394f43edf9aa6abf938fac",
+      "build_sha256": "ffb2be69858295e8dc51841c035a6d0f717447e786394f43edf9aa6abf938fac",
+      "identical": true
+    },
+    {
+      "path": "assets/lobby/exit.png",
+      "expected_donor_sha256": "7ab49d201942b7334867609ad6152e894b25a46fac465c461faccd177ed3bd46",
+      "build_sha256": "7ab49d201942b7334867609ad6152e894b25a46fac465c461faccd177ed3bd46",
+      "identical": true
+    },
+    {
+      "path": "assets/lobby/grandis-legacy-logo.webp",
+      "expected_donor_sha256": "c62604a77d5307612c10e47a5eba0337d01b4bb1bb801d97dc4fe844208de8d0",
+      "build_sha256": "c62604a77d5307612c10e47a5eba0337d01b4bb1bb801d97dc4fe844208de8d0",
+      "identical": true
+    },
+    {
+      "path": "assets/lobby/swap.png",
+      "expected_donor_sha256": "b9e181e1fc207a223f2fb615ed0dc851812ef93acfedb6088a5e5b8714e9034f",
+      "build_sha256": "b9e181e1fc207a223f2fb615ed0dc851812ef93acfedb6088a5e5b8714e9034f",
+      "identical": true
+    }
+  ],
+  "donor_identical_fonts": [
+    {
+      "path": "engine/assets/fonts/noto-sans/NotoSans-Variable.woff2",
+      "expected_donor_sha256": "4204916b05eabc58243435a9ddfef2a4b88b29c4547aac811c6818695eafcb11",
+      "build_sha256": "4204916b05eabc58243435a9ddfef2a4b88b29c4547aac811c6818695eafcb11",
+      "identical": true
+    },
+    {
+      "path": "engine/assets/fonts/noto-sans/NotoSans-Italic-Variable.woff2",
+      "expected_donor_sha256": "d1cd64b1d71e55d3548eacdda2235d5ce3b5c15bd8ff1b40a461442a7f819b57",
+      "build_sha256": "d1cd64b1d71e55d3548eacdda2235d5ce3b5c15bd8ff1b40a461442a7f819b57",
+      "identical": true
+    }
+  ],
+  "lobby_css_local_urls_broken": [],
+  "canonical_card_manifest": {
+    "cards": 200,
+    "donor_effective_thumb_url_plus_sha_digest": "2c9cc3f29aaf9a4144b53f91f0994dcadf474cb36310476045b4f50b269ec86e",
+    "build_digest": "2c9cc3f29aaf9a4144b53f91f0994dcadf474cb36310476045b4f50b269ec86e",
+    "parity": true
+  },
+  "browser_computed_acceptance": {
+    "viewports": [
+      "1366x768",
+      "1440x900",
+      "1024x768"
+    ],
+    "join_as_player_lines": 1,
+    "join_font_size": "13px",
+    "kick_button": "28x28",
+    "kick_icon": "16x16",
+    "pass": true
+  },
+  "tests": [
+    "tests/run-v378-lobby-donor-assets.cjs",
+    "tests/run-v378-lobby-presentation-browser.py"
+  ]
+}

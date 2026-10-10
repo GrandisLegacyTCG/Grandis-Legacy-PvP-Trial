@@ -2,7 +2,7 @@
   "version": "v2.63",
   "schema_version": "2.63-pvp-v351-consumer",
   "policy": "RUNTIME_FIRST_FAIL_CLOSED_SYNC",
-  "application": "PvP v3.78.0 Clean Three-Donor Integration 2026-10-10",
+  "application": "PvP v3.78.1 Lobby + Coin Flip/Opening Stabilization 2026-10-10",
   "releaseReady": true,
   "sourceAuthority": "v1.9.5",
   "sharedRuntime": "v1.94.2",
@@ -15,7 +15,7 @@
   "canonicalRegistryHash": "7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389",
   "heroComponentRegistryHash": "f36f1cc83eb9845743176c3af71f7823125353eae73e832588e9d8b42c6818be",
   "requiredSourceStack": {
-    "behaviorReference": "Clean v3.78.0 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Integration changes are limited to authority/identity adapter seams and authoritative turn-start staging.",
+    "behaviorReference": "Clean v3.78.1 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Integration changes are limited to authority/identity adapter seams and authoritative turn-start staging.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
@@ -35,7 +35,7 @@
   "runtimeFiles": [
     {
       "path": "authority/browser-runtime/app.bundle.js",
-      "sha256": "58bcf524bd1b7bf42da55e1f43404f9fcf0fa143b57ade7efd1590665c8e049d"
+      "sha256": "1805a972f0f8b2503f4b6af81184a1c9331691c901f759dd475aaf074026cfdb"
     },
     {
       "path": "authority/browser-runtime/pvp-presentation-adapter.js",
@@ -107,7 +107,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "aab032a22aa4051d8e52661200f6613796eb42524a62c141dcc241caff51c8c5"
+      "sha256": "09a77ebeebbecccec21966c3139174516db8e3bdc3a7404c71723708035818d3"
     },
     {
       "path": "public/engine/js/app.bundle.js",
@@ -135,11 +135,11 @@
     },
     {
       "path": "public/lobby/pvp-lobby-v3.76.6.css",
-      "sha256": "9750f44e1431b57d25ed3d43c6e16f1070920d6455b5737282e1deded9b4d348"
+      "sha256": "ea341a24abe54007d824870e5820425ff2597a9818ff3b93f6804ea037721ee5"
     },
     {
       "path": "public/pvp/pvp-host.js",
-      "sha256": "9e55741c6516dffa04f41115eb26f5eb4db426400fc77ea1957ad4b1e0f2b55d"
+      "sha256": "f1b553c15204e4b51e308fb8a4d9d42b10f7646d9d30a677fd4f131d4068dcf8"
     },
     {
       "path": "public/pvp/pvp-integration.css",
@@ -155,7 +155,7 @@
     },
     {
       "path": "public/shared-app/app-runtime.js",
-      "sha256": "142adf2e068d1a20f5cbaa9cc2c0dd3f348995a3bbf869d667f5c492e0a091b6"
+      "sha256": "1b4c87e271a59c9b8b3271494d7a523227a4d4c531c1a6772e378043ed5fa37a"
     },
     {
       "path": "public/shared-ui/battlefield-ui.css",
@@ -435,7 +435,7 @@
     },
     {
       "path": "server.js",
-      "sha256": "b1a3faa8d5a2b5a59386b989b1f83534587ec972703bb6157c3c7a81daa01017"
+      "sha256": "50672f6dd3899d116695f9e7dd50c6ca2e1c311254ac5291884b4df5baee8ae3"
     },
     {
       "path": "server/gameplay-intent-router.mjs",

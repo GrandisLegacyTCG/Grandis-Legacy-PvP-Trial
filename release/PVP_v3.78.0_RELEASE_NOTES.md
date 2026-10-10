@@ -74,3 +74,45 @@ See also:
 - `release/V378_DUPLICATE_ASSET_AUDIT.json`
 - `release/V378_CODE_HYGIENE.json`
 - `release/PVP_v3.78.0_QA_REPORT.json`
+
+## Same-version Lobby donor dependency correction
+- Root cause verified against v3.76.6 donor: isolated Lobby CSS omitted inherited donor typography and Kick-control rules from `public/css/app.css`.
+- `JOIN AS PLAYER` now uses the donor Noto Sans / 13px context and is browser-verified as one line at 1366x768, 1440x900, and 1024x768.
+- Kick control now matches donor computed geometry: 28x28 button, 16x16 exit icon.
+- Full `assets/lobby/` donor set is hash-identical (5/5).
+- Donor-identical regular/italic Noto Sans font bytes are present in the approved v6 asset tree and reused without duplicating font files.
+- Canonical 200-card thumbnail URL+SHA manifest matches the effective v3.76.6 donor manifest digest.
+- Hero Progression presentation rules inherited from donor `app.css` are now explicitly included in the isolated Lobby stylesheet.
+- Added mandatory static test `npm run test:v378:lobby-assets` and browser test `npm run test:v378:lobby-browser`.
+
+## Same-version Coin Flip / Opening / active-asset correction
+
+Confirmed runtime defects from deployed v3.78.0 were corrected without changing the release version:
+
+1. `pvpOpeningStarted` was referenced by the approved-game presentation bridge but never declared. Clicking **Start Game** therefore threw `ReferenceError: pvpOpeningStarted is not defined`, which was caught and displayed inside the Coin Flip panel. The variable and its related local presentation gates are now explicitly declared/reset.
+2. The server already requested `holdAtDraw:true, bridgeImmediate:false`, but the private v3.51 browser-runtime bridge ignored the third `completeOpeningFlow(...)` options argument and hard-forced `bridgeImmediate:true`. As a result, the first mandatory Main Deck Draw + Shard Regen could commit before the v6 opening presentation was allowed to own that sequence. The bridge now forwards the existing options and holds a genuine authoritative `Draw` state with `pvpTurnReady=true` after 6 Opening Hand cards + 3 Starting Shards.
+3. `pvp-host` previously auto-sent `acknowledgePvpTurnStart` as soon as that Draw snapshot arrived. It is now gated by `GL_PVP_OPENING_PRESENTATION_COMPLETE === true`, which is set only after the v6 Opening Hand + Starting Shard presentation finishes. `beginFirstTurn()` sends the authoritative acknowledgement at that boundary.
+4. Normal presentation-event processing is gated before local **Start Game**. This prevents a future authoritative Draw event from triggering `Card Sound.mp3` during Coin Flip/result presentation.
+5. The authoritative `opening_sequence` event is cached by the PvP adapter so the second browser can press its own Start Game later even if the first browser has already advanced the server past the original opening event transport.
+
+Asset wiring was re-audited from the **actual `public/index.html` production-loaded graph**, not by merely checking that asset files exist somewhere in the ZIP:
+
+- broken loaded HTML refs: **0**
+- broken loaded CSS `url(...)`: **0**
+- broken active integration asset literals: **0**
+- broken v6 `engine/assets/...` gameplay media refs: **0**
+- broken dynamic Status/Shard/Counter/EXP/Coin/card-motion paths: **0**
+- v6.91.3 card art tree: **200 files, locked donor fingerprint PASS**
+- v6.91.3 engine asset tree: **36 files, locked donor fingerprint PASS**
+- v6.91.3 shared asset tree: **32 files, locked donor fingerprint PASS**
+- v3.76.6 Lobby assets: **5 files, donor hash PASS**
+
+New permanent gates:
+
+- `npm run test:v378:assets`
+- `npm run test:v378:opening`
+
+Real browser HTTP/network-404 smoke is **UNVERIFIED** in this environment because Chromium navigation to localhost is blocked by administrator policy. This is not reported as browser PASS.
+
+### Asset-audit scope clarification
+The loaded locked v6.91.3 engine bundle still contains two donor fallback URL conventions belonging to presentation owners that PvP explicitly disables: the donor standalone Lobby uses `assets/lobby/Swap.png`, and the donor native renderer has `assets/counters/Counter-{1..6}.png`. They are retained byte-identical as donor code and are **not active PvP requests** because PvP enables external-human UI and suppresses the donor native renderer. The active PvP game presentation uses the verified `engine/assets/...` counter/media paths in `shared-app/app-runtime.js`. These dormant references are reported explicitly in `V378_ACTIVE_ASSET_RESOLUTION_AUDIT.json` rather than silently counted as active assets.

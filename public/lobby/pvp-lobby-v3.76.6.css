@@ -13,7 +13,161 @@ body.pvp-lobby-mode{min-width:0!important;overflow-x:hidden!important;background
 @media(max-width:760px){.pvp-v260-lobby{background-attachment:scroll}.pvp-v260-page{padding:16px 14px 34px}.pvp-v260-topbar{display:flex;flex-wrap:wrap;align-items:center;margin-bottom:10px;gap:9px 12px}.pvp-v260-logo{width:154px;height:54px;flex:0 0 154px}.pvp-v260-heading{padding:0;flex:1;min-width:140px}.pvp-v260-heading h1{font-size:16px}.pvp-v260-heading p{font-size:12px;line-height:1.35;margin-top:6px}.pvp-v260-top-actions{display:none}.pvp-v260-layout{gap:11px}.pvp-v260-panel{border-radius:14px}.pvp-v260-deck-panel{padding:17px 14px 16px}.pvp-v260-picker{grid-template-columns:1fr;gap:7px}.pvp-v260-picker>label{font-size:18px}.pvp-v260-lobby select{height:48px;font-size:14px;padding-left:14px}.pvp-v260-title{margin-top:20px;display:block}.pvp-v260-title h2{font-size:27px}.pvp-v260-title p{font-size:12px;margin-top:7px}.pvp-v260-showcase{display:block;margin-top:15px}.pvp-v260-formation{grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr) 25px minmax(0,1fr);gap:4px;overflow:visible;padding-bottom:0}.pvp-v260-swap-button{width:25px;height:25px;font-size:15px}.pvp-v260-hero{min-width:0;padding:7px}.pvp-v260-position{font-size:17px;margin-top:12px}.pvp-v260-summary{margin-top:10px;padding:13px 14px 12px}.pvp-v260-summary dl{display:grid;grid-template-columns:1fr 1fr;column-gap:20px}.pvp-v260-summary dl>div{min-height:31px}.pvp-v260-summary .total{margin:0;min-height:44px;border:0}.pvp-v260-footer{display:block;margin-top:15px;padding-top:0}.pvp-v260-footer .pvp-v260-btn{width:100%}.pvp-v260-status{text-align:center;margin-top:10px}.pvp-v260-room-panel{padding:19px 16px 17px}.pvp-v260-room-id{grid-template-columns:1fr;gap:8px}.pvp-v260-switch{width:100%;min-height:39px;font-size:11px}.pvp-v260-seat{min-height:60px}}
 @media(max-width:420px){.pvp-v260-actions{grid-template-columns:1fr}.pvp-v260-hero{flex-basis:82%}}
 
-/* Exact donor dependency carried from v3.76.6 app.css. */
+/* Exact v3.76.6 Lobby dependencies formerly inherited from donor app.css. */
+@font-face{font-family:"Noto Sans";src:url("../engine/assets/fonts/noto-sans/NotoSans-Variable.woff2") format("woff2");font-style:normal;font-weight:100 900;font-stretch:62.5% 100%;font-display:swap}
+@font-face{font-family:"Noto Sans";src:url("../engine/assets/fonts/noto-sans/NotoSans-Italic-Variable.woff2") format("woff2");font-style:italic;font-weight:100 900;font-stretch:62.5% 100%;font-display:swap}
+.pvp-v260-lobby,.pvp-v260-lobby *{font-family:"Noto Sans"!important}
+.pvp-v260-lobby{font-size:13px}
 .pvp-v260-swap-button{background:transparent!important;box-shadow:none!important;overflow:visible!important}
 .pvp-v260-swap-button img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .pvp-v260-seat{position:relative}
+.pvp-seat-kick{position:static;display:grid;place-items:center;width:28px;height:28px;min-width:28px;min-height:28px;padding:0;border:1px solid #a82b40;border-radius:50%;background:#5f1320;color:#fff;line-height:1;font-size:18px;font-weight:800;cursor:pointer;transform:none;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.pvp-seat-kick>span{display:block;transform:translateY(-1px);pointer-events:none}
+.pvp-seat-kick:hover,.pvp-seat-kick:focus-visible{background:#7b192a;border-color:#d94a61;outline:2px solid rgba(217,74,97,.35);outline-offset:2px}
+.pvp-seat-kick img{display:block;width:16px;height:16px;object-fit:contain;pointer-events:none}
+@media(max-width:768px){.pvp-v260-swap-button{width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important}.pvp-seat-kick{width:26px;height:26px;min-width:26px;min-height:26px;font-size:17px}}
+
+/* Hero Progression copied from the approved PvP lobby behavior. */
+.pvp-progression-modal{
+  position:fixed!important;
+  inset:0!important;
+  z-index:10045!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:18px!important;
+  background:rgba(0,0,0,.72)!important;
+  font-family:"Noto Sans"!important;
+}
+.pvp-progression-card{
+  width:min(940px,calc(100vw - 32px))!important;
+  max-height:92vh!important;
+  overflow:auto!important;
+  border:1px solid rgba(241,212,129,.72)!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#08131f,#050b12)!important;
+  box-shadow:0 28px 90px rgba(0,0,0,.8)!important;
+  padding:18px!important;
+  overscroll-behavior:contain!important;
+}
+.pvp-progression-card header{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  margin-bottom:15px!important;
+}
+.pvp-progression-card header span{
+  display:block!important;
+  color:#f1d481!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+.pvp-progression-card header h2{
+  margin:3px 0 0!important;
+  color:#f5f7fb!important;
+  font-size:22px!important;
+}
+.pvp-progression-card header button{
+  min-width:72px!important;
+  height:36px!important;
+  padding:0 16px!important;
+  border:1px solid #4b6b82!important;
+  border-radius:9px!important;
+  background:#13283b!important;
+  color:#f5f7fb!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+.pvp-progression-card header button:hover{filter:brightness(1.08)!important}
+.pvp-progression-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr)!important;
+  gap:8px!important;
+  align-items:center!important;
+}
+.pvp-progression-hero{
+  min-width:0!important;
+  border:1px solid rgba(62,83,104,.72)!important;
+  border-radius:12px!important;
+  background:#07111b!important;
+  padding:8px!important;
+}
+.pvp-progression-hero.current{
+  box-shadow:0 0 0 2px rgba(241,212,129,.72),0 12px 28px rgba(0,0,0,.38)!important;
+}
+.pvp-progression-static-card{
+  display:block!important;
+  width:100%!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  cursor:pointer!important;
+  overflow:hidden!important;
+}
+.pvp-progression-static-card img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:63/88!important;
+  object-fit:contain!important;
+  pointer-events:none!important;
+  -webkit-user-drag:none!important;
+  user-drag:none!important;
+}
+.pvp-progression-static-card:hover img,
+.pvp-progression-static-card:focus-visible img{
+  filter:brightness(1.08)!important;
+}
+.pvp-progression-arrow{
+  display:grid!important;
+  place-items:center!important;
+  color:#f1d481!important;
+  font-size:28px!important;
+  font-weight:900!important;
+}
+.pvp-progression-card .pvp-v260-position{
+  margin-top:6px!important;
+  color:#f1d481!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  text-align:center!important;
+}
+.pvp-progression-card>p{
+  margin:12px 0 0!important;
+  text-align:center!important;
+  color:#9ea8b5!important;
+  font-size:12px!important;
+}
+body.deck-setup-active #previewOverlay{z-index:10060!important}
+
+@media(max-width:760px){
+  .deck-setup-screen.runtime-ui-v14-setup .formation-preview{gap:6px!important}
+  .deck-setup-screen.runtime-ui-v14-setup .formation-card{padding:5px!important;gap:4px!important}
+  .deck-setup-screen.runtime-ui-v14-setup .formation-card img{
+    width:100%!important;
+    height:auto!important;
+    max-height:155px!important;
+  }
+  .deck-setup-screen.runtime-ui-v14-setup .formation-card .formation-position{
+    min-height:14px!important;
+    font-size:9px!important;
+    line-height:14px!important;
+  }
+  .deck-setup-screen.runtime-ui-v14-setup .deck-setup-actions .start-match-primary{
+    width:auto!important;
+    min-width:150px!important;
+    height:40px!important;
+  }
+  .pvp-progression-card{padding:13px!important}
+  .pvp-progression-row{
+    grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr) 16px minmax(0,1fr)!important;
+    gap:3px!important;
+  }
+  .pvp-progression-arrow{font-size:17px!important}
+  .pvp-progression-card header h2{font-size:18px!important}
+  .pvp-progression-card .pvp-v260-position{font-size:9px!important}
+}

@@ -1,0 +1,24 @@
+Grandis Legacy PvP v3.78.1 — consolidated stabilization
+
+Functional fixes already present in the promoted working tree:
+- public/lobby/pvp-lobby-v3.76.6.css — complete donor Lobby dependencies, Kick geometry/icon sizing, typography context.
+- public/shared-app/app-runtime.js — explicit PvP opening-state declaration/reset and presentation-completion boundary.
+- public/pvp/pvp-host.js — opening event cache and Draw acknowledgement gate.
+- authority/browser-runtime/app.bundle.js — authoritative hold-at-Draw opening handoff instead of premature Draw/Regen.
+- tests/run-v378-lobby-donor-assets.cjs — donor Lobby asset/CSS/font checks.
+- tests/run-v378-lobby-presentation-browser.py — computed geometry regression guard.
+- tests/run-v378-production-asset-resolution.cjs — active asset resolution + donor tree parity checks.
+- tests/run-v378-opening-boundary.cjs — Coin Flip / Start Game / opening boundary regression checks.
+
+Version/release metadata for v3.78.1:
+- package.json
+- package-lock.json
+- server.js
+- public/config.js
+- public/pvp/pvp-host.js
+- README.md
+- tools/build-runtime-sync-lock.cjs
+- tools/build-file-manifest.cjs
+- tools/check-deployment-readiness.cjs
+- release/PVP_v3.78.1_RELEASE_NOTES.md
+- release/PVP_v3.78.1_CHANGED_FILES.txt

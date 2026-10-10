@@ -6201,6 +6201,7 @@ function getActivatedHeroAbilities(state, side, lane){
     state.drawPhaseResolvedFor=null;
     pushLog(state,(state.turn==='PLAYER'?'PLAYER':'AI')+' won the Opening Coin Flip and enters Round 1 Draw Phase.');
     syncCounts(state);
+    if(opts.holdAtDraw&&window.GL_PVP_SHARED_BOARD_ACTIVE&&state.pvpHumanVsHuman){state.pvpTurnReady=true;if(!SUPPRESS_RENDER)render();return true;}
     if(state.turn==='AI'){
       if(opts.bridgeImmediate){resolveDrawPhase(state,'AI',{deferAnimation:true});if(!state.gameOver&&!state.pending)state.phase='Deploy';syncCounts(state);}else runAITurn(state);
     }else{
@@ -6214,7 +6215,7 @@ function getActivatedHeroAbilities(state, side, lane){
     opts=opts||{};state.preGame={stage:'OPENING_MANA',firstPlayer:firstSide};state.phase='Opening Shards';state.turn=null;
     var manaEvents=[];
     if(!state.openingManaDrawn){manaEvents=openingManaDrawEvents(state);state.openingManaDrawn=true;syncCounts(state);}
-    if(opts.deferAnimation||SUPPRESS_RENDER){revealAllOpeningMana(manaEvents);startFirstTurnAfterOpeningDraw(state,firstSide,{deferAnimation:true,bridgeImmediate:!!opts.bridgeImmediate});return manaEvents;}
+    if(opts.deferAnimation||SUPPRESS_RENDER){revealAllOpeningMana(manaEvents);startFirstTurnAfterOpeningDraw(state,firstSide,{deferAnimation:true,bridgeImmediate:!!opts.bridgeImmediate,holdAtDraw:!!opts.holdAtDraw});return manaEvents;}
     render();queueOpeningManaDrawEvents(manaEvents,state,{onComplete:function(){startFirstTurnAfterOpeningDraw(state,firstSide,{});}});return manaEvents;
   }
   function drawOpeningHandsBeforeMana(state,firstSide,opts){
@@ -6229,7 +6230,7 @@ function getActivatedHeroAbilities(state, side, lane){
       state.openingHandsDrawn=true;syncCounts(state);
     }
     var ev=(state.presentationEvents||[]).slice(before);
-    if(opts.deferAnimation||SUPPRESS_RENDER)drawOpeningManaAfterHands(state,firstSide,{deferAnimation:true,bridgeImmediate:!!opts.bridgeImmediate});
+    if(opts.deferAnimation||SUPPRESS_RENDER)drawOpeningManaAfterHands(state,firstSide,{deferAnimation:true,bridgeImmediate:!!opts.bridgeImmediate,holdAtDraw:!!opts.holdAtDraw});
     else queueDrawEvents(ev,state,{onComplete:function(){drawOpeningManaAfterHands(state,firstSide,{});}});
     return ev;
   }
@@ -10442,7 +10443,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     getActivatedLegacyAbilitiesFor:function(side,lane){ return clone(getActivatedLegacyAbilities(appState,side,lane)); },
     testDefeatCastingCleanupRevive:simulateDefeatCastingCleanupReviveQA,
     testUnbrokenStandClassRows:function(){var c=card('S1-WAR-022'),cases={Warrior:'S1-WAR-H001',Gladiator:'S1-WAR-H002',Conqueror:'S1-WAR-H003',Paladin:'S1-WAR-H005',Crusader:'S1-WAR-H006'},out={};Object.keys(cases).forEach(function(name){out[name]=!!attachmentPolicyForCard(c,{card_id:cases[name]});});return out;},
-    completeOpeningFlow:function(firstSide,flipData){var before=(appState&&appState.presentationEvents||[]).length;completeOpeningFlow(appState,firstSide,flipData||{},{deferAnimation:true,bridgeImmediate:true});var events=(appState&&appState.presentationEvents||[]).slice(before);return{ok:true,events:clone(events),snapshot:glPvpBridgeSnapshot()};},
+    completeOpeningFlow:function(firstSide,flipData,options){options=options||{};var before=(appState&&appState.presentationEvents||[]).length;completeOpeningFlow(appState,firstSide,flipData||{},{deferAnimation:true,bridgeImmediate:!!options.bridgeImmediate,holdAtDraw:!!options.holdAtDraw});var events=(appState&&appState.presentationEvents||[]).slice(before);return{ok:true,events:clone(events),snapshot:glPvpBridgeSnapshot()};},
     testCoinOutcomeFromUint32:coinOutcomeFromUint32,
     testRoundAdvanceAfterEnd:function(firstSide,endingSide,round){var probe={round:Number(round||1),openingCoinFlip:{firstPlayer:firstSide==='AI'?'AI':'PLAYER'}};var advanced=advanceRoundAfterCompletedTurnPair(probe,endingSide==='AI'?'AI':'PLAYER');return{advanced:advanced,round:probe.round};},
     testPlaytestManaRules:function(){

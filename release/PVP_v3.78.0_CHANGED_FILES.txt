@@ -45,3 +45,14 @@ DEPLOYMENT CORRECTION / GUARDRAILS
 - tests/run-deployment-startup-live.cjs — real server + /health startup smoke test.
 - package.json — deployment/release verification scripts; verify:v378 now includes deployment topology check.
 - tools/build-file-manifest.cjs — current release identity in output message.
+
+SAME-VERSION COIN/OPENING + ACTIVE-ASSET CORRECTION
+- public/shared-app/app-runtime.js — declare/gate PvP opening state; block normal Draw presentation before local Start Game; set presentation-complete only after v6 opening choreography.
+- public/pvp/pvp-host.js — cache authoritative opening_sequence, gate auto Draw acknowledgement, acknowledge first Draw only after opening presentation completion.
+- authority/browser-runtime/app.bundle.js — forward completeOpeningFlow holdAtDraw/bridgeImmediate options and preserve genuine authoritative Draw before mandatory Draw/Regen.
+- tests/run-v378-authority-draw-handoff.cjs — assert 6/6 Opening Hands + 3/3 Starting Shards before acknowledgement, no premature mandatory Draw, then Draw+Regen after acknowledgement.
+- tests/run-v378-opening-boundary.cjs — permanent Coin Flip/Start Game/opening boundary guard.
+- tests/run-v378-production-asset-resolution.cjs — permanent active production graph + donor asset fingerprint/path-resolution guard.
+- release/V378_ACTIVE_ASSET_RESOLUTION_AUDIT.json — generated active-asset audit.
+- README.md — mandatory asset-resolution and pre-game boundary rules.
+- package.json — test:v378 now includes asset + opening gates.

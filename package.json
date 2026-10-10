@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.78.0",
+  "version": "3.78.1",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.78.0 — clean three-donor integration: v3.76.6 Lobby + VS AI v6.91.3 game client + PvP v3.51 authority.",
+  "description": "Grandis Legacy PvP v3.78.1 — consolidated Lobby + Coin Flip/Opening stabilization: v3.76.6 Lobby + VS AI v6.91.3 game client + PvP v3.51 authority.",
   "scripts": {
     "start": "node server.js",
     "check": "npm run build:data && npm run sync-lock && npm run check:syntax && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v343-candidate1-authority.cjs && node tests/run-v343-candidate1-assets.cjs && node tests/run-runtime-bridge-test.cjs && npm run test:architecture",
@@ -73,12 +73,17 @@
     "test:v351:release": "node tests/run-v351-version-promotion.cjs && node tests/run-v350-maintenance-correction.cjs && node tests/run-v350-same-version-maintenance.cjs && node tests/run-v350-animation-parity-static.cjs && node tests/run-package-check.cjs",
     "test:v378:architecture": "node tests/run-v378-clean-integration.cjs",
     "test:v378:authority": "node tests/run-v343-candidate3a-intent-router.mjs && node tests/run-v343-candidate3a-headless-runtime.mjs && node tests/run-v343-candidate3a-canonical-gameplay.cjs && node tests/run-v343-candidate3b-advanced-runtime.cjs && node tests/run-v343-candidate3c-lifecycle.cjs && node tests/run-v378-authority-draw-handoff.cjs",
-    "test:v378": "npm run check:syntax && npm run test:v378:architecture && npm run test:v378:authority",
+    "test:v378": "npm run check:syntax && npm run test:v378:architecture && npm run test:v378:lobby-assets && npm run test:v378:assets && npm run test:v378:opening && npm run test:v378:authority",
     "verify:v378": "npm run test:v378 && npm run sync-lock && node sync/runtime-sync-verifier.mjs --self-test && npm run frontend-manifest && npm run manifest && npm run verify:manifest && npm run check:deployment",
     "check:deployment": "node tools/check-deployment-readiness.cjs",
     "test:startup": "node tests/run-deployment-startup-live.cjs",
     "verify:deployment": "npm run check:deployment && npm run test:startup",
-    "release:seal": "npm run sync-lock && npm run frontend-manifest && npm run manifest && node sync/runtime-sync-verifier.mjs --self-test && npm run verify:manifest && npm run check:deployment"
+    "release:seal": "npm run sync-lock && npm run frontend-manifest && npm run manifest && node sync/runtime-sync-verifier.mjs --self-test && npm run verify:manifest && npm run check:deployment",
+    "test:v378:lobby-assets": "node tests/run-v378-lobby-donor-assets.cjs",
+    "test:v378:lobby-browser": "python tests/run-v378-lobby-presentation-browser.py",
+    "test:v378:lobby": "npm run test:v378:lobby-assets && npm run test:v378:lobby-browser",
+    "test:v378:assets": "node tests/run-v378-production-asset-resolution.cjs",
+    "test:v378:opening": "node tests/run-v378-opening-boundary.cjs"
   },
   "engines": {
     "node": ">=18"
@@ -87,7 +92,7 @@
     "ws": "^8.18.0"
   },
   "grandisLegacySourceStack": {
-    "behaviorReference": "Clean v3.78.0 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Integration changes are limited to authority/identity adapter seams and authoritative turn-start staging.",
+    "behaviorReference": "Clean v3.78.1 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Integration changes are limited to authority/identity adapter seams and authoritative turn-start staging.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
