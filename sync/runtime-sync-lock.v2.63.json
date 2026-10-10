@@ -2,7 +2,7 @@
   "version": "v2.63",
   "schema_version": "2.63-pvp-v351-consumer",
   "policy": "RUNTIME_FIRST_FAIL_CLOSED_SYNC",
-  "application": "PvP v3.78.1 Lobby + Coin Flip/Opening Stabilization 2026-10-10",
+  "application": "PvP v3.78.2 Opaque Coin Gate + Lobby/Opening Stabilization 2026-10-10",
   "releaseReady": true,
   "sourceAuthority": "v1.9.5",
   "sharedRuntime": "v1.94.2",
@@ -15,7 +15,7 @@
   "canonicalRegistryHash": "7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389",
   "heroComponentRegistryHash": "f36f1cc83eb9845743176c3af71f7823125353eae73e832588e9d8b42c6818be",
   "requiredSourceStack": {
-    "behaviorReference": "Clean v3.78.1 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Integration changes are limited to authority/identity adapter seams and authoritative turn-start staging.",
+    "behaviorReference": "Clean v3.78.2 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Coin Flip uses an opaque black PvP overlay over the mounted v6 field with an inert/pointer gate until Start Game.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
@@ -107,7 +107,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "09a77ebeebbecccec21966c3139174516db8e3bdc3a7404c71723708035818d3"
+      "sha256": "b03f7ac89e5658906d47132074c70444bdd8b320053404b11f47f8d5cf1882f2"
     },
     {
       "path": "public/engine/js/app.bundle.js",
@@ -139,11 +139,11 @@
     },
     {
       "path": "public/pvp/pvp-host.js",
-      "sha256": "f1b553c15204e4b51e308fb8a4d9d42b10f7646d9d30a677fd4f131d4068dcf8"
+      "sha256": "bcf39f660bcbe45f36511db5579b2c06acd59a5ed65b97501626613f28980aa2"
     },
     {
       "path": "public/pvp/pvp-integration.css",
-      "sha256": "d7e9e2a0c506d5d4542423f791d8e385497c5b0b07a6b4650049c74e4a8c981d"
+      "sha256": "48365b446c9564927bbfe0a99278fc6be232a1e477e469c5ee018254e2f223e4"
     },
     {
       "path": "public/runtime/adapters/authority-adapter.js",
@@ -155,7 +155,7 @@
     },
     {
       "path": "public/shared-app/app-runtime.js",
-      "sha256": "1b4c87e271a59c9b8b3271494d7a523227a4d4c531c1a6772e378043ed5fa37a"
+      "sha256": "7017cc8db80252df88e59e29b3e2b805f79cf930647a34ed8246ea19ffddf9e9"
     },
     {
       "path": "public/shared-ui/battlefield-ui.css",
@@ -435,7 +435,7 @@
     },
     {
       "path": "server.js",
-      "sha256": "50672f6dd3899d116695f9e7dd50c6ca2e1c311254ac5291884b4df5baee8ae3"
+      "sha256": "4eab1fdfe70f0a99ad5ba4d171ff529f797689136e6b92d630aa25ed895f4a6e"
     },
     {
       "path": "server/gameplay-intent-router.mjs",

@@ -1,24 +1,32 @@
-# Grandis Legacy PvP — v3.78.1
+# Grandis Legacy PvP — v3.78.2
 
 ## Release identity
 
-- PvP Version: **v3.78.1**
-- Package Version: **3.78.1**
+- PvP Version: **v3.78.2**
+- Package Version: **3.78.2**
 - Date: **2026-10-10**
 - Architecture: **PvP v3.76.6 Lobby + VS AI v6.91.3 approved game client + PvP v3.51 multiplayer authority**
 
-## v3.78.1 consolidated bug-fix scope
+## v3.78.2 Coin Flip field-gating stabilization
 
-This release intentionally consolidates the two reported regressions before packaging instead of producing one ZIP per bug:
+v3.78.2 keeps the v3.78.1 Lobby and opening fixes, then removes the fragile PvP battlefield hide/unhide behavior during Coin Flip.
 
-1. **Lobby donor parity** — restore the complete v3.76.6 Lobby presentation dependencies so `JOIN AS PLAYER` remains one line and the Player 2 Kick control remains the donor-sized 28×28 button with a 16×16 exit icon. Asset/font/CSS dependencies are verified against the donor.
-2. **Coin Flip → Start Game boundary** — prevent Draw/Opening presentation and Draw SFX before Coin Flip is finished and Start Game has been confirmed; explicitly declare/reset the PvP opening state and hold authoritative mandatory Draw/Regen until the v6 opening presentation completes.
+The PvP pre-game presentation contract is now:
 
-No gameplay rule redesign is part of v3.78.1. Lobby presentation remains based on PvP v3.76.6, gameplay presentation/timing remains VS AI v6.91.3, and multiplayer authority remains PvP v3.51.
+1. Lobby closes/unmounts.
+2. The approved v6.91.3 battlefield stays **mounted and rendered** underneath the Coin Flip stage.
+3. Coin Flip uses a **fully opaque black fullscreen overlay** around the existing Coin Flip popup.
+4. While Coin Flip/result is active, the battlefield is **inert** and has `pointer-events: none`; hover previews, clicks, focus and pointer interaction cannot leak through.
+5. Only after local **Start Game** receives a valid authoritative opening setup is the gate released and the Coin Flip overlay removed.
+6. Opening Hand → Starting Shards → presentation acknowledgement → mandatory Draw/Regen → Deploy remains the v3.78.1 authoritative opening sequence.
+
+This directly fixes the field-disappearing regression caused by later authoritative snapshots re-applying `gl-lobby-hidden`, while avoiding a CSS-only visibility workaround.
+
+No gameplay-rule redesign is part of v3.78.2. Lobby presentation remains based on PvP v3.76.6, gameplay presentation/timing remains VS AI v6.91.3, and multiplayer authority remains PvP v3.51.
 
 ## Architecture
 
-Grandis Legacy PvP v3.78.1 is a consolidated stabilization of the clean three-donor integration:
+Grandis Legacy PvP v3.78.2 is a stabilization of the clean three-donor integration:
 
 - **Pre-match / Lobby presentation:** PvP v3.76.6
 - **Gameplay presentation / timing / interaction:** VS AI v6.91.3
@@ -99,7 +107,7 @@ If deployment still shows `no healthy upstream`, inspect service logs and fix th
 ## Useful release commands
 
 ```bash
-npm run test:v378
+npm run test:v3782
 npm run release:seal
 npm run check:deployment
 npm run test:startup
@@ -192,6 +200,33 @@ Permanent rules:
 - `pvp-host` must not auto-acknowledge Draw until `GL_PVP_OPENING_PRESENTATION_COMPLETE === true`;
 - normal presentation-event processing must remain gated before local Start Game so `Card Sound.mp3` cannot be triggered by a future authoritative Draw event during Coin Flip;
 - never fix this by adding fake presentation delays or a second PvP opening scheduler.
+
+---
+
+
+## Coin Flip battlefield gate — mandatory regression rule
+
+PvP must **not** hide/unhide the v6 gameplay root as part of Coin Flip. The field may be mounted behind the Coin Flip UI, but the fullscreen Coin Flip layer must be fully opaque black and the gameplay root must remain inert until Start Game actually begins the authoritative opening presentation.
+
+Required behavior during `coin-flip` and `coin-result`:
+
+- `.app` remains rendered; do not add `gl-lobby-hidden` from `syncPvpPreGame()`;
+- the root carries `gl-pvp-coin-gated`;
+- `.app` is `inert`, `aria-hidden`, and `pointer-events:none`;
+- battlefield/card hover previews are suppressed;
+- no click/focus/hover can reach the field;
+- the Coin Flip overlay is `background:#000` (no transparency);
+- a later server snapshot must not re-hide the field;
+- the gate is removed only when Start Game hands presentation ownership to the approved v6 opening flow (or on legitimate reconnect/adopt of an already-started match).
+
+Mandatory guards:
+
+```bash
+npm run test:v3782:coin-gate
+npm run test:v3782
+```
+
+The browser guard verifies that the field is still rendered behind the overlay, the overlay is opaque black, hover/click/focus do not leak through, and interaction becomes available only after the gate is released.
 
 ---
 

@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.78.1';
-const BUILD_ID='gl-pvp-3.78.1-stabilization-2026-10-10';
+const VERSION='Grandis Legacy PvP v3.78.2';
+const BUILD_ID='gl-pvp-3.78.2-coin-gate-2026-10-10';
 const CFG=window.GL_PVP_CONFIG||window.GL_CONFIG||{};
 const STORE={client:'grandis_legacy_pvp_v20_client_id',name:'grandis_legacy_pvp_v20_name',role:'grandis_legacy_pvp_v20_role',deck:'grandis_legacy_pvp_v20_deck',seat:'grandis_legacy_pvp_v20_seat_token_room_1'};
 const state={ws:null,connected:false,snapshot:null,name:'',role:'player',deckKey:'',customDeck:null,customDeckName:'',formation:null,rank:1,clientId:'',seatToken:'',reconnectDelay:1200,intentSeq:0,intentInFlight:false,intentBase:0,intentName:'',intentId:'',openingSequenceEvent:null,listeners:new Set(),waiters:[]};

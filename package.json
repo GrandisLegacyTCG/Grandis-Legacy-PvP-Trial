@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.78.1",
+  "version": "3.78.2",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.78.1 — consolidated Lobby + Coin Flip/Opening stabilization: v3.76.6 Lobby + VS AI v6.91.3 game client + PvP v3.51 authority.",
+  "description": "Grandis Legacy PvP v3.78.2 — opaque Coin Flip overlay + anti-hover/input gate over mounted v6 battlefield; preserves v3.78.1 Lobby and opening stabilization.",
   "scripts": {
     "start": "node server.js",
     "check": "npm run build:data && npm run sync-lock && npm run check:syntax && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v343-candidate1-authority.cjs && node tests/run-v343-candidate1-assets.cjs && node tests/run-runtime-bridge-test.cjs && npm run test:architecture",
@@ -83,7 +83,10 @@
     "test:v378:lobby-browser": "python tests/run-v378-lobby-presentation-browser.py",
     "test:v378:lobby": "npm run test:v378:lobby-assets && npm run test:v378:lobby-browser",
     "test:v378:assets": "node tests/run-v378-production-asset-resolution.cjs",
-    "test:v378:opening": "node tests/run-v378-opening-boundary.cjs"
+    "test:v378:opening": "node tests/run-v378-opening-boundary.cjs",
+    "test:v3782:coin-gate": "node tests/run-v3782-coin-overlay-gate.cjs && python tests/run-v3782-coin-overlay-browser.py",
+    "test:v3782": "npm run test:v378 && npm run test:v3782:coin-gate",
+    "verify:v3782": "npm run test:v3782 && npm run sync-lock && node sync/runtime-sync-verifier.mjs --self-test && npm run frontend-manifest && npm run manifest && npm run verify:manifest && npm run check:deployment"
   },
   "engines": {
     "node": ">=18"
@@ -92,7 +95,7 @@
     "ws": "^8.18.0"
   },
   "grandisLegacySourceStack": {
-    "behaviorReference": "Clean v3.78.1 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Integration changes are limited to authority/identity adapter seams and authoritative turn-start staging.",
+    "behaviorReference": "Clean v3.78.2 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Coin Flip uses an opaque black PvP overlay over the mounted v6 field with an inert/pointer gate until Start Game.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
