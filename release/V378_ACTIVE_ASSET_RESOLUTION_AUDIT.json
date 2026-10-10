@@ -21,10 +21,20 @@
   "brokenHtmlRefs": 0,
   "cssLocalUrlsChecked": 6,
   "brokenCssUrls": 0,
-  "activeIntegrationAssetLiteralsChecked": 31,
+  "activeIntegrationAssetLiteralsChecked": 42,
   "brokenActiveIntegrationAssetRefs": 0,
   "v6EngineMediaLiteralsChecked": 20,
   "brokenV6EngineMediaRefs": 0,
+  "loadedScriptLocalMediaRefsChecked": 68,
+  "brokenLoadedScriptLocalMediaRefs": 0,
+  "dormantLoadedDonorFallbacks": [
+    {
+      "file": "public/engine/shared-app/app.bundle.js",
+      "url": "assets/lobby/Swap.png",
+      "reason": "suppressed donor standalone Lobby renderer"
+    }
+  ],
+  "wrongActiveRootPrefixesInLoadedScripts": 0,
   "dynamicRuntimeAssetPathsChecked": 25,
   "brokenDynamicRuntimeAssetPaths": 0,
   "v6DonorAssetTrees": {
@@ -43,10 +53,6 @@
   },
   "lobbyAssetsHashIdentical": 5,
   "cardArtRuntimeFiles": 200,
-  "dormantLockedDonorFallbackRefs": [
-    "assets/lobby/Swap.png",
-    "assets/counters/Counter-{1..6}.png"
-  ],
   "canonicalLobbyCardResolver": "cardView() / donor canonical manifest (remote website URLs where specified by donor)",
   "browserNetworkSmoke": "BLOCKED_BY_ADMINISTRATOR"
 }

@@ -1,0 +1,36 @@
+Grandis Legacy PvP v3.78.3 — changed files versus v3.78.2
+
+Behavior / integration
+- server/gameplay-intent-router.mjs
+- public/pvp/pvp-host.js
+- public/shared-app/app-runtime.js
+- public/runtime/adapters/pvp-adapter.js
+
+Version / release metadata
+- package.json
+- package-lock.json
+- server.js
+- public/config.js
+- README.md
+- tools/check-deployment-readiness.cjs
+- tools/build-runtime-sync-lock.cjs
+- tools/build-file-manifest.cjs
+
+Tests / audits
+- tests/run-v378-production-asset-resolution.cjs
+- tests/run-v3783-authority-boundary.mjs (new)
+- release/V378_ACTIVE_ASSET_RESOLUTION_AUDIT.json
+- release/PVP_v3.78.3_RELEASE_NOTES.md (new)
+- release/PVP_v3.78.3_QA_REPORT.json (new)
+- release/PVP_v3.78.3_AUTHORITY_BOUNDARY_AUDIT.json (new)
+- release/PVP_v3.78.3_CHANGED_FILES.txt (new)
+
+Generated after final source/doc edit
+- sync/runtime-sync-lock.v2.63.json
+- public/FILE_MANIFEST_SHA256.csv
+- FILE_MANIFEST_SHA256.csv
+
+Locked donor note
+- public/engine/js/app.bundle.js remains byte-identical to VS AI v6.91.3 donor.
+- public/engine/shared-app/app.bundle.js remains byte-identical to VS AI v6.91.3 donor.
+- no locked v6 engine presentation bundle was forked for this fix.

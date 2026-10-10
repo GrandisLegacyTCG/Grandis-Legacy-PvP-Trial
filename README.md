@@ -1,11 +1,36 @@
-# Grandis Legacy PvP — v3.78.2
+# Grandis Legacy PvP — v3.78.3
 
 ## Release identity
 
-- PvP Version: **v3.78.2**
-- Package Version: **3.78.2**
+- PvP Version: **v3.78.3**
+- Package Version: **3.78.3**
 - Date: **2026-10-10**
 - Architecture: **PvP v3.76.6 Lobby + VS AI v6.91.3 approved game client + PvP v3.51 multiplayer authority**
+
+## v3.78.3 authority-boundary + presentation transport stabilization
+
+v3.78.3 fixes three integration gaps exposed differently by desktop, tablet, and mobile while keeping the locked three-donor ownership model unchanged.
+
+### What was actually wrong
+
+1. **Mana PAY could deadlock.** The visible v6.91.3 client emits `commitManaShardPaymentChoice`, but the PvP gameplay-intent router did not register that intent. The server rejected the commit after the payment animation had already placed the center-choice UI into a busy state, and the visible client did not clear that state on an authoritative error. v3.78.3 registers the missing PAYMENT intent and resets the presentation-only busy state on intent failure/disconnect.
+
+2. **The approved v6 UI is locally synchronous, but PvP authority is asynchronous.** Some v6 interaction paths intentionally issue paired intents in the same tick (for example selection followed immediately by confirmation). v3.78.2 dropped the second call whenever another intent was in flight. This was especially visible through mobile-native interaction paths even though desktop synchronization could appear healthy. v3.78.3 replaces the drop behavior with a bounded serialized queue: the next intent is sent only after the authoritative snapshot advances, so the server remains the sole gameplay mutation authority.
+
+3. **Authoritative presentation events were not fully bridged back into the visible v6 client.** The v3.51 server still emitted authoritative card/battle presentation events, but the clean integration consumed essentially only the opening sequence while importing later snapshots with import animations suppressed. v3.78.3 captures relevant authoritative presentation data before snapshot import, renders the new authoritative state, then replays card/battle presentation through the visible v6 owner. Battle audio is tied to the same authoritative event stream. Existing v6 state-diff Draw/Shard/Rank/Legacy presentation is left in place to avoid double animations.
+
+The desktop/tablet/mobile discrepancy does **not** mean there are separate game rules. All three remain on the same v3.51 server-authoritative contract; only their v6 presentation/interaction paths differ. The adapter is allowed to translate those paths, but it must never create a second local gameplay authority.
+
+### Asset calling rule
+
+The release asset audit starts from `public/index.html` and validates the scripts/styles actually loaded in production. Active media must resolve from the paths the loaded client really requests. The locked v6.91.3 loaded engine already uses canonical `engine/assets/...` paths for active gameplay audio/battle/status media. Dormant donor-only fallback strings from suppressed standalone renderers are reported separately and are **not** a reason to duplicate asset trees.
+
+Mandatory boundary regression test:
+
+```bash
+npm run test:v3783:boundary
+npm run test:v3783
+```
 
 ## v3.78.2 Coin Flip field-gating stabilization
 
@@ -26,7 +51,7 @@ No gameplay-rule redesign is part of v3.78.2. Lobby presentation remains based o
 
 ## Architecture
 
-Grandis Legacy PvP v3.78.2 is a stabilization of the clean three-donor integration:
+Grandis Legacy PvP v3.78.3 preserves the clean three-donor integration:
 
 - **Pre-match / Lobby presentation:** PvP v3.76.6
 - **Gameplay presentation / timing / interaction:** VS AI v6.91.3
@@ -107,7 +132,7 @@ If deployment still shows `no healthy upstream`, inspect service logs and fix th
 ## Useful release commands
 
 ```bash
-npm run test:v3782
+npm run test:v3783
 npm run release:seal
 npm run check:deployment
 npm run test:startup

@@ -19,8 +19,8 @@ const docker = read('Dockerfile');
 const server = read('server.js');
 const readme = read('README.md');
 
-if (pkg.version !== '3.78.2') fail(`package.json version is ${pkg.version}, expected 3.78.2`);
-else pass('package version is v3.78.2');
+if (pkg.version !== '3.78.3') fail(`package.json version is ${pkg.version}, expected 3.78.3`);
+else pass('package version is v3.78.3');
 
 if (!pkg.dependencies || !pkg.dependencies.ws) fail('package.json production dependency "ws" is missing');
 else pass(`package.json declares ws ${pkg.dependencies.ws}`);

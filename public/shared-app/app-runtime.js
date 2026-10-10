@@ -553,6 +553,72 @@ function flyToHeroOrientation(src,fromEl,toEl,side,lane,duration=390,onFinish,pl
   }));
   setTimeout(()=>{im.remove();glPresentationActive=Math.max(0,glPresentationActive-1);glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+60);if(typeof onFinish==='function')onFinish(true)},duration+24);return true;
 }
+// PvP authoritative presentation bridge. The visible v6 battlefield owns these motions;
+// the hidden/suppressed donor engine remains gameplay/runtime data only.
+const glAuthoritativeBattleAudioSeen=new Set(),glAuthoritativeBattleVfxSeen=new Set();
+function glRectSnapshot(el){if(!el||typeof el.getBoundingClientRect!=='function')return null;const r=uiRect(el);if(!r||r.width<1||r.height<1)return null;return{left:r.left,top:r.top,width:r.width,height:r.height}}
+function glHandCardEl(side,index){const host=side==='AI'?oppHandTrack:playerHandTrack;return host?.querySelector('.hand-card[data-hand-index="'+Number(index)+'"]')||null}
+function glAttachmentEl(side,lane,slot){const root=uiLaneElement(side,lane);return root?.querySelector('.attachment-card[data-gl-attachment-slot="'+Number(slot||0)+'"]')||null}
+function glAuthoritativeSourceEl(evt){
+  if(!evt)return null;
+  if(['card_play','tribute','hand_to_discard'].includes(evt.kind))return glHandCardEl(evt.actor_side==='AI'?'AI':'PLAYER',evt.hand_index);
+  if(evt.kind==='attachment_to_discard')return glAttachmentEl(evt.actor_side==='AI'?'AI':'PLAYER',evt.lane,evt.slot);
+  if(evt.kind==='legacy_to_deck')return heroCardEl(evt.actor_side==='AI'?'AI':'PLAYER',evt.lane);
+  if(evt.kind==='held_card_release')return activeStage?.querySelector('.active-card-visual')||null;
+  return null;
+}
+function glAuthoritativeDestinationEl(evt){
+  if(!evt)return null;const d=evt.destination||{},side=(d.side||evt.target_side||evt.actor_side)==='AI'?'AI':'PLAYER';
+  if(d.type==='attachment')return glAttachmentEl(side,d.lane,Number(d.slot||0));
+  if(d.type==='discard')return zoneEl(side,'Discard Pile')?.querySelector('.zoneCard')||zoneEl(side,'Discard Pile');
+  if(d.type==='hand')return side==='AI'?oppHandTrack:playerHandTrack;
+  if(d.type==='hero')return heroCardEl(side,d.lane||evt.target_lane);
+  if(d.type==='legacy')return zoneEl(side,'Legacy Deck')?.querySelector('.zoneCard')||zoneEl(side,'Legacy Deck');
+  if(evt.kind==='hand_to_discard'||evt.kind==='attachment_to_discard')return zoneEl(evt.actor_side==='AI'?'AI':'PLAYER','Discard Pile')?.querySelector('.zoneCard')||zoneEl(evt.actor_side==='AI'?'AI':'PLAYER','Discard Pile');
+  if(evt.kind==='legacy_to_deck')return zoneEl(evt.actor_side==='AI'?'AI':'PLAYER','Legacy Deck')?.querySelector('.zoneCard')||zoneEl(evt.actor_side==='AI'?'AI':'PLAYER','Legacy Deck');
+  if(evt.kind==='tribute')return heroCardEl(evt.target_side==='AI'?'AI':'PLAYER',evt.target_lane);
+  if(evt.target_lane)return heroCardEl(evt.target_side==='AI'?'AI':'PLAYER',evt.target_lane);
+  return activeStage?.querySelector('.active-card-visual')||heroCardEl(evt.source_side==='AI'?'AI':'PLAYER',evt.source_lane)||null;
+}
+function flyFromRect(src,fr,toEl,duration=390,onFinish,playSound=true){
+  if(!src||!fr||!toEl)return false;const tr=uiRect(toEl);if(!tr||tr.width<1||tr.height<1)return false;
+  glPresentationActive++;glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+60);
+  const im=document.createElement('img');im.className='gl-flying-card';im.src=src;im.style.left=fr.left+'px';im.style.top=fr.top+'px';im.style.width=fr.width+'px';im.style.height=fr.height+'px';animationLayer.appendChild(im);if(playSound)E()?.playCardMotionSound?.();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{im.style.transition='transform '+duration+'ms cubic-bezier(.2,.75,.2,1),opacity '+duration+'ms ease,width '+duration+'ms ease,height '+duration+'ms ease';im.style.transform='translate('+(tr.left-fr.left)+'px,'+(tr.top-fr.top)+'px)';im.style.width=tr.width+'px';im.style.height=tr.height+'px';im.style.opacity='.76'}));
+  setTimeout(()=>{im.remove();glPresentationActive=Math.max(0,glPresentationActive-1);glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+60);if(typeof onFinish==='function')onFinish(true)},duration+24);return true;
+}
+function prepareAuthoritativeEvents(events){
+  return (Array.isArray(events)?events:[]).map(evt=>({event:cloneLite(evt),sourceRect:glRectSnapshot(glAuthoritativeSourceEl(evt))}));
+}
+function glBattleLayer(){let layer=document.getElementById('glExternalBattleFeedbackLayer');if(!layer){layer=document.createElement('div');layer.id='glExternalBattleFeedbackLayer';layer.className='gl-battle-feedback-layer';layer.setAttribute('aria-hidden','true');document.body.appendChild(layer)}return layer}
+function glBattleHeroRect(side,lane){return glRectSnapshot(heroCardEl(side,lane))}
+const glBattleVfx={pAttack:'engine/assets/battle/P.Attack.png',mAttack:'engine/assets/battle/M.Attack.png',pDefense:'engine/assets/battle/P.Defense.png',mDefense:'engine/assets/battle/M.Defense.png',heal:'engine/assets/battle/Heal.png'};
+const glBattleAudio={pAttack:'engine/assets/audio/battle/P.Atk.mp3',mAttack:'engine/assets/audio/battle/M.Atk.mp3',pDefense:'engine/assets/audio/battle/P.Def.mp3',mDefense:'engine/assets/audio/battle/M.Def.mp3',dodge:'engine/assets/audio/battle/Dodge.mp3',heal:'engine/assets/audio/battle/Heal.mp3'};
+function glPlayBattleAudio(evt){
+  if(!evt||evt.kind!=='battle_feedback'||evt.play_sound===false||glAuthoritativeBattleAudioSeen.has(evt.id))return false;if(evt.id)glAuthoritativeBattleAudioSeen.add(evt.id);
+  const kind=evt.feedback_kind==='heal'?'heal':'attack';let src='',vol=.6;if(kind==='heal'){src=glBattleAudio.heal;vol=.52}else if(evt.outcome==='dodge'){src=glBattleAudio.dodge;vol=.62}else if(evt.outcome==='block'){src=(evt.defense_kind||'P')==='M'?glBattleAudio.mDefense:glBattleAudio.pDefense}else src=(evt.attack_kind||'P')==='M'?glBattleAudio.mAttack:glBattleAudio.pAttack;
+  return E()?.playPresentationAudio?.(src,vol)||false;
+}
+function playAuthoritativeBattleAudio(events){let ok=false;(events||[]).forEach(evt=>{if(evt?.kind==='battle_feedback')ok=glPlayBattleAudio(evt)||ok});return ok}
+function glBattleVfxNode(src,cls,rect,scale=1,clip=true){
+  if(!src||!rect)return null;const layer=glBattleLayer(),host=document.createElement('div');host.className='gl-battle-vfx-clip';host.style.left=rect.left+'px';host.style.top=rect.top+'px';host.style.width=rect.width+'px';host.style.height=rect.height+'px';layer.appendChild(host);const im=document.createElement('img');im.src=src;im.className='gl-battle-vfx '+cls;if(clip){im.style.width=(scale*100)+'%';im.style.height=(scale*100)+'%';im.style.left=((1-scale)*50)+'%';im.style.top=((1-scale)*50)+'%'}else{host.style.overflow='visible';const w=Math.max(54,rect.width*scale),h=Math.max(72,rect.height*scale);im.style.position='fixed';im.style.left=(rect.left+rect.width/2-w/2)+'px';im.style.top=(rect.top+rect.height/2-h/2)+'px';im.style.width=w+'px';im.style.height=h+'px'}host.appendChild(im);setTimeout(()=>host.remove(),900);return im;
+}
+function glBattlePulse(side,lane,cls,ms){const h=heroCardEl(side,lane);if(!h)return;h.classList.remove(cls);void h.offsetWidth;h.classList.add(cls);setTimeout(()=>h.classList.remove(cls),ms)}
+function glPlayBattleVfx(evt){
+  if(!evt||evt.kind!=='battle_feedback'||(evt.id&&glAuthoritativeBattleVfxSeen.has(evt.id)))return false;if(evt.id)glAuthoritativeBattleVfxSeen.add(evt.id);const side=evt.side==='AI'?'AI':'PLAYER',rect=glBattleHeroRect(side,evt.lane);if(!rect)return false;const kind=evt.feedback_kind==='heal'?'heal':'attack',atk=(evt.attack_kind||'P')==='M'?'M':'P';
+  if(kind==='heal'){const l=glBattleVfxNode(glBattleVfx.heal,'gl-battle-heal gl-battle-heal--left',rect,.62,true),r=glBattleVfxNode(glBattleVfx.heal,'gl-battle-heal gl-battle-heal--right',rect,.62,true);if(l){l.style.width='46%';l.style.height='58%';l.style.top='34%';l.style.left='4%'}if(r){r.style.width='46%';r.style.height='58%';r.style.top='34%';r.style.left='50%'}return true}
+  glBattleVfxNode(atk==='M'?glBattleVfx.mAttack:glBattleVfx.pAttack,atk==='M'?'gl-battle-mattack':'gl-battle-pattack',rect,.72,true);
+  if(evt.outcome==='dodge')glBattlePulse(side,evt.lane,'gl-battle-dodge-card',720);else{if(evt.has_damage)glBattlePulse(side,evt.lane,'gl-battle-damage-card',520);if(evt.outcome==='block'){const def=(evt.defense_kind||'P')==='M'?'M':'P';setTimeout(()=>glBattleVfxNode(def==='M'?glBattleVfx.mDefense:glBattleVfx.pDefense,def==='M'?'gl-battle-mdef':'gl-battle-pdef',glBattleHeroRect(side,evt.lane)||rect,1.08,def!=='M'),105)}}return true;
+}
+function playAuthoritativeEvents(plans){
+  const list=Array.isArray(plans)?plans:[];if(!list.length)return false;let played=false;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{list.forEach((plan,index)=>setTimeout(()=>{const evt=plan?.event;if(!evt)return;if(evt.kind==='battle_feedback'){played=glPlayBattleVfx(evt)||played;return}if(!['card_play','held_card_release','hand_to_discard','attachment_to_discard','legacy_to_deck','tribute'].includes(evt.kind))return;
+    // Local Tribute already has the approved v6 pre-commit Hand -> Hero motion. Replaying the
+    // authoritative echo would duplicate it; remote Tribute still needs transport replay.
+    if(evt.kind==='tribute'&&evt.actor_side==='PLAYER')return;
+    const to=glAuthoritativeDestinationEl(evt),from=plan.sourceRect||glRectSnapshot(glAuthoritativeSourceEl(evt));if(!to||!from)return;const src=art(evt.card_id);played=flyFromRect(src,from,to,evt.kind==='held_card_release'?330:410,null,true)||played;
+  },index*65))}));return true;
+}
 function queueBattlefieldTributeMotion(p,lane){
   if(!p||p.type!=='tribute_target'||!p.card_id||!Number.isInteger(Number(p.hand_index))||!lane)return false;
   const from=playerHandTrack?.querySelector('.hand-card[data-hand-index="'+Number(p.hand_index)+'"] .hand-art'),to=heroCardEl('PLAYER',lane);
@@ -1838,6 +1904,7 @@ function initStableBattlefieldReviewGestures(){
 
 
 function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};document.querySelector('.bottom-actions .danger').onclick=()=>{if(confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncSoundButton();}
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE!=='PVP')renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:renderNow,state:st,intent,openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal,openCardReview,syncPvpPreGame};}
+window.addEventListener('gl-pvp-intent-error',()=>{resetCenterChoiceVisualState();centerChoiceRenderSig='';requestAnimationFrame(renderNow)});
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE!=='PVP')renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:renderNow,state:st,intent,openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal,openCardReview,syncPvpPreGame,prepareAuthoritativeEvents,playAuthoritativeEvents,playAuthoritativeBattleAudio};}
 boot();
 })();

@@ -26,4 +26,4 @@ for (const rel of walk(root)) {
   rows.push(`${rel},${crypto.createHash('sha256').update(data).digest('hex')},${data.length}`);
 }
 fs.writeFileSync(path.join(root, 'FILE_MANIFEST_SHA256.csv'), `${rows.join('\n')}\n`);
-console.log(`PASS: PvP v3.78.2 final manifest generated for ${rows.length - 1} files.`);
+console.log(`PASS: PvP v3.78.3 final manifest generated for ${rows.length - 1} files.`);

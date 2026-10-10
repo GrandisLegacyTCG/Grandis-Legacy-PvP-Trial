@@ -21,7 +21,7 @@ assert.deepStrictEqual(brokenCss,[],`Broken CSS refs: ${JSON.stringify(brokenCss
 // These are the actual PvP integration files that generate local URLs at runtime.
 // The v6 bundle's standalone-lobby code is intentionally not used by PvP; gameplay media
 // literals under engine/assets are still audited below.
-const integrationFiles=['public/pvp/pvp-host.js','public/shared-app/app-runtime.js'];
+const integrationFiles=['public/pvp/pvp-host.js','public/runtime/adapters/pvp-adapter.js','public/shared-app/app-runtime.js'];
 const localLitRe=/["']((?:engine\/assets|assets\/(?:ui|shards|lobby)|card-art)\/[^"'\n\r]+?\.(?:png|webp|jpg|jpeg|svg|mp3|wav|ogg|woff2?))(?:\?[^"']*)?["']/gi;
 const brokenIntegration=[];let integrationRefs=0;
 for(const f of integrationFiles){const text=read(f);for(const m of text.matchAll(localLitRe)){const u=m[1];if(u.includes("'+")||u.includes('+"'))continue;integrationRefs++;if(!existsRel(u))brokenIntegration.push({file:f,url:u})}}
@@ -31,13 +31,36 @@ const v6Bundle=read('public/engine/shared-app/app.bundle.js');
 const engineMedia=[...new Set([...v6Bundle.matchAll(/["'](engine\/assets\/[^"'\n\r]+?\.(?:png|webp|mp3|wav|ogg|woff2?))(?:\?[^"']*)?["']/gi)].map(m=>m[1]))];
 const brokenEngine=engineMedia.filter(x=>!existsRel(x));
 assert.deepStrictEqual(brokenEngine,[],`Broken loaded v6 engine media refs: ${brokenEngine.join(', ')}`);
-// The locked donor bundle also contains its own standalone/native Lobby + native counter-renderer
-// fallbacks. PvP explicitly disables those presentation owners (external human UI + render suppression),
-// so they are not active URL calls. Keep them visible in the audit instead of silently pretending
-// every string literal in the loaded donor bundle is an active request.
-const dormantDonorRefs=['assets/lobby/Swap.png','assets/counters/Counter-{1..6}.png'];
-assert.ok(v6Bundle.includes('assets/lobby/Swap.png'),'Expected locked-donor standalone Lobby fallback changed');
-assert.ok(v6Bundle.includes("return 'assets/counters/Counter-'+value+'.png'"),'Expected locked-donor native counter fallback changed');
+
+// Audit every JS file that index.html actually loads.  Do not treat the presence of a file in the
+// repository as proof that its URL is used; conversely, every local media URL emitted by a loaded
+// script must resolve from public/.  This is the guard for "assets exist but the app calls the wrong root".
+const loadedScriptLocalRefs=[];
+const dormantLoadedDonorFallbacks=[];
+const brokenLoadedScriptRefs=[];
+const isKnownDormantLoadedFallback=(file,url)=>file==='public/engine/shared-app/app.bundle.js'&&url==='assets/lobby/Swap.png';
+const loadedLocalMediaRe=/["']((?:engine\/assets|assets\/(?:ui|shards|lobby|audio|battle|status-icons|counters)|card-art)\/[^"'\n\r]+?\.(?:png|webp|jpg|jpeg|svg|mp3|wav|ogg|woff2?))(?:\?[^"']*)?["']/gi;
+for(const ref of jsRefs){
+  if(/^https?:|^data:/.test(ref))continue;
+  const file='public/'+norm(ref),text=read(file);
+  for(const m of text.matchAll(loadedLocalMediaRe)){
+    const u=m[1];
+    // Concatenated dynamic paths are audited separately below.
+    if(u.includes("'+")||u.includes('+"'))continue;
+    loadedScriptLocalRefs.push({file,url:u});
+    if(!existsRel(u)){if(isKnownDormantLoadedFallback(file,u))dormantLoadedDonorFallbacks.push({file,url:u,reason:'suppressed donor standalone Lobby renderer'});else brokenLoadedScriptRefs.push({file,url:u})}
+  }
+}
+assert.deepStrictEqual(brokenLoadedScriptRefs,[],`Broken loaded-script local media refs: ${JSON.stringify(brokenLoadedScriptRefs)}`);
+const loadedText=jsRefs.filter(ref=>!/^https?:|^data:/.test(ref)).map(ref=>read('public/'+norm(ref))).join('\n');
+for(const wrongRoot of ['audio','battle','status-icons']){
+  const re=new RegExp('(^|[^A-Za-z0-9_/])assets/'+wrongRoot.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'/','m');
+  assert.ok(!re.test(loadedText),`Loaded production JS still calls the wrong active asset root: assets/${wrongRoot}/`);
+}
+// The exact donor native renderer still contains a dynamic root-counter fallback and a standalone
+// Lobby Swap URL.  Both owners are disabled in PvP; the external v6 renderer uses engine/assets.
+assert.ok(v6Bundle.includes("return 'assets/counters/Counter-'+value+'.png'"),'Expected exact-donor native counter fallback changed');
+assert.ok(v6Bundle.includes('assets/lobby/Swap.png'),'Expected exact-donor standalone Lobby fallback changed');
 const integrationRuntime=read('public/shared-app/app-runtime.js');
 assert.ok(integrationRuntime.includes('B().setExternalHumanUi?.(true)'),'PvP must keep donor standalone human UI inactive');
 assert.ok(integrationRuntime.includes('B().setRenderSuppressed(true)'),'PvP must keep donor native renderer suppressed');
@@ -77,6 +100,6 @@ const dynamicPaths=[
 const brokenDynamic=dynamicPaths.filter(x=>!existsRel(x));
 assert.deepStrictEqual(brokenDynamic,[],`Broken dynamic UI asset paths: ${brokenDynamic.join(', ')}`);
 
-const report={ok:true,loadedStylesheets:cssRefs,loadedScripts:jsRefs,htmlRefsChecked:cssRefs.length+jsRefs.length,brokenHtmlRefs:0,cssLocalUrlsChecked:cssUrls,brokenCssUrls:0,activeIntegrationAssetLiteralsChecked:integrationRefs,brokenActiveIntegrationAssetRefs:0,v6EngineMediaLiteralsChecked:engineMedia.length,brokenV6EngineMediaRefs:0,dynamicRuntimeAssetPathsChecked:dynamicPaths.length,brokenDynamicRuntimeAssetPaths:0,v6DonorAssetTrees:trees,lobbyAssetsHashIdentical:Object.keys(lobbyExpected).length,cardArtRuntimeFiles:cards.length,dormantLockedDonorFallbackRefs:dormantDonorRefs,canonicalLobbyCardResolver:'cardView() / donor canonical manifest (remote website URLs where specified by donor)',browserNetworkSmoke:'BLOCKED_BY_ADMINISTRATOR'};
+const report={ok:true,loadedStylesheets:cssRefs,loadedScripts:jsRefs,htmlRefsChecked:cssRefs.length+jsRefs.length,brokenHtmlRefs:0,cssLocalUrlsChecked:cssUrls,brokenCssUrls:0,activeIntegrationAssetLiteralsChecked:integrationRefs,brokenActiveIntegrationAssetRefs:0,v6EngineMediaLiteralsChecked:engineMedia.length,brokenV6EngineMediaRefs:0,loadedScriptLocalMediaRefsChecked:loadedScriptLocalRefs.length,brokenLoadedScriptLocalMediaRefs:0,dormantLoadedDonorFallbacks,wrongActiveRootPrefixesInLoadedScripts:0,dynamicRuntimeAssetPathsChecked:dynamicPaths.length,brokenDynamicRuntimeAssetPaths:0,v6DonorAssetTrees:trees,lobbyAssetsHashIdentical:Object.keys(lobbyExpected).length,cardArtRuntimeFiles:cards.length,canonicalLobbyCardResolver:'cardView() / donor canonical manifest (remote website URLs where specified by donor)',browserNetworkSmoke:'BLOCKED_BY_ADMINISTRATOR'};
 fs.writeFileSync(path.join(R,'release','V378_ACTIVE_ASSET_RESOLUTION_AUDIT.json'),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report,null,2));

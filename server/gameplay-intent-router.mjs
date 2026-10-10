@@ -21,6 +21,7 @@ const INTENT_METADATA = Object.freeze({
 
   setArrowBarrageSpend: { category: 'PAYMENT', decisionOwnership: true },
   toggleManaShardPaymentChoice: { category: 'PAYMENT', decisionOwnership: true },
+  commitManaShardPaymentChoice: { category: 'PAYMENT', decisionOwnership: true },
   toggleResponseManaShardChoice: { category: 'PAYMENT', decisionOwnership: true },
   commitMagicalSurgeChoice: { category: 'PAYMENT', decisionOwnership: true },
   selectResponsePaymentChoice: { category: 'PAYMENT', decisionOwnership: true },

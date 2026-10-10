@@ -1,0 +1,35 @@
+{
+  "version": "v3.78.3",
+  "date": "2026-10-10",
+  "status": "AUTOMATED_REGRESSION_PASS_DEVICE_MATRIX_UNVERIFIED",
+  "tests": {
+    "syntax": "PASS",
+    "cleanThreeDonorArchitecture": "PASS",
+    "lobbyDonorAssets": "PASS",
+    "lobbyBrowserFixture": "PASS",
+    "activeAssetResolution": "PASS \u2014 0 broken active refs",
+    "openingBoundary": "PASS",
+    "authorityRegression": "PASS",
+    "coinFlipOpaqueInputGate": "PASS",
+    "v3783AuthorityBoundary": "PASS",
+    "runtimeSync": "PASS \u2014 104 files",
+    "repositoryManifest": "PASS \u2014 822 files / 0 missing / 0 hash mismatch / 0 size mismatch",
+    "frontendManifest": "PASS \u2014 308 files / 0 missing / 0 hash mismatch / 0 size mismatch",
+    "deploymentStaticGuard": "PASS",
+    "liveStartupHealth": "UNVERIFIED \u2014 ws dependency is not installed in this sandbox"
+  },
+  "authorityBoundary": {
+    "visibleLiteralIntents": 37,
+    "routerMissingVisibleIntents": 0,
+    "manaPaymentCommit": "PASS",
+    "serializedQueue": "PASS",
+    "serverOnlyMutation": "PASS",
+    "authoritativePresentationOrdering": "PASS",
+    "paymentErrorRecovery": "PASS"
+  },
+  "limitations": [
+    "Real deployed two-client WebSocket browser/device matrix (desktop/tablet/mobile) not executed in this sandbox.",
+    "Browser network smoke to localhost is blocked by environment administrator policy.",
+    "Live production startup /health requires installed ws dependency; do not claim PASS unless test:startup executes successfully."
+  ]
+}
