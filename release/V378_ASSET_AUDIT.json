@@ -1,0 +1,20 @@
+{
+  "css_local_urls_checked": 16,
+  "broken_css_urls": [],
+  "html_local_refs_checked": 63,
+  "broken_html_local_refs": [],
+  "loaded_scripts": [
+    "config.js",
+    "engine/shared-ui/battlefield-ui.js",
+    "engine/js/static-data.js",
+    "engine/js/runtime-authority.js",
+    "engine/shared-app/active-starters.js",
+    "engine/shared-app/app.bundle.js",
+    "runtime/adapters/authority-adapter.js",
+    "pvp/pvp-host.js",
+    "runtime/adapters/pvp-adapter.js",
+    "shared-app/app-runtime.js"
+  ],
+  "loaded_script_asset_literals_checked": 30,
+  "broken_loaded_script_asset_refs": []
+}

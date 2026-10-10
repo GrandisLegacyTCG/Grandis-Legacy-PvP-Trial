@@ -29,7 +29,7 @@ function loadCandidate3aRuntime(root){
     alert(){},confirm(){return true},Audio:function(){return{currentTime:0,volume:1,play(){return Promise.resolve()},pause(){}}}
   };
   ctx.globalThis=ctx; window.globalThis=ctx; vm.createContext(ctx);
-  for(const rel of ['public/js/static-data.js','public/js/pvp-presentation-adapter.js','public/js/runtime-authority.js','public/js/app.bundle.js']){
+  for(const rel of ['authority/browser-runtime/static-data.js','authority/browser-runtime/pvp-presentation-adapter.js','authority/browser-runtime/runtime-authority.js','authority/browser-runtime/app.bundle.js']){
     vm.runInContext(fs.readFileSync(path.join(root,rel),'utf8'),ctx,{timeout:15000,filename:rel});
   }
   const bridge=window.GL_LOCAL_AI_BRIDGE;

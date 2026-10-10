@@ -6368,9 +6368,9 @@ function getActivatedHeroAbilities(state, side, lane){
     if(!cleanupHandLimit(state,'PLAYER')){ showHandLimitDiscard(); render(); return; }
     if(window.GL_PVP_SHARED_BOARD_ACTIVE){
       advanceRoundAfterCompletedTurnPair(state,'PLAYER');
-      state.turn='AI';state.aiControl=null;state.phase='Draw';state.pvpTurnReady=false;removeStartOfTurnTargetPreventionForSide(state,'AI');
-      pushLog(state,'PvP shared board: Opponent enters Round '+state.round+' Draw Phase automatically.');
-      resolveDrawPhase(state,'AI',{deferAnimation:true});if(!state.gameOver&&!state.pending){state.phase='Deploy';state.drawPhaseResolvedFor=null;pushLog(state,'Opponent completes Draw Phase and enters Deploy Phase automatically.');}syncCounts(state);return;
+      state.turn='AI';state.aiControl=null;state.phase='Draw';state.pvpTurnReady=true;removeStartOfTurnTargetPreventionForSide(state,'AI');
+      pushLog(state,'PvP shared board: Opponent enters Round '+state.round+' Draw Phase and awaits authoritative turn-start acknowledgement.');
+      syncCounts(state);return;
     }
     advanceRoundAfterCompletedTurnPair(state,'PLAYER');
     runAITurn(state);
@@ -7800,10 +7800,8 @@ var desktopMarkup='<div class="gl-lab-authority '+(state.turn==='AI'?'turn-ai':'
     appState.pending=null; selectedDiscardIndexes=[]; closeChoice();
     if(window.GL_PVP_SHARED_BOARD_ACTIVE && appState.pvpHumanVsHuman){
       advanceRoundAfterCompletedTurnPair(appState,side);
-      appState.turn=oppositeSide(side);appState.phase='Draw';appState.pvpTurnReady=false;removeStartOfTurnTargetPreventionForSide(appState,appState.turn);
-      pushLog(appState,'PvP hand limit cleanup complete. '+appState.turn+' enters Draw Phase automatically.');
-      resolveDrawPhase(appState,appState.turn,{deferAnimation:true});
-      if(!appState.gameOver&&!appState.pending){appState.phase='Deploy';appState.drawPhaseResolvedFor=null;pushLog(appState,appState.turn+' completes Draw Phase and enters Deploy Phase automatically.');}
+      appState.turn=oppositeSide(side);appState.phase='Draw';appState.pvpTurnReady=true;removeStartOfTurnTargetPreventionForSide(appState,appState.turn);
+      pushLog(appState,'PvP hand limit cleanup complete. '+appState.turn+' enters Draw Phase and awaits authoritative turn-start acknowledgement.');
       syncCounts(appState);render();return true;
     }
     runAITurn(appState); render(); return true;

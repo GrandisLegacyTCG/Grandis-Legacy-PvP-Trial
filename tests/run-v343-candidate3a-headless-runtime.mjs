@@ -10,7 +10,7 @@ const document={readyState:'loading',addEventListener(){},removeEventListener(){
 const window={document,GL_APP_MODE:'PVP',GL_PVP_SHARED_BOARD_ACTIVE:true,addEventListener(){},removeEventListener(){},dispatchEvent(){},setTimeout,clearTimeout,console};window.window=window;
 const ctx={window,document,console,setTimeout,clearTimeout,URL,CustomEvent:class{},localStorage:{getItem(){return null},setItem(){},removeItem(){}},navigator:{},location:{href:'http://localhost/'}};ctx.globalThis=ctx;window.globalThis=ctx;vm.createContext(ctx);
 // Exact production server load order: no presentation adapter.
-for(const rel of ['public/js/static-data.js','public/js/runtime-authority.js','public/js/app.bundle.js']) vm.runInContext(fs.readFileSync(path.join(root,rel),'utf8'),ctx,{timeout:15000,filename:rel});
+for(const rel of ['authority/browser-runtime/static-data.js','authority/browser-runtime/runtime-authority.js','authority/browser-runtime/app.bundle.js']) vm.runInContext(fs.readFileSync(path.join(root,rel),'utf8'),ctx,{timeout:15000,filename:rel});
 const normalized=normalizeHeadlessRuntimeMetadata(window);
 assert.equal(normalized.sharedRuntime,'v1.94.2');
 assert.equal(normalized.cardVersion,'v0.16.2');

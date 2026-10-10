@@ -2,7 +2,7 @@
   "version": "v2.63",
   "schema_version": "2.63-pvp-v351-consumer",
   "policy": "RUNTIME_FIRST_FAIL_CLOSED_SYNC",
-  "application": "PvP v3.51 Final Stability Release 2026-09-28",
+  "application": "PvP v3.78.0 Clean Three-Donor Integration 2026-10-10",
   "releaseReady": true,
   "sourceAuthority": "v1.9.5",
   "sharedRuntime": "v1.94.2",
@@ -15,7 +15,7 @@
   "canonicalRegistryHash": "7ac1f90f6a9654cf575ac41db64a052901005905b1cf01f3bfc7532873cc9389",
   "heroComponentRegistryHash": "f36f1cc83eb9845743176c3af71f7823125353eae73e832588e9d8b42c6818be",
   "requiredSourceStack": {
-    "behaviorReference": "PvP v3.51 same-version correction preserves the completed v3.51 server-authoritative gameplay/runtime while correcting only Hero EXP Ready/Exhausted physical-size parity and invalid custom Deck Import interaction/retry. VS AI v6.48/v0.71 is presentation/interaction reference only.",
+    "behaviorReference": "Clean v3.78.0 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Integration changes are limited to authority/identity adapter seams and authoritative turn-start staging.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",
@@ -33,6 +33,22 @@
     "activeStarterCount": 5
   },
   "runtimeFiles": [
+    {
+      "path": "authority/browser-runtime/app.bundle.js",
+      "sha256": "58bcf524bd1b7bf42da55e1f43404f9fcf0fa143b57ade7efd1590665c8e049d"
+    },
+    {
+      "path": "authority/browser-runtime/pvp-presentation-adapter.js",
+      "sha256": "ef18a8803d9783262241125c512fcbdffe290b60d0c8728254363ee070997530"
+    },
+    {
+      "path": "authority/browser-runtime/runtime-authority.js",
+      "sha256": "bacafbe720fa83ddb68267114ba7a718f16c44a4b20453decc86ed63b190c8f4"
+    },
+    {
+      "path": "authority/browser-runtime/static-data.js",
+      "sha256": "ce80a5cf5e8fd78a3b2d5b9b02a1076ce2bbb584a7cd93522b29f49da2010fc6"
+    },
     {
       "path": "data/config/active-runtime-source-stack.v1.94.2.json",
       "sha256": "ae9a5b3d586c32531e6934559a0ea271eed1242e6767fe77b095bfe87edc88c2"
@@ -91,35 +107,59 @@
     },
     {
       "path": "package.json",
-      "sha256": "803b00fab904a02acb7d5e5e0554527494728b9893b6ea8cd22cb33b9a840da8"
+      "sha256": "aba565a87e63f15d640955472249ee33f943fb8f78ee166bd359011ad209baf0"
     },
     {
-      "path": "public/css/app.css",
-      "sha256": "9a18121ba0cf3644207a7f8bc8e2073413ae6f08aa987effb077ea110ba739a8"
+      "path": "public/engine/js/app.bundle.js",
+      "sha256": "d80242971b2d016be301525d80cc16809fc5458cec5a6f4d967dc8d476094c2e"
+    },
+    {
+      "path": "public/engine/js/runtime-authority.js",
+      "sha256": "58a09b947a1d25b2e5e6018c6e0dac9508b5d534dd2a51192cd6dbaf2e1d4399"
+    },
+    {
+      "path": "public/engine/js/static-data.js",
+      "sha256": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648"
+    },
+    {
+      "path": "public/engine/shared-app/app.bundle.js",
+      "sha256": "7253f45e57eee3c083e6877b8062fca7210034409e089cbdd4d88622a5569e93"
+    },
+    {
+      "path": "public/engine/shared-ui/battlefield-ui.js",
+      "sha256": "110394df12e3052bbcc961de24dad29b5734af65d0a7c0afdd2c8ffdaf8a81cb"
     },
     {
       "path": "public/index.html",
-      "sha256": "080384b1b707620be89cbb76f3e2d240ef254969b5cd0de8389ea0d249a6cca4"
+      "sha256": "557cce7e15ee05038b7214d51773ac17bcf51241bee7306ed7e273c5dbfb3aef"
     },
     {
-      "path": "public/js/app.bundle.js",
-      "sha256": "ff42da9f22fedb80dda944df28699a6d3eeae9d1fa8fb5aa05321abd766713e7"
+      "path": "public/lobby/pvp-lobby-v3.76.6.css",
+      "sha256": "9750f44e1431b57d25ed3d43c6e16f1070920d6455b5737282e1deded9b4d348"
     },
     {
-      "path": "public/js/mobile-app-nav.js",
-      "sha256": "91f1d8cd4d860bf76587f3da03481c3e8016be282265a1d4c966904b36bf3d20"
+      "path": "public/pvp/pvp-host.js",
+      "sha256": "9e55741c6516dffa04f41115eb26f5eb4db426400fc77ea1957ad4b1e0f2b55d"
     },
     {
-      "path": "public/js/pvp-network.js",
-      "sha256": "9c56e6b8790f1db148f7db098475e1978bc7d4dc2e8e3ac3d490e76aefba754b"
+      "path": "public/pvp/pvp-integration.css",
+      "sha256": "d7e9e2a0c506d5d4542423f791d8e385497c5b0b07a6b4650049c74e4a8c981d"
     },
     {
-      "path": "public/js/runtime-authority.js",
-      "sha256": "bacafbe720fa83ddb68267114ba7a718f16c44a4b20453decc86ed63b190c8f4"
+      "path": "public/runtime/adapters/authority-adapter.js",
+      "sha256": "859992904b9cc814e8a3ae249e60431c9eafdcd90a7c81db236b60458fabbb00"
     },
     {
-      "path": "public/js/static-data.js",
-      "sha256": "ce80a5cf5e8fd78a3b2d5b9b02a1076ce2bbb584a7cd93522b29f49da2010fc6"
+      "path": "public/runtime/adapters/pvp-adapter.js",
+      "sha256": "7a990710c01d80ef0bc65b446b05bd3c6ebc7942034cdd3868b84bc11f65da9f"
+    },
+    {
+      "path": "public/shared-app/app-runtime.js",
+      "sha256": "142adf2e068d1a20f5cbaa9cc2c0dd3f348995a3bbf869d667f5c492e0a091b6"
+    },
+    {
+      "path": "public/shared-ui/battlefield-ui.css",
+      "sha256": "890680acf6ed763e2ee121cec94a219724bd22f3dfbd25a332d6bafa8dca8114"
     },
     {
       "path": "public/starter_deck_examples/Grandis_Legacy_Starter_Deck_Presets_v1.6.1_PvP.json",
@@ -395,7 +435,7 @@
     },
     {
       "path": "server.js",
-      "sha256": "080678887b5197a2306c6479d3ce150ad7798d09ea737c5c65faa5330e6aa9f8"
+      "sha256": "b1a3faa8d5a2b5a59386b989b1f83534587ec972703bb6157c3c7a81daa01017"
     },
     {
       "path": "server/gameplay-intent-router.mjs",
@@ -407,7 +447,7 @@
     },
     {
       "path": "sync/runtime-sync-verifier.mjs",
-      "sha256": "d88e3eb49f5bc578c6b55cf10ee0b93adf5b8529cd22c74be59e63f6051073a4"
+      "sha256": "35c74f62e45b4d65b8c4fd2c6beb22c82db721cdbfcffe61c3c0ddb560fb52a0"
     }
   ],
   "authorityVerified": true,

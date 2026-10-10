@@ -1,18 +1,18 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.77.1",
+  "version": "3.78.0",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.77.1 \u2014 exact PvP v3.76.6 Lobby donor + locked VS AI v6.90.9 post-Lobby donor UI/timing + PvP v3.51 headless network/server authority.",
+  "description": "Grandis Legacy PvP v3.78.0 \u2014 clean three-donor integration: v3.76.6 Lobby + VS AI v6.91.3 game client + PvP v3.51 authority.",
   "scripts": {
     "start": "node server.js",
     "check": "npm run build:data && npm run sync-lock && npm run check:syntax && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v343-candidate1-authority.cjs && node tests/run-v343-candidate1-assets.cjs && node tests/run-runtime-bridge-test.cjs && npm run test:architecture",
-    "test:package": "node tests/run-v3771-donor-exact-integration.cjs",
+    "test:package": "node tests/run-package-check.cjs",
     "test:bridge": "node tests/run-runtime-bridge-test.cjs",
     "test:ui": "node tests/run-v343-candidate2-browser.cjs && python tests/run-v343-candidate3b-ui-corrections.py",
     "test:server": "node tests/run-server-health-test.cjs",
     "test:room": "node tests/run-pvp-room-sync-test.cjs",
-    "test": "npm run test:v3771",
+    "test": "npm run test:v351:release",
     "test:gameplay-foundation": "node tests/run-v2616-gameplay-foundation.cjs",
     "sync-lock": "node tools/build-runtime-sync-lock.cjs",
     "manifest": "node tools/build-file-manifest.cjs",
@@ -21,7 +21,7 @@
     "frontend-manifest": "node tools/build-public-frontend-manifest.cjs",
     "check:legacy": "node tests/run-v339-current-fixes.cjs && node tests/run-v338-final-fixes.cjs && node tests/run-v337-mobile-action-popup-lifecycle.cjs && node tests/run-v336-authoritative-feedback-delivery.cjs && node tests/run-v335-production-topology.cjs && node tests/run-v331-player-name-binding.cjs && node tests/run-v330-mobile-controls-functional.cjs && node tests/run-v329-pvp-mobile-parity.cjs && node tests/run-v328-live-vfx-path.cjs && node tests/run-v326-card-played-ui-parity.cjs && node tests/run-v325-av-card-played-parity.cjs && node tests/run-v324-quick-reload-aura-counter.cjs && node tests/run-v323-turn-flow-parity.cjs && node --check server.js && node tests/run-v314-cover-up-redirect.cjs && node --check public/js/app.bundle.js && node --check public/js/static-data.js && node --check public/js/runtime-authority.js && node --check public/js/pvp-network.js && find runtime -type f \\( -name '*.js' -o -name '*.mjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v307-authority-pending.cjs && node tests/run-v308-audio-rename.cjs && node tests/run-v2617-ui-performance.cjs && node tests/run-v2618-health-ui-hotfix.cjs && node tests/run-v2619-spectator-cleanup.cjs && node tests/run-v301-public-bridge.cjs && node tests/run-v304-same-tab-navigation.cjs && node tests/run-v305-result-lobby-cleanup.cjs && node tests/run-v310-mobile-navigation.cjs && node tests/run-v312-mobile-navigation-right.cjs && node tests/run-v312-canonical-defense-result-reload.cjs && node tests/run-v320-native-mobile-scroll-starter.cjs && node tests/run-v320-hf1-mobile-footer-draw.cjs && node tests/run-v322-next-fixes.cjs && node tests/run-v327-deck-legality.cjs",
     "build:data": "node tools/build-candidate1-data.cjs",
-    "check:syntax": "node --check server.js && node --check public/js/app.bundle.js && node --check public/js/static-data.js && node --check public/js/runtime-authority.js && node --check public/js/pvp-network.js && find runtime -type f \\( -name '*.js' -o -name '*.mjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
+    "check:syntax": "node --check server.js && find public authority server runtime -type f \\( -name '*.js' -o -name '*.mjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
     "check:historical-v342": "node tests/run-v342-responsive-ui.cjs && node tests/run-v341-shard-batch-tripleshot.cjs && node tests/run-v339-current-fixes.cjs && node tests/run-v338-final-fixes.cjs && node tests/run-v337-mobile-action-popup-lifecycle.cjs && node tests/run-v336-authoritative-feedback-delivery.cjs && node tests/run-v335-production-topology.cjs && node tests/run-v331-player-name-binding.cjs && node tests/run-v330-mobile-controls-functional.cjs && node tests/run-v329-pvp-mobile-parity.cjs && node tests/run-v328-live-vfx-path.cjs && node tests/run-v326-card-played-ui-parity.cjs && node tests/run-v324-quick-reload-aura-counter.cjs && node tests/run-v323-turn-flow-parity.cjs && node --check server.js && node tests/run-v314-cover-up-redirect.cjs && node --check public/js/app.bundle.js && node --check public/js/static-data.js && node --check public/js/runtime-authority.js && node --check public/js/pvp-network.js && find runtime -type f \\( -name '*.js' -o -name '*.mjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check && node sync/runtime-sync-verifier.mjs --self-test && node tests/run-v327-deck-legality.cjs",
     "test:candidate1:authority": "node tests/run-v343-candidate1-authority.cjs && node tests/run-v343-candidate1-assets.cjs",
     "test:candidate1:network": "node tests/run-v343-candidate1-current-deck-network.cjs",
@@ -71,7 +71,10 @@
     "test:v350:maintenance": "node tests/run-v350-same-version-maintenance.cjs && python tests/run-v350-maintenance-lobby-browser.py",
     "test:v350:correction": "node tests/run-v350-maintenance-correction.cjs && python tests/run-v350-maintenance-correction-browser.py && node tests/run-v350-same-version-maintenance.cjs && python tests/run-v350-maintenance-lobby-browser.py",
     "test:v351:release": "node tests/run-v351-version-promotion.cjs && node tests/run-v350-maintenance-correction.cjs && node tests/run-v350-same-version-maintenance.cjs && node tests/run-v350-animation-parity-static.cjs && node tests/run-package-check.cjs",
-    "test:v3771": "node tests/run-v3771-donor-exact-integration.cjs && node tests/run-v343-candidate3a-intent-router.mjs && node tests/run-v343-candidate3a-headless-runtime.mjs && node tests/run-v343-candidate3a-canonical-gameplay.cjs && node tests/run-v343-candidate3c-lifecycle.cjs"
+    "test:v378:architecture": "node tests/run-v378-clean-integration.cjs",
+    "test:v378:authority": "node tests/run-v343-candidate3a-intent-router.mjs && node tests/run-v343-candidate3a-headless-runtime.mjs && node tests/run-v343-candidate3a-canonical-gameplay.cjs && node tests/run-v343-candidate3b-advanced-runtime.cjs && node tests/run-v343-candidate3c-lifecycle.cjs && node tests/run-v378-authority-draw-handoff.cjs",
+    "test:v378": "npm run check:syntax && npm run test:v378:architecture && npm run test:v378:authority",
+    "verify:v378": "npm run test:v378 && npm run sync-lock && node sync/runtime-sync-verifier.mjs --self-test && npm run frontend-manifest && npm run manifest && npm run verify:manifest"
   },
   "engines": {
     "node": ">=18"
@@ -80,7 +83,7 @@
     "ws": "^8.18.0"
   },
   "grandisLegacySourceStack": {
-    "behaviorReference": "PvP v3.51 same-version correction preserves the completed v3.51 server-authoritative gameplay/runtime while correcting only Hero EXP Ready/Exhausted physical-size parity and invalid custom Deck Import interaction/retry. VS AI v6.48/v0.71 is presentation/interaction reference only.",
+    "behaviorReference": "Clean v3.78.0 integration: PvP v3.76.6 Lobby presentation + approved VS AI v6.91.3 shared game client + PvP v3.51 multiplayer authority. Integration changes are limited to authority/identity adapter seams and authoritative turn-start staging.",
     "sourceAuthorityStackBundle": "1.9.5",
     "oneSourceAuthority": "1.9.5",
     "canonicalCardAuthority": "1.6.0",

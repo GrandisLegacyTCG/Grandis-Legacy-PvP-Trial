@@ -14,8 +14,8 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = String(process.env.HOST || process.env.GL_PVP_HOST || '0.0.0.0').trim() || '0.0.0.0';
 const BASE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(BASE, 'public');
-const VERSION = 'Grandis Legacy PvP v3.51 — Final Stability Release — server-authoritative runtime — OSA v1.9.5 + Runtime Foundation v1.94.2 + Data v0.16.2 + Effect Recipe/Checkpoint v0.15.2 + Hero Components v1.1.0 + Starter Authority v1.6.1 + Sync v2.63';
-const BUILD_ID = 'gl-pvp-3.51-final-stability-r1-2026-09-28';
+const VERSION = 'Grandis Legacy PvP v3.78.0 — clean integration — PvP v3.51 authoritative runtime';
+const BUILD_ID = 'gl-pvp-3.78.0-clean-integration-2026-10-10';
 const OPPONENT_SHARD_HANDLE_SECRET = randomBytes(32).toString('hex');
 const MAX_ROOM_LOGS = 120;
 const MAX_PUBLIC_ROOM_LOGS = 40; // Keep network snapshots lean; the server may retain more room diagnostics internally.
@@ -80,7 +80,8 @@ const ACTIVE_CARDS_BY_ID = (() => {
   for (const family of Object.values(cards.families || {})) for (const card of (family && family.cards) || []) if (card && card.card_id) out[card.card_id] = card;
   return out;
 })();
-const RUNTIME_CODE = readFileSync(join(ROOT, 'js/static-data.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'js/runtime-authority.js'), 'utf8') + '\n' + readFileSync(join(ROOT, 'js/app.bundle.js'), 'utf8');
+const AUTHORITY_BROWSER_RUNTIME = join(BASE, 'authority/browser-runtime');
+const RUNTIME_CODE = readFileSync(join(AUTHORITY_BROWSER_RUNTIME, 'static-data.js'), 'utf8') + '\n' + readFileSync(join(AUTHORITY_BROWSER_RUNTIME, 'runtime-authority.js'), 'utf8') + '\n' + readFileSync(join(AUTHORITY_BROWSER_RUNTIME, 'app.bundle.js'), 'utf8');
 // Compile the large shared browser runtime once at process boot. Every match still gets an isolated VM
 // context, but match start no longer asks V8 to parse/compile ~12 MB of runtime source again.
 const RUNTIME_SCRIPT = new vm.Script(RUNTIME_CODE, { filename: 'grandis-legacy-pvp-runtime.js' });

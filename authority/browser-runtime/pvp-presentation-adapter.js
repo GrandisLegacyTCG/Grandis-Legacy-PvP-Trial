@@ -40,8 +40,8 @@
   }
 
   window.GL_PVP_PRESENTATION_ADAPTER={
-    version:'PvP v3.77.1 v6.90.9 donor boundary',
-    visualAuthority:'VS AI v6.90.9 locked presentation',
+    version:'PvP v3.43 Candidate 2R-A',
+    visualAuthority:'VS AI v6.42 Candidate 15',
     sourceContract:'viewer-safe server board -> seat orientation -> shared Candidate 15 presentation',
     isViewerSafeSnapshot:isViewerSafeSnapshot,
     importViewerSafeSnapshot:importViewerSafeSnapshot,

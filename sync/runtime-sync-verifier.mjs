@@ -26,7 +26,7 @@ export function verifyRuntimeSyncOrThrow(baseDir){
   if(manifest.authority_version!=='v1.6.1'||manifest.active_starter_count!==5)errors.push('starter-manifest');
   const expectedIds=['starter_01_elemental_lord_conqueror_renegade','starter_02_saint_crusader_grand_ranger','starter_03_arcane_duelist_elemental_lord_saint','starter_04_grand_ranger_grand_arbalest_renegade','starter_05_renegade_arcane_duelist_elemental_lord'];
   if(JSON.stringify(manifest.starters.map(x=>x.starter_id))!==JSON.stringify(expectedIds))errors.push('starter-ids');
-  const sandbox={window:{},globalThis:{}};sandbox.window.window=sandbox.window;vm.createContext(sandbox);vm.runInContext(readFileSync(join(baseDir,'public/js/static-data.js'),'utf8'),sandbox);
+  const sandbox={window:{},globalThis:{}};sandbox.window.window=sandbox.window;vm.createContext(sandbox);vm.runInContext(readFileSync(join(baseDir,'authority/browser-runtime/static-data.js'),'utf8'),sandbox);
   const w=sandbox.window;
   if(w.GL_SOURCE_STACK?.source_authority_stack_bundle!=='v1.9.5'||w.GL_SOURCE_STACK?.starter60!=='v1.6.1')errors.push('browser-source-stack');
   if(Object.keys(w.GL_PVP_STARTER_DECK_OPTIONS||{}).length!==5)errors.push('browser-starters');

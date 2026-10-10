@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Grandis Legacy — PvP v3.77.1</title>
+<title>Grandis Legacy — VS AI v6.91.3</title>
 <style>
 @font-face{font-family:Noto;src:url('assets/fonts/NotoSans-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 :root{
@@ -53,7 +53,8 @@ button{font:inherit}
 .hand-card:hover,.hand-card.is-hovered,.hand-card.is-selected{z-index:80}
 .hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected,.hand.top .hand-card:hover{transform:translateY(0) scale(1.04)}
 .hand.bottom .hand-card:after{content:"";position:absolute;left:-4px;right:-4px;top:-34px;bottom:-18px;z-index:-1;pointer-events:auto}
-/* v6.90.9: identity-only UI update. Max 25 visible characters for each name/deck line. */
+/* v6.91.3: root-cause correction — moved-stylesheet asset URLs fixed; PLAYER Draw keeps the external staged Main Deck + Shard presentation before Deploy. */
+/* Identity UI remains the approved v6.90.9 behavior: max 25 visible characters for each name/deck line. */
 .identity-card{position:absolute;z-index:90;width:max-content;max-width:calc(100% - 16px);height:32px;display:flex;align-items:center;padding:4px 7px;border:1px solid rgba(244,211,94,.34);border-radius:7px;background:rgba(3,10,17,.90);color:#dbe7f1;overflow:hidden}
 .identity-copy{min-width:0;width:100%;display:flex;flex-direction:column;justify-content:center;line-height:1.02}
 .identity-name{font-size:9px;font-weight:900;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f4f7fb}
@@ -209,7 +210,7 @@ button{font:inherit}
 .preview-overlay{position:absolute;inset:0;display:none;align-items:flex-end;justify-content:flex-end;background:rgba(3,12,20,.998);padding:0 4px 5px;overflow:visible;z-index:8}
 .shared-box.previewing .preview-overlay{display:flex}
 .preview-card{flex:0 0 auto;width:225px;height:315px;max-width:none;max-height:none;aspect-ratio:5/7;object-fit:contain;border-radius:8px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.58));transform:none}
-.ob-sidebar-hover-preview{position:fixed;left:0;top:0;z-index:26000;display:none;width:225px;height:315px;pointer-events:none}.ob-sidebar-hover-preview.open{display:block}.ob-sidebar-hover-preview img{display:block;width:225px;height:315px;aspect-ratio:5/7;object-fit:contain;border-radius:8px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.58))}
+.gl-sidebar-hover-preview{position:fixed;left:0;top:0;z-index:26000;display:none;width:225px;height:315px;pointer-events:none}.gl-sidebar-hover-preview.open{display:block}.gl-sidebar-hover-preview img{display:block;width:225px;height:315px;aspect-ratio:5/7;object-fit:contain;border-radius:8px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.58))}
 .bottom-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;height:22px;min-height:22px}.bottom-actions button{width:100%;height:22px;min-height:22px;border:1px solid #334b61;border-radius:6px;background:#0b1722;color:#fff;font-size:6px;font-weight:900;line-height:1;padding:2px;white-space:nowrap}.bottom-actions .danger{border-color:#783a42;background:#241014;color:#ffb7bf}
 .concept{position:absolute;right:calc(15vw + 14px);top:6px;z-index:100;padding:3px 8px;border-radius:999px;border:1px solid rgba(106,139,166,.30);background:rgba(2,8,14,.82);font-size:7.5px;color:#afd0e8;pointer-events:none}
 @media(max-height:820px){
@@ -217,23 +218,19 @@ button{font:inherit}
   .played-box{padding-top:7px;padding-bottom:6px;gap:5px}
   .played{column-gap:5px;row-gap:5px}
 }
-@media(max-width:1250px){.phase{padding-left:12px;padding-right:5px}.phase-turn{flex-basis:112px}.phase-track{gap:5px;padding:0 12px}.phase-label{font-size:6.5px}.phase-actions{gap:5px}.phase-action{height:25px;padding-left:9px;padding-right:9px;font-size:6.6px}.phase-action.next{padding-left:10px;padding-right:10px}.mana-pool{width:22.5%}.mana-controls{left:calc(22.5% + 12px)}}
+
 </style>
 
-<style id="gl-stepped-physical-responsive">
-/*
-  Shared desktop responsiveness for the two redesign options.
-  Reference: 1600 x 747 physical browser-content pixels = 100%.
-  Normal scaling is bounded to 85%-120% and snaps in 5% steps.
-  On unusually short windows only, a stepped height safety may go below 85%
-  (down to 75%) to protect the no-scroll battlefield contract.
-*/
+<style id="gl-responsive-stage">
+/* Desktop keeps the approved v6.90.9 scaling. Touch devices use the exact same
+   desktop canvas and controls; only uniform scale and, in portrait, stage rotation change. */
 :root{
   --ui-scale:1;
   --logical-w:100vw;
   --logical-h:100vh;
   --logical-sidebar-w:15vw;
   --hero-base-w-logical:98px;
+  --gl-stage-transform:none;
 }
 html,body{width:100%;height:100%;overflow:hidden}
 .app{
@@ -245,39 +242,37 @@ html,body{width:100%;height:100%;overflow:hidden}
   overflow:hidden;
 }
 .battlefield,.sidebar{height:100% !important}
-:root{
-  --sidebar-w:var(--logical-sidebar-w) !important;
-  --hero-base-w:var(--hero-base-w-logical) !important;
-}
+:root{--sidebar-w:var(--logical-sidebar-w) !important;--hero-base-w:var(--hero-base-w-logical) !important}
 .concept{right:calc(var(--logical-sidebar-w) + 14px) !important}
 
-/* v39 opponent adjustment only:
-   keep the proven v30-v36 field/card geometry untouched.
-   Opponent circular counters use the mirrored bottom-left corner position. */
-.opponent-field .zone>.count,
-.opponent-field .opponent-mana-pool>.count{
-  left:-4px;
-  right:auto;
-  top:auto;
-  bottom:-4px;
+html.gl-adaptive-stage{background:#02070c}
+html.gl-adaptive-stage body{
+  position:fixed!important;left:0!important;top:0!important;width:1600px!important;height:747px!important;min-width:0!important;min-height:0!important;margin:0!important;
+  transform:var(--gl-stage-transform)!important;transform-origin:0 0!important;overflow:hidden!important;
 }
+html.gl-adaptive-stage .app{width:1600px!important;height:747px!important;transform:none!important}
+html.gl-adaptive-stage{--logical-w:1600px;--logical-h:747px;--logical-sidebar-w:240px;--hero-base-w-logical:108px}
+/* The canonical desktop canvas is 1600x747, so touch devices always inherit the
+   same compact-height desktop rules regardless of the physical portrait/landscape viewport. */
+html.gl-adaptive-stage .sidebar{grid-template-rows:72px auto minmax(0,1fr) 22px}
+html.gl-adaptive-stage .played-box{padding-top:7px;padding-bottom:6px;gap:5px}
+html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 
+/* Opponent counter geometry remains the approved desktop geometry on every device. */
+.opponent-field .zone>.count,.opponent-field .opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
 </style>
 
-<link rel="stylesheet" href="option-b-integration.css">
-
-<style id="gl-pvp-v3770-shell-gate">
-body.pvp-lobby-mode > .app{display:none!important}
-body.pvp-lobby-mode{background:#07111d}
-</style>
+<link rel="stylesheet" href="shared-ui/battlefield-ui.css">
+<link rel="stylesheet" href="lobby/pvp-lobby-v3.76.6.css">
+<link rel="stylesheet" href="pvp/pvp-integration.css">
 </head>
-<body class="pvp-lobby-mode">
-<div class="app ob-lobby-hidden">
+<body>
+<div class="app gl-lobby-hidden">
   <main class="battlefield">
     <div class="concept" aria-hidden="true"></div>
 
     <section class="hand top">
-      <div class="hand-title identity-card" data-ob-identity="opponent"><span class="identity-copy"><strong class="identity-name" id="opponentPlayerIdentityName">LOCAL AI</strong><span class="identity-deck" id="opponentDeckIdentity">AI Deck</span></span></div>
+      <div class="hand-title identity-card" data-gl-identity="opponent"><span class="identity-copy"><strong class="identity-name" id="opponentPlayerIdentityName">LOCAL AI</strong><span class="identity-deck" id="opponentDeckIdentity">AI Deck</span></span></div>
       <div class="hand-track">
         <div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div>
       </div>
@@ -314,9 +309,9 @@ body.pvp-lobby-mode{background:#07111d}
         <span class="phase-label">BATTLE PHASE</span>
         <span class="phase-label">REFORM PHASE</span>
         <span class="phase-label">END PHASE</span>
-        <span class="ob-phase-tint" aria-hidden="true"></span>
-        <span class="ob-phase-underline" aria-hidden="true"></span>
-        <span class="ob-phase-diamond" aria-hidden="true"></span>
+        <span class="gl-phase-tint" aria-hidden="true"></span>
+        <span class="gl-phase-underline" aria-hidden="true"></span>
+        <span class="gl-phase-diamond" aria-hidden="true"></span>
       </div>
       <div class="phase-actions">
         <button class="phase-action" id="phasePrimaryAction" type="button">REPOSITION</button>
@@ -381,7 +376,7 @@ body.pvp-lobby-mode{background:#07111d}
         </div>
       </section>
     </section>
-    <div class="player-name identity-card" data-ob-identity="player"><span class="identity-copy"><strong class="identity-name" id="playerIdentityName">PLAYER</strong><span class="identity-deck" id="playerDeckIdentity">Player Deck</span></span></div>
+    <div class="player-name identity-card" data-gl-identity="player"><span class="identity-copy"><strong class="identity-name" id="playerIdentityName">PLAYER</strong><span class="identity-deck" id="playerDeckIdentity">Player Deck</span></span></div>
   </main>
 
   <aside class="sidebar">
@@ -428,65 +423,74 @@ body.pvp-lobby-mode{background:#07111d}
     </div></section>
   </aside>
 </div>
-<script id="gl-stepped-physical-responsive-js">
+<script id="gl-responsive-stage-js">
 (() => {
-  const REF_PHYSICAL_W = 1600;
-  const REF_PHYSICAL_H = 747;
-  const STEP = 0.05;
-  const NORMAL_MIN = 0.85;
-  const NORMAL_MAX = 1.20;
-  const EMERGENCY_MIN = 0.75;
-  const root = document.documentElement;
-
-  const round2 = v => Math.round(v * 100) / 100;
-  const snapNearest = v => round2(Math.round(v / STEP) * STEP);
-  const snapDown = v => round2(Math.floor((v + 1e-9) / STEP) * STEP);
-  const clamp = (v, lo, hi) => Math.max(lo, Math.min(v, hi));
-
-  function updateResponsiveScale(){
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
-    const cssW = Math.max(1, window.innerWidth);
-    const cssH = Math.max(1, window.innerHeight);
-    const physicalW = cssW * dpr;
-    const physicalH = cssH * dpr;
-
-    // Width determines the intended visual size and changes only in 5% steps.
-    let scale = clamp(snapNearest(physicalW / REF_PHYSICAL_W), NORMAL_MIN, NORMAL_MAX);
-
-    // Height only acts as a no-scroll safety ceiling. It also moves in 5% steps,
-    // so small browser-chrome/resize changes do not make the whole UI jitter.
-    const heightCeiling = snapDown(physicalH / REF_PHYSICAL_H);
-    if (heightCeiling < scale) scale = Math.max(EMERGENCY_MIN, heightCeiling);
-    scale = round2(scale);
-
-    // Inverse logical canvas keeps the composition filling the browser area.
-    const logicalW = cssW / scale;
-    const logicalH = cssH / scale;
-
-    root.style.setProperty('--ui-scale', String(scale));
-    root.style.setProperty('--logical-w', logicalW + 'px');
-    root.style.setProperty('--logical-h', logicalH + 'px');
-    root.style.setProperty('--logical-sidebar-w', (logicalW * 0.15) + 'px');
-    root.style.setProperty('--hero-base-w-logical', (logicalW * 0.0675) + 'px');
-    root.dataset.uiScale = String(Math.round(scale * 100));
-    if(window.syncPlayerManaPoolToHeroLeft){
-      requestAnimationFrame(()=>window.syncPlayerManaPoolToHeroLeft());
-    }
-    if(window.syncPlayerHandToHeroCenter){
-      requestAnimationFrame(()=>window.syncPlayerHandToHeroCenter());
-    }
-    if(window.syncOpponentHand){
-      requestAnimationFrame(()=>window.syncOpponentHand());
-    }
+  const REF_W=1600, REF_H=747, STEP=.05, NORMAL_MIN=.85, NORMAL_MAX=1.20, EMERGENCY_MIN=.75;
+  const root=document.documentElement, body=document.body;
+  const round2=v=>Math.round(v*100)/100;
+  const snapNearest=v=>round2(Math.round(v/STEP)*STEP);
+  const snapDown=v=>round2(Math.floor((v+1e-9)/STEP)*STEP);
+  const clamp=(v,lo,hi)=>Math.max(lo,Math.min(v,hi));
+  const touchDevice=()=>{try{return (navigator.maxTouchPoints||0)>0||matchMedia('(pointer:coarse)').matches;}catch(_){return (navigator.maxTouchPoints||0)>0;}};
+  function publish(scale,logicalW,logicalH){
+    root.style.setProperty('--ui-scale',String(scale));
+    root.style.setProperty('--logical-w',logicalW+'px');
+    root.style.setProperty('--logical-h',logicalH+'px');
+    root.style.setProperty('--logical-sidebar-w',(logicalW*.15)+'px');
+    root.style.setProperty('--hero-base-w-logical',(logicalW*.0675)+'px');
+    root.dataset.uiScale=String(Math.round(scale*100));
   }
-
+  function refreshDependentGeometry(){
+    requestAnimationFrame(()=>{
+      window.syncPlayerManaPoolToHeroLeft?.();
+      window.syncPlayerHandToHeroCenter?.();
+      window.syncOpponentHand?.();
+      window.GL_GAME_UI?.render?.();
+    });
+  }
+  function updateResponsiveScale(){
+    const cssW=Math.max(1,window.innerWidth),cssH=Math.max(1,window.innerHeight);
+    if(touchDevice()){
+      root.classList.add('gl-adaptive-stage');
+      const portrait=cssH>cssW;
+      root.classList.toggle('gl-stage-portrait',portrait);
+      root.classList.toggle('gl-stage-landscape',!portrait);
+      let scale,tx,ty;
+      if(portrait){
+        scale=Math.min(cssW/REF_H,cssH/REF_W);
+        const renderW=REF_H*scale,renderH=REF_W*scale;
+        const left=(cssW-renderW)/2,top=(cssH-renderH)/2;
+        tx=left+renderW;ty=top;
+        root.style.setProperty('--gl-stage-transform',`translate(${tx}px,${ty}px) rotate(90deg) scale(${scale})`);
+      }else{
+        scale=Math.min(cssW/REF_W,cssH/REF_H);
+        const renderW=REF_W*scale,renderH=REF_H*scale;
+        tx=(cssW-renderW)/2;ty=(cssH-renderH)/2;
+        root.style.setProperty('--gl-stage-transform',`translate(${tx}px,${ty}px) scale(${scale})`);
+      }
+      publish(scale,REF_W,REF_H);
+      refreshDependentGeometry();
+      return;
+    }
+    root.classList.remove('gl-adaptive-stage','gl-stage-portrait','gl-stage-landscape');
+    root.style.setProperty('--gl-stage-transform','none');
+    body.style.removeProperty('transform');
+    const dpr=Math.max(1,window.devicePixelRatio||1),physicalW=cssW*dpr,physicalH=cssH*dpr;
+    let scale=clamp(snapNearest(physicalW/REF_W),NORMAL_MIN,NORMAL_MAX);
+    const heightCeiling=snapDown(physicalH/REF_H);
+    if(heightCeiling<scale)scale=Math.max(EMERGENCY_MIN,heightCeiling);
+    scale=round2(scale);
+    publish(scale,cssW/scale,cssH/scale);
+    refreshDependentGeometry();
+  }
   updateResponsiveScale();
-  window.addEventListener('resize', updateResponsiveScale, {passive:true});
+  window.addEventListener('resize',updateResponsiveScale,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(updateResponsiveScale,50),{passive:true});
 })();
 </script>
 
 
-  <div class="ob-engine-host" aria-hidden="true">
+  <div class="gl-engine-host" aria-hidden="true">
     <div id="app"></div>
     <div id="choiceOverlay"><section><h2 id="choiceTitle"></h2><button id="choiceClose"></button><div id="choiceBody"></div><button id="choiceConfirm"></button></section></div>
     <div id="infoOverlay"><section><h2 id="infoTitle"></h2><button id="infoClose"></button><div id="infoBody"></div></section></div>
@@ -501,11 +505,11 @@ body.pvp-lobby-mode{background:#07111d}
   <script src="engine/js/static-data.js"></script>
   <script src="engine/js/runtime-authority.js"></script>
   <script src="engine/shared-app/active-starters.js"></script>
-  <script>window.GL_PVP_STARTER_DECK_OPTIONS=window.GL_ACTIVE_STARTER_DECKS||{};</script>
   <script src="engine/shared-app/app.bundle.js"></script>
-  <script src="js/pvp-presentation-adapter.js"></script>
-  <script src="js/pvp-network.js"></script>
-  <script src="option-b-runtime.js"></script>
+  <script src="runtime/adapters/authority-adapter.js"></script>
+  <script src="pvp/pvp-host.js"></script>
+  <script src="runtime/adapters/pvp-adapter.js"></script>
+  <script src="shared-app/app-runtime.js"></script>
 
 </body>
 </html>

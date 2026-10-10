@@ -1,0 +1,3 @@
+html:not(.gl-pvp-game-active) .app{visibility:hidden!important;pointer-events:none!important}
+html.gl-pvp-game-active .app{visibility:visible}
+html .gl-lobby-overlay{display:none!important}

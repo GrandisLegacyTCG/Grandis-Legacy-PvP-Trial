@@ -1,0 +1,38 @@
+Grandis Legacy PvP v3.78.0 — integration-owned / changed files
+
+PUBLIC INTEGRATION
+public/index.html
+public/lobby/pvp-lobby-v3.76.6.css
+public/pvp/pvp-host.js
+public/pvp/pvp-integration.css
+public/runtime/adapters/pvp-adapter.js
+public/shared-app/app-runtime.js
+public/config.js
+public/assets/lobby/* (v3.76.6 donor assets; hash-identical)
+public/starter_deck_examples/Grandis_Legacy_Starter_Deck_Presets_v1.6.1_PvP.json
+
+PRIVATE AUTHORITY RUNTIME
+ authority/browser-runtime/app.bundle.js (v3.51 + authoritative Draw handoff seam)
+ authority/browser-runtime/static-data.js (v3.51 exact)
+ authority/browser-runtime/runtime-authority.js (v3.51 exact)
+ authority/browser-runtime/pvp-presentation-adapter.js (private compatibility support; not visible UI)
+
+SERVER / BUILD TOPOLOGY
+server.js (v3.51 server base; version/topology path wiring)
+package.json
+sync/runtime-sync-verifier.mjs
+tools/build-runtime-sync-lock.cjs
+
+TEST / RELEASE
+ tests/run-v378-clean-integration.cjs
+ tests/run-v378-authority-draw-handoff.cjs
+ existing v3.51 authority-test harnesses: path wiring adjusted to private authority runtime where required
+ release/PVP_v3.78.0_RELEASE_NOTES.md
+ release/PVP_v3.78.0_CHANGED_FILES.txt
+ release/PVP_v3.78.0_DONOR_PARITY.json
+ release/V378_ASSET_AUDIT.json
+ release/V378_DUPLICATE_ASSET_AUDIT.json
+ release/V378_CODE_HYGIENE.json
+ release/PVP_v3.78.0_QA_REPORT.json
+
+APPROVED V6.91.3 GAME FILES ARE COPIED INTACT EXCEPT THE TWO EXPLICIT INTEGRATION SEAMS ABOVE.
