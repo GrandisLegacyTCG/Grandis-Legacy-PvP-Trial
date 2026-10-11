@@ -2,23 +2,23 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { V6913Authority, sourceHashes, internals } from '../server/v6913-authority.mjs';
+import { V6914Authority, sourceHashes, internals } from '../server/v6914-authority.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const hashes=sourceHashes();
-assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the exact locked v6.91.3 source files');
+assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the exact locked v6.91.4 source files');
 
-const probe=new V6913Authority();
+const probe=new V6914Authority();
 const starterKeys=Object.keys(probe.starters);
-assert.equal(starterKeys.length,5,'expected five v6.91.3 starter decks');
+assert.equal(starterKeys.length,5,'expected five v6.91.4 starter decks');
 for(const name of ['GL_PVP_POPUP_OWNERSHIP_AUDIT_SELF_TEST','GL_PVP_V117_ACTION_SYNC_AUDIT_SELF_TEST']){
   const result=probe.runNativeSelfTest(name);
-  assert.equal(result?.ok,true,`${name} must pass under the headless v6.91.3 authority`);
+  assert.equal(result?.ok,true,`${name} must pass under the headless v6.91.4 authority`);
 }
 
 function create(firstSeat){
-  const a=new V6913Authority();
+  const a=new V6914Authority();
   a.start({p1:{name:'Seat 1',deckKey:starterKeys[0]},p2:{name:'Seat 2',deckKey:starterKeys[1]}});
   const opening=a.commitOpening({choice:'HEADS',outcome:firstSeat===2?'TAILS':'HEADS',firstSeat});
   const pre=opening.board.appState;
@@ -251,14 +251,14 @@ for(const firstSeat of [1,2]){
     base.main_deck[i].quantity=q-take;total-=take;if(base.main_deck[i].quantity<=0)base.main_deck.splice(i,1);
   }
   assert.equal(total,50,'test fixture must contain exactly 50 Main Deck cards');
-  const a=new V6913Authority();
+  const a=new V6914Authority();
   assert.doesNotThrow(()=>a.start({p1:{name:'50 Card Custom',customDeck:base},p2:{name:'Starter',deckKey:starterKeys[1]}}),'existing 50-card Custom Deck acceptance is a locked PvP requirement and must remain unchanged');
   assert.equal(a.canonical.appState.playerDeck.length,50,'50-card Custom Deck must enter the match as 50 cards');
 }
 
 console.log(JSON.stringify({
   ok:true,
-  architecture:'v6.91.3 native headless authority',
+  architecture:'v6.91.4 native headless authority',
   exactAuthoritySources:Object.keys(hashes).length,
   starterDecks:starterKeys.length,
   actorLocalSeatOrientation:true,

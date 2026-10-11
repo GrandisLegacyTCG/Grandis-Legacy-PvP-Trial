@@ -46,7 +46,7 @@ function makeHeadlessContext(){
   const context={
     console,setTimeout,clearTimeout,setInterval,clearInterval,Date,Math,JSON,Promise,URL,
     structuredClone:globalThis.structuredClone,performance:{now:()=>Date.now()},document,
-    navigator:{maxTouchPoints:0,userAgent:'GrandisLegacy-Headless-v6913'},location:{href:'http://127.0.0.1/'},localStorage,
+    navigator:{maxTouchPoints:0,userAgent:'GrandisLegacy-Headless-v6914'},location:{href:'http://127.0.0.1/'},localStorage,
     MutationObserver,CustomEvent,Audio,Image,requestAnimationFrame:fn=>setTimeout(()=>fn(Date.now()),0),cancelAnimationFrame:clearTimeout,
     matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}}),CSS:{escape:v=>String(v)},crypto:crypto.webcrypto
   };
@@ -55,7 +55,7 @@ function makeHeadlessContext(){
   context.window.addEventListener=()=>{};context.window.removeEventListener=()=>{};context.window.dispatchEvent=()=>true;
   vm.createContext(context);
   for(const {script} of COMPILED_SCRIPTS)script.runInContext(context,{timeout:30000});
-  if(!context.GL_LOCAL_AI_BRIDGE||!context.GL_GAME_ENGINE)throw new Error('v6.91.3 authority surface did not initialize.');
+  if(!context.GL_LOCAL_AI_BRIDGE||!context.GL_GAME_ENGINE)throw new Error('v6.91.4 authority surface did not initialize.');
   context.GL_LOCAL_AI_BRIDGE.setRenderSuppressed(true);
   context.GL_LOCAL_AI_BRIDGE.setSharedBoardMode(true);
   context.GL_LOCAL_AI_BRIDGE.setExternalHumanUi(true);
@@ -241,7 +241,7 @@ export function sourceHashes(){
   const out={};for(const rel of SCRIPT_PATHS){const b=fs.readFileSync(path.join(PUBLIC,rel));out[rel]=crypto.createHash('sha256').update(b).digest('hex')}return out;
 }
 
-export class V6913Authority{
+export class V6914Authority{
   constructor(){this.ctx=makeHeadlessContext();this.bridge=this.ctx.GL_LOCAL_AI_BRIDGE;this.game=this.ctx.GL_GAME_ENGINE;this.canonical=null;this.revision=0;this.opening=null;this.starters=clone(this.bridge.getStarterDeckOptions?.()||{});this.cardNames=Object.fromEntries((this.ctx.GL_CARD_DEFINITIONS?.cards||[]).map(c=>[String(c.card_id||''),String(c.name||c.card_name||c.card_id||'')]).filter(x=>x[0]))}
   deckForSelection(sel){if(sel?.customDeck)return normalizeFormation(sel.customDeck,sel.formation);const opt=this.starters?.[sel?.deckKey];if(!opt?.deck)throw new Error('Unknown starter deck: '+String(sel?.deckKey||''));return normalizeFormation(opt.deck,sel.formation)}
   start({p1,p2}){
@@ -291,7 +291,7 @@ export class V6913Authority{
   }
   viewForSpectator(){return this.canonical?viewerSafeLocalBoard(this.canonical,{spectator:true,cardNames:this.cardNames}):null}
   openingForSeat(seat){return localizeOpening(this.opening,seat)}
-  runNativeSelfTest(name){const fn=this.ctx?.[String(name||'')];if(typeof fn!=='function')throw new Error('Unknown v6.91.3 native self-test: '+String(name||''));return clone(fn())}
+  runNativeSelfTest(name){const fn=this.ctx?.[String(name||'')];if(typeof fn!=='function')throw new Error('Unknown v6.91.4 native self-test: '+String(name||''));return clone(fn())}
 }
 
 export const internals={viewerSafeLocalBoard,localizeOpening,mirrorSeatState,localizeBoardForSeat,maskPending,sanitizeViewerLogs,HIDDEN_CARD};

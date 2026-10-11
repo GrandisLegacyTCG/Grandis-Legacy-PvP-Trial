@@ -4,14 +4,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, randomInt, createHash } from 'node:crypto';
 import { WebSocketServer, WebSocket } from 'ws';
-import { V6913Authority, sourceHashes } from './server/v6913-authority.mjs';
+import { V6914Authority, sourceHashes } from './server/v6914-authority.mjs';
 
 const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.0';
-const BUILD_ID='gl-pvp-3.80.0-privacy-lifecycle-v6913-2026-10-11';
+const VERSION='3.80.1';
+const BUILD_ID='gl-pvp-3.80.1-v6914-shell-reconnect-2026-10-11';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 
@@ -64,8 +64,8 @@ function validateFormation(deck,formation){
   if(!a.every(Boolean)||!b.every(Boolean)||new Set(b).size!==3||a.join('|')!==b.join('|'))throw new Error('Formation must be a permutation of the selected deck Heroes.');
   return{LEFT:String(formation.LEFT),CENTER:String(formation.CENTER),RIGHT:String(formation.RIGHT)};
 }
-// One immutable setup authority only supplies the exact v6.91.3 starter catalog. Match authority is always new per match.
-const setupAuthority=new V6913Authority();
+// One immutable setup authority only supplies the exact v6.91.4 starter catalog. Match authority is always new per match.
+const setupAuthority=new V6914Authority();
 function setupStarters(){return setupAuthority.starters}
 
 function setDeckFast(client,msg){
@@ -85,7 +85,7 @@ function startMatch(client){
   if(client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can start the match.');
   if(room.match.status!=='setup')throw new Error('Match already started.');
   if(!bothPlayersReady())throw new Error('Both players must be connected, have a deck, and be READY.');
-  const p1=playerBySeat(1),p2=playerBySeat(2),authority=new V6913Authority();
+  const p1=playerBySeat(1),p2=playerBySeat(2),authority=new V6914Authority();
   authority.start({p1:selectionOf(p1),p2:selectionOf(p2)});
   room.authority=authority;room.ledger.clear();
   room.match={...freshMatch(),status:'coin-flip',chooserSeat:2,startedAt:now()};
@@ -177,7 +177,7 @@ const server=http.createServer(async(req,res)=>{
     const url=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
     if(url.pathname==='/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
-      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'v6.91.3-native-authority-handshake',authoritySources:sourceHashes()}));return;
+      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'v6.91.4-native-authority-handshake',authoritySources:sourceHashes()}));return;
     }
     let rel=decodeURIComponent(url.pathname);if(rel==='/'||rel==='')rel='/index.html';
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);
@@ -194,8 +194,8 @@ wss.on('connection',(ws,req)=>{
     if(clientBuildId!==BUILD_ID)throw Object.assign(new Error('CLIENT_BUILD_MISMATCH'),{code:'CLIENT_BUILD_MISMATCH'});
     const existing=room.players.get(clientId)||room.spectators.get(clientId);
     if(existing&&existing.role==='player'){
-      if(!seatToken||existing.seatTokenHash!==tokenHash(seatToken))throw new Error('SEAT_TOKEN_MISMATCH');
-      client=existing;closeClientSocket(client);client.ws=ws;client.connected=true;client.name=name;
+      if(!seatToken||existing.seatTokenHash!==tokenHash(seatToken))throw Object.assign(new Error('SEAT_TOKEN_MISMATCH'),{code:'SEAT_TOKEN_MISMATCH'});
+      client=existing;closeClientSocket(client,4006,'Seat session replaced by another tab');client.ws=ws;client.connected=true;client.name=name;
     }else if(existing&&existing.role==='spectator'){
       client=existing;closeClientSocket(client);client.ws=ws;client.connected=true;client.name=name;
     }else if(requested==='player'&&!room.kickedClients.has(clientId)&&room.match.status==='setup'&&chooseSeat()){
@@ -207,6 +207,6 @@ wss.on('connection',(ws,req)=>{
     ws.on('message',raw=>{try{const msg=JSON.parse(String(raw));const changed=handle(client,msg);if(changed)broadcast()}catch(err){fail(client,err?.message||err,err?.code||'REQUEST_REJECTED')}});
     ws.on('close',()=>{if(client&&client.ws===ws){client.connected=false;client.ws=null;broadcast()}});
     ws.on('error',()=>{});
-  }catch(err){const code=err?.code||'CONNECT_REJECTED';send(ws,{type:'error',code,message:String(err?.message||err)});try{ws.close(code==='CLIENT_BUILD_MISMATCH'?4003:4001,code==='CLIENT_BUILD_MISMATCH'?'Client build mismatch':'Connection rejected')}catch{}}
+  }catch(err){const code=err?.code||'CONNECT_REJECTED';send(ws,{type:'error',code,message:String(err?.message||err)});const closeCode=code==='CLIENT_BUILD_MISMATCH'?4003:code==='SEAT_TOKEN_MISMATCH'?4004:4001;const reason=code==='CLIENT_BUILD_MISMATCH'?'Client build mismatch':code==='SEAT_TOKEN_MISMATCH'?'Seat token mismatch':'Connection rejected';try{ws.close(closeCode,reason)}catch{}}
 });
 server.listen(PORT,HOST,()=>console.log(`[Grandis Legacy PvP v${VERSION}] Listening on http://${HOST}:${PORT}`));

@@ -1,20 +1,20 @@
-# Grandis Legacy PvP v3.80.0
+# Grandis Legacy PvP v3.80.1
 
-Grandis Legacy PvP v3.80.0 is a **privacy/lifecycle hardening release** on the v6.91.3-native PvP handshake introduced in v3.79. It does not return to the v3.78.x compatibility stack.
+Grandis Legacy PvP v3.80.1 is a **privacy/lifecycle hardening release** on the v6.91.4-native PvP handshake introduced in v3.79. It does not return to the v3.78.x compatibility stack.
 
 ## Locked bases
 
-- **Presentation base:** VS AI v6.91.3
+- **Presentation base:** VS AI v6.91.4
 - **Lobby base:** PvP v3.76.6
 - **Architecture reference only:** the handshake pattern used by VS AI Tutorial v6.48 and PvP v3.51
-- **Server gameplay authority:** the exact VS AI v6.91.3 shared gameplay engine, executed headlessly in Node
+- **Server gameplay authority:** the exact VS AI v6.91.4 shared gameplay engine, executed headlessly in Node
 
 PvP v3.51 is **not** shipped as an authority/runtime dependency and is **not** the implementation baseline for this release.
 
 ## New handshake
 
 ```text
-v6.91.3 desktop / tablet / mobile UI
+v6.91.4 desktop / tablet / mobile UI
                 |
                 | intent / intent batch
                 v
@@ -22,17 +22,19 @@ v6.91.3 desktop / tablet / mobile UI
                 |
                 | WebSocket + base revision
                 v
-  v6.91.3 gameplay engine in headless Node
+  v6.91.4 gameplay engine in headless Node
                 |
                 | viewer-safe localized snapshot
                 v
         thin PvP client adapter
                 |
                 v
-       v6.91.3 presentation runtime
+       v6.91.4 presentation runtime
 ```
 
-The active remote human is always executed as v6.91.3's local `PLAYER` in an actor-local seat orientation. This prevents the multiplayer server from invoking v6 Local AI for Player 2.
+The active remote human is always executed as v6.91.4's local `PLAYER` in an actor-local seat orientation. This prevents the multiplayer server from invoking v6 Local AI for Player 2.
+
+The donor's internal side names (`PLAYER` / `AI`) remain an engine implementation detail. In PvP mode the presentation translates the remote side to **Opponent**; it does not expose Local-AI identity copy as player-facing PvP UI.
 
 See `ARCHITECTURE_V380.md` for the full contract.
 
@@ -45,15 +47,15 @@ This standalone trial package intentionally carries the local Season 1 WebP/medi
 - `assets/ui/*`
 - `engine/assets/audio/*`
 
-The exact v6.91.3 donor engine still contains some website/CDN strings internally. Those are not the active standalone presentation path: donor rendering is suppressed, authoritative snapshot imports are silent, and visible card/Shard resolvers are overridden locally.
+The exact v6.91.4 donor engine still contains some website/CDN strings internally. Those are not the active standalone presentation path: donor rendering is suppressed, authoritative snapshot imports are silent, and visible card/Shard resolvers are overridden locally.
 
 When PvP is integrated into the main website later, this resolver boundary can be changed to the shared Website asset repository without changing gameplay authority.
 
 ## Coin Flip and opening boundary
 
-The v6.91.3 battlefield stays mounted behind a fully opaque black Coin Flip overlay. While the Coin Flip gate is active the battlefield is `inert`, has no pointer events, and must not leak hover/click/focus behavior.
+The v6.91.4 battlefield stays mounted behind a fully opaque black Coin Flip overlay. While the Coin Flip gate is active the battlefield is `inert`, has no pointer events, and must not leak hover/click/focus behavior.
 
-The server does not begin the first authoritative Draw until both clients finish the v6.91.3 opening presentation and acknowledge it.
+The server does not begin the first authoritative Draw until both clients finish the v6.91.4 opening presentation and acknowledge it.
 
 ## Local run
 

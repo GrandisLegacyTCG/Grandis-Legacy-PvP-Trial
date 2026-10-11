@@ -3,8 +3,8 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.0');
-const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6913-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
+assert.equal(pkg.version,'3.80.1');
+const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6914-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
 const hostPos=html.indexOf('pvp/pvp-host.js'),appPos=html.indexOf('shared-app/app-runtime.js');
@@ -16,7 +16,7 @@ assert.match(host,/runtime-intent/);assert.match(host,/runtime-intent-batch/);as
 assert.match(host,/skipImportAnimations:true/,'authoritative snapshot import must be silent; v6 external presentation owns visible animation');
 assert.match(host,/if\(prop==='cardView'\)/,'client facade must own visible card asset resolution');
 assert.match(host,/if\(prop==='manaAsset'\)/,'client facade must own visible shard asset resolution');
-assert.match(app,/GL_V6913_PVP_PRESENTATION/,'v6 app runtime must expose its PvP presentation boundary');
+assert.match(app,/GL_V6914_PVP_PRESENTATION/,'v6 app runtime must expose its PvP presentation boundary');
 assert.match(app,/function intentBatch\(/,'v6 UI must support serialized multi-intent interactions');
 assert.match(app,/openingPresented/,'opening presentation must ACK the server instead of locally starting the turn');
 
@@ -45,14 +45,14 @@ assert.match(pvpCss,/html\.gl-pvp-coin-gated \.app\{pointer-events:none!importan
 assert.match(pvpCss,/\.app\{visibility:visible!important\}/,'gameplay field must remain mounted/visible rather than lifecycle-hidden');
 
 // Server authority, client-version isolation, reconnect ownership and dedupe ordering.
-assert.match(server,/V6913Authority/);assert.match(server,/runtime-intent-batch/);assert.match(server,/STALE_REVISION/);assert.match(server,/type:'intent-ack'/,'server must explicitly acknowledge accepted/deduplicated intents');assert.match(server,/coinPresented/);assert.match(server,/openingPresented/);
+assert.match(server,/V6914Authority/);assert.match(server,/runtime-intent-batch/);assert.match(server,/STALE_REVISION/);assert.match(server,/type:'intent-ack'/,'server must explicitly acknowledge accepted/deduplicated intents');assert.match(server,/coinPresented/);assert.match(server,/openingPresented/);
 assert.match(server,/if\(String\(msg\.clientBuildId\|\|''\)!==BUILD_ID\).*CLIENT_BUILD_MISMATCH/s,'every websocket request must be tied to the current build');
 assert.match(server,/if\(clientBuildId!==BUILD_ID\)throw Object\.assign\(new Error\('CLIENT_BUILD_MISMATCH'\),\{code:'CLIENT_BUILD_MISMATCH'\}\)/,'connection handshake must reject stale client builds with a dedicated error code');
-assert.match(server,/if\(!seatToken\|\|existing\.seatTokenHash!==tokenHash\(seatToken\)\)throw new Error\('SEAT_TOKEN_MISMATCH'\)/,'existing player seat must require its seat token on reconnect');
+assert.match(server,/if\(!seatToken\|\|existing\.seatTokenHash!==tokenHash\(seatToken\)\)throw Object\.assign\(new Error\('SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}\)/,'existing player seat must require its seat token on reconnect');
 const dedupePos=server.indexOf('if(actionId&&room.ledger.has(actionId))'),stalePos=server.indexOf("const base=Number(msg.baseRevision)");
 assert.ok(dedupePos>=0&&stalePos>dedupePos,'idempotent action dedupe must run before stale-revision rejection');
 assert.match(server,/kickedClients\.add\(p\.clientId\)/,'kick must mark the removed client for the current setup');
-assert.match(host,/Number\(ev\?\.code\)===4002.*state\.role='spectator'/s,'kicked client must reconnect as spectator instead of reclaiming Player 2');
+assert.match(host,/code===4002.*state\.role='spectator'/s,'kicked client must reconnect as spectator instead of reclaiming Player 2');
 
 // Exact donor gameplay authority remains locked; the server-side seat mirror fixes ownership without patching donor code.
 assert.match(authority,/engine\/js\/static-data\.js/);assert.match(authority,/engine\/shared-app\/app\.bundle\.js/);
@@ -64,7 +64,7 @@ assert.match(authority,/hidden-opponent-pool/,'viewer-safe state must hide oppon
 assert.doesNotMatch(authority,/v3\.51|v351/i,'new authority module must not import or depend on v3.51 implementation');
 assert.equal(fs.existsSync(path.join(root,'authority')),false,'legacy v3.51 authority tree must not be shipped');
 assert.equal(fs.existsSync(path.join(root,'sync')),false,'v3.78 runtime-sync compatibility layer must not be shipped');
-assert.match(server,/architecture:'v6\.91\.3-native-authority-handshake'/);
+assert.match(server,/architecture:'v6\.91\.4-native-authority-handshake'/);
 
 
 // v3.80 privacy/lifecycle hardening.
@@ -77,7 +77,7 @@ assert.match(server,/function resetRoom\(client\).*room\.match\.status!=='setup'
 assert.match(server,/const noStoreCode=ext==='\.html'\|\|ext==='\.js'\|\|ext==='\.mjs'/,'HTML/JS runtime code must be served no-store to avoid stale-build reconnect loops');
 assert.match(server,/4003.*Client build mismatch/s,'build mismatch must close with a dedicated websocket code');
 assert.match(host,/function recoverBuildMismatch\(\)/,'client must have a stale-build recovery path');
-assert.match(host,/Number\(ev\?\.code\)===4003.*recoverBuildMismatch/s,'build mismatch close must not enter normal reconnect backoff');
+assert.match(host,/code===4003.*recoverBuildMismatch/s,'build mismatch close must not enter normal reconnect backoff');
 assert.match(host,/custom:'grandis_legacy_pvp_v380_custom_deck'/,'imported Custom Deck must be persisted locally for refresh/reconnect');
 assert.match(host,/if\(me\?\.hasDeck\|\|me\?\.deckKey\|\|me\?\.deckName\)return/,'setup sync must never overwrite a server-retained deck');
 assert.match(host,/!meNow\?\.hasDeck/,'default starter selection must not overwrite a retained server Custom Deck');
@@ -89,4 +89,23 @@ assert.doesNotMatch(app,/LOCAL AI|AI Deck|Player Deck/,'shared PvP runtime must 
 assert.match(donor,/mainIds\.length<50\|\|mainIds\.length>60/,'custom deck 50–60 Main Deck acceptance must remain unchanged');
 assert.match(donor,/main_deck must contain 50 through 60 cards/,'custom deck validation text must remain unchanged');
 
-console.log(JSON.stringify({ok:true,version:pkg.version,presentation:'VS AI v6.91.3',lobby:'PvP v3.76.6',v351:'reference only',legacyAuthorityShipped:false,legacySyncLayerShipped:false,nextPhaseDrawUnlocked:true,authoritativeRematchReset:true,legacyIdentityBadgesRemoved:true,customDeck50to60Preserved:true,privacyProjection:true,openingShardPrivacy:true,resetRoomGuarded:true,customDeckReconnectSafe:true,buildMismatchRecovery:true},null,2));
+
+// v3.80.1 donor-shell cleanup and tab-safe reconnect.
+assert.match(html,/class=["']app gl-lobby-hidden["']/,'PvP must inherit the v6.91.4 neutral hidden shell until match activation');
+for(const stale of ['TURN 16','Action selected','S1-ARC-H001.webp','S1-WAR-H004.webp','S1-ITM-018.webp','Vaelis Stormweave'])assert.equal(html.toLowerCase().includes(stale.toLowerCase()),false,`authored demo state must not survive: ${stale}`);
+assert.doesNotMatch(html,/assets\/cards\//,'retired authored demo-only assets/cards must not be referenced');
+assert.doesNotMatch(html,/<h3 class=["']gold["']>VS AI<\/h3>/,'PvP neutral shell must not flash the donor VS AI sidebar label');
+assert.match(html,/<h3 class=["']gold["']>PvP<\/h3>/,'PvP shell must carry a neutral PvP sidebar label before runtime state arrives');
+assert.match(app,/window\.GL_APP_MODE==='PVP'\?'OPPONENT TURN':'AI TURN'/,'PvP presentation must translate donor AI turn copy to opponent copy');
+assert.match(app,/window\.GL_APP_MODE==='PVP'\?'Opponent Mana':'AI Mana'/,'PvP sidebar must translate donor AI resource copy to opponent copy');
+assert.match(host,/const SESSION=\{client:'grandis_legacy_pvp_v3801_tab_client_id',seat:'grandis_legacy_pvp_v3801_tab_seat_token',role:'grandis_legacy_pvp_v3801_tab_role'\}/,'connection identity/role must be tab-scoped');
+assert.match(host,/sessionStorage\.getItem\(SESSION\[key\]\)/,'client/seat reconnect identity must use sessionStorage');
+assert.doesNotMatch(host,/localStorage\.getItem\(STORE\[['"]client['"]\]\)/,'client id must not be shared through localStorage');
+assert.doesNotMatch(host,/STORE\.role|persist\('role'/,'player/spectator role must not be shared through localStorage');
+assert.match(host,/if\(state\.ws!==ws\)return/,'stale socket callbacks must not tear down a newer connection');
+assert.match(host,/code===4006.*forkConnectionIdentity/s,'a seat session replaced by another tab must fork instead of reconnect-fighting');
+assert.match(host,/code===4004.*forkConnectionIdentity/s,'seat-token mismatch must fork to a fresh tab identity instead of reconnect-looping');
+assert.match(server,/closeClientSocket\(client,4006,'Seat session replaced by another tab'\)/,'server must explicitly supersede the old same-seat socket');
+assert.match(server,/SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}/,'seat-token rejection needs a dedicated error code');
+assert.match(server,/code==='SEAT_TOKEN_MISMATCH'\?4004/,'seat-token mismatch must not use the normal reconnect close path');
+console.log(JSON.stringify({ok:true,version:pkg.version,presentation:'VS AI v6.91.4',lobby:'PvP v3.76.6',v351:'reference only',legacyAuthorityShipped:false,legacySyncLayerShipped:false,nextPhaseDrawUnlocked:true,authoritativeRematchReset:true,legacyIdentityBadgesRemoved:true,customDeck50to60Preserved:true,privacyProjection:true,openingShardPrivacy:true,resetRoomGuarded:true,customDeckReconnectSafe:true,buildMismatchRecovery:true,pvpPresentationLabels:true},null,2));

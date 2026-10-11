@@ -1,46 +1,9 @@
 {
-  "release": "v3.80.0",
+  "release": "v3.80.1",
   "generated_from": {
-    "presentation": "VS AI v6.91.3",
+    "presentation": "VS AI v6.91.4",
     "lobby": "PvP v3.76.6",
-    "architecture_reference": "VS AI Tutorial v6.48 ↔ PvP v3.51 (reference only)"
-  },
-  "exact_v6913_trees": {
-    "engine": {
-      "files": 55,
-      "bytes": 31157247,
-      "new_fingerprint": "da0bacf2a447652ae19e1fc1e76d9a6f0b16e8448aa31512799d56ffb8bfd159",
-      "donor_fingerprint": "da0bacf2a447652ae19e1fc1e76d9a6f0b16e8448aa31512799d56ffb8bfd159",
-      "exact": true
-    },
-    "card-art": {
-      "files": 200,
-      "bytes": 14335118,
-      "new_fingerprint": "29fa7cee25d6d39cd5199bb8c3bc976fe8796b3e24d4caf086260d6952a3eacb",
-      "donor_fingerprint": "29fa7cee25d6d39cd5199bb8c3bc976fe8796b3e24d4caf086260d6952a3eacb",
-      "exact": true
-    },
-    "shared-ui": {
-      "files": 1,
-      "bytes": 81317,
-      "new_fingerprint": "85eecc393a54d9d48714fb4afdd4016a59d6f379c049cc82e2b18f0584ad1d66",
-      "donor_fingerprint": "85eecc393a54d9d48714fb4afdd4016a59d6f379c049cc82e2b18f0584ad1d66",
-      "exact": true
-    },
-    "runtime": {
-      "files": 3,
-      "bytes": 2067,
-      "new_fingerprint": "5041e4c4572dce72b5587c3f03716b77b3bbeb08fcd7d41077623fadfd4213ee",
-      "donor_fingerprint": "5041e4c4572dce72b5587c3f03716b77b3bbeb08fcd7d41077623fadfd4213ee",
-      "exact": true
-    },
-    "assets_v6913_subset": {
-      "files": 32,
-      "bytes": 5054138,
-      "new_fingerprint": "a8e0860a399b8fac8c01a727836242dd36f4548886813974fc27343f9c2d1918",
-      "donor_fingerprint": "a8e0860a399b8fac8c01a727836242dd36f4548886813974fc27343f9c2d1918",
-      "exact": true
-    }
+    "architecture_reference": "VS AI Tutorial v6.48 \u2194 PvP v3.51 (reference only)"
   },
   "lobby_assets": {
     "background.webp": {
@@ -98,7 +61,7 @@
     "public/pvp/pvp-integration.css",
     "public/lobby/pvp-lobby-v3.76.6.css",
     "server.js",
-    "server/v6913-authority.mjs"
+    "server/v6914-authority.mjs"
   ],
   "authority_source_hashes": {
     "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
@@ -106,5 +69,42 @@
     "engine/shared-app/active-starters.js": "9d536dffd4aa811428285c8db1652b8b509b61dadc2b3e200042a85289a09cfe",
     "engine/shared-app/app.bundle.js": "7253f45e57eee3c083e6877b8062fca7210034409e089cbdd4d88622a5569e93"
   },
-  "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6913_subset excludes assets/lobby/"
+  "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6914_subset excludes assets/lobby/",
+  "exact_v6914_trees": {
+    "engine": {
+      "files": 54,
+      "bytes": 31153091,
+      "new_fingerprint": "5adf7e22ef77c0a655809872d56f18ff7e3e8a5b2d77c0c68afcff10bae7a100",
+      "donor_fingerprint": "5adf7e22ef77c0a655809872d56f18ff7e3e8a5b2d77c0c68afcff10bae7a100",
+      "exact": true
+    },
+    "card-art": {
+      "files": 200,
+      "bytes": 14335118,
+      "new_fingerprint": "29fa7cee25d6d39cd5199bb8c3bc976fe8796b3e24d4caf086260d6952a3eacb",
+      "donor_fingerprint": "29fa7cee25d6d39cd5199bb8c3bc976fe8796b3e24d4caf086260d6952a3eacb",
+      "exact": true
+    },
+    "shared-ui": {
+      "files": 1,
+      "bytes": 81317,
+      "new_fingerprint": "85eecc393a54d9d48714fb4afdd4016a59d6f379c049cc82e2b18f0584ad1d66",
+      "donor_fingerprint": "85eecc393a54d9d48714fb4afdd4016a59d6f379c049cc82e2b18f0584ad1d66",
+      "exact": true
+    },
+    "runtime": {
+      "files": 3,
+      "bytes": 2067,
+      "new_fingerprint": "5041e4c4572dce72b5587c3f03716b77b3bbeb08fcd7d41077623fadfd4213ee",
+      "donor_fingerprint": "5041e4c4572dce72b5587c3f03716b77b3bbeb08fcd7d41077623fadfd4213ee",
+      "exact": true
+    },
+    "assets_v6914_subset": {
+      "files": 13,
+      "bytes": 3736346,
+      "new_fingerprint": "354761c97f4e244efbb899d56afaa2d75be1a18983106ad657e7901fbadd034a",
+      "donor_fingerprint": "354761c97f4e244efbb899d56afaa2d75be1a18983106ad657e7901fbadd034a",
+      "exact": true
+    }
+  }
 }

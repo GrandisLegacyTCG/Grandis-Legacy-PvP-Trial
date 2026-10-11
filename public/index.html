@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Grandis Legacy — PvP v3.80.0</title>
+<title>Grandis Legacy — PvP v3.80.1</title>
 <style>
 @font-face{font-family:Noto;src:url('assets/fonts/NotoSans-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 :root{
@@ -34,6 +34,7 @@
 @media(max-height:820px){:root{--hero-base-w:clamp(77px,6.75vw,98px)}}
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07111c;color:var(--text);font-family:Noto,Arial,sans-serif}
+.app.gl-lobby-hidden{visibility:hidden!important}
 body{background-image:linear-gradient(rgba(3,10,18,.30),rgba(3,10,18,.30)),url('assets/ui/Background.png');background-size:cover;background-position:center}
 button{font:inherit}
 .app{width:100vw;height:100vh;display:grid;grid-template-columns:85vw 15vw;overflow:hidden}
@@ -53,7 +54,8 @@ button{font:inherit}
 .hand-card:hover,.hand-card.is-hovered,.hand-card.is-selected{z-index:80}
 .hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected,.hand.top .hand-card:hover{transform:translateY(0) scale(1.04)}
 .hand.bottom .hand-card:after{content:"";position:absolute;left:-4px;right:-4px;top:-34px;bottom:-18px;z-index:-1;pointer-events:auto}
-/* v6.91.3: root-cause correction — moved-stylesheet asset URLs fixed; PLAYER Draw keeps the external staged Main Deck + Shard presentation before Deploy. */
+/* v6.91.4: root-cause correction — moved-stylesheet asset URLs fixed; PLAYER Draw keeps the external staged Main Deck + Shard presentation before Deploy. */
+/* Identity UI remains the approved v6.90.9 behavior: max 25 visible characters for each name/deck line. */
 
 /* v6.83: player Hand keeps the light fan with a small edge-only overlap. */
 .hand.bottom .hand-card{margin-left:-5px;transform-origin:50% 100%;}
@@ -260,41 +262,37 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 <link rel="stylesheet" href="pvp/pvp-integration.css">
 </head>
 <body>
-<div class="app">
+<div class="app gl-lobby-hidden">
   <main class="battlefield">
     <div class="concept" aria-hidden="true"></div>
 
     <section class="hand top">
-      <div class="hand-track">
-        <div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div><div class="hand-card"><img src="assets/ui/back-main.webp"></div>
-      </div>
+      <div class="hand-track"></div>
     </section>
 
     <section class="field-row opponent-field">
-      <!-- Opponent layout is the 180° positional counterpart of the player side.
-           Visuals remain upright; only placement/order is rotated. -->
       <div class="rail-pair opponent-left-rail">
-        <div class="racial-row"><img class="racial-token" src="assets/ui/Racial-Token-Head.webp" alt="Opponent racial token"><img class="racial-token" src="assets/ui/Racial-Token-Tail.webp" alt="Opponent racial token"></div>
-        <div class="zone"><img src="assets/ui/back-main.webp"><span class="count">51</span><span class="zone-label">MAIN<br>DECK</span></div>
-        <div class="zone"><img src="assets/cards/S1-ARC-006.webp"><span class="count">1</span><span class="zone-label">DISCARD<br>PILE</span></div>
+        <div class="racial-row"></div>
+        <div class="zone"><img src="assets/ui/back-main.webp" alt="Opponent Main Deck"><span class="count">0</span><span class="zone-label">MAIN<br>DECK</span></div>
+        <div class="zone"><img alt=""><span class="count">0</span><span class="zone-label">DISCARD<br>PILE</span></div>
       </div>
       <div class="hero-grid">
-        <div class="hero-lane"><span class="lane-label">HERO RIGHT</span><div class="hero-card"><img src="assets/cards/S1-ARC-H001.webp"><span class="hp">90/90</span></div></div>
-        <div class="hero-lane"><span class="lane-label">HERO CENTER</span><div class="hero-card"><img src="assets/cards/S1-WAR-H004.webp"><span class="hp">100/100</span></div></div>
-        <div class="hero-lane"><span class="lane-label">HERO LEFT</span><div class="hero-card"><img src="assets/cards/S1-CLE-H004.webp"><span class="hp">100/100</span></div></div>
+        <div class="hero-lane"><div class="hero-card"></div></div>
+        <div class="hero-lane"><div class="hero-card"></div></div>
+        <div class="hero-lane"><div class="hero-card"></div></div>
       </div>
       <div class="rail-pair opponent-right-rail">
-        <div class="zone"><img src="assets/ui/back-shard.webp"><span class="count">12</span><span class="zone-label">SHARD<br>DECK</span></div>
-        <div class="zone"><img src="assets/ui/back-legacy.webp"><span class="count">12</span><span class="zone-label">LEGACY<br>DECK</span></div>
+        <div class="zone"><img src="assets/ui/back-shard.webp" alt="Opponent Shard Deck"><span class="count">0</span><span class="zone-label">SHARD<br>DECK</span></div>
+        <div class="zone"><img src="assets/ui/back-legacy.webp" alt="Opponent Legacy Deck"><span class="count">0</span><span class="zone-label">LEGACY<br>DECK</span></div>
       </div>
       <div class="mana-pool opponent-mana-pool">
         <div class="mana-cards" id="opponentManaCards"></div>
-        <span class="count" id="opponentManaCount">12</span>
+        <span class="count" id="opponentManaCount">0</span>
       </div>
     </section>
 
     <section class="phase" aria-label="Turn phase tracker">
-      <div class="phase-turn"><div class="turn">YOUR TURN<small>TURN 16</small></div></div>
+      <div class="phase-turn"><div class="turn"></div></div>
       <div class="phase-track" aria-label="Turn phases">
         <span class="phase-label active">DRAW PHASE</span>
         <span class="phase-label">DEPLOY PHASE</span>
@@ -313,105 +311,43 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 
     <section class="field-row player-field">
       <div class="rail-pair">
-        <div class="zone"><img src="assets/ui/back-legacy.webp"><span class="count">12</span><span class="zone-label">LEGACY<br>DECK</span></div>
-        <div class="zone"><img src="assets/ui/back-shard.webp"><span class="count">8</span><span class="zone-label">SHARD<br>DECK</span></div>
+        <div class="zone"><img src="assets/ui/back-legacy.webp" alt="Player Legacy Deck"><span class="count">0</span><span class="zone-label">LEGACY<br>DECK</span></div>
+        <div class="zone"><img src="assets/ui/back-shard.webp" alt="Player Shard Deck"><span class="count">0</span><span class="zone-label">SHARD<br>DECK</span></div>
       </div>
       <div class="hero-grid">
-        <div class="hero-lane"><span class="lane-label">HERO LEFT</span><span class="trait">Ancestral Focus</span><div class="hero-card"><img src="assets/cards/S1-MAG-H001.webp"><span class="hp">80/80</span></div></div>
-        <div class="hero-lane"><span class="lane-label">HERO CENTER</span><span class="trait">Human Ambition</span><div class="attachment-card left"><img src="assets/cards/S1-WAR-005.webp" alt="Taunt attachment"><span class="attachment-turn" title="1 turn remaining">1</span></div><div class="hero-card"><img src="assets/cards/S1-WAR-H001.webp"><span class="hp">90/90</span></div><div class="attachment-card right"><img src="assets/cards/S1-WAR-013.webp" alt="Enrage attachment"><span class="attachment-turn" title="1 turn remaining">1</span></div></div>
-        <div class="hero-lane"><span class="lane-label">HERO RIGHT</span><div class="hero-card"><img src="assets/cards/S1-THF-H001.webp"><span class="hp">80/80</span></div></div>
+        <div class="hero-lane"><div class="hero-card"></div></div>
+        <div class="hero-lane"><div class="hero-card"></div></div>
+        <div class="hero-lane"><div class="hero-card"></div></div>
       </div>
       <div class="rail-pair player-right-rail">
-        <div class="zone"><img src="assets/cards/S1-WAR-002.webp" alt="Player discard top card"><span class="count">1</span><span class="zone-label">DISCARD<br>PILE</span></div>
-        <div class="zone"><img src="assets/ui/back-main.webp"><span class="count">53</span><span class="zone-label">MAIN<br>DECK</span></div>
-        <div class="racial-row"><img class="racial-token" src="assets/ui/Racial-Token-Head.webp" alt="Player racial token"><img class="racial-token" src="assets/ui/Racial-Token-Tail.webp" alt="Player racial token"></div>
+        <div class="zone"><img alt=""><span class="count">0</span><span class="zone-label">DISCARD<br>PILE</span></div>
+        <div class="zone"><img src="assets/ui/back-main.webp" alt="Player Main Deck"><span class="count">0</span><span class="zone-label">MAIN<br>DECK</span></div>
+        <div class="racial-row"></div>
       </div>
       <div class="mana-pool player-mana-pool">
         <div class="mana-cards" id="manaCards"></div>
-        <span class="count" id="manaCount">12</span>
+        <span class="count" id="manaCount">0</span>
       </div>
       <div class="mana-controls"><button id="manaAdd" title="Add Shard">+</button><button id="manaRemove" title="Remove Shard">−</button></div>
     </section>
 
     <section class="bottom-hud">
-      <div class="action-feedback" id="actionFeedback">Action selected</div>
-      <section class="hand bottom">
-        <div class="hand-track">
-          <div class="hand-card" data-card-name="Health Potion" data-actions="play">
-            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
-            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-ITM-001.webp">
-          </div>
-          <div class="hand-card" data-card-name="Flash Heal" data-actions="play tribute">
-            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
-            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button><button class="tribute" type="button" data-action="Tribute">Tribute</button></div><img src="assets/cards/S1-CLE-005.webp">
-          </div>
-          <div class="hand-card" data-card-name="Tornado" data-actions="play">
-            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
-            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-MAG-007.webp">
-          </div>
-          <div class="hand-card" data-card-name="Poison Mist" data-actions="play">
-            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
-            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-THF-012.webp">
-          </div>
-          <div class="hand-card" data-card-name="Frostbite" data-actions="play">
-            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
-            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-MAG-008.webp">
-          </div>
-          <div class="hand-card" data-card-name="Evasion" data-actions="play">
-            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
-            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-THF-003.webp">
-          </div>
-          <div class="hand-card" data-card-name="Power Slash" data-actions="play">
-            <div class="action-flags"><span class="action-flag play" title="Playable">P</span></div>
-            <div class="card-actions"><button class="play" type="button" data-action="Play">Play</button></div><img src="assets/cards/S1-WAR-002.webp">
-          </div>
-        </div>
-      </section>
+      <div class="action-feedback" id="actionFeedback"></div>
+      <section class="hand bottom"><div class="hand-track"></div></section>
     </section>
   </main>
 
   <aside class="sidebar">
-    <section class="sidebox"><h3 class="gold">Your Turn</h3><div class="tiny">Round 1 · Player<br>Phase: Draw<br>AI: Waiting<br><span style="color:#70bfff">PLAYER · Draw Phase</span></div></section>
-    <section class="sidebox played-box"><h3>Card Played</h3><div class="played">
-      <div class="played-card"><img src="assets/cards/S1-THF-003.webp"><span class="played-owner">YOU</span></div>
-      <div class="played-card"><img src="assets/cards/S1-WAR-013.webp"><span class="played-owner">YOU</span></div>
-      <div class="played-card"><img src="assets/cards/S1-CLE-010.webp"><span class="played-owner">OPPONENT</span></div>
-      <div class="played-card"><img src="assets/cards/S1-ARC-006.webp"><span class="played-owner">OPPONENT</span></div>
-      <div class="played-card"><img src="assets/cards/S1-THF-012.webp"><span class="played-owner">YOU</span></div>
-      <div class="played-card"><img src="assets/cards/S1-WAR-002.webp"><span class="played-owner">YOU</span></div>
-    </div><button class="history-btn" id="fullHistoryBtn" type="button">Full Card History</button></section>
+    <section class="sidebox"><h3 class="gold">PvP</h3><div class="tiny"></div></section>
+    <section class="sidebox played-box"><h3>Card Played</h3><div class="played"></div><button class="history-btn" id="fullHistoryBtn" type="button">Full Card History</button></section>
     <section class="sidebox shared-box" id="sharedPreviewBox">
-      <div class="active-card-pane">
-        <h3>Active Card</h3>
-        <div class="active-card-stage">
-          <div class="active-card-visual">
-            <img src="assets/cards/S1-ITM-018.webp" alt="Magic Compass">
-            <span class="active-owner">YOU</span>
-          </div>
-        </div>
-      </div>
+      <div class="active-card-pane"><h3>Active Card</h3><div class="active-card-stage"></div></div>
       <button class="battle-log-btn" id="battleLogBtn" type="button">Battle Log</button>
       <div class="preview-overlay"><img id="hoverPreviewCard" class="preview-card" alt="Card preview"></div>
     </section>
     <div class="bottom-actions"><span class="match-timer" id="matchTimer" aria-label="Match time">00:00</span><button>Sound On</button><button class="danger">Surrender</button></div>
-    <section class="battlelog-panel" id="battleLogPanel" aria-hidden="true">
-      <div class="history-head"><h3>Battle Log</h3><button class="history-close" id="battleLogClose" type="button">Close</button></div>
-      <div class="logline"><b>Player</b> entered Draw Phase.</div>
-      <div class="logline">Vaelis Stormweave is Ready.</div>
-      <div class="logline">Draxen Blacksand is Ready.</div>
-      <div class="logline">Finnian Copperpot is Ready.</div>
-      <div class="logline"><b>AI</b> completed its previous turn.</div>
-    </section>
-    <section class="history-panel" id="historyPanel" aria-hidden="true"><div class="history-head"><h3>Full Card History</h3><button class="history-close" id="historyClose" type="button">Close</button></div><div class="history-grid">
-      <div class="played-card"><img src="assets/cards/S1-THF-003.webp"><span class="played-owner">YOU</span></div>
-      <div class="played-card"><img src="assets/cards/S1-WAR-013.webp"><span class="played-owner">YOU</span></div>
-      <div class="played-card"><img src="assets/cards/S1-CLE-010.webp"><span class="played-owner">OPPONENT</span></div>
-      <div class="played-card"><img src="assets/cards/S1-ARC-006.webp"><span class="played-owner">OPPONENT</span></div>
-      <div class="played-card"><img src="assets/cards/S1-THF-012.webp"><span class="played-owner">YOU</span></div>
-      <div class="played-card"><img src="assets/cards/S1-WAR-002.webp"><span class="played-owner">YOU</span></div>
-      <div class="played-card"><img src="assets/cards/S1-MAG-008.webp"><span class="played-owner">YOU</span></div>
-      <div class="played-card"><img src="assets/cards/S1-ITM-001.webp"><span class="played-owner">YOU</span></div>
-    </div></section>
+    <section class="battlelog-panel" id="battleLogPanel" aria-hidden="true"><div class="history-head"><h3>Battle Log</h3><button class="history-close" id="battleLogClose" type="button">Close</button></div></section>
+    <section class="history-panel" id="historyPanel" aria-hidden="true"><div class="history-head"><h3>Full Card History</h3><button class="history-close" id="historyClose" type="button">Close</button></div><div class="history-grid"></div></section>
   </aside>
 </div>
 <script id="gl-responsive-stage-js">

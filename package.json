@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.0",
+  "version": "3.80.1",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.0 — v6.91.3-native multiplayer handshake: v6.91.3 presentation and headless server authority, v3.76.6 Lobby, v6.48↔v3.51 used as architecture reference only.",
+  "description": "Grandis Legacy PvP v3.80.1 — v6.91.4-clean-shell multiplayer handshake: v6.91.4 presentation/headless authority, v3.76.6 Lobby, v6.48↔v3.51 used as architecture reference only.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
@@ -23,10 +23,10 @@
   "engines": {"node": ">=18"},
   "dependencies": {"ws": "^8.18.0"},
   "grandisLegacyArchitecture": {
-    "presentationBase": "VS AI v6.91.3",
+    "presentationBase": "VS AI v6.91.4",
     "lobbyBase": "PvP v3.76.6",
     "referenceArchitecture": "VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts only",
-    "serverAuthority": "Exact VS AI v6.91.3 shared gameplay engine executed headlessly in Node VM",
+    "serverAuthority": "Exact VS AI v6.91.4 shared gameplay engine executed headlessly in Node VM",
     "v351RuntimeShipped": false
   },
   "northflankDeployment": {

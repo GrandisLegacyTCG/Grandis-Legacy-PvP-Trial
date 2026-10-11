@@ -1,8 +1,8 @@
 'use strict';
 const fs=require('fs'),path=require('path'),{spawnSync}=require('child_process');
 const root=path.resolve(__dirname,'..'),failures=[],passes=[];const read=r=>fs.readFileSync(path.join(root,r),'utf8'),exists=r=>fs.existsSync(path.join(root,r));const pass=x=>passes.push('PASS: '+x),fail=x=>failures.push(x);
-const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.json')),docker=read('Dockerfile'),server=read('server.js'),auth=read('server/v6913-authority.mjs'),readme=read('README.md');
-if(pkg.version==='3.80.0')pass('package version is v3.80.0');else fail(`package version ${pkg.version}`);
+const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.json')),docker=read('Dockerfile'),server=read('server.js'),auth=read('server/v6914-authority.mjs'),readme=read('README.md');
+if(pkg.version==='3.80.1')pass('package version is v3.80.1');else fail(`package version ${pkg.version}`);
 if(pkg.dependencies?.ws)pass(`production ws dependency declared ${pkg.dependencies.ws}`);else fail('production dependency ws missing');
 if(lock.packages?.['']?.dependencies?.ws)pass('package-lock root locks ws');else fail('package-lock root ws missing');
 if(/npm\s+ci\s+--omit=dev/.test(docker))pass('Docker production install uses npm ci --omit=dev');else fail('Docker npm ci --omit=dev missing');
@@ -10,7 +10,7 @@ if(/COPY\s+server\.js\s+\.\/server\.js/.test(docker)&&/COPY\s+server\s+\.\/serve
 if(/CMD\s*\[\s*"node"\s*,\s*"server\.js"\s*\]/.test(docker))pass('Docker starts node server.js');else fail('Docker CMD incorrect');
 if(/process\.env\.PORT/.test(server)&&/0\.0\.0\.0/.test(server)&&/url\.pathname==='\/health'/.test(server))pass('PORT / 0.0.0.0 / health contract present');else fail('server deployment contract incomplete');
 if(/brotliCompressSync\s*\(|gzipSync\s*\(/.test(server))fail('synchronous compression found in server request path');else pass('no synchronous Brotli/Gzip request compression');
-if(/\.\/server\/v6913-authority\.mjs/.test(server)&&/engine\/js\/static-data\.js/.test(auth)&&/engine\/shared-app\/app\.bundle\.js/.test(auth))pass('server authority executes packaged exact v6.91.3 sources');else fail('v6.91.3 native authority source wiring missing');
+if(/\.\/server\/v6914-authority\.mjs/.test(server)&&/engine\/js\/static-data\.js/.test(auth)&&/engine\/shared-app\/app\.bundle\.js/.test(auth))pass('server authority executes packaged exact v6.91.4 sources');else fail('v6.91.4 native authority source wiring missing');
 if(exists('authority')||exists('sync'))fail('legacy v3.51/v3.78 authority compatibility tree is shipped');else pass('no legacy v3.51 authority tree or v3.78 sync compatibility layer');
 if(/Deployment Guardrails|no healthy upstream/i.test(readme)&&exists('DEPLOYMENT_GUARDRAILS.md'))pass('permanent deployment guardrail docs exist');else fail('deployment guardrails missing');
 if(exists('PROJECT_WORKFLOW_RULES.md'))pass('project workflow rules preserved');else fail('project workflow rules missing');

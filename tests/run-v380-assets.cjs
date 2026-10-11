@@ -4,10 +4,10 @@ const root=path.resolve(__dirname,'..'),pub=path.join(root,'public'),parity=JSON
 const norm=p=>p.split(path.sep).join('/');
 function walk(dir){const out=[];for(const e of fs.readdirSync(dir,{withFileTypes:true})){const a=path.join(dir,e.name);if(e.isDirectory())out.push(...walk(a));else if(e.isFile())out.push(a)}return out}
 function treeFingerprint(dir){const rows=[];for(const f of walk(dir).sort()){const rel=norm(path.relative(dir,f)),b=fs.readFileSync(f);rows.push(`${rel}\0${crypto.createHash('sha256').update(b).digest('hex')}\0${b.length}`)}return crypto.createHash('sha256').update(rows.join('\n')).digest('hex')}
-for(const [name,row] of Object.entries(parity.exact_v6913_trees)){
-  const dirName=name==='assets_v6913_subset'?'assets':name;
-  if(name==='assets_v6913_subset'){
-    const dir=path.join(pub,'assets'),rows=[];for(const f of walk(dir).filter(f=>!norm(path.relative(dir,f)).startsWith('lobby/')).sort()){const rel=norm(path.relative(dir,f)),b=fs.readFileSync(f);rows.push(`${rel}\0${crypto.createHash('sha256').update(b).digest('hex')}\0${b.length}`)}const fp=crypto.createHash('sha256').update(rows.join('\n')).digest('hex');assert.equal(rows.length,row.files,'v6 assets subset file count mismatch');assert.equal(fp,row.donor_fingerprint,'v6 assets subset donor fingerprint mismatch');continue;
+for(const [name,row] of Object.entries(parity.exact_v6914_trees)){
+  const dirName=name==='assets_v6914_subset'?'assets':name;
+  if(name==='assets_v6914_subset'){
+    const dir=path.join(pub,'assets'),rows=[];for(const f of walk(dir).filter(f=>!norm(path.relative(dir,f)).startsWith('lobby/')).sort()){const rel=norm(path.relative(dir,f)),b=fs.readFileSync(f);rows.push(`${rel}\0${crypto.createHash('sha256').update(b).digest('hex')}\0${b.length}`)}const fp=crypto.createHash('sha256').update(rows.join('\n')).digest('hex');assert.equal(rows.length,row.files,'v6.91.4 assets subset file count mismatch');assert.equal(fp,row.donor_fingerprint,'v6.91.4 assets subset donor fingerprint mismatch');continue;
   }
   const dir=path.join(pub,dirName);assert.ok(fs.existsSync(dir),`${dirName} tree missing`);assert.equal(treeFingerprint(dir),row.donor_fingerprint,`${dirName} donor tree fingerprint mismatch`);
 }

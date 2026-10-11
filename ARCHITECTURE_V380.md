@@ -1,23 +1,23 @@
-# PvP v3.80.0 Architecture
+# PvP v3.80.1 Architecture
 
 ## 1. Purpose
 
-v3.80.0 hardens the v6.91.3-native PvP integration introduced in v3.79. The architecture continues to use the current VS AI runtime rather than forcing the old PvP browser engine into a newer presentation family.
+v3.80.1 hardens the v6.91.4-native PvP integration introduced in v3.79. The architecture continues to use the current VS AI runtime rather than forcing the old PvP browser engine into a newer presentation family.
 
 ### Bases
 
 | Responsibility | Source |
 |---|---|
-| Gameplay presentation, timing, animation, sound, desktop/tablet/mobile interaction | VS AI v6.91.3 |
+| Gameplay presentation, timing, animation, sound, desktop/tablet/mobile interaction | VS AI v6.91.4 |
 | Pre-match Lobby presentation | PvP v3.76.6 |
 | Multiplayer design reference | VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts |
-| Server gameplay implementation | exact VS AI v6.91.3 shared gameplay runtime, headless |
+| Server gameplay implementation | exact VS AI v6.91.4 shared gameplay runtime, headless |
 
 PvP v3.51 contributes **ideas only** in this release. No v3.51 runtime/authority directory is shipped.
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.0 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.1 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -31,7 +31,7 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
 ## 3. Current handshake
 
 ```text
-          VS AI v6.91.3 presentation
+          VS AI v6.91.4 presentation
        desktop | tablet | mobile
                    |
               E().intent(...)
@@ -53,8 +53,8 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
         - coin/opening ACK gates
                    |
                    v
-      server/v6913-authority.mjs
-        - exact v6.91.3 scripts
+      server/v6914-authority.mjs
+        - exact v6.91.4 scripts
         - headless Node VM
         - actor-local orientation
                    |
@@ -67,7 +67,7 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
         silent bridge state import
                    |
                    v
-      v6.91.3 external presentation
+      v6.91.4 external presentation
 ```
 
 ## 4. Actor-local seat orientation
@@ -136,16 +136,16 @@ Flow:
 
 ```text
 both READY
--> server creates v6.91.3 match
+-> server creates v6.91.4 match
 -> Coin Flip choice/result
 -> both clients ACK Coin Flip presentation
 -> Start Game becomes authoritative
 -> server commits opening hand + starting Shards
--> v6.91.3 opening presentation on both clients
+-> v6.91.4 opening presentation on both clients
 -> both clients ACK opening presentation
 -> server begins first turn in actor-local orientation
 -> authoritative v6 mandatory Draw/Regen
--> v6.91.3 presentation renders the result
+-> v6.91.4 presentation renders the result
 ```
 
 ## 8. Presentation ownership
@@ -158,7 +158,7 @@ The exact donor engine remains the gameplay/read surface; the PvP layer does not
 
 ## 9. Asset boundary
 
-Standalone v3.80.0 resolves visible media locally:
+Standalone v3.80.1 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -171,7 +171,7 @@ Exact donor files may contain dormant website/CDN strings. Those do not define t
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.0 deliberately does not ship
+## 10. What v3.80.1 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;
