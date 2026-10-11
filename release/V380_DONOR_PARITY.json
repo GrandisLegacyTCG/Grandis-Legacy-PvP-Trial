@@ -1,10 +1,10 @@
 {
-  "release": "v3.80.6",
+  "release": "v3.80.7",
   "generated_from": {
     "presentation": "VS AI v6.91.4",
     "lobby": "PvP v3.76.6",
-    "architecture_reference": "VS AI Tutorial v6.48 \u2194 PvP v3.51 (reference only)",
-    "payment_policy": "PvP-specific Class-only selection + FIFO automatic normal Mana for Skill and Event on v6.91.4 gameplay base; authoritative pending payment readiness drives UI"
+    "architecture_reference": "VS AI Tutorial v6.48 ↔ PvP v3.51 (reference only)",
+    "payment_policy": "VS AI v6.91.4 exact manual Shard selection in the browser; PAY submits the final selected Shard UID set once to the authoritative server, which validates and calls the donor commit once"
   },
   "lobby_assets": {
     "background.webp": {
@@ -63,24 +63,23 @@
     "public/pvp/pvp-integration.css",
     "public/lobby/pvp-lobby-v3.76.6.css",
     "server.js",
-    "server/v6914-authority.mjs",
-    "public/engine/shared-app/app.bundle.js"
+    "server/v6914-authority.mjs"
   ],
   "authority_source_hashes": {
     "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
     "engine/js/runtime-authority.js": "58a09b947a1d25b2e5e6018c6e0dac9508b5d534dd2a51192cd6dbaf2e1d4399",
     "engine/shared-app/active-starters.js": "9d536dffd4aa811428285c8db1652b8b509b61dadc2b3e200042a85289a09cfe",
-    "engine/shared-app/app.bundle.js": "5501b4130b38f685db7398c8920ffa82e21e5599a584fe538bee41896fd49dac"
+    "engine/shared-app/app.bundle.js": "7253f45e57eee3c083e6877b8062fca7210034409e089cbdd4d88622a5569e93"
   },
   "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6914_subset excludes assets/lobby/",
   "exact_v6914_trees": {
     "engine": {
       "files": 54,
-      "bytes": 31154808,
-      "new_fingerprint": "9062c643ad67435388e916d96ebaded457104bc7050fa93ebf05bf245937fe52",
+      "bytes": 31153091,
+      "new_fingerprint": "5adf7e22ef77c0a655809872d56f18ff7e3e8a5b2d77c0c68afcff10bae7a100",
       "donor_fingerprint": "5adf7e22ef77c0a655809872d56f18ff7e3e8a5b2d77c0c68afcff10bae7a100",
-      "exact": false,
-      "note": "Intentional PvP-only payment seam: v3.51-style Class Shard choice with automatic FIFO normal Mana; all other engine files remain from v6.91.4."
+      "exact": true,
+      "note": "Exact VS AI v6.91.4 engine tree. PvP Mana reconciliation now lives only at the browser/server integration seam; donor gameplay code is unmodified."
     },
     "card-art": {
       "files": 200,

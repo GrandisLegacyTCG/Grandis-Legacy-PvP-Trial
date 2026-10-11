@@ -79,6 +79,7 @@ function shardArt(sh){if(!sh||sh.kind!=='CLASS')return 'assets/shards/Generic.we
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cloneLite(v){try{return JSON.parse(JSON.stringify(v))}catch{return null}}
 function intent(name,args=[]){const r=E().intent(name,args);setTimeout(renderNow,0);return r;}
+function localRuntimeIntent(name,args=[]){const fn=B()?.applyServerIntent;if(typeof fn!=='function')return{ok:false,error:'Local runtime bridge unavailable.'};const r=fn.call(B(),String(name||''),Array.isArray(args)?args:[]);manaRenderKey='';handRenderKey='';centerChoiceRenderSig='';setTimeout(renderNow,0);return r;}
 function intentBatch(steps=[]){const rows=(Array.isArray(steps)?steps:[]).filter(x=>x&&x.name).map(x=>({name:String(x.name),args:Array.isArray(x.args)?x.args:[]}));if(!rows.length)return{ok:false,error:'No intents.'};const fn=E()?.intentBatch;if(typeof fn==='function'){const r=fn(rows);setTimeout(renderNow,0);return r}let last={ok:true};for(const step of rows){last=intent(step.name,step.args);if(last?.ok===false)break}return last;}
 function flash(msg){feedback.textContent=msg;feedback.classList.add('show');clearTimeout(flash.t);flash.t=setTimeout(()=>feedback.classList.remove('show'),700);}
 function sideHeroes(s,side){return side==='AI'?s.aiHeroes:s.playerHeroes;}
@@ -776,13 +777,15 @@ function renderPool(host,countEl,pool,side){
   const s=st(),p=s?.pending;
   const selected=new Set(),selectable=new Set();
   if(side==='PLAYER'&&p?.type==='mana_shard_payment_choice'){
-    (p.selected_shard_uids||[]).forEach(x=>selected.add(String(x)));
-    (pool||[]).filter(sh=>p.class_manual_enabled!==false&&sh?.kind==='CLASS').forEach(sh=>selectable.add(String(sh.uid)));
+    const live=E().getManaPlan?.();
+    (live?.plan?.selected_shard_uids||p.selected_shard_uids||[]).forEach(x=>selected.add(String(x)));
+    (pool||[]).forEach(sh=>selectable.add(String(sh.uid)));
   }
   if(side==='PLAYER'&&p?.type==='mana_spend_choice') (pool||[]).forEach(sh=>selected.add(String(sh.uid)));
   if(side==='PLAYER'&&p?.type==='response_payment_choice'&&Number(p.mana_cost||0)>0){
-    (p.selected_shard_uids||[]).forEach(uid=>selected.add(String(uid)));
-    (pool||[]).filter(sh=>p.class_manual_enabled!==false&&sh?.kind==='CLASS').forEach(sh=>selectable.add(String(sh.uid)));
+    const live=E().getManaPlan?.();
+    (live?.plan?.selected_shard_uids||p.selected_shard_uids||[]).forEach(uid=>selected.add(String(uid)));
+    (pool||[]).forEach(sh=>selectable.add(String(sh.uid)));
   }
 
   const blindOpponent = p?.type==='opponent_mana_selection' && pendingOwner(p)==='PLAYER' && side===p.target_side;
@@ -818,8 +821,8 @@ function renderPool(host,countEl,pool,side){
       wrap.addEventListener('click',()=>{intent('selectOpponentManaChoice',[blindIdx])});
     }else if(selectable.has(String(sh.uid))&&!blindInCenter){
       wrap.addEventListener('click',()=>{
-        if(p?.type==='response_payment_choice') intent('toggleResponseManaShardChoice',[sh.uid]);
-        else intent('toggleManaShardPaymentChoice',[sh.uid]);
+        if(p?.type==='response_payment_choice') localRuntimeIntent('toggleResponseManaShardChoice',[sh.uid]);
+        else localRuntimeIntent('toggleManaShardPaymentChoice',[sh.uid]);
       });
     }
   });
@@ -964,13 +967,12 @@ function renderCenterChoiceStage(s){
   const makeBtn=(text,cls,disabled,fn)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=text;b.disabled=!!disabled;b.onclick=fn;actions.appendChild(b);return b};
 
   if(mode==='pay'){
-    const responsePay=p.type==='response_payment_choice',rawPool=s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((p.selected_shard_uids||[]).map(String)),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?(p.selected_indices||[]).length:0);
+    const responsePay=p.type==='response_payment_choice',info=E().getManaPlan?.(),plan=info?.plan||{},rawPool=info?.pool||s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((plan.selected_shard_uids||plan.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).map(String)),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?(p.selected_indices||[]).length:0);
     identity='pay|'+(responsePay?'response':'normal')+'|'+pool.map(x=>x.uid).join('|')+'|'+String(cardId||'')+'|'+cost;
-    sig=identity+'|'+[...spentUids].join(',')+'|'+discardHave+'/'+discardNeed+'|'+String(!!p.payment_ready)+'|'+Number(p.payment_value||0);
-    titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the additional Hand cost. Normal Mana Shards are automatic FIFO; only Class Shards can be toggled.':'Normal Mana Shards are automatic FIFO. Only Class Shards can be toggled.';statusText='MANA '+Number(p.payment_value||0)+' / '+cost;
-    const classManual=p.class_manual_enabled!==false;
-    cards=pool.map((sh,i)=>({key:String(sh.uid),uid:String(sh.uid),idx:i,front:shardArt(sh),back:'assets/ui/back-shard.webp',faceUp:true,selected:spentUids.has(String(sh.uid)),clickable:classManual&&sh.kind==='CLASS',label:(sh.class_name||'Mana')+' Shard'}));
-    spentUids.forEach(x=>selectedKeys.add(String(x)));pool.filter(sh=>classManual&&sh.kind==='CLASS').forEach(x=>clickableKeys.add(String(x.uid)));
+    sig=identity+'|'+[...spentUids].join(',')+'|'+discardHave+'/'+discardNeed+'|'+String(!!plan.ok)+'|'+Number(plan.value||0);
+    titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the exact Shard payment and the required additional Hand cost.':'The recommended payment is preselected. You may change any Mana Shard or Class Shard before PAY.';statusText='MANA '+Number(plan.value||0)+' / '+cost;
+    cards=pool.map((sh,i)=>({key:String(sh.uid),uid:String(sh.uid),idx:i,front:shardArt(sh),back:'assets/ui/back-shard.webp',faceUp:true,selected:spentUids.has(String(sh.uid)),clickable:true,label:(sh.class_name||'Mana')+' Shard'}));
+    spentUids.forEach(x=>selectedKeys.add(String(x)));pool.forEach(x=>clickableKeys.add(String(x.uid)));
     selectedTarget=centerChoiceDestinationForZone('PLAYER','Shard Deck');otherTarget=centerChoiceDestinationForZone('PLAYER','Shard Pool');
   }else if(mode==='opponent-shard'){
     const target=p.target_side||'AI',pool=target==='PLAYER'?(s.playerManaPoolCards||[]):s.aiManaPoolCards||[],selectedIdx=new Set((p.selected_indices||[]).map(Number)),required=Math.min(Number(p.required_count||1),(p.candidates||[]).length);
@@ -1005,10 +1007,10 @@ function renderCenterChoiceStage(s){
   }
 
   if(mode==='pay'){
-    const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),planReady=!!p.payment_ready;
-    cardsHost.querySelectorAll('.gl-center-choice-card.is-clickable').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;intent(responsePay?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',[c.dataset.choiceUid])});
+    const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),live=E().getManaPlan?.()?.plan||{},planReady=!!live.ok;
+    cardsHost.querySelectorAll('.gl-center-choice-card.is-clickable').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;localRuntimeIntent(responsePay?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',[c.dataset.choiceUid])});
     if(!responsePay)makeBtn('CANCEL','gl-center-choice-cancel',false,()=>{if(!centerChoiceBusy)intent('cancelPendingAction',[])});
-    makeBtn('PAY','gl-center-choice-primary',!(planReady&&discardReady),()=>{if(centerChoiceBusy)return;const sent=intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[]);if(sent?.ok!==false){centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy')}});
+    makeBtn('PAY','gl-center-choice-primary',!(planReady&&discardReady),()=>{if(centerChoiceBusy)return;const finalUids=(live.selected_shard_uids||live.shards?.map(x=>x.uid)||[]).map(String),selectedIndices=responsePay?(p.selected_indices||[]).map(Number):[],sent=intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',responsePay?[finalUids,selectedIndices]:[finalUids]);if(sent?.ok!==false){centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy')}});
   }else if(mode==='opponent-shard'){
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentManaChoice',[Number(c.dataset.choiceIndex)])});
     const required=Math.min(Number(p.required_count||1),(p.candidates||[]).length),ready=(p.selected_indices||[]).length===required;
@@ -1484,7 +1486,8 @@ function handleDiscardClick(p,handIndex){
     const ci=(p.candidates||[]).findIndex(x=>Number(x.hand_index)===Number(handIndex));
     if(ci>=0){
       const selected=Array.isArray(p.selected_indices)?p.selected_indices.map(Number):[],need=Number(p.required_discard_count||0),already=selected.includes(ci),nextCount=already?Math.max(0,selected.length-1):(need===1?1:Math.min(need,selected.length+1));
-      if(!already&&nextCount>=need&&Number(p.mana_cost||0)<=0)intentBatch([{name:'selectResponsePaymentChoice',args:[ci]},{name:'commitResponsePaymentChoice',args:[]}]);
+      if(Number(p.mana_cost||0)>0)localRuntimeIntent('selectResponsePaymentChoice',[ci]);
+      else if(!already&&nextCount>=need)intentBatch([{name:'selectResponsePaymentChoice',args:[ci]},{name:'commitResponsePaymentChoice',args:[]}]);
       else intent('selectResponsePaymentChoice',[ci]);
     }
     return;
@@ -1577,7 +1580,8 @@ function renderSwap(s){
 function responsePaymentReady(s,p){
   const selectedDiscard=(p?.selected_indices||[]).length,requiredDiscard=Number(p?.required_discard_count||0);
   if(selectedDiscard!==requiredDiscard)return false;
-  return !!p?.payment_ready;
+  if(Number(p?.mana_cost||0)<=0)return true;
+  return !!E().getManaPlan?.()?.plan?.ok;
 }
 function renderPay(s){
   const p=s.pending;
@@ -1588,15 +1592,17 @@ function renderPay(s){
   payBtn.style.left=((pr.right-br.left)/currentUiScale()+8)+'px';
   payBtn.style.top=((pr.top+pr.height/2-br.top)/currentUiScale()-13)+'px';
   let ready=true;
-  if(p.type==='mana_shard_payment_choice')ready=!!p.payment_ready;
+  if(p.type==='mana_shard_payment_choice')ready=!!E().getManaPlan?.()?.plan?.ok;
   else if(p.type==='response_payment_choice')ready=responsePaymentReady(s,p);
   payBtn.disabled=!ready;
   payBtn.title=ready?'Pay selected Mana':'Select a valid Mana payment first';
   payBtn.onclick=()=>{
     if(payBtn.disabled)return;
-    if(p.type==='mana_shard_payment_choice')intent('commitManaShardPaymentChoice',[]);
-    else if(p.type==='response_payment_choice')intent('commitResponsePaymentChoice',[]);
-    else intent('handleChoiceConfirm',[]);
+    if(p.type==='mana_shard_payment_choice'){
+      const plan=E().getManaPlan?.()?.plan||{},uids=(plan.selected_shard_uids||plan.shards?.map(x=>x.uid)||[]).map(String);intent('commitManaShardPaymentChoice',[uids]);
+    }else if(p.type==='response_payment_choice'){
+      const plan=E().getManaPlan?.()?.plan||{},uids=(plan.selected_shard_uids||plan.shards?.map(x=>x.uid)||[]).map(String);intent('commitResponsePaymentChoice',[uids,(p.selected_indices||[]).map(Number)]);
+    }else intent('handleChoiceConfirm',[]);
   };
 }
 function renderDeckActions(){document.querySelectorAll('.gl-deck-actions').forEach(x=>x.remove());}

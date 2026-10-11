@@ -50,42 +50,48 @@ for(const seat of [1,2]){
   assert.equal(h.channel.getState().inFlight,false);
 }
 
-// Regression: Class-Shard toggle and PAY must both traverse the same transport for Seat 1 and Seat 2.
+// Regression: Shard clicks stay local; only final PAY crosses transport for both seat orientations.
 for(const seat of [1,2]){
   const a=setup(seat),canonical=a.canonical.appState,owner=seat===1?'PLAYER':'AI';
   const poolKey=seat===1?'playerManaPoolCards':'aiManaPoolCards';
   const handKey=seat===1?'playerHand':'aiHand';
   const heroKey=seat===1?'playerHeroes':'aiHeroes';
   canonical[poolKey]=[
-    {uid:`FIFO-${seat}-1`,kind:'MANA',owner_side:owner},
-    {uid:`FIFO-${seat}-2`,kind:'MANA',owner_side:owner},
-    {uid:`CLASS-${seat}-W`,kind:'CLASS',class_name:'Warrior',owner_side:owner},
-    {uid:`FIFO-${seat}-3`,kind:'MANA',owner_side:owner}
+    {uid:`SKILL-${seat}-M1`,kind:'MANA',owner_side:owner},
+    {uid:`SKILL-${seat}-M2`,kind:'MANA',owner_side:owner},
+    {uid:`SKILL-${seat}-CW`,kind:'CLASS',class_name:'Warrior',owner_side:owner}
   ];
   canonical[handKey][0]='S1-WAR-005'; // Taunt, cost 2
   canonical[heroKey].CENTER.card_id='S1-WAR-H001';canonical[heroKey].CENTER.exhausted=false;
   const h=harness(a,seat);
   let s=h.roundTrip('beginPlayFromHand',[0]);assert.equal(s.pending?.type,'source_selection');
   s=h.roundTrip('chooseHeroFromBoard',['PLAYER','CENTER']);
-  assert.equal(s.pending?.type,'mana_shard_payment_choice');assert.equal(s.pending?.payment_ready,true);
-  assert.deepEqual((s.pending?.selected_shard_uids||[]).map(String),[`FIFO-${seat}-1`,`FIFO-${seat}-2`],`seat ${seat} default PAY must auto-select FIFO normal Mana`);
-  s=h.roundTrip('toggleManaShardPaymentChoice',[`CLASS-${seat}-W`]);
-  assert.deepEqual((s.pending?.selected_class_uids||[]).map(String),[`CLASS-${seat}-W`],`seat ${seat} Class Shard click must survive browser/server round-trip`);
-  assert.deepEqual((s.pending?.selected_shard_uids||[]).map(String),[`CLASS-${seat}-W`],`seat ${seat} matching Class Shard must replace FIFO Mana for cost 2`);
-  assert.equal(s.pending?.payment_ready,true,`seat ${seat} PAY must remain enabled after Class selection`);
-  s=h.roundTrip('commitManaShardPaymentChoice',[]);
-  assert.notEqual(s.pending?.type,'mana_shard_payment_choice',`seat ${seat} PAY must leave the payment gate after authoritative result`);
-  assert.ok(!(s.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`CLASS-${seat}-W`),`seat ${seat} selected Class Shard must actually be spent`);
+  assert.equal(s.pending?.type,'mana_shard_payment_choice');
+  assert.deepEqual((s.pending?.selected_shard_uids||[]).map(String),[`SKILL-${seat}-M1`,`SKILL-${seat}-M2`]);
+
+  // Browser-local donor toggle: no websocket packet may be emitted for this click.
+  a.viewForSeat(seat);
+  assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`SKILL-${seat}-CW`])?.ok,true);
+  const finalUids=(a.bridge.getSnapshot().appState.pending?.selected_shard_uids||[]).map(String);
+  assert.deepEqual(finalUids,[`SKILL-${seat}-CW`]);
+  assert.equal(h.getOut().length,0,`seat ${seat} local Shard click must not emit a websocket action`);
+
+  s=h.roundTrip('commitManaShardPaymentChoice',[finalUids]);
+  assert.notEqual(s.pending?.type,'mana_shard_payment_choice',`seat ${seat} final-UID PAY must leave the payment gate`);
+  assert.ok(!(s.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`SKILL-${seat}-CW`),`seat ${seat} submitted matching Class UID must be spent`);
+  assert.ok((s.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`SKILL-${seat}-M1`)&&(s.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`SKILL-${seat}-M2`),`seat ${seat} unselected normal Mana must remain`);
   assert.equal(h.channel.getState().inFlight,false,`seat ${seat} PAY must not leave a network lock behind`);
 }
 
-// Regression: Event uses the same Class-only/FIFO interaction over the browser transport.
+// Regression: Event can submit a mixed exact payment (normal Mana + Class at value 1)
+// in one PAY packet, with no per-Shard network toggles.
 for(const seat of [1,2]){
-  const a=setup(seat),canonical=a.canonical.appState,owner=seat===1?'PLAYER':'AI';
+  const a=setup(seat),other=seat===1?2:1,canonical=a.canonical.appState,owner=seat===1?'PLAYER':'AI';
   const poolKey=seat===1?'playerManaPoolCards':'aiManaPoolCards';
   const handKey=seat===1?'playerHand':'aiHand';
   canonical[poolKey]=[
     {uid:`EVT-${seat}-M1`,kind:'MANA',owner_side:owner},
+    {uid:`EVT-${seat}-M2`,kind:'MANA',owner_side:owner},
     {uid:`EVT-${seat}-CW`,kind:'CLASS',class_name:'Warrior',owner_side:owner}
   ];
   canonical[handKey][0]='S1-EVT-002'; // Market Bargain, cost 2
@@ -93,14 +99,23 @@ for(const seat of [1,2]){
   let s=h.roundTrip('beginPlayFromHand',[0]);assert.equal(s.pending?.type,'source_selection');
   s=h.roundTrip('chooseHeroFromBoard',['PLAYER','LEFT']);
   assert.equal(s.pending?.type,'mana_shard_payment_choice',`seat ${seat} Event must enter payment`);
-  assert.equal(s.pending?.payment_ready,false);
-  assert.deepEqual((s.pending?.selected_shard_uids||[]).map(String),[`EVT-${seat}-M1`]);
-  s=h.roundTrip('toggleManaShardPaymentChoice',[`EVT-${seat}-CW`]);
-  assert.equal(s.pending?.payment_ready,true,`seat ${seat} Event Class choice must enable PAY`);
-  assert.deepEqual((s.pending?.selected_shard_uids||[]).map(String),[`EVT-${seat}-CW`,`EVT-${seat}-M1`]);
-  s=h.roundTrip('commitManaShardPaymentChoice',[]);
+
+  a.viewForSeat(seat);
+  assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`EVT-${seat}-M2`])?.ok,true);
+  assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`EVT-${seat}-CW`])?.ok,true);
+  const finalUids=(a.bridge.getSnapshot().appState.pending?.selected_shard_uids||[]).map(String);
+  assert.deepEqual(finalUids,[`EVT-${seat}-M1`,`EVT-${seat}-CW`]);
+  assert.equal(h.getOut().length,0,`seat ${seat} Event Shard draft must remain local`);
+
+  s=h.roundTrip('commitManaShardPaymentChoice',[finalUids]);
   assert.notEqual(s.pending?.type,'mana_shard_payment_choice',`seat ${seat} Event PAY must leave payment`);
+  assert.ok(s.responseWindow,`seat ${seat} Event PAY must continue to the remote Response window`);
   assert.equal(h.channel.getState().inFlight,false);
+  a.applyIntent(other,'responsePassNoStuck',[]);
+  const resolved=a.viewForSeat(seat).appState;
+  assert.ok(!(resolved.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M1`));
+  assert.ok(!(resolved.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-CW`));
+  assert.ok((resolved.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M2`));
 }
 
-console.log(JSON.stringify({ok:true,meditationTransportBothSeats:true,classShardTransportBothSeats:true,payTransportBothSeats:true,eventPaymentTransportBothSeats:true,noIntentDeadlock:true},null,2));
+console.log(JSON.stringify({ok:true,meditationTransportBothSeats:true,localShardDraftNoNetwork:true,finalShardCommitBothSeats:true,payTransportBothSeats:true,eventPaymentTransportBothSeats:true,noIntentDeadlock:true},null,2));

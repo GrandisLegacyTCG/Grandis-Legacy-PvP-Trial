@@ -7,7 +7,7 @@ import { V6914Authority, sourceHashes, internals } from '../server/v6914-authori
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const hashes=sourceHashes();
-assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.6 source set, including the intentional Class-only/FIFO payment seam');
+assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.7 source set with the exact v6.91.4 donor engine and narrow final-Shard-UID payment seam');
 
 const probe=new V6914Authority();
 const starterKeys=Object.keys(probe.starters);
@@ -264,126 +264,96 @@ for(const firstSeat of [1,2]){
 }
 
 {
-  // PvP auto-Mana regression: normal Mana Shards are automatic FIFO and cannot be toggled.
-  // Event/non-Skill payment keeps Mana-first behavior and commits directly on PAY.
+  // Browser-local donor draft -> one final UID PAY commit. Event Class Shards are
+  // worth 1 Mana, so this fixture deliberately submits a mixed exact payment.
   for(const seat of [1,2]){
-    const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState;
-    const hand=seat===1?canonical.playerHand:canonical.aiHand;
-    hand[0]='S1-EVT-002'; // Market Bargain, printed cost 2.
+    const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState,owner=seat===1?'PLAYER':'AI';
+    const poolKey=seat===1?'playerManaPoolCards':'aiManaPoolCards',handKey=seat===1?'playerHand':'aiHand';
+    canonical[poolKey]=[
+      {uid:`EVT-${seat}-M1`,kind:'MANA',owner_side:owner},
+      {uid:`EVT-${seat}-M2`,kind:'MANA',owner_side:owner},
+      {uid:`EVT-${seat}-CW`,kind:'CLASS',class_name:'Warrior',owner_side:owner}
+    ];
+    canonical[handKey][0]='S1-EVT-002'; // Market Bargain, cost 2.
 
     a.applyIntent(seat,'beginPlayFromHand',[0]);
     a.applyIntent(seat,'chooseHeroFromBoard',['PLAYER','LEFT']);
     let view=a.viewForSeat(seat).appState;
-    assert.equal(view.pending?.type,'mana_shard_payment_choice',`seat ${seat} paid Event must open Mana Shard payment`);
+    assert.equal(view.pending?.type,'mana_shard_payment_choice',`seat ${seat} paid Event must open donor Mana payment`);
     assert.equal(Number(view.pending?.cost),2,'Market Bargain payment regression must use printed cost 2');
-    assert.equal(view.pending?.class_manual_enabled,true,'Event payment must expose the same manual Class-Shard choice as Skill payment');
-    assert.equal(view.pending?.auto_mana_fifo,true,'PvP payment must mark automatic FIFO Mana selection');
-    assert.equal(view.pending?.payment_ready,true,'cost-2 Event with two normal Mana Shards must be immediately PAY-ready');
-    assert.equal(Number(view.pending?.payment_value),2,'authoritative payment value must be exported in pending state');
-    const autoSelected=(view.pending?.selected_shard_uids||[]).map(String);
-    assert.equal(autoSelected.length,2,'cost-2 Event must auto-select exactly two 1-value Shards');
-    const normalUid=autoSelected.find(uid=>view.playerManaPoolCards.find(x=>String(x.uid)===uid)?.kind!=='CLASS');
-    assert.ok(normalUid,'fixture must auto-select a normal Mana Shard');
-    let rejected='';try{a.applyIntent(seat,'toggleManaShardPaymentChoice',[normalUid])}catch(e){rejected=String(e?.message||e)}
-    assert.ok(rejected,'normal Mana Shard must not be manually toggleable in PvP');
-    const poolBefore=view.playerManaPoolCards.length;
+    assert.equal(Object.hasOwn(view.pending||{},'auto_mana_fifo'),false,'removed PvP auto-FIFO fields must not survive in donor pending state');
+    assert.equal(Object.hasOwn(view.pending||{},'class_manual_enabled'),false,'removed PvP Class-only fields must not survive in donor pending state');
+    assert.deepEqual((view.pending?.selected_shard_uids||[]).map(String),[`EVT-${seat}-M1`,`EVT-${seat}-M2`],'donor recommendation should initially prefer normal Mana when it exactly covers the Event cost');
 
-    a.applyIntent(seat,'commitManaShardPaymentChoice',[]);
+    // Simulate the real browser seam: mutate only the mounted local donor state.
+    // This must not alter the server canonical state until PAY is sent.
+    assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`EVT-${seat}-M2`])?.ok,true,'local donor must allow a normal Mana Shard to be deselected');
+    assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`EVT-${seat}-CW`])?.ok,true,'local donor must allow a Class Shard to be selected');
+    const localPending=a.bridge.getSnapshot().appState.pending;
+    const finalUids=(localPending?.selected_shard_uids||[]).map(String);
+    assert.deepEqual(finalUids,[`EVT-${seat}-M1`,`EVT-${seat}-CW`],'local donor draft must preserve exact clicked Shard UIDs');
+    assert.deepEqual((a.canonical.appState[poolKey]||[]).map(x=>String(x.uid)),[`EVT-${seat}-M1`,`EVT-${seat}-M2`,`EVT-${seat}-CW`],'local draft must not spend or mutate the server canonical pool before PAY');
+
+    // Forged/invalid final IDs must fail closed without advancing revision or leaving payment.
+    const rev=a.revision;
+    let rejected='';try{a.applyIntent(seat,'commitManaShardPaymentChoice',[[`FOREIGN-${seat}`]])}catch(e){rejected=String(e?.message||e)}
+    assert.match(rejected,/PAYMENT_SHARD_NOT_IN_POOL/,'server must reject a final UID that is not in the acting authoritative pool');
+    assert.equal(a.revision,rev,'rejected PAY must not advance authoritative revision');
+    rejected='';try{a.applyIntent(seat,'commitManaShardPaymentChoice',[[`EVT-${seat}-M1`,`EVT-${seat}-M1`]])}catch(e){rejected=String(e?.message||e)}
+    assert.match(rejected,/DUPLICATE_PAYMENT_SHARD_UID/,'server must reject duplicate final payment UIDs');
+    assert.equal(a.revision,rev,'duplicate PAY must not advance authoritative revision');
+
+    const poolBefore=a.viewForSeat(seat).appState.playerManaPoolCards.length;
+    a.applyIntent(seat,'commitManaShardPaymentChoice',[finalUids]);
     view=a.viewForSeat(seat).appState;
-    assert.ok(view.responseWindow,'PAY must continue into the normal remote Response window rather than sticking on payment');
+    assert.ok(view.responseWindow,'final Event PAY must leave payment and continue into the normal remote Response window');
+    assert.notEqual(view.pending?.type,'mana_shard_payment_choice','accepted PAY must leave the Mana payment gate');
     a.applyIntent(other,'responsePassNoStuck',[]);
     view=a.viewForSeat(seat).appState;
-    assert.equal(view.pending,null,`seat ${seat} payment/resolution must clear pending state`);
-    assert.equal(view.responseWindow,null,`seat ${seat} payment/resolution must clear Response window`);
-    assert.equal(view.playerManaPoolCards.length,poolBefore-2,'cost-2 Event must spend two Shards');
-    assert.ok(view.playerDiscard.includes('S1-EVT-002'),'resolved paid Event must reach the acting player Discard Pile');
+    assert.equal(view.pending,null,`seat ${seat} Event payment/resolution must clear pending state`);
+    assert.equal(view.responseWindow,null,`seat ${seat} Event payment/resolution must clear Response window`);
+    assert.ok(!(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M1`),'selected normal Mana UID must actually be spent when the action resolves');
+    assert.ok(!(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-CW`),'selected Event Class UID must actually be spent at value 1 when the action resolves');
+    assert.ok((view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M2`),'unselected normal Mana UID must remain in the pool');
+    assert.equal(view.playerManaPoolCards.length,poolBefore-2,'cost-2 mixed Event payment must spend exactly two selected Shards');
+    assert.ok(view.playerDiscard.includes('S1-EVT-002'),'resolved paid Event must reach acting player Discard');
   }
 }
 
 {
-  // Event uses the exact same PvP payment interaction as Skill: normal Mana is FIFO automatic,
-  // Class Shards are the only manual choice. Event Class Shards are worth 1 Mana.
+  // Matching Class Shard = 2 for a matching Warrior Skill. The browser donor may
+  // replace its initial two-normal recommendation locally, then PAY submits [Class UID].
   for(const seat of [1,2]){
-    const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState;
-    const localPool=seat===1?'playerManaPoolCards':'aiManaPoolCards',localHand=seat===1?'playerHand':'aiHand',owner=seat===1?'PLAYER':'AI';
-    canonical[localPool]=[
-      {uid:'EVT-FIFO-'+seat+'-1',kind:'MANA',owner_side:owner},
-      {uid:'EVT-CLASS-'+seat+'-W',kind:'CLASS',class_name:'Warrior',owner_side:owner}
+    const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState,owner=seat===1?'PLAYER':'AI';
+    const poolKey=seat===1?'playerManaPoolCards':'aiManaPoolCards',handKey=seat===1?'playerHand':'aiHand',heroKey=seat===1?'playerHeroes':'aiHeroes';
+    canonical[poolKey]=[
+      {uid:`SKILL-${seat}-M1`,kind:'MANA',owner_side:owner},
+      {uid:`SKILL-${seat}-M2`,kind:'MANA',owner_side:owner},
+      {uid:`SKILL-${seat}-CW`,kind:'CLASS',class_name:'Warrior',owner_side:owner}
     ];
-    canonical[localHand][0]='S1-EVT-002'; // Market Bargain, cost 2.
-
-    a.applyIntent(seat,'beginPlayFromHand',[0]);
-    a.applyIntent(seat,'chooseHeroFromBoard',['PLAYER','LEFT']);
-    let p=a.viewForSeat(seat).appState.pending;
-    assert.equal(p?.type,'mana_shard_payment_choice',`seat ${seat} Event must enter the common payment UI`);
-    assert.equal(p?.class_manual_enabled,true,'Event must allow Class-Shard toggles just like Skill');
-    assert.equal(p?.payment_ready,false,'one normal Mana alone must not satisfy a cost-2 Event');
-    assert.deepEqual((p?.selected_shard_uids||[]).map(String),['EVT-FIFO-'+seat+'-1'],'Event default must auto-select the available normal Mana FIFO');
-
-    a.applyIntent(seat,'toggleManaShardPaymentChoice',['EVT-CLASS-'+seat+'-W']);
-    p=a.viewForSeat(seat).appState.pending;
-    assert.equal(p?.payment_ready,true,'adding a Class Shard must make Event payment ready');
-    assert.equal(Number(p?.payment_value),2,'Event Class Shard must contribute 1 Mana');
-    assert.deepEqual((p?.selected_class_uids||[]).map(String),['EVT-CLASS-'+seat+'-W'],'Event Class selection must stay authoritative');
-    assert.deepEqual((p?.selected_shard_uids||[]).map(String),['EVT-CLASS-'+seat+'-W','EVT-FIFO-'+seat+'-1'],'Event payment must combine manual Class + automatic FIFO normal Mana');
-
-    a.applyIntent(seat,'commitManaShardPaymentChoice',[]);
-    let view=a.viewForSeat(seat).appState;
-    assert.ok(view.responseWindow,'Event PAY must leave payment and continue into Response');
-    a.applyIntent(other,'responsePassNoStuck',[]);
-    view=a.viewForSeat(seat).appState;
-    assert.equal(view.pending,null,'Event payment must not reopen after PAY');
-    assert.equal(view.responseWindow,null,'Event resolution must clear Response after pass');
-  }
-}
-
-{
-  // v3.51-style PvP decision model: normal Mana is FIFO automatic; Class Shards are the only manual choice.
-  // Selecting a matching Class Shard reduces the auto-selected normal Mana count; canceling it restores FIFO Mana.
-  for(const seat of [1,2]){
-    const a=create(seat),canonical=a.canonical.appState;
-    const localPool=seat===1?'playerManaPoolCards':'aiManaPoolCards',localHand=seat===1?'playerHand':'aiHand';
-    canonical[localPool]=[
-      {uid:'FIFO-'+seat+'-1',kind:'MANA',owner_side:seat===1?'PLAYER':'AI'},
-      {uid:'FIFO-'+seat+'-2',kind:'MANA',owner_side:seat===1?'PLAYER':'AI'},
-      {uid:'CLASS-'+seat+'-W',kind:'CLASS',class_name:'Warrior',owner_side:seat===1?'PLAYER':'AI'},
-      {uid:'FIFO-'+seat+'-3',kind:'MANA',owner_side:seat===1?'PLAYER':'AI'}
-    ];
-    canonical[localHand][0]='S1-WAR-005'; // Taunt, Warrior Rank I Deploy Skill, cost 2.
+    canonical[handKey][0]='S1-WAR-005'; // Taunt, Warrior Rank I Deploy Skill, cost 2.
+    canonical[heroKey].CENTER.card_id='S1-WAR-H001';canonical[heroKey].CENTER.exhausted=false;
 
     a.applyIntent(seat,'beginPlayFromHand',[0]);
     a.applyIntent(seat,'chooseHeroFromBoard',['PLAYER','CENTER']);
-    let view=a.viewForSeat(seat).appState,p=view.pending;
-    assert.equal(p?.type,'mana_shard_payment_choice',`seat ${seat} Warrior Skill must enter payment`);
-    assert.equal(p?.class_manual_enabled,true,'Skill payment must allow Class Shard toggles');
-    assert.deepEqual((p.selected_shard_uids||[]).map(String),['FIFO-'+seat+'-1','FIFO-'+seat+'-2'],'default payment must auto-select normal Mana FIFO');
-    assert.equal(p.payment_ready,true,'default cost-2 Skill payment must be PAY-ready from authoritative FIFO state');
+    let view=a.viewForSeat(seat).appState;
+    assert.equal(view.pending?.type,'mana_shard_payment_choice',`seat ${seat} Warrior Skill must enter donor payment`);
+    assert.deepEqual((view.pending?.selected_shard_uids||[]).map(String),[`SKILL-${seat}-M1`,`SKILL-${seat}-M2`],'donor recommendation must initially use two exact normal Mana Shards');
 
-    a.applyIntent(seat,'toggleManaShardPaymentChoice',['CLASS-'+seat+'-W']);
-    p=a.viewForSeat(seat).appState.pending;
-    assert.deepEqual((p.selected_class_uids||[]).map(String),['CLASS-'+seat+'-W'],'matching Class Shard must become the only manual decision');
-    assert.deepEqual((p.selected_shard_uids||[]).map(String),['CLASS-'+seat+'-W'],'matching Warrior Class Shard counts as 2 and must replace both auto Mana Shards');
+    assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`SKILL-${seat}-CW`])?.ok,true,'browser-local donor toggle must accept the matching Class Shard UID');
+    const local=a.bridge.getSnapshot().appState.pending,finalUids=(local?.selected_shard_uids||[]).map(String);
+    assert.deepEqual(finalUids,[`SKILL-${seat}-CW`],'matching Warrior Class Shard must locally replace both 1-value normal Mana Shards');
 
-    a.applyIntent(seat,'toggleManaShardPaymentChoice',['CLASS-'+seat+'-W']);
-    p=a.viewForSeat(seat).appState.pending;
-    assert.deepEqual((p.selected_class_uids||[]).map(String),[],'second Class Shard click must cancel the manual Class decision');
-    assert.deepEqual((p.selected_shard_uids||[]).map(String),['FIFO-'+seat+'-1','FIFO-'+seat+'-2'],'canceling Class Shard must restore the same FIFO normal Mana selection');
-
-
-    // Re-select the Class Shard and prove the real PAY commit leaves the payment gate.
-    // This specifically protects the browser-visible regression where PAY used to animate/reopen
-    // or become disabled even though the authoritative payment was valid.
-    a.applyIntent(seat,'toggleManaShardPaymentChoice',['CLASS-'+seat+'-W']);
-    p=a.viewForSeat(seat).appState.pending;
-    assert.equal(p?.payment_ready,true,'matching Class-only Skill payment must be PAY-ready');
-    assert.deepEqual((p?.selected_shard_uids||[]).map(String),['CLASS-'+seat+'-W'],'matching Class Shard must fully replace the two FIFO Mana Shards before PAY');
-    a.applyIntent(seat,'commitManaShardPaymentChoice',[]);
+    a.applyIntent(seat,'commitManaShardPaymentChoice',[finalUids]);
     view=a.viewForSeat(seat).appState;
     assert.notEqual(view.pending?.type,'mana_shard_payment_choice',`seat ${seat} Skill PAY must leave the Mana payment gate`);
-    assert.ok(!(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)==='CLASS-'+seat+'-W'),`seat ${seat} selected Class Shard must actually be spent on PAY`);
-    assert.ok((view.playerManaPoolCards||[]).some(sh=>String(sh.uid)==='FIFO-'+seat+'-1')&&(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)==='FIFO-'+seat+'-2'),`seat ${seat} normal FIFO Mana must remain unspent when matching Class Shard covers the full cost`);
+    if(view.responseWindow)a.applyIntent(other,'responsePassNoStuck',[]);
+    view=a.viewForSeat(seat).appState;
+    assert.ok(!(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`SKILL-${seat}-CW`),`seat ${seat} final Class UID must be spent when the Skill resolves`);
+    assert.ok((view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`SKILL-${seat}-M1`)&&(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`SKILL-${seat}-M2`),`seat ${seat} unselected normal Mana must remain after matching-Class exact payment`);
   }
 }
+
 
 
 
@@ -414,7 +384,7 @@ for(const firstSeat of [1,2]){
 
 console.log(JSON.stringify({
   ok:true,
-  architecture:'v6.91.4 gameplay base + PvP Class-only/FIFO Mana-payment seam',
+  architecture:'v6.91.4 gameplay base + local exact-Shard draft + final-UID PvP commit seam',
   lockedAuthoritySources:Object.keys(hashes).length,
   starterDecks:starterKeys.length,
   actorLocalSeatOrientation:true,
@@ -434,6 +404,7 @@ console.log(JSON.stringify({
   customDeck50Accepted:true,
   opponentShardSelectionEndToEnd:true,
   manaPaymentEndToEnd:true,
-  manaPaymentAuthoritativeClassOnlyFifo:true,
+  manaPaymentDonorExactSelection:true,
+  manaPaymentFinalUidCommit:true,
   nativePvpSelfTests:3
 },null,2));

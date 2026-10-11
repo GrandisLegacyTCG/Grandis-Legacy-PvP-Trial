@@ -38,4 +38,4 @@ const required=[
 for(const rel of required)assert.ok(fs.existsSync(path.join(pub,rel)),`required active media missing: ${rel}`);
 // The exact donor engine is allowed to retain dormant website URLs. They are not the active standalone resolver:
 // render is suppressed on the donor bridge, authoritative imports are silent, and visible card/shard URLs are overridden above.
-console.log(JSON.stringify({ok:true,cardArt:`${cardFiles.length}/200`,htmlBroken:0,cssBroken:0,requiredActiveMedia:required.length,visibleCardResolver:'local package',visibleShardResolver:'local package',donorCdnStrings:'dormant/allowed inside v6.91.4 gameplay base',pvpPaymentSeam:'Class-only selection + automatic FIFO normal Mana'},null,2));
+console.log(JSON.stringify({ok:true,cardArt:`${cardFiles.length}/200`,htmlBroken:0,cssBroken:0,requiredActiveMedia:required.length,visibleCardResolver:'local package',visibleShardResolver:'local package',donorCdnStrings:'dormant/allowed inside v6.91.4 gameplay base',pvpPaymentSeam:'v6.91.4 exact local Shard selection + one final UID PAY commit'},null,2));

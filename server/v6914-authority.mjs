@@ -282,10 +282,45 @@ export class V6914Authority{
     const r=this.game.beginFirstTurn('PLAYER');if(!r?.ok)throw new Error(r?.error||'First turn failed.');
     this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),seat);this.revision++;this.autoAdvanceResolvedHumanDraw();return {board:this.snapshot(),revision:this.revision};
   }
+  applyFinalPaymentDraft(name,args=[]){
+    const board=this.bridge.getSnapshot(),state=board?.appState,pending=state?.pending;
+    const isMana=name==='commitManaShardPaymentChoice',isResponse=name==='commitResponsePaymentChoice';
+    if(!isMana&&!isResponse)return null;
+    if(isMana&&pending?.type!=='mana_shard_payment_choice')throw new Error('MANA_PAYMENT_NOT_PENDING');
+    if(isResponse&&pending?.type!=='response_payment_choice')throw new Error('RESPONSE_PAYMENT_NOT_PENDING');
+    // v3.80.7 PvP seam: Shard clicking is a browser-local draft exactly like the
+    // v6.91.4 donor. PAY submits the final canonical UIDs once; the server validates
+    // ownership/pool identity, injects only that draft into the authoritative pending
+    // object, then lets the untouched donor commit routine validate exact Mana value.
+    if(Array.isArray(args?.[0])){
+      const raw=args[0].map(x=>String(x||'')).filter(Boolean);
+      if(raw.length>12)throw new Error('TOO_MANY_PAYMENT_SHARDS');
+      const uids=[...new Set(raw)];
+      if(uids.length!==raw.length)throw new Error('DUPLICATE_PAYMENT_SHARD_UID');
+      const side=pending.side==='AI'?'AI':'PLAYER',pool=side==='AI'?(state.aiManaPoolCards||[]):(state.playerManaPoolCards||[]),byUid=new Map(pool.map(sh=>[String(sh?.uid||''),sh]));
+      for(const uid of uids)if(!byUid.has(uid))throw new Error('PAYMENT_SHARD_NOT_IN_POOL');
+      pending.selected_shard_uids=uids.slice();
+      const classUids=uids.filter(uid=>byUid.get(uid)?.kind==='CLASS');
+      pending.selected_class_uids=classUids.slice();
+      if(isResponse)pending.selected_mana_class_uids=classUids.slice();
+    }
+    if(isResponse&&Array.isArray(args?.[1])){
+      const raw=args[1].map(Number);
+      if(raw.some(x=>!Number.isInteger(x)||x<0))throw new Error('INVALID_RESPONSE_PAYMENT_INDEX');
+      const indices=[...new Set(raw)];
+      if(indices.length!==raw.length)throw new Error('DUPLICATE_RESPONSE_PAYMENT_INDEX');
+      const max=(pending.candidates||[]).length;
+      if(indices.some(x=>x>=max))throw new Error('RESPONSE_PAYMENT_INDEX_OUT_OF_RANGE');
+      pending.selected_indices=indices;
+    }
+    this.bridge.importSnapshot(board,{skipImportAnimations:true});
+    return this.bridge.applyServerIntent(name,[]);
+  }
   applyIntent(seat,name,args=[]){
     if(!this.canonical)throw new Error('Match not initialized.');const viewSeat=Number(seat)===2?2:1;this.ctx.GL_PVP_LOCAL_SEAT=viewSeat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,viewSeat),{skipImportAnimations:true});
     assertLocalSeatMayAct(this.bridge.getSnapshot(),name);
-    const result=this.bridge.applyServerIntent(String(name||''),Array.isArray(args)?clone(args):[]);if(!result?.ok)throw new Error(result?.error||('Intent rejected: '+name));
+    const cleanArgs=Array.isArray(args)?clone(args):[],intentName=String(name||'');
+    const result=(intentName==='commitManaShardPaymentChoice'||intentName==='commitResponsePaymentChoice')?this.applyFinalPaymentDraft(intentName,cleanArgs):this.bridge.applyServerIntent(intentName,cleanArgs);if(!result?.ok)throw new Error(result?.error||('Intent rejected: '+name));
     this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.autoAdvanceResolvedHumanDraw();return {board:this.snapshot(),revision:this.revision};
   }
   applyIntentBatch(seat,steps=[]){
