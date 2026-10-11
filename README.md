@@ -1,6 +1,6 @@
-# Grandis Legacy PvP v3.80.5
+# Grandis Legacy PvP v3.80.6
 
-Grandis Legacy PvP v3.80.5 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
+Grandis Legacy PvP v3.80.6 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
 
 ## Locked bases
 
@@ -21,11 +21,12 @@ v6.91.4 desktop / tablet / mobile UI
                 v
         thin PvP client adapter
                 |
-                | WebSocket + base revision
+                | one gameplay intent + base revision
                 v
   v6.91.4 gameplay engine in headless Node
                 |
-                | viewer-safe localized snapshot
+                | one atomic intent-result
+                | + viewer-safe localized snapshot
                 v
         thin PvP client adapter
                 |
@@ -57,6 +58,15 @@ When PvP is integrated into the main website later, this resolver boundary can b
 Coin Flip follows the VS AI v6.91.4 lifecycle: the battlefield keeps `gl-lobby-hidden` through Coin Flip choice/result, the donor Coin Flip overlay owns the visible screen, and the PvP integration does not override its backdrop. The Coin Flip gate also keeps the battlefield `inert` and blocks pointer/focus interaction.
 
 The opening board is imported **without rendering** and then presented exactly once per client by the v6.91.4 opening presenter. A stable server-owned opening presentation ID makes the presentation idempotent: clients may start a few seconds apart, but a late ACK/snapshot from the other client cannot replay the same opening animation or sound. This prevents duplicate opening Draw/Shard motion and card-motion audio under the Coin Flip screen. The server begins the first authoritative turn only after both clients acknowledge opening; once mandatory Draw/replacement/Mana Regen is resolved, authority automatically transitions Draw -> Deploy like VS AI.
+
+
+## Gameplay transport boundary
+
+v3.80.6 removes the previous client-side intent queue and the two-message `intent-ack` + later-snapshot correlation. Exactly one gameplay action may be in flight. The server finishes that action with one `intent-result` containing the action ID, accepted/rejected status, resulting authoritative revision, and the sender's viewer-safe authoritative snapshot.
+
+A second click while an action is still in flight is rejected locally instead of being silently queued. If the result does not arrive within the transport timeout, the client releases the action gate and requests a fresh authoritative snapshot. This prevents one lost/mis-correlated action from deadlocking every later card, Class-Shard, or PAY interaction.
+
+The opening battlefield is also non-interactive until the server reaches `started`. A client may finish its opening animation a few seconds before the other device, but it cannot send gameplay actions during that gap.
 
 ## Mana payment interaction boundary
 

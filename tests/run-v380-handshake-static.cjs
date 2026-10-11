@@ -3,16 +3,17 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.5');
-const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6914-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
+assert.equal(pkg.version,'3.80.6');
+const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6914-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
-const hostPos=html.indexOf('pvp/pvp-host.js'),appPos=html.indexOf('shared-app/app-runtime.js');
-assert.ok(hostPos>=0&&appPos>hostPos,'PvP host must register authority before external v6 app runtime boots');
+const channelPos=html.indexOf('pvp/intent-channel.js'),hostPos=html.indexOf('pvp/pvp-host.js'),appPos=html.indexOf('shared-app/app-runtime.js');
+assert.ok(channelPos>=0&&hostPos>channelPos&&appPos>hostPos,'intent channel must load before PvP host, and host must register authority before external v6 app runtime boots');
 for(const f of ['public/runtime/adapters/authority-adapter.js','public/runtime/adapters/pvp-adapter.js'])assert.ok(fs.existsSync(path.join(root,f)),`${f} missing`);
 
-// Authoritative intent handshake.
-assert.match(host,/runtime-intent/);assert.match(host,/runtime-intent-batch/);assert.match(host,/intent-ack/,'client must wait for an explicit action acknowledgement');assert.match(host,/ackRevision/,'intent queue must release only after the acknowledged revision snapshot arrives');assert.doesNotMatch(host,/rev>Number\(state\.intentInFlight\.base/,'opponent revisions must not falsely acknowledge a local intent');assert.match(host,/GL_CREATE_PVP_AUTHORITY_ADAPTER/);
+// Authoritative intent handshake. One browser action -> one server intent-result carrying the resulting viewer-safe snapshot.
+assert.match(channel,/runtime-intent/);assert.match(channel,/runtime-intent-batch/);assert.match(host,/intent-result/,'client must complete gameplay actions from one atomic server result');assert.match(host,/send\('resync'\)/,'client must request a fresh snapshot after a transport timeout');assert.doesNotMatch(host,/intentQueue|ackRevision/,'client must not maintain a silent action queue or ACK/snapshot correlation lock');assert.match(host,/GL_CREATE_PVP_AUTHORITY_ADAPTER/);
+assert.match(channel,/exactly one gameplay action may be in flight/,'intent channel must serialize browser actions explicitly');assert.match(channel,/busy:true/,'a second click while one action is in flight must be rejected rather than silently queued');assert.match(channel,/Server response timed out/,'intent channel must have timeout recovery');
 assert.match(host,/skipImportAnimations:true/,'authoritative snapshot import must be silent; v6 external presentation owns visible animation');
 assert.match(host,/if\(prop==='cardView'\)/,'client facade must own visible card asset resolution');
 assert.match(host,/if\(prop==='manaAsset'\)/,'client facade must own visible shard asset resolution');
@@ -54,7 +55,7 @@ assert.match(host,/m\.openingId/,'client opening dedupe must use the server-owne
 assert.match(app,/r\?\.presentationId/,'presentation layer must dedupe repeated Opening snapshots by the same stable id');
 
 // Server authority, client-version isolation, reconnect ownership and dedupe ordering.
-assert.match(server,/V6914Authority/);assert.match(server,/runtime-intent-batch/);assert.match(server,/STALE_REVISION/);assert.match(server,/type:'intent-ack'/,'server must explicitly acknowledge accepted/deduplicated intents');assert.match(server,/coinPresented/);assert.match(server,/openingPresented/);
+assert.match(server,/V6914Authority/);assert.match(server,/runtime-intent-batch/);assert.match(server,/STALE_REVISION/);assert.match(server,/type:'intent-result'/,'server must complete accepted/rejected gameplay actions with an atomic result');assert.match(server,/snapshot:viewFor\(client\)/,'intent-result must carry the viewer-safe authoritative snapshot for the sender');assert.match(server,/case 'resync': send\(client\.ws,viewFor\(client\)\)/,'server must support transport timeout resync');assert.match(server,/coinPresented/);assert.match(server,/openingPresented/);
 assert.match(server,/if\(String\(msg\.clientBuildId\|\|''\)!==BUILD_ID\).*CLIENT_BUILD_MISMATCH/s,'every websocket request must be tied to the current build');
 assert.match(server,/if\(clientBuildId!==BUILD_ID\)throw Object\.assign\(new Error\('CLIENT_BUILD_MISMATCH'\),\{code:'CLIENT_BUILD_MISMATCH'\}\)/,'connection handshake must reject stale client builds with a dedicated error code');
 assert.match(server,/if\(!seatToken\|\|existing\.seatTokenHash!==tokenHash\(seatToken\)\)throw Object\.assign\(new Error\('SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}\)/,'existing player seat must require its seat token on reconnect');
@@ -112,6 +113,7 @@ assert.doesNotMatch(app,/E\(\)\.getManaPlan/,'PvP UI must not recompute payment 
 assert.match(app,/planReady=!!p\.payment_ready/,'center PAY button must follow authoritative payment_ready');
 assert.match(app,/if\(p\.type==='mana_shard_payment_choice'\)ready=!!p\.payment_ready/,'battlefield PAY button must follow authoritative payment_ready');
 assert.doesNotMatch(app,/animateCenterChoiceExit\(keys,selectedTarget,otherTarget,\{returnSide:'PLAYER'\}\).*commitManaShardPaymentChoice/s,'PAY must not play a fake spend animation before the server accepts the commit');
+assert.match(app,/const sent=intent\(responsePay\?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',\[\]\);if\(sent\?\.ok!==false\)\{centerChoiceBusy=true/,'PAY must only lock the payment overlay after the gameplay intent was actually accepted by the transport gate');
 assert.match(donor,/PvP payment parity with v3\.51: normal Mana Shards are automatic FIFO/,'PvP gameplay seam must compute normal Mana payment in FIFO order');
 assert.match(donor,/sh\.kind!=='CLASS'\;\}\);var gi=0;while\(value<cost&&gi<generic\.length\)/,'automatic normal Mana selection must walk the pool in FIFO order without reversing it');
 assert.match(donor,/p\.auto_mana_fifo=true;p\.class_manual_enabled=true/,'Skill and Event payment must share the same Class-selectable/FIFO interaction');

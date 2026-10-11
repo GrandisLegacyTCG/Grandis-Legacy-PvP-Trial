@@ -10,8 +10,8 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.5';
-const BUILD_ID='gl-pvp-3.80.5-authoritative-fifo-payment-2026-10-11';
+const VERSION='3.80.6';
+const BUILD_ID='gl-pvp-3.80.6-atomic-intent-result-2026-10-11';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 
@@ -57,6 +57,9 @@ function viewFor(client){
 function send(ws,payload){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(payload))}
 function broadcast(){for(const p of [...room.players.values(),...room.spectators.values()])if(p.connected&&p.ws)send(p.ws,viewFor(p))}
 function fail(client,message,code='REQUEST_REJECTED'){send(client?.ws,{type:'error',code,message:String(message||'Request rejected.'),serverTime:now(),snapshot:viewFor(client)})}
+function intentResult(client,{clientActionId='',ok=true,code=null,message='',appliedRevision=null}={}){
+  send(client?.ws,{type:'intent-result',clientActionId:String(clientActionId||''),ok:!!ok,code:code||null,message:String(message||''),revision:Number(room.authority?.revision||0),appliedRevision:appliedRevision==null?Number(room.authority?.revision||0):Number(appliedRevision),serverTime:now(),snapshot:viewFor(client)});
+}
 
 function validateFormation(deck,formation){
   if(!formation)return null;const lanes=['LEFT','CENTER','RIGHT'];const base=deck?.default_formation||{};
@@ -122,7 +125,7 @@ function applyIntent(client,msg,batch=false){
   const actionId=safeText(msg.clientActionId,160);
   if(actionId&&room.ledger.has(actionId)){
     const prior=room.ledger.get(actionId);if(prior?.clientId!==client.clientId)throw new Error('Duplicate action id belongs to another client.');
-    send(client.ws,{type:'intent-ack',clientActionId:actionId,revision:Number(prior?.revision||room.authority.revision)});return;
+    intentResult(client,{clientActionId:actionId,ok:true,appliedRevision:Number(prior?.revision||room.authority.revision)});return;
   }
   const base=Number(msg.baseRevision);if(base!==room.authority.revision)throw Object.assign(new Error('STALE_REVISION'),{code:'STALE_REVISION'});
   if(batch){
@@ -132,8 +135,15 @@ function applyIntent(client,msg,batch=false){
     const name=safeText(msg.intent,100);if(!name)throw new Error('Intent name is required.');
     room.authority.applyIntent(client.seat,name,Array.isArray(msg.args)?msg.args:[]);
   }
-  if(actionId){room.ledger.set(actionId,{revision:room.authority.revision,clientId:client.clientId,at:Date.now()});if(room.ledger.size>512){const first=room.ledger.keys().next().value;room.ledger.delete(first)}send(client.ws,{type:'intent-ack',clientActionId:actionId,revision:room.authority.revision})}
   if(room.authority.canonical?.appState?.gameOver){room.match.status='finished';room.match.finishedAt=now()}
+  if(actionId){
+    room.ledger.set(actionId,{revision:room.authority.revision,clientId:client.clientId,at:Date.now()});
+    if(room.ledger.size>512){const first=room.ledger.keys().next().value;room.ledger.delete(first)}
+    // Complete the originating browser action atomically: result + the exact viewer-safe
+    // authoritative snapshot produced by that action. The normal room broadcast follows for
+    // the opponent/spectators, but the sender never has to correlate a separate ACK and snapshot.
+    intentResult(client,{clientActionId:actionId,ok:true,appliedRevision:room.authority.revision});
+  }
 }
 function resetRoom(client){if(client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can reset the room.');if(room.match.status!=='setup')throw new Error('Room reset is only available during setup.');clearMatch()}
 function returnToLobby(client){if(client.role!=='player')throw new Error('Only players can return the room to lobby.');if(room.match.status!=='finished')throw new Error('Match is not finished.');clearMatch()}
@@ -147,6 +157,7 @@ function handle(client,msg){
   if(String(msg.clientBuildId||'')!==BUILD_ID)throw Object.assign(new Error('CLIENT_BUILD_MISMATCH'),{code:'CLIENT_BUILD_MISMATCH'});
   switch(msg.type){
     case 'ping': send(client.ws,{type:'pong',serverTime:now()}); return false;
+    case 'resync': send(client.ws,viewFor(client)); return false;
     case 'rename': if(room.match.status!=='setup')throw new Error('Name is locked after match start.'); client.name=safeText(msg.name,20)||client.name;client.ready=false;break;
     case 'switch-role':{
       if(room.match.status!=='setup')throw new Error('Role is locked after match start.');const role=safeRole(msg.role);if(role===client.role)break;
@@ -204,7 +215,11 @@ wss.on('connection',(ws,req)=>{
       if(room.spectators.size>=MAX_SPECTATORS)throw new Error('Spectator capacity reached.');client={clientId,name,role:'spectator',ready:false,connected:true,ws};room.spectators.set(clientId,client);
     }
     send(ws,viewFor(client));broadcast();
-    ws.on('message',raw=>{try{const msg=JSON.parse(String(raw));const changed=handle(client,msg);if(changed)broadcast()}catch(err){fail(client,err?.message||err,err?.code||'REQUEST_REJECTED')}});
+    ws.on('message',raw=>{let msg=null;try{msg=JSON.parse(String(raw));const changed=handle(client,msg);if(changed)broadcast()}catch(err){
+      const code=err?.code||'REQUEST_REJECTED',actionId=safeText(msg?.clientActionId,160),isGameplay=!!actionId&&['runtime-intent','runtime-intent-batch','surrender-match'].includes(String(msg?.type||''));
+      if(isGameplay)intentResult(client,{clientActionId:actionId,ok:false,code,message:String(err?.message||err),appliedRevision:room.authority?.revision||0});
+      else fail(client,err?.message||err,code);
+    }});
     ws.on('close',()=>{if(client&&client.ws===ws){client.connected=false;client.ws=null;broadcast()}});
     ws.on('error',()=>{});
   }catch(err){const code=err?.code||'CONNECT_REJECTED';send(ws,{type:'error',code,message:String(err?.message||err)});const closeCode=code==='CLIENT_BUILD_MISMATCH'?4003:code==='SEAT_TOKEN_MISMATCH'?4004:4001;const reason=code==='CLIENT_BUILD_MISMATCH'?'Client build mismatch':code==='SEAT_TOKEN_MISMATCH'?'Seat token mismatch':'Connection rejected';try{ws.close(closeCode,reason)}catch{}}

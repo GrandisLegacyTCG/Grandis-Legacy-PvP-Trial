@@ -1,5 +1,5 @@
 {
-  "release": "v3.80.5",
+  "release": "v3.80.6",
   "generated_from": {
     "presentation": "VS AI v6.91.4",
     "lobby": "PvP v3.76.6",
@@ -59,6 +59,7 @@
     "public/index.html",
     "public/shared-app/app-runtime.js",
     "public/pvp/pvp-host.js",
+    "public/pvp/intent-channel.js",
     "public/pvp/pvp-integration.css",
     "public/lobby/pvp-lobby-v3.76.6.css",
     "server.js",

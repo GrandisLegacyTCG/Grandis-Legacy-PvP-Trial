@@ -1,8 +1,8 @@
-# PvP v3.80.5 Architecture
+# PvP v3.80.6 Architecture
 
 ## 1. Purpose
 
-v3.80.5 restores gameplay parity around the v6.91.4-native PvP integration. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
+v3.80.6 restores gameplay parity around the v6.91.4-native PvP integration. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
 
 ### Bases
 
@@ -18,7 +18,7 @@ No v3.51 runtime/authority directory is shipped. The older repository is used as
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.5 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.6 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -39,8 +39,12 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
               E().intentBatch(...)
                    |
                    v
+        public/pvp/intent-channel.js
+        - exactly one action in flight
+        - timeout + resync recovery
+                   |
+                   v
         public/pvp/pvp-host.js
-        - serial intent queue
         - baseRevision
         - clientActionId
         - local asset resolver
@@ -61,6 +65,7 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
         - actor-local orientation
                    |
                    v
+      atomic intent-result +
          viewer-safe snapshot
                    |
                 WebSocket
@@ -90,6 +95,8 @@ canonical board
 
 The first-turn call follows the same rule: `beginFirstTurn('PLAYER')` is executed after orienting the board to the actual first seat. Calling `beginFirstTurn('AI')` would hand control to v6 Local AI and is forbidden in the multiplayer authority.
 
+During `opening`, the battlefield may already be visible for a client whose animation finished first, but PvP keeps the app inert until the server reaches `started`. This prevents apparently-live controls from sending actions while the other device is still acknowledging the same opening session.
+
 ## 5. Revision and intent contract
 
 Every gameplay write carries the snapshot revision on which it was based.
@@ -107,9 +114,9 @@ runtime-intent-batch
   steps[]
 ```
 
-The server rejects stale revisions. Accepted actions create a new authoritative revision. `clientActionId` is kept in a bounded dedupe ledger. The server also sends an explicit `intent-ack` containing the accepted action ID and revision; the client releases its serialized queue only after the matching authoritative snapshot arrives. An unrelated opponent revision therefore cannot be mistaken for acknowledgement of a local action.
+The server rejects stale revisions. Accepted actions create a new authoritative revision. `clientActionId` is kept in a bounded dedupe ledger. The originating browser receives one `intent-result` that contains the action ID, accepted/rejected status, resulting revision, and that viewer's authoritative snapshot. The client releases its action gate from that one result; it does not correlate a separate ACK against a later broadcast snapshot. Opponent/spectator state still arrives through the normal room broadcast.
 
-`intentBatch` exists because some v6 mobile/tablet interactions legitimately issue dependent operations in one UI action, for example select + confirm. Committed gameplay transitions are executed server-side against one authoritative actor-local runtime. **Mana payment is deliberately not implemented as a local draft or reconciliation batch.**
+`intentBatch` exists because some v6 mobile/tablet interactions legitimately issue dependent operations in one UI action, for example select + confirm. Committed gameplay transitions are executed server-side against one authoritative actor-local runtime. There is no client-side gameplay queue: if another action is already in flight, a second click is rejected rather than stored for later replay. If an `intent-result` times out, the gate is released and the client requests a fresh snapshot. **Mana payment is deliberately not implemented as a local draft or reconciliation batch.**
 
 ## 5A. PvP Mana payment contract
 
@@ -191,7 +198,7 @@ The v6.91.4 donor remains the gameplay/read surface except for the explicitly do
 
 ## 9. Asset boundary
 
-Standalone v3.80.5 resolves visible media locally:
+Standalone v3.80.6 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -204,7 +211,7 @@ Donor files may contain dormant website/CDN strings. Those do not define the act
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.5 deliberately does not ship
+## 10. What v3.80.6 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;

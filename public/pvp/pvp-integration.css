@@ -1,4 +1,4 @@
-/* v3.80.5 integration boundary: v6.91.4 owns gameplay presentation; PvP only gates transport/lifecycle. */
+/* v3.80.6 integration boundary: v6.91.4 owns gameplay presentation; PvP only gates transport/lifecycle. */
 html.gl-pvp-game-active .gl-lobby-overlay,
 .gl-lobby-overlay{display:none!important}
 
@@ -11,6 +11,8 @@ html.gl-pvp-coin-gated .hand-card.is-selected{transform:none!important;filter:no
 html.gl-pvp-coin-gated .card-actions,
 html.gl-pvp-coin-gated #hoverCardZoom{display:none!important}
 html.gl-pvp-coin-gated .app *{cursor:default!important}
+html.gl-pvp-opening-gated .app{pointer-events:none!important;user-select:none!important}
+html.gl-pvp-opening-gated .app *{cursor:default!important}
 
 /* Keep the approved donor lobby button label on one line at every supported width. */
 .pvp-v260-actions .pvp-v260-btn{white-space:nowrap}

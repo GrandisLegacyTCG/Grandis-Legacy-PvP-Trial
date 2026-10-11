@@ -7,7 +7,7 @@ import { V6914Authority, sourceHashes, internals } from '../server/v6914-authori
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const hashes=sourceHashes();
-assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.5 source set, including the intentional Class-only/FIFO payment seam');
+assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.6 source set, including the intentional Class-only/FIFO payment seam');
 
 const probe=new V6914Authority();
 const starterKeys=Object.keys(probe.starters);

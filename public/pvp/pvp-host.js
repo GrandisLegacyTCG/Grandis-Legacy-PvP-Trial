@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.5';
-const BUILD_ID='gl-pvp-3.80.5-authoritative-fifo-payment-2026-10-11';
+const VERSION='Grandis Legacy PvP v3.80.6';
+const BUILD_ID='gl-pvp-3.80.6-atomic-intent-result-2026-10-11';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};
@@ -9,9 +9,9 @@ const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v
 // on the same origin without sharing one localStorage client id / seat token and kicking
 // each other into an endless reconnect loop. sessionStorage survives reload in one tab.
 const SESSION={client:'grandis_legacy_pvp_v3801_tab_client_id',seat:'grandis_legacy_pvp_v3801_tab_seat_token',role:'grandis_legacy_pvp_v3801_tab_role'};
-const state={ws:null,connected:false,snapshot:null,name:'',role:'player',deckKey:'',customDeck:null,customDeckName:'',formation:null,rank:1,clientId:'',seatToken:'',reconnectDelay:1200,reconnectTimer:null,connectionError:'',sessionInvalid:false,intentSeq:0,intentInFlight:null,intentQueue:[],lastImportedRevision:-1,lastImportedStatus:'',lastCoinChoiceKey:'',lastOpeningKey:'',openingAssetKey:'',openingAssetPromise:null,fatalBuildMismatch:false,listeners:new Set()};
-const INTENT_QUEUE_LIMIT=32;
+const state={ws:null,connected:false,snapshot:null,name:'',role:'player',deckKey:'',customDeck:null,customDeckName:'',formation:null,rank:1,clientId:'',seatToken:'',reconnectDelay:1200,reconnectTimer:null,connectionError:'',sessionInvalid:false,intentSeq:0,lastImportedRevision:-1,lastImportedStatus:'',lastCoinChoiceKey:'',lastOpeningKey:'',openingAssetKey:'',openingAssetPromise:null,fatalBuildMismatch:false,listeners:new Set()};
 const INTENT_BATCH_LIMIT=24;
+let intentChannel=null;
 // PvP is a shared human-vs-human board. Keep the donor runtime in its native shared-board mode
 // so browser-side timers/AI-only branches never compete with server authority.
 window.GL_PVP_SHARED_BOARD_ACTIVE=true;
@@ -81,26 +81,34 @@ function syncSetupSelection(){
   if(state.deckKey)send('set-deck',{deckKey:state.deckKey,formation:currentFormation()});
 }
 
-function dispatchIntent(item){
-  const me=local(),m=match();if(me?.role!=='player'||m?.status!=='started')return{ok:false,error:'PvP intent unavailable.'};
-  const base=Number(m.revision||0),id=state.clientId+'.'+base+'.'+(++state.intentSeq)+'.'+String(item.kind==='batch'?'batch':item.name||'intent').slice(0,48),payload={baseRevision:base,clientActionId:id};
-  const ok=item.kind==='batch'?send('runtime-intent-batch',{...payload,steps:item.steps}):send('runtime-intent',{...payload,intent:item.name,args:item.args});
-  if(!ok)return{ok:false,error:'WebSocket unavailable.'};state.intentInFlight={...item,base,id};return{ok:true,pending:true};
+function intentError(message){
+  const text=String(message||'Authoritative PvP request failed.');
+  window.dispatchEvent(new CustomEvent('gl-pvp-intent-error',{detail:{message:text}}));
+  console.warn('[PvP intent]',text);
 }
-function queueAction(item){
-  if(state.intentInFlight){if(state.intentQueue.length>=INTENT_QUEUE_LIMIT)return{ok:false,error:'PvP intent queue is full.'};state.intentQueue.push(item);return{ok:true,pending:true,queued:true}}
-  return dispatchIntent(item);
+function ensureIntentChannel(){
+  if(intentChannel)return intentChannel;
+  const create=window.GL_CREATE_PVP_INTENT_CHANNEL;if(typeof create!=='function')throw new Error('PvP intent channel is unavailable.');
+  intentChannel=create({
+    clientId:()=>state.clientId,
+    getSnapshot:()=>state.snapshot,
+    send:(type,payload)=>send(type,payload),
+    timeoutMs:6000,
+    onError:message=>intentError(message),
+    onBusy:message=>console.warn('[PvP intent]',message),
+    onTimeout:()=>{send('resync');window.GL_GAME_UI?.render?.()}
+  });
+  return intentChannel;
 }
-function sendIntent(name,args=[]){return queueAction({kind:'single',name:String(name||''),args:Array.isArray(args)?clone(args):[]})}
-function sendIntentBatch(steps=[]){const rows=(Array.isArray(steps)?steps:[]).slice(0,INTENT_BATCH_LIMIT).filter(x=>x?.name).map(x=>({name:String(x.name),args:Array.isArray(x.args)?clone(x.args):[]}));if(!rows.length)return{ok:false,error:'Intent batch is empty.'};return queueAction({kind:'batch',steps:rows})}
-function clearIntent(error=''){state.intentInFlight=null;if(error){state.intentQueue.length=0;window.dispatchEvent(new CustomEvent('gl-pvp-intent-error',{detail:{message:error}}))}}
-function flushIntent(){if(state.intentInFlight||!state.intentQueue.length)return;const item=state.intentQueue.shift(),r=dispatchIntent(item);if(!r?.ok)clearIntent(r?.error||'Queued intent failed.')}
+function sendIntent(name,args=[]){return ensureIntentChannel().sendIntent(String(name||''),Array.isArray(args)?clone(args):[])}
+function sendIntentBatch(steps=[]){const rows=(Array.isArray(steps)?steps:[]).slice(0,INTENT_BATCH_LIMIT).filter(x=>x?.name).map(x=>({name:String(x.name),args:Array.isArray(x.args)?clone(x.args):[]}));if(!rows.length)return{ok:false,error:'Intent batch is empty.'};return ensureIntentChannel().sendBatch(rows)}
+function clearIntent(error=''){if(intentChannel)intentChannel.reset(error)}
 
 function importBoard(snap,opts={}){const b=snap?.match?.board;if(!b||!bridge()?.importSnapshot)return false;const rev=Number(snap.match.revision||0),status=String(snap.match.status||'');if(rev===state.lastImportedRevision&&status===state.lastImportedStatus)return false;/* Server snapshots update donor state without bridge animation. Opening uses render:false so the explicit v6.91.4 opening presentation is the only owner of its animation/SFX. */bridge().importSnapshot(b,{notice:'',skipImportAnimations:true});state.lastImportedRevision=rev;state.lastImportedStatus=status;if(opts.render!==false)window.GL_GAME_UI?.render?.();return true}
 function playerName(seat){return(state.snapshot?.players||[]).find(p=>Number(p.seat)===Number(seat))?.name||('Player '+seat)}
 function syncPresentation(prevStatus){
   const m=match(),me=local(),p=presentation();if(!m)return;
-  const active=['coin-flip','coin-result','opening','started','finished'].includes(m.status),app=document.querySelector('.app');$('pvpSetupOverlay')?.classList.toggle('open',!active);document.documentElement.classList.toggle('gl-pvp-game-active',active);
+  const active=['coin-flip','coin-result','opening','started','finished'].includes(m.status),app=document.querySelector('.app');$('pvpSetupOverlay')?.classList.toggle('open',!active);document.documentElement.classList.toggle('gl-pvp-game-active',active);document.documentElement.classList.toggle('gl-pvp-opening-gated',m.status==='opening');if(app&&m.status==='opening')app.inert=true;
   // Match v6.91.4 presentation lifecycle: battlefield stays hidden throughout Coin Flip.
   // Opening itself removes gl-lobby-hidden only when the first opening motion is ready.
   if(app)app.classList.toggle('gl-lobby-hidden',m.status==='setup'||m.status==='coin-flip'||m.status==='coin-result');
@@ -117,12 +125,12 @@ function syncPresentation(prevStatus){
     // playOpening() would let the normal diff presenter see the same draws first, causing
     // duplicate opening motions and Card Sound leaking under the Coin Flip screen.
     importBoard(state.snapshot,{render:false});
-    if(me?.role==='player'&&m.opening&&p){const key=String(m.openingId||['opening',m.startedAt||'',m.opening.choice,m.opening.outcome,m.firstSeat||''].join('|'));if(key!==state.lastOpeningKey&&key!==state.openingAssetKey){state.openingAssetKey=key;state.openingAssetPromise=preloadImages(visibleBoardAssetUrls(state.snapshot)).finally(()=>{if(match()?.status!=='opening'||state.openingAssetKey!==key)return;state.lastOpeningKey=key;state.openingAssetKey='';state.openingAssetPromise=null;const opening=clone(match()?.opening||m.opening)||{};opening.presentationId=key;p.playOpening({opening})})}}
+    if(me?.role==='player'&&m.opening&&p){const key=String(m.openingId||['opening',m.startedAt||'',m.opening.choice,m.opening.outcome,m.firstSeat||''].join('|'));if(key!==state.lastOpeningKey&&key!==state.openingAssetKey){state.openingAssetKey=key;state.openingAssetPromise=preloadImages(visibleBoardAssetUrls(state.snapshot)).finally(()=>{if(match()?.status!=='opening'||state.openingAssetKey!==key)return;state.lastOpeningKey=key;state.openingAssetKey='';state.openingAssetPromise=null;const opening=clone(match()?.opening||m.opening)||{};opening.presentationId=key;p.playOpening({opening});if(app)app.inert=true})}}
     else{p?.releaseGate?.();app?.classList.remove('gl-lobby-hidden');window.GL_GAME_UI?.render?.()}
     return;
   }
   if(m.status==='started'||m.status==='finished'){
-    app?.classList.remove('gl-lobby-hidden');p?.releaseGate?.();importBoard(state.snapshot,{render:true});return;
+    app?.classList.remove('gl-lobby-hidden');if(app)app.inert=false;p?.releaseGate?.();importBoard(state.snapshot,{render:true});return;
   }
 }
 function onSnapshot(msg){
@@ -132,7 +140,6 @@ function onSnapshot(msg){
   if(msg.local?.customDeck){state.customDeck=clone(msg.local.customDeck);state.customDeckName=msg.local.deckName||state.customDeck?.display_name||state.customDeck?.deck_name||'Imported Deck';state.deckKey='';state.formation=msg.local.formation||baseFormation(state.customDeck);persist('custom',JSON.stringify(state.customDeck));persist('customName',state.customDeckName);persist('deck','')}
   else if(msg.local?.deckKey){state.deckKey=msg.local.deckKey;state.customDeck=null;state.customDeckName='';state.formation=msg.local.formation||state.formation;persist('deck',state.deckKey);persist('custom','');persist('customName','')}
   else if(msg.local?.hasDeck&&msg.local?.deckName&&!state.customDeck){state.deckKey='';state.customDeckName=msg.local.deckName;state.formation=msg.local.formation||state.formation}
-  const rev=Number(msg.match?.revision||0);if(state.intentInFlight&&Number.isFinite(Number(state.intentInFlight.ackRevision))&&rev>=Number(state.intentInFlight.ackRevision)){state.intentInFlight=null;setTimeout(flushIntent,0)}else if(!state.intentInFlight&&state.intentQueue.length)setTimeout(flushIntent,0);
   renderLobby();syncPresentation(prevStatus);syncSetupSelection();notify();
   if(!presentation()&&msg.match?.status!=='setup')setTimeout(()=>syncPresentation(prevStatus),80);
 }
@@ -159,7 +166,18 @@ function connect(force=false){
     renderLobby();scheduleReconnect();
   };
   ws.onerror=()=>{if(state.ws!==ws)return;state.connected=false;renderLobby()};
-  ws.onmessage=ev=>{if(state.ws!==ws)return;let m;try{m=JSON.parse(ev.data)}catch{return}if(m.type==='snapshot')onSnapshot(m);else if(m.type==='intent-ack'){if(state.intentInFlight&&String(m.clientActionId||'')===String(state.intentInFlight.id||''))state.intentInFlight.ackRevision=Number(m.revision);/* Wait for the matching authoritative snapshot before releasing the serialized queue. */}else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot);renderLobby();window.GL_GAME_UI?.render?.()}else if(m.type==='pong'){}else console.warn('[PvP] Unknown server message',m)};
+  ws.onmessage=ev=>{if(state.ws!==ws)return;let m;try{m=JSON.parse(ev.data)}catch{return}
+    if(m.type==='snapshot')onSnapshot(m);
+    else if(m.type==='intent-result'){
+      const result=ensureIntentChannel().handleResult(m);
+      if(m.snapshot)onSnapshot(m.snapshot);
+      if(!result.matched&&m.ok===false)intentError(m.message||'Authoritative PvP request failed.');
+    }
+    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.6 completes actions with intent-result + snapshot. */}
+    else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot);renderLobby();window.GL_GAME_UI?.render?.()}
+    else if(m.type==='pong'){}
+    else console.warn('[PvP] Unknown server message',m)
+  };
 }
 
 function chooseCoin(choice){return send('choose-coin-flip',{choice:String(choice).toUpperCase()})}

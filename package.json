@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.5",
+  "version": "3.80.6",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.5 — v6.91.4 gameplay/presentation base with authoritative multiplayer handshake and a PvP-specific Class-only + FIFO normal-Mana payment policy for Skill and Event.",
+  "description": "Grandis Legacy PvP v3.80.6 \u2014 v6.91.4 gameplay/presentation base with atomic authoritative intent-result transport and PvP Class-only + FIFO normal-Mana payment.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
@@ -11,14 +11,15 @@
     "test:handshake": "node tests/run-v380-handshake-static.cjs",
     "test:assets": "node tests/run-v380-assets.cjs",
     "test:lobby": "node tests/run-v380-lobby-parity.cjs",
-    "test": "npm run check:syntax && npm run test:authority && npm run test:handshake && npm run test:assets && npm run test:lobby",
+    "test": "npm run check:syntax && npm run test:authority && npm run test:transport && npm run test:handshake && npm run test:assets && npm run test:lobby",
     "frontend-manifest": "node tools/build-public-manifest.cjs",
     "manifest": "node tools/build-file-manifest.cjs",
     "verify:manifest": "node tools/verify-manifests.cjs",
     "check:deployment": "node tools/check-deployment-readiness.cjs",
     "test:startup": "node tests/run-deployment-startup-live.cjs",
     "release:seal": "npm run test && npm run frontend-manifest && npm run manifest && npm run verify:manifest && npm run check:deployment",
-    "verify:deployment": "npm run check:deployment && npm run test:startup"
+    "verify:deployment": "npm run check:deployment && npm run test:startup",
+    "test:transport": "node tests/run-v380-intent-channel.cjs && node tests/run-v380-transport-authority.mjs"
   },
   "engines": {
     "node": ">=18"
@@ -29,7 +30,7 @@
   "grandisLegacyArchitecture": {
     "presentationBase": "VS AI v6.91.4",
     "lobbyBase": "PvP v3.76.6",
-    "referenceArchitecture": "VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts; v3.51 payment decision model reimplemented as a narrow PvP seam",
+    "referenceArchitecture": "VS AI Tutorial v6.48 \u2194 PvP v3.51 handshake concepts; v3.51 payment decision model reimplemented as a narrow PvP seam",
     "serverAuthority": "VS AI v6.91.4 shared gameplay engine executed headlessly in Node VM, with intentional PvP Class-only/FIFO Mana-payment policy seam",
     "v351RuntimeShipped": false,
     "pvpManaPayment": "Skill/Event: normal Mana auto-selected FIFO; only Class Shards manually toggleable; authoritative pending payment_ready drives PAY"
