@@ -1,15 +1,16 @@
-# Grandis Legacy PvP v3.80.3
+# Grandis Legacy PvP v3.80.4
 
-Grandis Legacy PvP v3.80.3 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
+Grandis Legacy PvP v3.80.4 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
 
 ## Locked bases
 
 - **Presentation base:** VS AI v6.91.4
 - **Lobby base:** PvP v3.76.6
-- **Architecture reference only:** the handshake pattern used by VS AI Tutorial v6.48 and PvP v3.51
-- **Server gameplay authority:** the exact VS AI v6.91.4 shared gameplay engine, executed headlessly in Node
+- **Architecture reference:** the handshake pattern used by VS AI Tutorial v6.48 and PvP v3.51
+- **Server gameplay authority:** the VS AI v6.91.4 shared gameplay engine, executed headlessly in Node, with one intentional PvP payment-policy seam
+- **PvP Mana policy:** v3.51-style Class-only manual choice; normal Mana Shards auto-fill in FIFO order
 
-PvP v3.51 is **not** shipped as an authority/runtime dependency and is **not** the implementation baseline for this release.
+PvP v3.51 is **not** shipped as an authority/runtime dependency. Its payment decision model is reimplemented as a narrow PvP-only seam on top of the v6.91.4 gameplay base.
 
 ## New handshake
 
@@ -47,7 +48,7 @@ This standalone trial package intentionally carries the local Season 1 WebP/medi
 - `assets/ui/*`
 - `engine/assets/audio/*`
 
-The exact v6.91.4 donor engine still contains some website/CDN strings internally. Those are not the active standalone presentation path: donor rendering is suppressed, authoritative snapshot imports are silent, and visible card/Shard resolvers are overridden locally.
+The v6.91.4 gameplay donor still contains some website/CDN strings internally. Those are not the active standalone presentation path: donor rendering is suppressed, authoritative snapshot imports are silent, and visible card/Shard resolvers are overridden locally.
 
 When PvP is integrated into the main website later, this resolver boundary can be changed to the shared Website asset repository without changing gameplay authority.
 
@@ -55,11 +56,15 @@ When PvP is integrated into the main website later, this resolver boundary can b
 
 Coin Flip follows the VS AI v6.91.4 lifecycle: the battlefield keeps `gl-lobby-hidden` through Coin Flip choice/result, the donor Coin Flip overlay owns the visible screen, and the PvP integration does not override its backdrop. The Coin Flip gate also keeps the battlefield `inert` and blocks pointer/focus interaction.
 
-The opening board is imported **without rendering** and then presented exactly once by the v6.91.4 opening presenter. This prevents duplicate opening Draw/Shard motion and card-motion audio under the Coin Flip screen. The server begins the first authoritative turn only after both clients acknowledge opening; once mandatory Draw/replacement/Mana Regen is resolved, authority automatically transitions Draw -> Deploy like VS AI.
+The opening board is imported **without rendering** and then presented exactly once per client by the v6.91.4 opening presenter. A stable server-owned opening presentation ID makes the presentation idempotent: clients may start a few seconds apart, but a late ACK/snapshot from the other client cannot replay the same opening animation or sound. This prevents duplicate opening Draw/Shard motion and card-motion audio under the Coin Flip screen. The server begins the first authoritative turn only after both clients acknowledge opening; once mandatory Draw/replacement/Mana Regen is resolved, authority automatically transitions Draw -> Deploy like VS AI.
 
 ## Mana payment interaction boundary
 
-Mana/Response Shard selection now follows the same interaction model as VS AI v6.91.4: selecting or deselecting Shards is a **local, non-committed UI draft**. Those draft clicks do not round-trip through WebSocket. When the player presses **PAY**, the client sends one authoritative reconciliation batch; the server replays the selection delta against the current pending payment and commits it atomically in one revision. This removes the previous network-per-click stall while keeping final payment authority on the server.
+PvP intentionally uses a simpler payment policy than VS AI v6.91.4. **Normal Mana Shards remain visible but cannot be manually selected.** They auto-fill the remaining cost in Shard-Pool FIFO order. For Skill payments, the player may toggle only Class Shards; selecting a Class Shard reduces the number of auto-selected normal Mana Shards, and canceling that Class Shard restores the same FIFO normal-Mana fill.
+
+Class-Shard toggles are authoritative server intents. PAY is a single authoritative commit against the already-canonical payment state; there is no local draft, no symmetric-diff reconciliation, and no replay batch. Item/Event and other non-Skill payments preserve the game rule that normal Mana is spent first and Class Shards are automatic fallback at value 1. Response Mana payment uses the same PvP policy.
+
+This is an intentional PvP-only gameplay seam, chosen to keep the payment state deterministic across two devices while retaining the current v6.91.4 payment UI.
 
 ## Asset warm-up and deck summary
 

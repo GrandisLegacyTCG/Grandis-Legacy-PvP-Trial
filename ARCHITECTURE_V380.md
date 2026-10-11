@@ -1,8 +1,8 @@
-# PvP v3.80.3 Architecture
+# PvP v3.80.4 Architecture
 
 ## 1. Purpose
 
-v3.80.3 restores gameplay parity around the v6.91.4-native PvP integration. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
+v3.80.4 restores gameplay parity around the v6.91.4-native PvP integration. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
 
 ### Bases
 
@@ -11,13 +11,14 @@ v3.80.3 restores gameplay parity around the v6.91.4-native PvP integration. The 
 | Gameplay presentation, timing, animation, sound, desktop/tablet/mobile interaction | VS AI v6.91.4 |
 | Pre-match Lobby presentation | PvP v3.76.6 |
 | Multiplayer design reference | VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts |
-| Server gameplay implementation | exact VS AI v6.91.4 shared gameplay runtime, headless |
+| Server gameplay implementation | VS AI v6.91.4 shared gameplay runtime, headless, with one intentional PvP payment seam |
+| PvP Mana-payment policy | v3.51-style Class-only manual choice + FIFO automatic normal Mana |
 
-PvP v3.51 contributes **ideas only** in this release. No v3.51 runtime/authority directory is shipped.
+No v3.51 runtime/authority directory is shipped. The older repository is used as a behavior reference for the payment decision model only; that policy is reimplemented in the current v6.91.4-based source.
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.3 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.4 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -54,7 +55,8 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
                    |
                    v
       server/v6914-authority.mjs
-        - exact v6.91.4 scripts
+        - v6.91.4 gameplay scripts
+        - intentional PvP Class-only/FIFO Mana-payment seam
         - headless Node VM
         - actor-local orientation
                    |
@@ -107,28 +109,31 @@ runtime-intent-batch
 
 The server rejects stale revisions. Accepted actions create a new authoritative revision. `clientActionId` is kept in a bounded dedupe ledger. The server also sends an explicit `intent-ack` containing the accepted action ID and revision; the client releases its serialized queue only after the matching authoritative snapshot arrives. An unrelated opponent revision therefore cannot be mistaken for acknowledgement of a local action.
 
-`intentBatch` exists because some v6 mobile/tablet interactions legitimately issue dependent operations in one UI action, for example select + confirm. Committed gameplay transitions are executed server-side against one authoritative actor-local runtime. A narrow exception exists for Mana/Response payment **selection drafts**: Shard/additional-cost toggles are non-committed UI state and may be previewed locally exactly like VS AI v6.91.4. Pressing PAY reconciles the local draft to the authoritative pending object and submits the delta plus commit as one atomic server batch.
+`intentBatch` exists because some v6 mobile/tablet interactions legitimately issue dependent operations in one UI action, for example select + confirm. Committed gameplay transitions are executed server-side against one authoritative actor-local runtime. **Mana payment is deliberately not implemented as a local draft or reconciliation batch.**
 
-## 5A. Mana payment draft / commit contract
+## 5A. PvP Mana payment contract
 
-Payment is intentionally split into two layers:
+PvP uses a deterministic v3.51-style decision model on the v6.91.4 board:
 
 ```text
 authoritative payment pending
         |
-        v
-local Shard selection draft (no network revision)
+        +-- normal Mana Shards -> automatic FIFO fill
         |
-        | PAY
-        v
-one reconciliation batch
-  toggle delta(s) + commit
-        |
-        v
-server validates and resolves atomically
+        +-- Class Shards -> only manual choice for Skill payment
+                               |
+                               | toggle Class UID (authoritative intent)
+                               v
+                    server recomputes FIFO Mana fill
+                               |
+                               | PAY
+                               v
+                 one authoritative payment commit
 ```
 
-The client uses the exact v6.91.4 payment planner for the preview. The server remains final authority and re-validates every Shard UID against the current actor-local pending state. A failed batch is not canonicalized, so a rejected PAY cannot leave a half-applied selection on the server.
+Normal Mana Shards remain visible in the current v6.91.4 payment UI but are inert. For Skill payment, a matching Class Shard contributes 2 Mana and a nonmatching Class Shard contributes 1; every time a Class choice changes, the engine recomputes the remaining normal Mana from the Shard Pool in FIFO order. Canceling the Class choice restores that same FIFO fill. For Item/Event/non-Skill payment, normal Mana is automatic first and Class Shards are automatic fallback at value 1. Response payment follows the same policy.
+
+Because the server already owns the Class-choice state before PAY, PAY does not reconstruct browser clicks. It commits the canonical pending payment once. This removes the second local payment state that previously caused payment animation to play and then snap back to the unresolved popup.
 
 ## 6. Viewer safety
 
@@ -165,8 +170,10 @@ both READY
 -> both clients ACK Coin Flip presentation
 -> Start Game becomes authoritative
 -> server commits opening hand + starting Shards
+-> server assigns one stable openingPresentationId
 -> clients import opening board silently (no render)
--> v6.91.4 opening presentation runs once on both clients
+-> each client may start when its assets are ready
+-> the same openingPresentationId can animate/sound at most once per client
 -> both clients ACK opening presentation
 -> server begins first turn in actor-local orientation
 -> authoritative v6 mandatory Draw/replacement/Mana Regen
@@ -180,11 +187,11 @@ Authoritative snapshots are imported with `skipImportAnimations:true`. Opening a
 
 That is intentional. The external `shared-app/app-runtime.js` owns visible animation/SFX by comparing prior and next authoritative visual state and by consuming the v6 battle-feedback surface. This avoids two presentation engines firing for the same transition.
 
-The exact donor engine remains the gameplay/read surface; the PvP layer does not create a second battlefield renderer.
+The v6.91.4 donor remains the gameplay/read surface except for the explicitly documented PvP Mana-payment policy seam; the PvP layer does not create a second battlefield renderer.
 
 ## 9. Asset boundary
 
-Standalone v3.80.3 resolves visible media locally:
+Standalone v3.80.4 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -193,11 +200,11 @@ manaAsset(shard) -> assets/shards/<class-or-Generic>.webp
 
 The external v6 presentation also uses packaged local UI backs, token faces, and audio.
 
-Exact donor files may contain dormant website/CDN strings. Those do not define the active standalone presentation path because donor rendering is suppressed and bridge imports are silent.
+Donor files may contain dormant website/CDN strings. Those do not define the active standalone presentation path because donor rendering is suppressed and bridge imports are silent.
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.3 deliberately does not ship
+## 10. What v3.80.4 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;

@@ -10,8 +10,8 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.3';
-const BUILD_ID='gl-pvp-3.80.3-v6914-payment-parity-rebuild-2026-10-11';
+const VERSION='3.80.4';
+const BUILD_ID='gl-pvp-3.80.4-pvp-auto-mana-fifo-2026-10-11';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 
@@ -29,7 +29,7 @@ const safeRole=v=>String(v)==='spectator'?'spectator':'player';
 const token=()=>randomBytes(24).toString('base64url');
 const tokenHash=v=>v?createHash('sha256').update(String(v)).digest('hex'):'';
 
-function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,coinPresented:[],openingPresented:[],startedAt:null,finishedAt:null,lastError:null}}
+function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,coinPresented:[],openingPresented:[],openingId:null,startedAt:null,finishedAt:null,lastError:null}}
 const room={players:new Map(),spectators:new Map(),authority:null,match:freshMatch(),ledger:new Map(),kickedClients:new Set(),createdAt:now()};
 
 function playerBySeat(seat){return [...room.players.values()].find(p=>Number(p.seat)===Number(seat))||null}
@@ -107,7 +107,7 @@ function confirmCoin(client){
   if(!allPlayerSeatsAck(room.match.coinPresented))throw new Error('Waiting for both players to finish the Coin Flip presentation.');
   const r=room.authority.commitOpening({choice:room.match.choice,outcome:room.match.outcome,firstSeat:room.match.firstSeat});
   if(!r?.board)throw new Error('Opening setup failed.');
-  room.match.status='opening';room.match.openingPresented=[];
+  room.match.openingId='opening:'+String(room.match.startedAt||now())+':'+String(room.match.firstSeat||0);room.match.status='opening';room.match.openingPresented=[];
 }
 function openingPresented(client){
   if(client.role!=='player')return;if(room.match.status!=='opening')return;

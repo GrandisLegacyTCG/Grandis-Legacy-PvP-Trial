@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.3');
+assert.equal(pkg.version,'3.80.4');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6914-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -49,6 +49,9 @@ assert.match(app,/Both seats use the exact donor coin-choice presentation/,'both
 assert.match(app,/else body\.querySelectorAll\('\[data-coin-choice\]'\).*aria-disabled/s,'non-chooser coin faces must remain visible but inert');
 assert.match(app,/function pvpCoinResult\(info=\{\}\)\{[^}]*gl-lobby-hidden/s,'PvP Coin Flip result must keep the donor battlefield hidden');
 assert.match(host,/if\(m\.status==='opening'\)[\s\S]*importBoard\(state\.snapshot,\{render:false\}\)/,'opening board must import silently before the single explicit v6.91.4 opening presentation');
+assert.match(server,/openingId='opening:'/,'server must assign one stable Opening presentation id per match');
+assert.match(host,/m\.openingId/,'client opening dedupe must use the server-owned stable Opening id, not match revision');
+assert.match(app,/r\?\.presentationId/,'presentation layer must dedupe repeated Opening snapshots by the same stable id');
 
 // Server authority, client-version isolation, reconnect ownership and dedupe ordering.
 assert.match(server,/V6914Authority/);assert.match(server,/runtime-intent-batch/);assert.match(server,/STALE_REVISION/);assert.match(server,/type:'intent-ack'/,'server must explicitly acknowledge accepted/deduplicated intents');assert.match(server,/coinPresented/);assert.match(server,/openingPresented/);
@@ -60,7 +63,7 @@ assert.ok(dedupePos>=0&&stalePos>dedupePos,'idempotent action dedupe must run be
 assert.match(server,/kickedClients\.add\(p\.clientId\)/,'kick must mark the removed client for the current setup');
 assert.match(host,/code===4002.*state\.role='spectator'/s,'kicked client must reconnect as spectator instead of reclaiming Player 2');
 
-// Exact donor gameplay authority remains locked; the server-side seat mirror fixes ownership without patching donor code.
+// v6.91.4 remains the gameplay base. PvP intentionally forks only the Mana-payment policy to v3.51-style Class-only/FIFO selection.
 assert.match(authority,/engine\/js\/static-data\.js/);assert.match(authority,/engine\/shared-app\/app\.bundle\.js/);
 assert.match(authority,/beginFirstTurn\('PLAYER'\)/,'server must execute whichever remote seat is active as actor-local v6 PLAYER');
 assert.match(authority,/\['playerManaDeck','aiManaDeck'\]/,'seat mirror must include Shard deck ownership');
@@ -69,7 +72,7 @@ assert.match(authority,/lastActualDrawEvent.*HIDDEN_CARD/s,'viewer-safe state mu
 assert.doesNotMatch(authority,/hidden-opponent-pool/,'opponent Shard Pool must stay visible like v6.91.4 normal gameplay');
 assert.match(authority,/Shard Pools are public battlefield state in v6\.91\.4/,'authority must document the public Shard Pool boundary');
 assert.match(authority,/autoAdvanceResolvedHumanDraw/,'server authority must reproduce v6.91.4 automatic Draw-to-Deploy behavior for remote humans');
-assert.doesNotMatch(authority,/v3\.51|v351/i,'new authority module must not import or depend on v3.51 implementation');
+assert.doesNotMatch(authority,/from .*v3\.51|require\(.*v3\.51/i,'authority must not import legacy v3.51 code; only the payment decision model is reimplemented in the PvP source seam');
 assert.equal(fs.existsSync(path.join(root,'authority')),false,'legacy v3.51 authority tree must not be shipped');
 assert.equal(fs.existsSync(path.join(root,'sync')),false,'v3.78 runtime-sync compatibility layer must not be shipped');
 assert.match(server,/architecture:'v6\.91\.4-native-authority-handshake'/);
@@ -93,15 +96,18 @@ assert.doesNotMatch(host,/subscribe\(fn\).*\},send,sendIntent/s,'raw transport s
 assert.doesNotMatch(app,/LOCAL AI|AI Deck|Player Deck/,'shared PvP runtime must not retain Local-AI/deck prototype labels');
 
 
-// Payment parity: selection is a local UI draft; only PAY crosses the network.
+// PvP payment policy: v3.51 decision model on the v6.91.4 board.
+// Normal Mana Shards are automatic FIFO; only Class Shards are manual and every decision is authoritative.
 assert.match(host,/window\.GL_PVP_SHARED_BOARD_ACTIVE=true/,'browser donor must run in shared-board mode');
-assert.match(host,/function localDraftIntent\(/,'PvP must keep Mana/Response selection drafts local');
-assert.match(host,/name==='toggleManaShardPaymentChoice'\|\|name==='toggleResponseManaShardChoice'\|\|name==='selectResponsePaymentChoice'/,'payment toggles must not round-trip through WebSocket');
-assert.match(host,/function commitLocalPaymentDraft\(responsePay=false\)/,'PAY must reconcile the local draft against the authoritative pending state');
-assert.match(host,/steps\.push\(\{name:responsePay\?'commitResponsePaymentChoice':'commitManaShardPaymentChoice'/,'PAY must end with one authoritative commit step');
-assert.match(host,/const INTENT_BATCH_LIMIT=24/,'payment reconciliation batch must cover the full 12-Shard Pool plus commit/additional cost steps');
-assert.match(server,/Array\.isArray\(msg\.steps\)\?msg\.steps\.slice\(0,24\)/,'server transport must accept the full payment reconciliation batch');
-assert.match(authority,/steps\.slice\(0,24\)/,'headless authority must execute the full payment reconciliation batch');
+assert.match(host,/normal Mana Shards are automatic FIFO/,'PvP host must document the Class-only/FIFO payment boundary');
+assert.doesNotMatch(host,/function localDraftIntent\(|function commitLocalPaymentDraft\(/,'payment must not maintain a second local draft state');
+assert.match(host,/function pvpIntent\(name,args=\[\]\)\{return sendIntent/,'PvP payment choices and PAY must use the normal authoritative intent path');
+assert.match(app,/Normal Mana Shards are automatic FIFO\. Only Class Shards can be toggled\./,'payment UI must explain the automatic FIFO rule');
+assert.match(app,/clickable:classManual&&sh\.kind==='CLASS'/,'normal Mana Shards must remain visible but non-selectable in the centered payment UI');
+assert.doesNotMatch(app,/animateCenterChoiceExit\(keys,selectedTarget,otherTarget,\{returnSide:'PLAYER'\}\).*commitManaShardPaymentChoice/s,'PAY must not play a fake spend animation before the server accepts the commit');
+assert.match(donor,/PvP payment parity with v3\.51: normal Mana Shards are automatic FIFO/,'PvP gameplay seam must compute normal Mana payment in FIFO order');
+assert.match(donor,/sh\.kind!=='CLASS'\;\}\);var gi=0;while\(value<cost&&gi<generic\.length\)/,'automatic normal Mana selection must walk the pool in FIFO order without reversing it');
+assert.match(donor,/sh\.kind!=='CLASS'\|\|p\.class_manual_enabled===false\)return false/,'runtime must reject manual normal-Mana toggles even if an intent is forged');
 
 // Asset warm-up: never show text-only card fallbacks while art is decoding.
 assert.match(host,/function preloadDeckAssets\(/,'selected deck artwork must be preloaded in lobby');
@@ -139,4 +145,4 @@ assert.match(host,/code===4004.*forkConnectionIdentity/s,'seat-token mismatch mu
 assert.match(server,/closeClientSocket\(client,4006,'Seat session replaced by another tab'\)/,'server must explicitly supersede the old same-seat socket');
 assert.match(server,/SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}/,'seat-token rejection needs a dedicated error code');
 assert.match(server,/code==='SEAT_TOKEN_MISMATCH'\?4004/,'seat-token mismatch must not use the normal reconnect close path');
-console.log(JSON.stringify({ok:true,version:pkg.version,presentation:'VS AI v6.91.4',lobby:'PvP v3.76.6',v351:'reference only',legacyAuthorityShipped:false,legacySyncLayerShipped:false,automaticDrawToDeploy:true,authoritativeRematchReset:true,legacyIdentityBadgesRemoved:true,customDeck50to60Preserved:true,privacyProjection:true,publicShardPoolParity:true,openingSinglePresentationOwner:true,donorCoinFlipLifecycle:true,resetRoomGuarded:true,customDeckReconnectSafe:true,buildMismatchRecovery:true,pvpPresentationLabels:true},null,2));
+console.log(JSON.stringify({ok:true,version:pkg.version,presentation:'VS AI v6.91.4',lobby:'PvP v3.76.6',v351:'payment-policy reference only',legacyAuthorityShipped:false,legacySyncLayerShipped:false,automaticDrawToDeploy:true,authoritativeRematchReset:true,legacyIdentityBadgesRemoved:true,customDeck50to60Preserved:true,privacyProjection:true,publicShardPoolParity:true,openingSinglePresentationOwner:true,donorCoinFlipLifecycle:true,resetRoomGuarded:true,customDeckReconnectSafe:true,buildMismatchRecovery:true,pvpPresentationLabels:true},null,2));

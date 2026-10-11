@@ -9,7 +9,10 @@ for(const [name,row] of Object.entries(parity.exact_v6914_trees)){
   if(name==='assets_v6914_subset'){
     const dir=path.join(pub,'assets'),rows=[];for(const f of walk(dir).filter(f=>!norm(path.relative(dir,f)).startsWith('lobby/')).sort()){const rel=norm(path.relative(dir,f)),b=fs.readFileSync(f);rows.push(`${rel}\0${crypto.createHash('sha256').update(b).digest('hex')}\0${b.length}`)}const fp=crypto.createHash('sha256').update(rows.join('\n')).digest('hex');assert.equal(rows.length,row.files,'v6.91.4 assets subset file count mismatch');assert.equal(fp,row.donor_fingerprint,'v6.91.4 assets subset donor fingerprint mismatch');continue;
   }
-  const dir=path.join(pub,dirName);assert.ok(fs.existsSync(dir),`${dirName} tree missing`);assert.equal(treeFingerprint(dir),row.donor_fingerprint,`${dirName} donor tree fingerprint mismatch`);
+  const dir=path.join(pub,dirName);assert.ok(fs.existsSync(dir),`${dirName} tree missing`);
+  const fp=treeFingerprint(dir);
+  if(row.exact===false){assert.equal(fp,row.new_fingerprint,`${dirName} intentional PvP seam fingerprint mismatch`);continue;}
+  assert.equal(fp,row.donor_fingerprint,`${dirName} donor tree fingerprint mismatch`);
 }
 const cardFiles=walk(path.join(pub,'card-art')).filter(f=>f.endsWith('.webp'));assert.equal(cardFiles.length,200,'must package all 200 Season 1 local WebP card arts');
 const html=fs.readFileSync(path.join(pub,'index.html'),'utf8');
@@ -35,4 +38,4 @@ const required=[
 for(const rel of required)assert.ok(fs.existsSync(path.join(pub,rel)),`required active media missing: ${rel}`);
 // The exact donor engine is allowed to retain dormant website URLs. They are not the active standalone resolver:
 // render is suppressed on the donor bridge, authoritative imports are silent, and visible card/shard URLs are overridden above.
-console.log(JSON.stringify({ok:true,cardArt:`${cardFiles.length}/200`,htmlBroken:0,cssBroken:0,requiredActiveMedia:required.length,visibleCardResolver:'local package',visibleShardResolver:'local package',donorCdnStrings:'dormant/allowed inside exact donor engine'},null,2));
+console.log(JSON.stringify({ok:true,cardArt:`${cardFiles.length}/200`,htmlBroken:0,cssBroken:0,requiredActiveMedia:required.length,visibleCardResolver:'local package',visibleShardResolver:'local package',donorCdnStrings:'dormant/allowed inside v6.91.4 gameplay base',pvpPaymentSeam:'Class-only selection + automatic FIFO normal Mana'},null,2));

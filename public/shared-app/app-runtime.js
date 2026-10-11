@@ -509,7 +509,7 @@ function pvpCoinResult(info={}){
   if(!glPvpCoinAnimationActive)pvpRenderCoinResult(info);
 }
 function pvpOpening(info={}){
-  const r=info.opening||info,key=[r?.choice,r?.outcome,r?.firstSeat,(r?.handEvents||[]).length,(r?.manaEvents||[]).length].join('|');if(!r||glPvpOpeningKey===key)return false;glPvpOpeningKey=key;
+  const r=info.opening||info,key=String(r?.presentationId||[r?.choice,r?.outcome,r?.firstSeat,(r?.handEvents||[]).map(e=>e?.id||'').join(','),(r?.manaEvents||[]).map(e=>e?.id||e?.uid||'').join(',')].join('|'));if(!r||glPvpOpeningKey===key)return false;glPvpOpeningKey=key;
   openingChoice=r.choice==='TAILS'?'TAILS':'HEADS';openingOutcome=r.outcome==='TAILS'?'TAILS':'HEADS';openingFirstSide=r.firstSide==='AI'?'AI':'PLAYER';startMatchTimer();coinOverlay.classList.remove('open');setPvpCoinGate(false);openingPresentationActive=true;lastTurnBannerKey='';
   (r.handEvents||[]).forEach(e=>{if(e?.id)seenPresentationEvents.add(e.id);const side=e.side==='AI'?'AI':'PLAYER';glHiddenCommittedDrawSlots[side].set(Number(e.hand_index),String(e.id||side+'-'+e.hand_index))});
   (r.manaEvents||[]).forEach(e=>glOpeningHiddenShardUids.add((e.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid)));
@@ -777,12 +777,12 @@ function renderPool(host,countEl,pool,side){
   const selected=new Set(),selectable=new Set();
   if(side==='PLAYER'&&p?.type==='mana_shard_payment_choice'&&plan){
     (plan.plan?.selected_shard_uids||plan.plan?.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).forEach(x=>selected.add(String(x)));
-    (pool||[]).forEach(sh=>selectable.add(String(sh.uid)));
+    (pool||[]).filter(sh=>p.class_manual_enabled!==false&&sh?.kind==='CLASS').forEach(sh=>selectable.add(String(sh.uid)));
   }
   if(side==='PLAYER'&&p?.type==='mana_spend_choice') (pool||[]).forEach(sh=>selected.add(String(sh.uid)));
   if(side==='PLAYER'&&p?.type==='response_payment_choice'&&Number(p.mana_cost||0)>0){
     (p.selected_shard_uids||[]).forEach(uid=>selected.add(String(uid)));
-    (pool||[]).forEach(sh=>selectable.add(String(sh.uid)));
+    (pool||[]).filter(sh=>p.class_manual_enabled!==false&&sh?.kind==='CLASS').forEach(sh=>selectable.add(String(sh.uid)));
   }
 
   const blindOpponent = p?.type==='opponent_mana_selection' && pendingOwner(p)==='PLAYER' && side===p.target_side;
@@ -967,9 +967,10 @@ function renderCenterChoiceStage(s){
     const responsePay=p.type==='response_payment_choice',info=E().getManaPlan?.(),plan=info?.plan||{},rawPool=info?.pool||s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((plan.selected_shard_uids||plan.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).map(String)),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?(p.selected_indices||[]).length:0);
     identity='pay|'+(responsePay?'response':'normal')+'|'+pool.map(x=>x.uid).join('|')+'|'+String(cardId||'')+'|'+cost;
     sig=identity+'|'+[...spentUids].join(',')+'|'+discardHave+'/'+discardNeed;
-    titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the additional Hand cost, then confirm exact Mana.':'Class Shards can also be selected.';statusText='MANA '+Number(plan.value||0)+' / '+cost;
-    cards=pool.map((sh,i)=>({key:String(sh.uid),uid:String(sh.uid),idx:i,front:shardArt(sh),back:'assets/ui/back-shard.webp',faceUp:true,selected:spentUids.has(String(sh.uid)),clickable:true,label:(sh.class_name||'Mana')+' Shard'}));
-    spentUids.forEach(x=>selectedKeys.add(String(x)));pool.forEach(x=>clickableKeys.add(String(x.uid)));
+    titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the additional Hand cost. Normal Mana Shards are automatic FIFO; only Class Shards can be toggled.':'Normal Mana Shards are automatic FIFO. Only Class Shards can be toggled.';statusText='MANA '+Number(plan.value||0)+' / '+cost;
+    const classManual=p.class_manual_enabled!==false;
+    cards=pool.map((sh,i)=>({key:String(sh.uid),uid:String(sh.uid),idx:i,front:shardArt(sh),back:'assets/ui/back-shard.webp',faceUp:true,selected:spentUids.has(String(sh.uid)),clickable:classManual&&sh.kind==='CLASS',label:(sh.class_name||'Mana')+' Shard'}));
+    spentUids.forEach(x=>selectedKeys.add(String(x)));pool.filter(sh=>classManual&&sh.kind==='CLASS').forEach(x=>clickableKeys.add(String(x.uid)));
     selectedTarget=centerChoiceDestinationForZone('PLAYER','Shard Deck');otherTarget=centerChoiceDestinationForZone('PLAYER','Shard Pool');
   }else if(mode==='opponent-shard'){
     const target=p.target_side||'AI',pool=target==='PLAYER'?(s.playerManaPoolCards||[]):s.aiManaPoolCards||[],selectedIdx=new Set((p.selected_indices||[]).map(Number)),required=Math.min(Number(p.required_count||1),(p.candidates||[]).length);
@@ -1007,7 +1008,7 @@ function renderCenterChoiceStage(s){
     const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),planReady=!!E().getManaPlan?.()?.plan?.ok;
     cardsHost.querySelectorAll('.gl-center-choice-card.is-clickable').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;intent(responsePay?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',[c.dataset.choiceUid])});
     if(!responsePay)makeBtn('CANCEL','gl-center-choice-cancel',false,()=>{if(!centerChoiceBusy)intent('cancelPendingAction',[])});
-    makeBtn('PAY','gl-center-choice-primary',!(planReady&&discardReady),async()=>{if(centerChoiceBusy)return;const live=E().getManaPlan?.()?.plan||{},keys=new Set((live.selected_shard_uids||live.shards?.map(x=>x.uid)||[]).map(String));if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget,{returnSide:'PLAYER'}))intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[])});
+    makeBtn('PAY','gl-center-choice-primary',!(planReady&&discardReady),()=>{if(centerChoiceBusy)return;centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy');intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[])});
   }else if(mode==='opponent-shard'){
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentManaChoice',[Number(c.dataset.choiceIndex)])});
     const required=Math.min(Number(p.required_count||1),(p.candidates||[]).length),ready=(p.selected_indices||[]).length===required;

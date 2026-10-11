@@ -1,9 +1,10 @@
 {
-  "release": "v3.80.3",
+  "release": "v3.80.4",
   "generated_from": {
     "presentation": "VS AI v6.91.4",
     "lobby": "PvP v3.76.6",
-    "architecture_reference": "VS AI Tutorial v6.48 \u2194 PvP v3.51 (reference only)"
+    "architecture_reference": "VS AI Tutorial v6.48 \u2194 PvP v3.51 (reference only)",
+    "payment_policy": "PvP-specific v3.51-style Class-only selection + FIFO automatic normal Mana on v6.91.4 gameplay base"
   },
   "lobby_assets": {
     "background.webp": {
@@ -61,22 +62,24 @@
     "public/pvp/pvp-integration.css",
     "public/lobby/pvp-lobby-v3.76.6.css",
     "server.js",
-    "server/v6914-authority.mjs"
+    "server/v6914-authority.mjs",
+    "public/engine/shared-app/app.bundle.js"
   ],
   "authority_source_hashes": {
     "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
     "engine/js/runtime-authority.js": "58a09b947a1d25b2e5e6018c6e0dac9508b5d534dd2a51192cd6dbaf2e1d4399",
     "engine/shared-app/active-starters.js": "9d536dffd4aa811428285c8db1652b8b509b61dadc2b3e200042a85289a09cfe",
-    "engine/shared-app/app.bundle.js": "7253f45e57eee3c083e6877b8062fca7210034409e089cbdd4d88622a5569e93"
+    "engine/shared-app/app.bundle.js": "d1b0e3431d0cfe97db49ec1367cd734b4c605a0fe33a87046477b47dbbdd6f01"
   },
   "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6914_subset excludes assets/lobby/",
   "exact_v6914_trees": {
     "engine": {
       "files": 54,
-      "bytes": 31153091,
-      "new_fingerprint": "5adf7e22ef77c0a655809872d56f18ff7e3e8a5b2d77c0c68afcff10bae7a100",
+      "bytes": 31154830,
+      "new_fingerprint": "9b757d4e682970e2ae1b2a1cb0d38ede4206f2cb74f981d6872fb8dbadc600d4",
       "donor_fingerprint": "5adf7e22ef77c0a655809872d56f18ff7e3e8a5b2d77c0c68afcff10bae7a100",
-      "exact": true
+      "exact": false,
+      "note": "Intentional PvP-only payment seam: v3.51-style Class Shard choice with automatic FIFO normal Mana; all other engine files remain from v6.91.4."
     },
     "card-art": {
       "files": 200,

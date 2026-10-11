@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.3';
-const BUILD_ID='gl-pvp-3.80.3-v6914-payment-parity-rebuild-2026-10-11';
+const VERSION='Grandis Legacy PvP v3.80.4';
+const BUILD_ID='gl-pvp-3.80.4-pvp-auto-mana-fifo-2026-10-11';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};
@@ -117,7 +117,7 @@ function syncPresentation(prevStatus){
     // playOpening() would let the normal diff presenter see the same draws first, causing
     // duplicate opening motions and Card Sound leaking under the Coin Flip screen.
     importBoard(state.snapshot,{render:false});
-    if(me?.role==='player'&&m.opening&&p){const key=[m.revision,m.opening.choice,m.opening.outcome].join('|');if(key!==state.lastOpeningKey&&key!==state.openingAssetKey){state.openingAssetKey=key;state.openingAssetPromise=preloadImages(visibleBoardAssetUrls(state.snapshot)).finally(()=>{if(match()?.status!=='opening'||state.openingAssetKey!==key)return;state.lastOpeningKey=key;state.openingAssetKey='';state.openingAssetPromise=null;p.playOpening({opening:match()?.opening||m.opening})})}}
+    if(me?.role==='player'&&m.opening&&p){const key=String(m.openingId||['opening',m.startedAt||'',m.opening.choice,m.opening.outcome,m.firstSeat||''].join('|'));if(key!==state.lastOpeningKey&&key!==state.openingAssetKey){state.openingAssetKey=key;state.openingAssetPromise=preloadImages(visibleBoardAssetUrls(state.snapshot)).finally(()=>{if(match()?.status!=='opening'||state.openingAssetKey!==key)return;state.lastOpeningKey=key;state.openingAssetKey='';state.openingAssetPromise=null;const opening=clone(match()?.opening||m.opening)||{};opening.presentationId=key;p.playOpening({opening})})}}
     else{p?.releaseGate?.();app?.classList.remove('gl-lobby-hidden');window.GL_GAME_UI?.render?.()}
     return;
   }
@@ -170,23 +170,10 @@ function startMatch(){return send('start-match')}
 function surrender(){const m=match();return send('surrender-match',{baseRevision:Number(m?.revision||0),clientActionId:state.clientId+'.surrender.'+(++state.intentSeq)})?{ok:true,pending:true}:{ok:false,error:'WebSocket unavailable.'}}
 function returnToLobby(){return send('return-to-lobby')?{ok:true,pending:true}:{ok:false,error:'WebSocket unavailable.'}}
 
-// Mana/Response selection is a UI draft in v6.91.4, not a committed game action.
-// Keep shard/card toggles local and send exactly one authoritative batch when PAY is pressed.
-// The server replays only the delta from its last authoritative pending selection and commits it atomically.
-function localDraftIntent(name,args=[]){const e=nativeEngine();if(!e?.intent)return{ok:false,error:'Local donor engine unavailable.'};const r=e.intent(name,args||[]);setTimeout(()=>window.GL_GAME_UI?.render?.(),0);return r}
-function localPending(){return bridge()?.getSnapshot?.()?.appState?.pending||null}
-function authoritativePending(){return state.snapshot?.match?.board?.appState?.pending||null}
-function strSet(v){return new Set((Array.isArray(v)?v:[]).map(x=>String(x)))}
-function numSet(v){return new Set((Array.isArray(v)?v:[]).map(x=>Number(x)).filter(Number.isInteger))}
-function symmetricDiff(a,b){const out=[];for(const x of a)if(!b.has(x))out.push(x);for(const x of b)if(!a.has(x))out.push(x);return out}
-function commitLocalPaymentDraft(responsePay=false){
-  const lp=localPending(),ap=authoritativePending(),expected=responsePay?'response_payment_choice':'mana_shard_payment_choice';if(lp?.type!==expected||ap?.type!==expected)return sendIntent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[]);
-  const steps=[],localShards=strSet(lp.selected_shard_uids),authShards=strSet(ap.selected_shard_uids);
-  symmetricDiff(authShards,localShards).forEach(uid=>steps.push({name:responsePay?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',args:[uid]}));
-  if(responsePay){const localCards=numSet(lp.selected_indices),authCards=numSet(ap.selected_indices);symmetricDiff(authCards,localCards).forEach(idx=>steps.push({name:'selectResponsePaymentChoice',args:[idx]}))}
-  steps.push({name:responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',args:[]});return sendIntentBatch(steps)
-}
-function pvpIntent(name,args=[]){name=String(name||'');if(name==='toggleManaShardPaymentChoice'||name==='toggleResponseManaShardChoice'||name==='selectResponsePaymentChoice')return localDraftIntent(name,args);if(name==='commitManaShardPaymentChoice')return commitLocalPaymentDraft(false);if(name==='commitResponsePaymentChoice')return commitLocalPaymentDraft(true);return sendIntent(name,args)}
+// PvP payment uses the proven v3.51 decision model on top of the v6.91.4 board:
+// normal Mana Shards are automatic FIFO, while only Class Shard toggles are player decisions.
+// Every Class/additional-cost choice is authoritative immediately; PAY is a single commit intent.
+function pvpIntent(name,args=[]){return sendIntent(String(name||''),Array.isArray(args)?args:[])}
 // Presentation-facing authority facade: reads come from the exact v6.91.4 engine; gameplay writes become server intents.
 const engineFacade=new Proxy({}, {get(_t,prop){
   if(prop==='intent')return pvpIntent;if(prop==='intentBatch')return sendIntentBatch;if(prop==='prepareLocalMatch'||prop==='commitOpeningSetup'||prop==='beginFirstTurn')return()=>({ok:false,error:'PvP lifecycle is server-owned.'});
