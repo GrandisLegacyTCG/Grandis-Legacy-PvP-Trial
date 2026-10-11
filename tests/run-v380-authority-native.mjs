@@ -28,17 +28,16 @@ function create(firstSeat){
   assert.equal(pre.aiManaPoolCards.length,3,'seat 2 opening shard pool must contain three shards');
   const revBefore=a.revision;
   a.beginFirstTurn(firstSeat);
-  assert.equal(a.revision,revBefore+1,'beginFirstTurn must produce exactly one authoritative revision');
+  assert.equal(a.revision,revBefore+2,'beginFirstTurn must commit Draw resolution plus the v6.91.4 automatic Draw-to-Deploy transition');
   return a;
 }
 
-function assertHiddenShardPool(pool,label){
-  assert.ok(Array.isArray(pool),`${label} must remain represented as an array`);
+function assertVisibleShardPool(pool,label){
+  assert.ok(Array.isArray(pool)&&pool.length>0,`${label} must remain represented as visible battlefield cards`);
   for(const sh of pool){
-    assert.equal(sh?.hidden_identity,true,`${label} must mask shard identity`);
-    assert.equal(sh?.card_back,true,`${label} must expose only a card back`);
-    assert.equal(Object.hasOwn(sh||{},'kind'),false,`${label} must not leak shard kind`);
-    assert.equal(Object.hasOwn(sh||{},'class_name'),false,`${label} must not leak shard class`);
+    assert.ok(sh?.uid,`${label} must preserve canonical shard UID for donor lookup`);
+    assert.ok(sh?.kind,`${label} must preserve shard kind`);
+    assert.notEqual(sh?.hidden_identity,true,`${label} must not be globally face-down`);
   }
 }
 
@@ -49,7 +48,7 @@ function assertPrivacy(a,seat){
   assert.ok(v.aiHand.every(x=>x===internals.HIDDEN_CARD),'opponent hand identity must be masked');
   assert.ok(v.playerDeck.every(x=>x===internals.HIDDEN_CARD),'own draw-pile order must be masked over the network');
   assert.ok(v.aiDeck.every(x=>x===internals.HIDDEN_CARD),'opponent draw-pile order must be masked over the network');
-  assertHiddenShardPool(v.aiManaPoolCards,'opponent shard pool');
+  assertVisibleShardPool(v.aiManaPoolCards,'opponent shard pool');
   assert.ok(!(v.log||[]).some(x=>/^Shard Deck: /i.test(String(x))), 'viewer logs must not disclose either seat orientation of Class-Shard composition');
   for(const pkg of v.aiLegacyPackageSlots||[]){
     assert.equal(pkg?.hidden_identity,true,'opponent Legacy package metadata must be masked');
@@ -63,8 +62,8 @@ function assertPrivacy(a,seat){
   const spec=a.viewForSpectator().appState;
   assert.ok(spec.playerHand.every(x=>x===internals.HIDDEN_CARD),'spectator must not see seat 1 hand identity');
   assert.ok(spec.aiHand.every(x=>x===internals.HIDDEN_CARD),'spectator must not see seat 2 hand identity');
-  assertHiddenShardPool(spec.playerManaPoolCards,'spectator seat 1 shard pool');
-  assertHiddenShardPool(spec.aiManaPoolCards,'spectator seat 2 shard pool');
+  assertVisibleShardPool(spec.playerManaPoolCards,'spectator seat 1 shard pool');
+  assertVisibleShardPool(spec.aiManaPoolCards,'spectator seat 2 shard pool');
   for(const pkg of [...(spec.playerLegacyPackageSlots||[]),...(spec.aiLegacyPackageSlots||[])]){
     assert.equal(pkg?.hidden_identity,true,'spectator must not receive Legacy package identities');
     assert.equal(Object.hasOwn(pkg||{},'legacy'),false,'spectator Legacy package must not expose Legacy card id');
@@ -79,7 +78,7 @@ for(const firstSeat of [1,2]){
 
   const actor=a.viewForSeat(firstSeat).appState;
   assert.equal(actor.turn,'PLAYER','current remote human must be localized as v6 PLAYER');
-  assert.equal(actor.phase,'Draw','first authoritative turn must enter v6 Draw phase');
+  assert.equal(actor.phase,'Deploy','first authoritative turn must automatically enter Deploy after v6 Draw resolution');
   assert.equal(actor.playerHand.length,7,'first player must receive exactly one mandatory Draw before Draw phase interaction');
   assert.equal(actor.playerManaPoolCards.length,4,'first player must receive v6 first-turn shard regen');
   if(firstSeat===2){
@@ -96,14 +95,14 @@ for(const firstSeat of [1,2]){
   try{a.applyIntent(other,'advancePhase',[])}catch(e){rejected=String(e?.message||e)}
   assert.ok(rejected,'wrong seat must not be able to advance the active player turn');
 
-  for(const expected of ['Deploy','Battle','Reform']){
+  for(const expected of ['Battle','Reform']){
     a.applyIntent(firstSeat,'advancePhase',[]);
     assert.equal(a.viewForSeat(firstSeat).appState.phase,expected,`active seat must advance to ${expected}`);
   }
   a.applyIntent(firstSeat,'advancePhase',[]);
   const next=a.viewForSeat(other).appState;
   assert.equal(next.turn,'PLAYER','after Reform the other remote human must become local PLAYER in its viewer orientation');
-  assert.equal(next.phase,'Draw','next remote human must enter Draw');
+  assert.equal(next.phase,'Deploy','next remote human Draw must resolve and auto-advance to Deploy');
 
   let paymentError='';
   try{a.applyIntent(other,'commitManaShardPaymentChoice',[])}catch(e){paymentError=String(e?.message||e)}
@@ -113,8 +112,8 @@ for(const firstSeat of [1,2]){
 {
   const a=create(1),before=a.revision;
   a.applyIntentBatch(1,[{name:'advancePhase',args:[]}]);
-  assert.equal(a.revision,before+1,'an accepted intent batch must commit one authoritative revision');
-  assert.equal(a.viewForSeat(1).appState.phase,'Deploy');
+  assert.equal(a.revision,before+1,'an accepted non-Draw intent batch must commit one authoritative revision');
+  assert.equal(a.viewForSeat(1).appState.phase,'Battle');
 }
 
 {
@@ -152,10 +151,9 @@ for(const firstSeat of [1,2]){
     presentationEvents:[]
   }};
   const safe=internals.viewerSafeLocalBoard(board,{spectator:false}).appState;
-  assertHiddenShardPool(safe.aiManaPoolCards,'synthetic opponent shard pool');
-  assert.equal(safe.pending.candidates[0].uid,'hidden-choice-0','blind opponent Shard choice must use an uncorrelatable client token');
-  assert.equal(Object.hasOwn(safe.pending.candidates[0],'kind'),false,'blind opponent Shard candidate must not leak kind');
-  assert.equal(Object.hasOwn(safe.pending.candidates[0],'class_name'),false,'blind opponent Shard candidate must not leak class');
+  assert.equal(safe.aiManaPoolCards[0].uid,'REAL-UID','opponent Shard Pool must preserve donor-visible identity during normal play');
+  assert.equal(safe.aiManaPoolCards[0].class_name,'Mage','opponent Class Shard must stay visible like v6.91.4');
+  assert.equal(safe.pending.candidates[0].uid,'REAL-UID','blind choice must preserve shuffled donor UID so the v6 UI can resolve the face-down candidate to its pool card');
 }
 
 
@@ -217,16 +215,90 @@ for(const firstSeat of [1,2]){
   const seat1=internals.localizeOpening(opening,1);
   assert.equal(seat1.manaEvents[0].uid,'REAL-P','local opening Shard may retain its own identity');
   assert.equal(seat1.manaEvents[0].asset,'assets/shards/Mage.webp','local opening Shard art must resolve from the package');
-  assert.equal(seat1.manaEvents[1].uid,'hidden-opening-shard-1','opponent opening Shard UID must be synthetic');
-  assert.equal(seat1.manaEvents[1].asset,'assets/ui/back-shard.webp','opponent opening Shard must render card back');
-  assert.equal(seat1.manaEvents[1].hidden_identity,true,'opponent opening Shard must be marked hidden');
-  assert.equal(Object.hasOwn(seat1.manaEvents[1],'class_name'),false,'opponent opening event must not leak class');
+  assert.equal(seat1.manaEvents[1].uid,'REAL-A','opponent opening Shard must preserve its real pool UID for v6 opening destination lookup');
+  assert.equal(seat1.manaEvents[1].asset,'assets/shards/Cleric.webp','opening Shard art path must localize to packaged assets');
 
   const seat2=internals.localizeOpening(opening,2);
   assert.equal(seat2.manaEvents[0].side,'AI','seat 1 event must become opponent-side for seat 2');
-  assert.match(seat2.manaEvents[0].uid,/^hidden-opening-shard-/,'seat 2 must not receive seat 1 opening Shard UID');
+  assert.equal(seat2.manaEvents[0].uid,'REAL-P','seat 2 must retain seat 1 opening Shard UID so donor hidden-until-arrival presentation can target it');
   assert.equal(seat2.manaEvents[1].side,'PLAYER','seat 2 own opening Shard must localize to PLAYER');
-  assert.equal(seat2.manaEvents[1].uid,'REAL-A','seat 2 may retain its own opening Shard UID');
+  assert.equal(seat2.manaEvents[1].uid,'REAL-A','seat 2 own opening Shard UID remains unchanged');
+}
+
+
+{
+  // Real gameplay regression: Steal must open the donor face-down opponent-Shard
+  // choice while the normal opponent Shard Pool itself stays visible. This runs in
+  // both seat orientations because Seat 2 is the path that previously lost UID ownership.
+  for(const seat of [1,2]){
+    const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState;
+    const hand=seat===1?canonical.playerHand:canonical.aiHand;
+    const heroes=seat===1?canonical.playerHeroes:canonical.aiHeroes;
+    hand[0]='S1-THF-005';
+    heroes.LEFT.card_id='S1-THF-H001';
+    heroes.LEFT.exhausted=false;
+
+    a.applyIntent(seat,'beginPlayFromHand',[0]);
+    a.applyIntent(seat,'chooseHeroFromBoard',['PLAYER','LEFT']);
+    const before=a.viewForSeat(seat).appState;
+    assert.equal(before.pending?.type,'opponent_mana_selection',`seat ${seat} Steal must open opponent Shard selection`);
+    const visiblePoolUids=before.aiManaPoolCards.map(x=>String(x.uid));
+    const candidateUids=(before.pending.candidates||[]).map(x=>String(x.uid));
+    assert.equal(candidateUids.length,visiblePoolUids.length,'blind choice candidate count must match the visible opponent Shard Pool');
+    for(const c of before.pending.candidates||[]){
+      assert.ok(visiblePoolUids.includes(String(c.uid)),'every blind candidate UID must resolve to a real visible opponent Shard card');
+      assert.equal(Object.hasOwn(c,'kind'),false,'face-down choice candidate must not expose Shard kind in the choice payload');
+      assert.equal(Object.hasOwn(c,'class_name'),false,'face-down choice candidate must not expose Class identity in the choice payload');
+    }
+    const opponentPoolBefore=before.aiManaPoolCards.length,ownPoolBefore=before.playerManaPoolCards.length;
+    a.applyIntent(seat,'selectOpponentManaChoice',[0]);
+    assert.deepEqual(a.viewForSeat(seat).appState.pending?.selected_indices,[0],`seat ${seat} must be able to select a face-down opponent Shard`);
+    a.applyIntent(seat,'commitOpponentManaSelection',[]);
+    const after=a.viewForSeat(seat).appState;
+    assert.equal(after.pending,null,`seat ${seat} opponent Shard choice must finish instead of sticking`);
+    assert.equal(after.aiManaPoolCards.length,opponentPoolBefore-1,'Steal must return exactly one chosen opponent Shard to its deck');
+    assert.equal(after.playerManaPoolCards.length,ownPoolBefore+1,'Steal must gain exactly one Shard from the acting player own Shard Deck');
+    assertPrivacy(a,seat);
+    assert.equal(a.viewForSeat(other).appState.aiManaPoolCards.length,after.playerManaPoolCards.length,'opponent viewer must see the resulting public Shard Pool count in mirrored orientation');
+  }
+}
+
+{
+  // Real gameplay regression: paid card -> source -> Mana payment -> toggle -> PAY ->
+  // remote Response pass -> resolution. A function-name smoke test was insufficient.
+  for(const seat of [1,2]){
+    const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState;
+    const hand=seat===1?canonical.playerHand:canonical.aiHand;
+    hand[0]='S1-EVT-002'; // Market Bargain, printed cost 2.
+
+    a.applyIntent(seat,'beginPlayFromHand',[0]);
+    a.applyIntent(seat,'chooseHeroFromBoard',['PLAYER','LEFT']);
+    let view=a.viewForSeat(seat).appState;
+    assert.equal(view.pending?.type,'mana_shard_payment_choice',`seat ${seat} paid Event must open Mana Shard payment`);
+    assert.equal(Number(view.pending?.cost),2,'Market Bargain payment regression must use printed cost 2');
+    assert.ok((view.pending?.selected_shard_uids||[]).length>=1,'v6 payment planner must preselect a legal payment');
+    const selectedUid=String(view.pending.selected_shard_uids[0]);
+    const originalSelected=view.pending.selected_shard_uids.map(String);
+    const poolBefore=view.playerManaPoolCards.length;
+
+    a.applyIntent(seat,'toggleManaShardPaymentChoice',[selectedUid]);
+    view=a.viewForSeat(seat).appState;
+    assert.equal(view.pending.selected_shard_uids.map(String).includes(selectedUid),false,'payment UI must be able to deselect a Shard');
+    a.applyIntent(seat,'toggleManaShardPaymentChoice',[selectedUid]);
+    view=a.viewForSeat(seat).appState;
+    assert.equal(view.pending.selected_shard_uids.map(String).includes(selectedUid),true,'payment UI must be able to reselect a Shard');
+    assert.equal(view.pending.selected_shard_uids.length,originalSelected.length,'payment toggle round trip must restore the selected Shard count');
+
+    a.applyIntent(seat,'commitManaShardPaymentChoice',[]);
+    view=a.viewForSeat(seat).appState;
+    assert.ok(view.responseWindow,'PAY must continue into the normal remote Response window rather than sticking on payment');
+    a.applyIntent(other,'responsePassNoStuck',[]);
+    view=a.viewForSeat(seat).appState;
+    assert.equal(view.pending,null,`seat ${seat} payment/resolution must clear pending state`);
+    assert.equal(view.responseWindow,null,`seat ${seat} payment/resolution must clear Response window`);
+    assert.equal(view.playerManaPoolCards.length,poolBefore-2,'two 1-value Shards must be spent for the cost-2 Event fixture');
+    assert.ok(view.playerDiscard.includes('S1-EVT-002'),'resolved paid Event must reach the acting player Discard Pile');
+  }
 }
 
 
@@ -266,16 +338,17 @@ console.log(JSON.stringify({
   viewerSafePrivacy:true,
   legacyPackagePrivacy:true,
   drawMetadataPrivacy:true,
-  blindShardPrivacy:true,
+  blindShardGameplayParity:true,
   blindHandMappingPrivacy:true,
   nestedPendingPrivacy:true,
-  openingShardEventPrivacy:true,
+  openingShardPresentationParity:true,
   privateLogPrivacy:true,
   postPendingHiddenZoneLogPrivacy:true,
   battleLogOrderAndHistoryPreserved:true,
   mirrorInvolution:true,
   surrenderAuthority:true,
   customDeck50Accepted:true,
-  manaCommitRecognized:true,
+  opponentShardSelectionEndToEnd:true,
+  manaPaymentEndToEnd:true,
   nativePvpSelfTests:2
 },null,2));

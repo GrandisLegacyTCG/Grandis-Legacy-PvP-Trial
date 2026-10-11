@@ -488,7 +488,7 @@ function setPvpCoinGate(active){
   if(on){document.querySelectorAll('.hand-card.is-hovered,.hand-card.is-selected').forEach(x=>x.classList.remove('is-hovered','is-selected'));document.getElementById('hoverCardZoom')?.setAttribute('hidden','')}
 }
 function pvpCoinChoice(info={}){
-  resetPresentationState();lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');setPvpCoinGate(true);glPvpCoinResolvedKey='';glPvpCoinAnimationActive=false;glPvpCoinLatest=null;glPvpOpeningKey='';
+  resetPresentationState();lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('gl-lobby-hidden');setPvpCoinGate(true);glPvpCoinResolvedKey='';glPvpCoinAnimationActive=false;glPvpCoinLatest=null;glPvpOpeningKey='';
   const body=coinOverlay.querySelector('.gl-coin-body'),canChoose=!!info.canChoose;
   body.innerHTML='<p>'+(canChoose?'Choose Heads or Tails. The winner takes the first Draw Phase.':'Waiting for '+esc(info.chooserName||'Player 2')+' to choose Heads or Tails…')+'</p>'+(canChoose?'<div class="gl-coin-actions"><button type="button" data-coin-choice="HEADS"><img src="'+coinFaceSrc('HEADS')+'" alt="Heads"><span>Heads</span></button><button type="button" data-coin-choice="TAILS"><img src="'+coinFaceSrc('TAILS')+'" alt="Tails"><span>Tails</span></button></div>':'');
   if(canChoose)body.querySelectorAll('[data-coin-choice]').forEach(btn=>btn.onclick=()=>window.GL_PVP_HOST?.chooseCoin?.(btn.dataset.coinChoice));coinOverlay.classList.add('open');
@@ -500,7 +500,7 @@ function pvpRenderCoinResult(info={}){
   const b=body.querySelector('.gl-coin-start');if(b&&start)b.onclick=()=>window.GL_PVP_HOST?.confirmCoin?.();coinOverlay.classList.add('open');
 }
 function pvpCoinResult(info={}){
-  setPvpCoinGate(true);coinOverlay.classList.add('open');glPvpCoinLatest=info;const key=[info.choice,info.outcome,info.firstSeat].join('|');
+  appRoot?.classList.add('gl-lobby-hidden');setPvpCoinGate(true);coinOverlay.classList.add('open');glPvpCoinLatest=info;const key=[info.choice,info.outcome,info.firstSeat].join('|');
   if(key&&key!==glPvpCoinResolvedKey&&!glPvpCoinAnimationActive){glPvpCoinResolvedKey=key;glPvpCoinAnimationActive=true;animateCoinFlipResolved(info.choice,info.outcome,()=>{glPvpCoinAnimationActive=false;pvpRenderCoinResult(glPvpCoinLatest||info);window.GL_PVP_HOST?.coinPresented?.()});return}
   if(!glPvpCoinAnimationActive)pvpRenderCoinResult(info);
 }

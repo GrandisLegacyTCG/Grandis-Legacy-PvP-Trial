@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.1';
-const BUILD_ID='gl-pvp-3.80.1-v6914-shell-reconnect-2026-10-11';
+const VERSION='Grandis Legacy PvP v3.80.2';
+const BUILD_ID='gl-pvp-3.80.2-v6914-gameplay-parity-2026-10-11';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};
@@ -76,28 +76,33 @@ function sendIntentBatch(steps=[]){const rows=(Array.isArray(steps)?steps:[]).sl
 function clearIntent(error=''){state.intentInFlight=null;if(error){state.intentQueue.length=0;window.dispatchEvent(new CustomEvent('gl-pvp-intent-error',{detail:{message:error}}))}}
 function flushIntent(){if(state.intentInFlight||!state.intentQueue.length)return;const item=state.intentQueue.shift(),r=dispatchIntent(item);if(!r?.ok)clearIntent(r?.error||'Queued intent failed.')}
 
-function importBoard(snap,_skip=false){const b=snap?.match?.board;if(!b||!bridge()?.importSnapshot)return false;const rev=Number(snap.match.revision||0),status=String(snap.match.status||'');if(rev===state.lastImportedRevision&&status===state.lastImportedStatus)return false;/* Authoritative state import is deliberately silent. The external v6.91.4 presentation runtime owns visible animation/SFX and resolves media from this package; donor bridge import animation here would double-play presentation and can use donor CDN URLs. */bridge().importSnapshot(b,{notice:'',skipImportAnimations:true});state.lastImportedRevision=rev;state.lastImportedStatus=status;window.GL_GAME_UI?.render?.();return true}
+function importBoard(snap,opts={}){const b=snap?.match?.board;if(!b||!bridge()?.importSnapshot)return false;const rev=Number(snap.match.revision||0),status=String(snap.match.status||'');if(rev===state.lastImportedRevision&&status===state.lastImportedStatus)return false;/* Server snapshots update donor state without bridge animation. Opening uses render:false so the explicit v6.91.4 opening presentation is the only owner of its animation/SFX. */bridge().importSnapshot(b,{notice:'',skipImportAnimations:true});state.lastImportedRevision=rev;state.lastImportedStatus=status;if(opts.render!==false)window.GL_GAME_UI?.render?.();return true}
 function playerName(seat){return(state.snapshot?.players||[]).find(p=>Number(p.seat)===Number(seat))?.name||('Player '+seat)}
 function syncPresentation(prevStatus){
   const m=match(),me=local(),p=presentation();if(!m)return;
-  const active=['coin-flip','coin-result','opening','started','finished'].includes(m.status);$('pvpSetupOverlay')?.classList.toggle('open',!active);document.documentElement.classList.toggle('gl-pvp-game-active',active);document.querySelector('.app')?.classList.toggle('gl-lobby-hidden',!active);
+  const active=['coin-flip','coin-result','opening','started','finished'].includes(m.status),app=document.querySelector('.app');$('pvpSetupOverlay')?.classList.toggle('open',!active);document.documentElement.classList.toggle('gl-pvp-game-active',active);
+  // Match v6.91.4 presentation lifecycle: battlefield stays hidden throughout Coin Flip.
+  // Opening itself removes gl-lobby-hidden only when the first opening motion is ready.
+  if(app)app.classList.toggle('gl-lobby-hidden',m.status==='setup'||m.status==='coin-flip'||m.status==='coin-result');
   if(m.status==='setup'){state.lastImportedRevision=-1;state.lastImportedStatus='';state.lastCoinChoiceKey='';state.lastOpeningKey='';p?.setCoinGate?.(false);window.GL_GAME_UI?.resetForLobby?.();return}
   if(m.status==='coin-flip'){
-    importBoard(state.snapshot,true);
     const key='choice|'+m.chooserSeat+'|'+me?.seat;if(key!==state.lastCoinChoiceKey&&p){state.lastCoinChoiceKey=key;p.showCoinChoice({canChoose:me?.role==='player'&&Number(me?.seat)===Number(m.chooserSeat),chooserName:playerName(m.chooserSeat)})}
     return;
   }
   if(m.status==='coin-result'){
-    importBoard(state.snapshot,true);if(p){const localSeat=Number(me?.seat||1),firstSeat=Number(m.firstSeat||1);p.showCoinResult({choice:m.choice,outcome:m.outcome,firstSeat,localSeat,localWasChooser:Number(m.chooserSeat)===localSeat,winnerName:playerName(firstSeat),opponentName:opponent()?.name||'Opponent',canStartOpening:me?.role==='player'&&!!m.canStartOpening})}return;
+    if(p){const localSeat=Number(me?.seat||1),firstSeat=Number(m.firstSeat||1);p.showCoinResult({choice:m.choice,outcome:m.outcome,firstSeat,localSeat,localWasChooser:Number(m.chooserSeat)===localSeat,winnerName:playerName(firstSeat),opponentName:opponent()?.name||'Opponent',canStartOpening:me?.role==='player'&&!!m.canStartOpening})}return;
   }
   if(m.status==='opening'){
-    importBoard(state.snapshot,true);
+    // Import the already-committed Opening Hand/Shard state silently. Rendering before
+    // playOpening() would let the normal diff presenter see the same draws first, causing
+    // duplicate opening motions and Card Sound leaking under the Coin Flip screen.
+    importBoard(state.snapshot,{render:false});
     if(me?.role==='player'&&m.opening&&p){const key=[m.revision,m.opening.choice,m.opening.outcome].join('|');if(key!==state.lastOpeningKey){state.lastOpeningKey=key;p.playOpening({opening:m.opening})}}
-    else p?.releaseGate?.();
+    else{p?.releaseGate?.();app?.classList.remove('gl-lobby-hidden');window.GL_GAME_UI?.render?.()}
     return;
   }
   if(m.status==='started'||m.status==='finished'){
-    p?.releaseGate?.();importBoard(state.snapshot,false);return;
+    app?.classList.remove('gl-lobby-hidden');p?.releaseGate?.();importBoard(state.snapshot,{render:true});return;
   }
 }
 function onSnapshot(msg){

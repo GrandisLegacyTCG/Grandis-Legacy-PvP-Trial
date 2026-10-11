@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.1",
+  "version": "3.80.2",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.1 — v6.91.4-clean-shell multiplayer handshake: v6.91.4 presentation/headless authority, v3.76.6 Lobby, v6.48↔v3.51 used as architecture reference only.",
+  "description": "Grandis Legacy PvP v3.80.2 — v6.91.4 gameplay-parity multiplayer handshake: exact v6.91.4 headless authority/presentation donor, PvP v3.76.6 Lobby, v6.48↔v3.51 as architecture reference only.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
@@ -20,8 +20,12 @@
     "release:seal": "npm run test && npm run frontend-manifest && npm run manifest && npm run verify:manifest && npm run check:deployment",
     "verify:deployment": "npm run check:deployment && npm run test:startup"
   },
-  "engines": {"node": ">=18"},
-  "dependencies": {"ws": "^8.18.0"},
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
   "grandisLegacyArchitecture": {
     "presentationBase": "VS AI v6.91.4",
     "lobbyBase": "PvP v3.76.6",

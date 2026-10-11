@@ -1,8 +1,8 @@
-# PvP v3.80.1 Architecture
+# PvP v3.80.2 Architecture
 
 ## 1. Purpose
 
-v3.80.1 hardens the v6.91.4-native PvP integration introduced in v3.79. The architecture continues to use the current VS AI runtime rather than forcing the old PvP browser engine into a newer presentation family.
+v3.80.2 restores gameplay parity around the v6.91.4-native PvP integration. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
 
 ### Bases
 
@@ -17,7 +17,7 @@ PvP v3.51 contributes **ideas only** in this release. No v3.51 runtime/authority
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.1 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.2 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -117,20 +117,23 @@ Before a snapshot reaches a viewer:
 - draw-pile orders are masked;
 - private pending/response data belonging to the other side is masked;
 - spectators do not receive either player's hand identity;
+- **Shard Pools remain visible public battlefield state**, matching VS AI v6.91.4; only the temporary opponent-Shard choice is presented face-down;
+- opponent-Shard choice candidates retain the donor UID needed to map the face-down option back to the visible pool card;
 - seat 2 receives the same board localized so its own side is `PLAYER` for the v6 presentation.
 
 The server owns this boundary. Presentation code does not decide what secret data should be hidden.
 
 ## 7. Coin Flip and opening
 
-The battlefield is mounted from the start of the match but a fully opaque black Coin Flip layer owns the screen.
+Coin Flip follows the donor lifecycle rather than a PvP-specific screen treatment. The battlefield remains `gl-lobby-hidden` through Coin Flip choice/result and the donor Coin Flip overlay owns the visible screen. PvP CSS does not override the donor backdrop or force `.app` visible.
 
 While the Coin Flip gate is active:
 
 - the field is `inert`;
 - pointer input is disabled;
 - hover/card preview/focus/click cannot leak through;
-- opening Draw/Shard presentation does not begin.
+- gameplay board snapshots are not rendered;
+- opening Draw/Shard presentation and card-motion SFX do not begin.
 
 Flow:
 
@@ -141,16 +144,18 @@ both READY
 -> both clients ACK Coin Flip presentation
 -> Start Game becomes authoritative
 -> server commits opening hand + starting Shards
--> v6.91.4 opening presentation on both clients
+-> clients import opening board silently (no render)
+-> v6.91.4 opening presentation runs once on both clients
 -> both clients ACK opening presentation
 -> server begins first turn in actor-local orientation
--> authoritative v6 mandatory Draw/Regen
--> v6.91.4 presentation renders the result
+-> authoritative v6 mandatory Draw/replacement/Mana Regen
+-> server automatically advances resolved Draw -> Deploy
+-> v6.91.4 presentation renders the authoritative result
 ```
 
 ## 8. Presentation ownership
 
-Authoritative snapshots are imported with `skipImportAnimations:true`.
+Authoritative snapshots are imported with `skipImportAnimations:true`. Opening adds an extra boundary: the committed opening board is imported with `render:false`, and only the explicit v6.91.4 opening presenter is allowed to render/animate it.
 
 That is intentional. The external `shared-app/app-runtime.js` owns visible animation/SFX by comparing prior and next authoritative visual state and by consuming the v6 battle-feedback surface. This avoids two presentation engines firing for the same transition.
 
@@ -158,7 +163,7 @@ The exact donor engine remains the gameplay/read surface; the PvP layer does not
 
 ## 9. Asset boundary
 
-Standalone v3.80.1 resolves visible media locally:
+Standalone v3.80.2 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -171,7 +176,7 @@ Exact donor files may contain dormant website/CDN strings. Those do not define t
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.1 deliberately does not ship
+## 10. What v3.80.2 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;

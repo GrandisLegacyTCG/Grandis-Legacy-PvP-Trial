@@ -1,10 +1,9 @@
-/* v3.80.1 integration boundary: v6.91.4 owns gameplay presentation; PvP only gates transport/lifecycle. */
+/* v3.80.2 integration boundary: v6.91.4 owns gameplay presentation; PvP only gates transport/lifecycle. */
 html.gl-pvp-game-active .gl-lobby-overlay,
 .gl-lobby-overlay{display:none!important}
 
-/* The gameplay DOM is always mounted. Coin Flip is an opaque modal gate, never an app visibility toggle. */
-.app{visibility:visible!important}
-.gl-coin-overlay{background:#000!important;z-index:30000!important}
+/* Coin Flip deliberately keeps the donor's opaque backdrop and hidden battlefield lifecycle.
+   Do not override .app visibility or .gl-coin-overlay styling here. */
 html.gl-pvp-coin-gated .app{pointer-events:none!important;user-select:none!important}
 html.gl-pvp-coin-gated .hand-card:hover,
 html.gl-pvp-coin-gated .hand-card.is-hovered,

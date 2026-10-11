@@ -145,11 +145,9 @@ function maskPending(p,localSide='PLAYER'){
   if(out.type==='opponent_hand_choice'&&!out.reveal_cards&&Array.isArray(out.candidates)){
     out.candidates=out.candidates.map((_,i)=>({choice_index:i,card_id:HIDDEN_CARD,hidden_identity:true,card_back:true}));
   }
-  // Opponent Shard effects are blind until the choice is committed. The actor receives
-  // stable, synthetic choice tokens only; those tokens cannot be correlated to pool UIDs.
-  if(out.type==='opponent_mana_selection'&&Array.isArray(out.candidates)){
-    out.candidates=out.candidates.map((_,i)=>({hidden_identity:true,card_back:true,choice_index:i,uid:`hidden-choice-${i}`}));
-  }
+  // Keep the donor's shuffled candidate UIDs intact for the acting player. v6.91.4
+  // renders these candidates face-down, but its choice UI resolves each shuffled candidate
+  // back to the visible opponent Shard Pool by UID. Replacing those UIDs breaks selection.
   return out;
 }
 function maskResponse(rw,localSide='PLAYER'){
@@ -197,7 +195,6 @@ function viewerSafeLocalBoard(board,{spectator=false,cardNames={}}={}){
   const out=clone(board||{}),s=out.appState;if(!s)return out;
   const rawPending=clone(s.pending);
   const maskArray=(arr,val=HIDDEN_CARD)=>Array.from({length:Array.isArray(arr)?arr.length:Number(arr?.length||0)},()=>val);
-  const maskShardPool=(arr,prefix)=>Array.from({length:Array.isArray(arr)?arr.length:0},(_,i)=>({hidden_identity:true,card_back:true,slot_index:i,uid:`${prefix}-${i}`}));
   const playerHand=Array.isArray(s.playerHand)?s.playerHand:[];
   const aiHand=Array.isArray(s.aiHand)?s.aiHand:[];
   s.playerHandCount=playerHand.length;s.aiHandCount=aiHand.length;
@@ -209,9 +206,15 @@ function viewerSafeLocalBoard(board,{spectator=false,cardNames={}}={}){
   if(spectator)s.playerLegacyPackageSlots=maskLegacyPackages(s.playerLegacyPackageSlots,'hidden-player-legacy-package');
   s.aiLegacyPackageSlots=maskLegacyPackages(s.aiLegacyPackageSlots,'hidden-opponent-legacy-package');
   for(const k of ['playerManaDeck','aiManaDeck']){const a=Array.isArray(s[k])?s[k]:[];s[k]=Array.from({length:a.length},(_,i)=>({hidden_identity:true,slot_index:i}))}
-  if(spectator)s.playerManaPoolCards=maskShardPool(s.playerManaPoolCards,'hidden-player-pool');
-  s.aiManaPoolCards=maskShardPool(s.aiManaPoolCards,'hidden-opponent-pool');
-  if(s.aiManaClasses)s.aiManaClasses=[];if(spectator&&s.playerManaClasses)s.playerManaClasses=[];
+  // Shard Pools are public battlefield state in v6.91.4. The cards stay visible during
+  // normal play; only the *choice presentation* becomes face-down for effects that choose
+  // an opponent Shard. Preserve exact objects/UIDs so donor rendering and payment/choice
+  // lookup semantics remain intact.
+  // Preserve visible Shard Pool cards, but do not expose the hidden composition of
+  // Shards that have not entered the battlefield. The local player keeps their own
+  // class inventory; the opponent's inventory remains private network metadata.
+  if(s.aiManaClasses)s.aiManaClasses=[];
+  if(spectator&&s.playerManaClasses)s.playerManaClasses=[];
   if(s.lastDrawnCardBySide&&typeof s.lastDrawnCardBySide==='object'){s.lastDrawnCardBySide.AI=HIDDEN_CARD;if(spectator)s.lastDrawnCardBySide.PLAYER=HIDDEN_CARD}
   if(s.lastActualDrawEvent&&typeof s.lastActualDrawEvent==='object'&&(spectator||s.lastActualDrawEvent.side==='AI'))s.lastActualDrawEvent.card_id=HIDDEN_CARD;
   if(Array.isArray(s.presentationEvents))s.presentationEvents=s.presentationEvents.map(e=>{const x=clone(e);if(x?.type==='CARD_DRAWN'&&(spectator||x.side==='AI'))x.card_id=HIDDEN_CARD;return x});
@@ -227,9 +230,11 @@ function localizeOpening(opening,seat){
   if(!opening)return null;const out=clone(opening);const swap=side=>Number(seat)===2?(side==='PLAYER'?'AI':side==='AI'?'PLAYER':side):side;
   const mapEvent=e=>{const x=clone(e);if(x?.side)x.side=swap(x.side);if(x?.actor_side)x.actor_side=swap(x.actor_side);if(x?.source_side)x.source_side=swap(x.source_side);if(x?.target_side)x.target_side=swap(x.target_side);if(x?.type==='CARD_DRAWN'&&x.side==='AI')x.card_id=HIDDEN_CARD;return x};
   out.handEvents=(out.handEvents||[]).map(mapEvent);
-  out.manaEvents=(out.manaEvents||[]).map((e,i)=>{
+  out.manaEvents=(out.manaEvents||[]).map((e)=>{
     const x=clone(e);if(x?.side)x.side=swap(x.side);
-    if(x?.side==='AI')return{type:x.type||'MANA_DRAWN',id:x.id||`MANA-DRAW-${i}`,side:'AI',group_index:x.group_index??i,uid:`hidden-opening-shard-${i}`,asset:'assets/ui/back-shard.webp',hidden_identity:true,card_back:true};
+    // Opening animation in v6.91.4 hides the on-board Shard by its real UID until the
+    // face-down flying card arrives. Preserve that UID for both sides; otherwise the
+    // destination lookup misses and opening presentation diverges/double-falls back.
     if(typeof x?.asset==='string'){const m=x.asset.match(/([^/]+\.webp)(?:\?.*)?$/i);if(m)x.asset='assets/shards/'+m[1]}
     return x;
   });
@@ -256,6 +261,18 @@ export class V6914Authority{
     this.opening={choice,outcome,firstSeat:Number(firstSeat),firstSide,handEvents:clone(r.handEvents||[]),manaEvents:clone(r.manaEvents||[])};
     return {board:this.snapshot(),opening:clone(this.opening),revision:this.revision};
   }
+  autoAdvanceResolvedHumanDraw(){
+    const canonicalState=this.canonical?.appState;if(!canonicalState||canonicalState.gameOver)return false;
+    const activeSeat=canonicalState.turn==='AI'?2:canonicalState.turn==='PLAYER'?1:null;if(!activeSeat)return false;
+    this.ctx.GL_PVP_LOCAL_SEAT=activeSeat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,activeSeat),{skipImportAnimations:true});
+    const localState=this.bridge.getSnapshot()?.appState;
+    // v6.91.4 Local play auto-advances Draw -> Deploy once mandatory Draw, replacements,
+    // and Mana Regen are complete. Shared-board mode suppresses that browser timer, so the
+    // server reproduces the same terminal transition only when the donor says Draw is done.
+    if(!localState||localState.turn!=='PLAYER'||localState.phase!=='Draw'||localState.drawPhaseResolvedFor!=='PLAYER'||localState.drawPresentationPending||localState.pending||localState.responseWindow||localState.gameOver)return false;
+    const r=this.bridge.applyServerIntent('advancePhase',[]);if(!r?.ok)throw new Error(r?.error||'Automatic Draw-to-Deploy transition failed.');
+    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),activeSeat);this.revision++;return true;
+  }
   beginFirstTurn(firstSeat){
     if(!this.canonical)throw new Error('Match not initialized.');
     const seat=Number(firstSeat)===2?2:1;
@@ -263,13 +280,13 @@ export class V6914Authority{
     // is the handshake boundary; calling beginFirstTurn('AI') would invoke Local AI.
     this.ctx.GL_PVP_LOCAL_SEAT=seat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,seat),{skipImportAnimations:true});
     const r=this.game.beginFirstTurn('PLAYER');if(!r?.ok)throw new Error(r?.error||'First turn failed.');
-    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),seat);this.revision++;return {board:this.snapshot(),revision:this.revision};
+    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),seat);this.revision++;this.autoAdvanceResolvedHumanDraw();return {board:this.snapshot(),revision:this.revision};
   }
   applyIntent(seat,name,args=[]){
     if(!this.canonical)throw new Error('Match not initialized.');const viewSeat=Number(seat)===2?2:1;this.ctx.GL_PVP_LOCAL_SEAT=viewSeat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,viewSeat),{skipImportAnimations:true});
     assertLocalSeatMayAct(this.bridge.getSnapshot(),name);
     const result=this.bridge.applyServerIntent(String(name||''),Array.isArray(args)?clone(args):[]);if(!result?.ok)throw new Error(result?.error||('Intent rejected: '+name));
-    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;return {board:this.snapshot(),revision:this.revision};
+    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.autoAdvanceResolvedHumanDraw();return {board:this.snapshot(),revision:this.revision};
   }
   applyIntentBatch(seat,steps=[]){
     if(!this.canonical)throw new Error('Match not initialized.');if(!Array.isArray(steps)||!steps.length)throw new Error('Intent batch is empty.');
@@ -282,7 +299,7 @@ export class V6914Authority{
       if(!r?.ok&&/Unknown Local AI runtime intent/i.test(String(r?.error||'')))throw new Error(r.error);
     }
     if(!any)throw new Error(results.map(x=>x.error).filter(Boolean).join('; ')||'Intent batch rejected.');
-    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;
+    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.autoAdvanceResolvedHumanDraw();
     return {board:this.snapshot(),revision:this.revision,results};
   }
   viewForSeat(seat){

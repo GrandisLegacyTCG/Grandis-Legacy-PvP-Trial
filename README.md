@@ -1,6 +1,6 @@
-# Grandis Legacy PvP v3.80.1
+# Grandis Legacy PvP v3.80.2
 
-Grandis Legacy PvP v3.80.1 is a **privacy/lifecycle hardening release** on the v6.91.4-native PvP handshake introduced in v3.79. It does not return to the v3.78.x compatibility stack.
+Grandis Legacy PvP v3.80.2 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
 
 ## Locked bases
 
@@ -53,9 +53,9 @@ When PvP is integrated into the main website later, this resolver boundary can b
 
 ## Coin Flip and opening boundary
 
-The v6.91.4 battlefield stays mounted behind a fully opaque black Coin Flip overlay. While the Coin Flip gate is active the battlefield is `inert`, has no pointer events, and must not leak hover/click/focus behavior.
+Coin Flip follows the VS AI v6.91.4 lifecycle: the battlefield keeps `gl-lobby-hidden` through Coin Flip choice/result, the donor Coin Flip overlay owns the visible screen, and the PvP integration does not override its backdrop. The Coin Flip gate also keeps the battlefield `inert` and blocks pointer/focus interaction.
 
-The server does not begin the first authoritative Draw until both clients finish the v6.91.4 opening presentation and acknowledge it.
+The opening board is imported **without rendering** and then presented exactly once by the v6.91.4 opening presenter. This prevents duplicate opening Draw/Shard motion and card-motion audio under the Coin Flip screen. The server begins the first authoritative turn only after both clients acknowledge opening; once mandatory Draw/replacement/Mana Regen is resolved, authority automatically transitions Draw -> Deploy like VS AI.
 
 ## Local run
 

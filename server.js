@@ -10,8 +10,8 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.1';
-const BUILD_ID='gl-pvp-3.80.1-v6914-shell-reconnect-2026-10-11';
+const VERSION='3.80.2';
+const BUILD_ID='gl-pvp-3.80.2-v6914-gameplay-parity-2026-10-11';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 
