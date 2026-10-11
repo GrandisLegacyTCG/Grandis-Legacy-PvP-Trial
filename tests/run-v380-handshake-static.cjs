@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.4');
+assert.equal(pkg.version,'3.80.5');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6914-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -96,6 +96,10 @@ assert.doesNotMatch(host,/subscribe\(fn\).*\},send,sendIntent/s,'raw transport s
 assert.doesNotMatch(app,/LOCAL AI|AI Deck|Player Deck/,'shared PvP runtime must not retain Local-AI/deck prototype labels');
 
 
+assert.match(html,/class="player-name gl-hover-geometry-only"/,'removed identity UI must leave the exact donor player-name geometry invisibly for Hand-preview placement');
+assert.match(app,/uiRect\(document\.querySelector\('\.player-name'\)\)/,'Hand hover preview must use the exact v6.91.4 player-name anchor selector, not the Hand center');
+assert.doesNotMatch(app,/kind==='hand'[\s\S]{0,220}querySelector\('\.hand\.bottom'\)/,'Hand hover preview must not drift by anchoring to the Hand container');
+
 // PvP payment policy: v3.51 decision model on the v6.91.4 board.
 // Normal Mana Shards are automatic FIFO; only Class Shards are manual and every decision is authoritative.
 assert.match(host,/window\.GL_PVP_SHARED_BOARD_ACTIVE=true/,'browser donor must run in shared-board mode');
@@ -104,9 +108,14 @@ assert.doesNotMatch(host,/function localDraftIntent\(|function commitLocalPaymen
 assert.match(host,/function pvpIntent\(name,args=\[\]\)\{return sendIntent/,'PvP payment choices and PAY must use the normal authoritative intent path');
 assert.match(app,/Normal Mana Shards are automatic FIFO\. Only Class Shards can be toggled\./,'payment UI must explain the automatic FIFO rule');
 assert.match(app,/clickable:classManual&&sh\.kind==='CLASS'/,'normal Mana Shards must remain visible but non-selectable in the centered payment UI');
+assert.doesNotMatch(app,/E\(\)\.getManaPlan/,'PvP UI must not recompute payment legality independently from authoritative pending state');
+assert.match(app,/planReady=!!p\.payment_ready/,'center PAY button must follow authoritative payment_ready');
+assert.match(app,/if\(p\.type==='mana_shard_payment_choice'\)ready=!!p\.payment_ready/,'battlefield PAY button must follow authoritative payment_ready');
 assert.doesNotMatch(app,/animateCenterChoiceExit\(keys,selectedTarget,otherTarget,\{returnSide:'PLAYER'\}\).*commitManaShardPaymentChoice/s,'PAY must not play a fake spend animation before the server accepts the commit');
 assert.match(donor,/PvP payment parity with v3\.51: normal Mana Shards are automatic FIFO/,'PvP gameplay seam must compute normal Mana payment in FIFO order');
 assert.match(donor,/sh\.kind!=='CLASS'\;\}\);var gi=0;while\(value<cost&&gi<generic\.length\)/,'automatic normal Mana selection must walk the pool in FIFO order without reversing it');
+assert.match(donor,/p\.auto_mana_fifo=true;p\.class_manual_enabled=true/,'Skill and Event payment must share the same Class-selectable/FIFO interaction');
+assert.match(donor,/p\.payment_value=Number\(plan\.value\|\|0\).*p\.payment_ready=!!plan\.ok/s,'server-owned pending state must export payment value/readiness');
 assert.match(donor,/sh\.kind!=='CLASS'\|\|p\.class_manual_enabled===false\)return false/,'runtime must reject manual normal-Mana toggles even if an intent is forged');
 
 // Asset warm-up: never show text-only card fallbacks while art is decoding.

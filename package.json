@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.4",
+  "version": "3.80.5",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.4 — v6.91.4 gameplay/presentation base with authoritative multiplayer handshake and a PvP-specific v3.51-style Class-only + FIFO normal-Mana payment policy.",
+  "description": "Grandis Legacy PvP v3.80.5 — v6.91.4 gameplay/presentation base with authoritative multiplayer handshake and a PvP-specific Class-only + FIFO normal-Mana payment policy for Skill and Event.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
@@ -32,7 +32,7 @@
     "referenceArchitecture": "VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts; v3.51 payment decision model reimplemented as a narrow PvP seam",
     "serverAuthority": "VS AI v6.91.4 shared gameplay engine executed headlessly in Node VM, with intentional PvP Class-only/FIFO Mana-payment policy seam",
     "v351RuntimeShipped": false,
-    "pvpManaPayment": "Normal Mana auto-selected FIFO; only Class Shards manually toggleable for Skill payments; PAY commits canonical authoritative selection"
+    "pvpManaPayment": "Skill/Event: normal Mana auto-selected FIFO; only Class Shards manually toggleable; authoritative pending payment_ready drives PAY"
   },
   "northflankDeployment": {
     "builder": "DOCKERFILE",

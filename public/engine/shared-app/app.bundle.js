@@ -1800,14 +1800,20 @@
   }
   function refreshAutoManaPaymentPending(state,p,c,cost){
     if(!p)return null;var selected=(p.selected_class_uids||[]).map(String),plan=computeManaPayment(state,p.side,c,cost,selected);
-    if(!isSkillCard(c)&&!plan.ok){plan=autoManaPaymentWithoutPrompt(state,p.side,c,cost);selected=(plan.selected_class_uids||[]).map(String);}
-    p.selected_class_uids=selected.slice();p.selected_shard_uids=(plan.shards||[]).map(function(sh){return sh.uid;});p.auto_mana_fifo=true;p.class_manual_enabled=!!isSkillCard(c);return plan;
+    // PvP has one payment interaction for Skill and Event: normal Mana Shards are
+    // always filled automatically in FIFO order; Class Shards are the only manual
+    // decision. Never auto-consume a Class Shard behind the player's choice.
+    p.selected_class_uids=(plan.selected_class_uids||selected).slice();
+    p.selected_shard_uids=(plan.shards||[]).map(function(sh){return sh.uid;});
+    p.auto_mana_fifo=true;p.class_manual_enabled=true;
+    p.payment_value=Number(plan.value||0);p.payment_cost=Number(cost||0);p.payment_ready=!!plan.ok;
+    return plan;
   }
   function openManaShardPaymentChoice(state,action,cost){
-    var side=action.side||action.source_side||'PLAYER',c=card(action.card_id),pool=manaPoolCardsForSide(state,side),classes=isSkillCard(c)?manaClassShardsInPool(state,side):[];
-    state.pending={type:'mana_shard_payment_choice',decision_side:side,side:side,card_id:action.card_id,cost:Number(cost||0),action:clone(action),selected_class_uids:[],selected_shard_uids:[],class_manual_enabled:!!isSkillCard(c),class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,c),asset:manaShardAsset(sh)};}),shard_choices:pool.map(function(sh){return{uid:sh.uid,kind:sh.kind,class_name:sh.class_name||'',value:sh.kind==='CLASS'?manaShardValueForCard(sh,c):1,asset:manaShardAsset(sh)};})};
+    var side=action.side||action.source_side||'PLAYER',c=card(action.card_id),pool=manaPoolCardsForSide(state,side),classes=manaClassShardsInPool(state,side);
+    state.pending={type:'mana_shard_payment_choice',decision_side:side,side:side,card_id:action.card_id,cost:Number(cost||0),action:clone(action),selected_class_uids:[],selected_shard_uids:[],class_manual_enabled:true,payment_value:0,payment_cost:Number(cost||0),payment_ready:false,class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,c),asset:manaShardAsset(sh)};}),shard_choices:pool.map(function(sh){return{uid:sh.uid,kind:sh.kind,class_name:sh.class_name||'',value:sh.kind==='CLASS'?manaShardValueForCard(sh,c):1,asset:manaShardAsset(sh)};})};
     var plan=refreshAutoManaPaymentPending(state,state.pending,c,cost);
-    pushLog(state,'Mana Shards are selected automatically in FIFO order. '+(isSkillCard(c)?'Choose only the Class Shard(s) you want to use before PAY.':'Non-Skill payment uses Mana Shards first and Class Shards only as automatic fallback.'));renderManaShardPaymentChoice();if(!SUPPRESS_RENDER)render();return !!plan;
+    pushLog(state,'Mana Shards are selected automatically in FIFO order. Choose only the Class Shard(s) you want to use before PAY.');renderManaShardPaymentChoice();if(!SUPPRESS_RENDER)render();return !!plan;
   }
   function setManaConfirmState(button,manaReady,allReady,shortage){
     if(!button)return;
@@ -1829,7 +1835,7 @@
     if(!sh||sh.kind!=='CLASS'||p.class_manual_enabled===false)return false;var selected=(p.selected_class_uids||[]).map(String),i=selected.indexOf(uid);if(i>=0)selected.splice(i,1);else selected.push(uid);p.selected_class_uids=selected;refreshAutoManaPaymentPending(appState,p,card(p.card_id),p.cost);renderManaShardPaymentChoice();if(!SUPPRESS_RENDER)render();return true;
   }
   function commitManaShardPaymentChoice(){
-    if(!appState||!appState.pending||appState.pending.type!=='mana_shard_payment_choice')return false;var p=clone(appState.pending),c=card(p.card_id),plan=computeManaPayment(appState,p.side,c,p.cost,p.selected_class_uids||[]);if(!plan.ok&&!isSkillCard(c))plan=autoManaPaymentWithoutPrompt(appState,p.side,c,p.cost);if(!plan.ok){showInfo('Mana Payment','The current Shard Pool cannot complete this payment.');return false;}var action=clone(p.action||{});action._mana_choice_complete=true;action.selected_mana_class_uids=(plan.selected_class_uids||[]).slice();delete action.selected_mana_shard_uids;appState.pending=null;closeChoice();return commitPlayedCard(appState,action);
+    if(!appState||!appState.pending||appState.pending.type!=='mana_shard_payment_choice')return false;var p=clone(appState.pending),c=card(p.card_id),plan=computeManaPayment(appState,p.side,c,p.cost,p.selected_class_uids||[]);if(!plan.ok){showInfo('Mana Payment','The current Shard Pool cannot complete this payment. Select a Class Shard or cancel the card.');return false;}var action=clone(p.action||{});action._mana_choice_complete=true;action.selected_mana_class_uids=(plan.selected_class_uids||[]).slice();delete action.selected_mana_shard_uids;appState.pending=null;closeChoice();return commitPlayedCard(appState,action);
   }
   function tributeExpValue(c){ return Number((c.tribute&&c.tribute.exp_value)||100); }
   function attachmentCardId(v){ return typeof v==='string'?v:(v&&v.card_id)||null; }
@@ -3811,14 +3817,13 @@
   }
   function refreshAutoResponseManaPending(state,p,rc){
     if(!p)return null;var selected=(p.selected_mana_class_uids||p.selected_class_uids||[]).map(String),plan=computeManaPayment(state,p.side,rc,p.mana_cost,selected);
-    if(!isSkillCard(rc)&&!plan.ok){plan=autoManaPaymentWithoutPrompt(state,p.side,rc,p.mana_cost);selected=(plan.selected_class_uids||[]).map(String);}
-    p.selected_mana_class_uids=selected.slice();p.selected_class_uids=selected.slice();p.selected_shard_uids=(plan.shards||[]).map(function(sh){return sh.uid;});p.auto_mana_fifo=true;p.class_manual_enabled=!!isSkillCard(rc);return plan;
+    p.selected_mana_class_uids=(plan.selected_class_uids||selected).slice();p.selected_class_uids=p.selected_mana_class_uids.slice();p.selected_shard_uids=(plan.shards||[]).map(function(sh){return sh.uid;});p.auto_mana_fifo=true;p.class_manual_enabled=true;p.payment_value=Number(plan.value||0);p.payment_cost=Number(p.mana_cost||0);p.payment_ready=!!plan.ok;return plan;
   }
   function openResponsePaymentChoice(state,rw,responseOption){
-    var side=rw.target_side||rw.response_owner||'PLAYER', rc=card(responseOption.card_id), spec=responsePaymentSpec(rc), candidates=responsePaymentCandidates(state,side,responseOption),sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side),classes=(isSkillCard(rc)&&Number(cost||0)>0)?manaClassShardsInPool(state,side):[];
+    var side=rw.target_side||rw.response_owner||'PLAYER', rc=card(responseOption.card_id), spec=responsePaymentSpec(rc), candidates=responsePaymentCandidates(state,side,responseOption),sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side),classes=Number(cost||0)>0?manaClassShardsInPool(state,side):[];
     if(candidates.length<spec.discard_from_hand){showInfo(cardName(rc)+' — Additional Cost','This Response is no longer payable because there are not enough other cards in Hand.');return false;}
     state.responseWindow=null;closeResponseWindowUI();var pool=manaPoolCardsForSide(state,side);
-    state.pending={type:'response_payment_choice',decision_side:side,side:side,response_owner:side,response_option:clone(responseOption),incoming_response_window:clone(rw),required_discard_count:spec.discard_from_hand,candidates:candidates,selected_indices:[],mana_cost:cost,mana_class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,rc),asset:manaShardAsset(sh)};}),selected_mana_class_uids:[],selected_class_uids:[],selected_shard_uids:[],class_manual_enabled:!!isSkillCard(rc),shard_choices:pool.map(function(sh){return{uid:sh.uid,kind:sh.kind,class_name:sh.class_name||'',value:sh.kind==='CLASS'?manaShardValueForCard(sh,rc):1,asset:manaShardAsset(sh)};}),committed:true,commit_stage:'committed'};
+    state.pending={type:'response_payment_choice',decision_side:side,side:side,response_owner:side,response_option:clone(responseOption),incoming_response_window:clone(rw),required_discard_count:spec.discard_from_hand,candidates:candidates,selected_indices:[],mana_cost:cost,mana_class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,rc),asset:manaShardAsset(sh)};}),selected_mana_class_uids:[],selected_class_uids:[],selected_shard_uids:[],class_manual_enabled:true,payment_value:0,payment_cost:Number(cost||0),payment_ready:false,shard_choices:pool.map(function(sh){return{uid:sh.uid,kind:sh.kind,class_name:sh.class_name||'',value:sh.kind==='CLASS'?manaShardValueForCard(sh,rc):1,asset:manaShardAsset(sh)};}),committed:true,commit_stage:'committed'};
     refreshAutoResponseManaPending(state,state.pending,rc);renderResponsePaymentChoice();return true;
   }
   function renderResponsePaymentChoice(){
@@ -3843,7 +3848,6 @@
     var side=rw.target_side||rw.response_owner||'PLAYER',rc=card(responseOption.card_id),hand=sideHand(state,side)||[],responseIndex=Number(responseOption.hand_index);
     if(hand[responseIndex]!==responseOption.card_id){showInfo('Response Payment','The confirmed Response card is no longer in its committed Hand position.');return false;}
     var sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side),effectiveClassUids=(selectedClassUids||[]).slice(),plan=computeManaPayment(state,side,rc,cost,effectiveClassUids);
-    if(!plan.ok&&!isSkillCard(rc)){plan=autoManaPaymentWithoutPrompt(state,side,rc,cost);effectiveClassUids=(plan.selected_class_uids||[]).slice();}
     if(!plan.ok){showInfo('Response Payment','The current Shard Pool cannot complete the confirmed Response payment.');return false;}
     var need=responsePaymentSpec(rc).discard_from_hand,indices=(selectedHandIndices||[]).map(Number),seen={};if(indices.length!==need){showInfo('Response Payment','Choose exactly '+need+' other card'+(need===1?'':'s')+' to discard.');return false;}
     for(var i=0;i<indices.length;i++){var ix=indices[i];if(!Number.isInteger(ix)||ix<0||ix>=hand.length||ix===responseIndex||seen[ix]){showInfo('Response Payment','The selected additional card cost is no longer legal.');return false;}seen[ix]=true;}
@@ -10877,7 +10881,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     getHandModel:function(){var s=appState;if(!s)return[];return (s.playerHand||[]).map(function(id,idx){var lp=legalPlayState(s,id),tp=legalTributeState(s,id);return{card_id:id,index:idx,canPlay:!!lp.can,playReasons:clone(lp.reasons||[]),canTribute:!!tp.can,tributeReasons:clone(tp.reasons||[])};});},
     getHeroActions:function(side,lane){var s=appState;if(!s)return{classAbilities:[],racialAbilities:[],legacyAbilities:[]};return{classAbilities:clone(getActivatedHeroAbilities(s,side,lane)||[]),racialAbilities:clone(getActivatedRacialAbilities(s,side,lane)||[]),legacyAbilities:clone(getActivatedLegacyAbilities(s,side,lane)||[]),components:clone(getResolvedHeroComponents(sideHeroes(s,side)[lane])||{})};},
     getRepositionPairs:function(){return clone(manualRepositionPairs(appState)||[]);},
-    getManaPlan:function(){var s=appState,p=s&&s.pending;if(!p)return null;if(p.type==='mana_shard_payment_choice'){var c=card(p.card_id),plan=computeManaPayment(s,p.side,c,p.cost,p.selected_class_uids||[]);if(!plan.ok&&!isSkillCard(c))plan=autoManaPaymentWithoutPrompt(s,p.side,c,p.cost);return clone({pending:p,plan:plan,pool:manaPoolCardsForSide(s,p.side),mode:'AUTO_FIFO_CLASS_ONLY'});}if(p.type==='response_payment_choice'&&Number(p.mana_cost||0)>0){var rc=card(p.response_option&&p.response_option.card_id),rplan=computeManaPayment(s,p.side,rc,p.mana_cost,p.selected_mana_class_uids||p.selected_class_uids||[]);if(!rplan.ok&&!isSkillCard(rc))rplan=autoManaPaymentWithoutPrompt(s,p.side,rc,p.mana_cost);return clone({pending:p,plan:rplan,pool:manaPoolCardsForSide(s,p.side),mode:'AUTO_FIFO_CLASS_ONLY'});}return null;},
+    getManaPlan:function(){var s=appState,p=s&&s.pending;if(!p)return null;if(p.type==='mana_shard_payment_choice'){var c=card(p.card_id),plan=computeManaPayment(s,p.side,c,p.cost,p.selected_class_uids||[]);return clone({pending:p,plan:plan,pool:manaPoolCardsForSide(s,p.side),mode:'AUTO_FIFO_CLASS_ONLY'});}if(p.type==='response_payment_choice'&&Number(p.mana_cost||0)>0){var rc=card(p.response_option&&p.response_option.card_id),rplan=computeManaPayment(s,p.side,rc,p.mana_cost,p.selected_mana_class_uids||p.selected_class_uids||[]);return clone({pending:p,plan:rplan,pool:manaPoolCardsForSide(s,p.side),mode:'AUTO_FIFO_CLASS_ONLY'});}return null;},
     getResponseModel:function(){var s=appState;return s&&s.responseWindow?clone(s.responseWindow):null;},
     setExternalHumanUi:function(active){EXTERNAL_HUMAN_UI=!!active;return EXTERNAL_HUMAN_UI;},
     getExternalHumanUi:function(){return !!EXTERNAL_HUMAN_UI;},

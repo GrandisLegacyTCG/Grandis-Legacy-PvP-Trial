@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.4';
-const BUILD_ID='gl-pvp-3.80.4-pvp-auto-mana-fifo-2026-10-11';
+const VERSION='Grandis Legacy PvP v3.80.5';
+const BUILD_ID='gl-pvp-3.80.5-authoritative-fifo-payment-2026-10-11';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};

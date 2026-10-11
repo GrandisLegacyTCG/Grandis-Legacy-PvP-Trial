@@ -10,8 +10,8 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.4';
-const BUILD_ID='gl-pvp-3.80.4-pvp-auto-mana-fifo-2026-10-11';
+const VERSION='3.80.5';
+const BUILD_ID='gl-pvp-3.80.5-authoritative-fifo-payment-2026-10-11';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 

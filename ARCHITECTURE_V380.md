@@ -1,8 +1,8 @@
-# PvP v3.80.4 Architecture
+# PvP v3.80.5 Architecture
 
 ## 1. Purpose
 
-v3.80.4 restores gameplay parity around the v6.91.4-native PvP integration. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
+v3.80.5 restores gameplay parity around the v6.91.4-native PvP integration. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
 
 ### Bases
 
@@ -18,7 +18,7 @@ No v3.51 runtime/authority directory is shipped. The older repository is used as
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.4 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.5 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -120,7 +120,7 @@ authoritative payment pending
         |
         +-- normal Mana Shards -> automatic FIFO fill
         |
-        +-- Class Shards -> only manual choice for Skill payment
+        +-- Class Shards -> only manual choice for Skill/Event payment
                                |
                                | toggle Class UID (authoritative intent)
                                v
@@ -131,7 +131,7 @@ authoritative payment pending
                  one authoritative payment commit
 ```
 
-Normal Mana Shards remain visible in the current v6.91.4 payment UI but are inert. For Skill payment, a matching Class Shard contributes 2 Mana and a nonmatching Class Shard contributes 1; every time a Class choice changes, the engine recomputes the remaining normal Mana from the Shard Pool in FIFO order. Canceling the Class choice restores that same FIFO fill. For Item/Event/non-Skill payment, normal Mana is automatic first and Class Shards are automatic fallback at value 1. Response payment follows the same policy.
+Normal Mana Shards remain visible in the current v6.91.4 payment UI but are inert. For Skill payment, a matching Class Shard contributes 2 Mana and a nonmatching Class Shard contributes 1. Event uses the same interaction and each Class Shard contributes 1 Mana. Every time a Class choice changes, the engine recomputes the remaining normal Mana from the Shard Pool in FIFO order; canceling the Class choice restores that same FIFO fill. Response payment follows the same policy. Items do not enter this Mana-payment UI in the current PvP ruleset.
 
 Because the server already owns the Class-choice state before PAY, PAY does not reconstruct browser clicks. It commits the canonical pending payment once. This removes the second local payment state that previously caused payment animation to play and then snap back to the unresolved popup.
 
@@ -191,7 +191,7 @@ The v6.91.4 donor remains the gameplay/read surface except for the explicitly do
 
 ## 9. Asset boundary
 
-Standalone v3.80.4 resolves visible media locally:
+Standalone v3.80.5 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -204,7 +204,7 @@ Donor files may contain dormant website/CDN strings. Those do not define the act
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.4 deliberately does not ship
+## 10. What v3.80.5 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;

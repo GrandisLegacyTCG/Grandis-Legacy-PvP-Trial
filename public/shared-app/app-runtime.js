@@ -165,7 +165,7 @@ function placeBattlefieldHoverPreview(kind,anchor){
   const cs=getComputedStyle(battlefieldHoverPreview),w=parseFloat(cs.width)||259,h=parseFloat(cs.height)||362,g=8,vp=uiViewportSize(),vw=vp.width,vh=vp.height;
   let left=g,top=g;
   if(kind==='hand'){
-    const playerBox=uiRect(document.querySelector('.hand.bottom'));if(!playerBox)return;
+    const playerBox=uiRect(document.querySelector('.player-name'));if(!playerBox)return;
     const centerX=playerBox.left+playerBox.width/2;left=centerX-w/2+68;top=playerBox.top-6-h;
   }else if(kind==='hero'){
     // v6.89: restore the v6.83 contextual Hero/Legacy hover. Keep the preview close
@@ -773,10 +773,10 @@ function layoutManaPoolCards(host){
 }
 
 function renderPool(host,countEl,pool,side){
-  const s=st(),p=s?.pending,plan=side==='PLAYER'?E().getManaPlan():null;
+  const s=st(),p=s?.pending;
   const selected=new Set(),selectable=new Set();
-  if(side==='PLAYER'&&p?.type==='mana_shard_payment_choice'&&plan){
-    (plan.plan?.selected_shard_uids||plan.plan?.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).forEach(x=>selected.add(String(x)));
+  if(side==='PLAYER'&&p?.type==='mana_shard_payment_choice'){
+    (p.selected_shard_uids||[]).forEach(x=>selected.add(String(x)));
     (pool||[]).filter(sh=>p.class_manual_enabled!==false&&sh?.kind==='CLASS').forEach(sh=>selectable.add(String(sh.uid)));
   }
   if(side==='PLAYER'&&p?.type==='mana_spend_choice') (pool||[]).forEach(sh=>selected.add(String(sh.uid)));
@@ -964,10 +964,10 @@ function renderCenterChoiceStage(s){
   const makeBtn=(text,cls,disabled,fn)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=text;b.disabled=!!disabled;b.onclick=fn;actions.appendChild(b);return b};
 
   if(mode==='pay'){
-    const responsePay=p.type==='response_payment_choice',info=E().getManaPlan?.(),plan=info?.plan||{},rawPool=info?.pool||s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((plan.selected_shard_uids||plan.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).map(String)),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?(p.selected_indices||[]).length:0);
+    const responsePay=p.type==='response_payment_choice',rawPool=s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((p.selected_shard_uids||[]).map(String)),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?(p.selected_indices||[]).length:0);
     identity='pay|'+(responsePay?'response':'normal')+'|'+pool.map(x=>x.uid).join('|')+'|'+String(cardId||'')+'|'+cost;
-    sig=identity+'|'+[...spentUids].join(',')+'|'+discardHave+'/'+discardNeed;
-    titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the additional Hand cost. Normal Mana Shards are automatic FIFO; only Class Shards can be toggled.':'Normal Mana Shards are automatic FIFO. Only Class Shards can be toggled.';statusText='MANA '+Number(plan.value||0)+' / '+cost;
+    sig=identity+'|'+[...spentUids].join(',')+'|'+discardHave+'/'+discardNeed+'|'+String(!!p.payment_ready)+'|'+Number(p.payment_value||0);
+    titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the additional Hand cost. Normal Mana Shards are automatic FIFO; only Class Shards can be toggled.':'Normal Mana Shards are automatic FIFO. Only Class Shards can be toggled.';statusText='MANA '+Number(p.payment_value||0)+' / '+cost;
     const classManual=p.class_manual_enabled!==false;
     cards=pool.map((sh,i)=>({key:String(sh.uid),uid:String(sh.uid),idx:i,front:shardArt(sh),back:'assets/ui/back-shard.webp',faceUp:true,selected:spentUids.has(String(sh.uid)),clickable:classManual&&sh.kind==='CLASS',label:(sh.class_name||'Mana')+' Shard'}));
     spentUids.forEach(x=>selectedKeys.add(String(x)));pool.filter(sh=>classManual&&sh.kind==='CLASS').forEach(x=>clickableKeys.add(String(x.uid)));
@@ -1005,7 +1005,7 @@ function renderCenterChoiceStage(s){
   }
 
   if(mode==='pay'){
-    const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),planReady=!!E().getManaPlan?.()?.plan?.ok;
+    const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),planReady=!!p.payment_ready;
     cardsHost.querySelectorAll('.gl-center-choice-card.is-clickable').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;intent(responsePay?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',[c.dataset.choiceUid])});
     if(!responsePay)makeBtn('CANCEL','gl-center-choice-cancel',false,()=>{if(!centerChoiceBusy)intent('cancelPendingAction',[])});
     makeBtn('PAY','gl-center-choice-primary',!(planReady&&discardReady),()=>{if(centerChoiceBusy)return;centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy');intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[])});
@@ -1577,7 +1577,7 @@ function renderSwap(s){
 function responsePaymentReady(s,p){
   const selectedDiscard=(p?.selected_indices||[]).length,requiredDiscard=Number(p?.required_discard_count||0);
   if(selectedDiscard!==requiredDiscard)return false;
-  return !!E().getManaPlan?.()?.plan?.ok;
+  return !!p?.payment_ready;
 }
 function renderPay(s){
   const p=s.pending;
@@ -1588,7 +1588,7 @@ function renderPay(s){
   payBtn.style.left=((pr.right-br.left)/currentUiScale()+8)+'px';
   payBtn.style.top=((pr.top+pr.height/2-br.top)/currentUiScale()-13)+'px';
   let ready=true;
-  if(p.type==='mana_shard_payment_choice')ready=!!E().getManaPlan()?.plan?.ok;
+  if(p.type==='mana_shard_payment_choice')ready=!!p.payment_ready;
   else if(p.type==='response_payment_choice')ready=responsePaymentReady(s,p);
   payBtn.disabled=!ready;
   payBtn.title=ready?'Pay selected Mana':'Select a valid Mana payment first';

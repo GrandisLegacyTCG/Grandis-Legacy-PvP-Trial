@@ -1,6 +1,6 @@
-# Grandis Legacy PvP v3.80.4
+# Grandis Legacy PvP v3.80.5
 
-Grandis Legacy PvP v3.80.4 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
+Grandis Legacy PvP v3.80.5 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
 
 ## Locked bases
 
@@ -60,9 +60,9 @@ The opening board is imported **without rendering** and then presented exactly o
 
 ## Mana payment interaction boundary
 
-PvP intentionally uses a simpler payment policy than VS AI v6.91.4. **Normal Mana Shards remain visible but cannot be manually selected.** They auto-fill the remaining cost in Shard-Pool FIFO order. For Skill payments, the player may toggle only Class Shards; selecting a Class Shard reduces the number of auto-selected normal Mana Shards, and canceling that Class Shard restores the same FIFO normal-Mana fill.
+PvP intentionally uses a simpler payment policy than VS AI v6.91.4. **Normal Mana Shards remain visible but cannot be manually selected.** They auto-fill the remaining cost in Shard-Pool FIFO order. For Skill and Event payments, the player may toggle only Class Shards; selecting a Class Shard reduces the number of auto-selected normal Mana Shards, and canceling that Class Shard restores the same FIFO normal-Mana fill.
 
-Class-Shard toggles are authoritative server intents. PAY is a single authoritative commit against the already-canonical payment state; there is no local draft, no symmetric-diff reconciliation, and no replay batch. Item/Event and other non-Skill payments preserve the game rule that normal Mana is spent first and Class Shards are automatic fallback at value 1. Response Mana payment uses the same PvP policy.
+Class-Shard toggles are authoritative server intents. PAY is a single authoritative commit against the already-canonical payment state; there is no local draft, no symmetric-diff reconciliation, and no replay batch. Event uses the exact same payment interaction as Skill; its Class Shards contribute 1 Mana. Response Mana payment uses the same Class-only/FIFO policy. Items do not enter this Mana-payment UI in the current PvP ruleset.
 
 This is an intentional PvP-only gameplay seam, chosen to keep the payment state deterministic across two devices while retaining the current v6.91.4 payment UI.
 

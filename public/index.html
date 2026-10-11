@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Grandis Legacy — PvP v3.80.4</title>
+<title>Grandis Legacy — PvP v3.80.5</title>
 <style>
 @font-face{font-family:Noto;src:url('assets/fonts/NotoSans-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 :root{
@@ -56,6 +56,12 @@ button{font:inherit}
 .hand.bottom .hand-card:after{content:"";position:absolute;left:-4px;right:-4px;top:-34px;bottom:-18px;z-index:-1;pointer-events:auto}
 /* v6.91.4: root-cause correction — moved-stylesheet asset URLs fixed; PLAYER Draw keeps the external staged Main Deck + Shard presentation before Deploy. */
 /* Identity UI remains the approved v6.90.9 behavior: max 25 visible characters for each name/deck line. */
+
+/* Geometry-only donor anchor: preserves the exact v6.91.4 Hand-hover position without restoring the visible identity badge. */
+.player-name.gl-hover-geometry-only{position:absolute;z-index:-1;width:max-content;max-width:calc(100% - 16px);height:32px;display:flex;align-items:center;padding:4px 7px;border:1px solid transparent;right:8px;bottom:2px;visibility:hidden;pointer-events:none;overflow:hidden}
+.player-name.gl-hover-geometry-only .identity-copy{min-width:0;width:100%;display:flex;flex-direction:column;justify-content:center;line-height:1.02}
+.player-name.gl-hover-geometry-only .identity-name{font-size:9px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
+.player-name.gl-hover-geometry-only .identity-deck{margin-top:2px;font-size:8px;font-weight:720;letter-spacing:.02em;white-space:nowrap}
 
 /* v6.83: player Hand keeps the light fan with a small edge-only overlap. */
 .hand.bottom .hand-card{margin-left:-5px;transform-origin:50% 100%;}
@@ -335,6 +341,7 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
       <div class="action-feedback" id="actionFeedback"></div>
       <section class="hand bottom"><div class="hand-track"></div></section>
     </section>
+    <div class="player-name gl-hover-geometry-only" aria-hidden="true"><span class="identity-copy"><strong class="identity-name">PLAYER</strong><span class="identity-deck">Player Deck</span></span></div>
   </main>
 
   <aside class="sidebar">
