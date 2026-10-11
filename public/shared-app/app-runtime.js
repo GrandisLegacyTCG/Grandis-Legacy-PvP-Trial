@@ -490,8 +490,12 @@ function setPvpCoinGate(active){
 function pvpCoinChoice(info={}){
   resetPresentationState();lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('gl-lobby-hidden');setPvpCoinGate(true);glPvpCoinResolvedKey='';glPvpCoinAnimationActive=false;glPvpCoinLatest=null;glPvpOpeningKey='';
   const body=coinOverlay.querySelector('.gl-coin-body'),canChoose=!!info.canChoose;
-  body.innerHTML='<p>'+(canChoose?'Choose Heads or Tails. The winner takes the first Draw Phase.':'Waiting for '+esc(info.chooserName||'Player 2')+' to choose Heads or Tails…')+'</p>'+(canChoose?'<div class="gl-coin-actions"><button type="button" data-coin-choice="HEADS"><img src="'+coinFaceSrc('HEADS')+'" alt="Heads"><span>Heads</span></button><button type="button" data-coin-choice="TAILS"><img src="'+coinFaceSrc('TAILS')+'" alt="Tails"><span>Tails</span></button></div>':'');
-  if(canChoose)body.querySelectorAll('[data-coin-choice]').forEach(btn=>btn.onclick=()=>window.GL_PVP_HOST?.chooseCoin?.(btn.dataset.coinChoice));coinOverlay.classList.add('open');
+  // Both seats use the exact donor coin-choice presentation. Only the authoritative chooser gets click handlers.
+  // Do not replace the non-chooser view with a separate "Waiting for Player..." card; that caused visible PvP/VS-AI drift.
+  body.innerHTML='<p>Choose Heads or Tails. The winner takes the first Draw Phase.</p><div class="gl-coin-actions"><button type="button" data-coin-choice="HEADS"><img src="'+coinFaceSrc('HEADS')+'" alt="Heads"><span>Heads</span></button><button type="button" data-coin-choice="TAILS"><img src="'+coinFaceSrc('TAILS')+'" alt="Tails"><span>Tails</span></button></div>';
+  if(canChoose)body.querySelectorAll('[data-coin-choice]').forEach(btn=>btn.onclick=()=>window.GL_PVP_HOST?.chooseCoin?.(btn.dataset.coinChoice));
+  else body.querySelectorAll('[data-coin-choice]').forEach(btn=>{btn.setAttribute('aria-disabled','true');btn.tabIndex=-1;btn.onclick=e=>{e.preventDefault();e.stopPropagation()}});
+  coinOverlay.classList.add('open');
 }
 function pvpRenderCoinResult(info={}){
   glPvpCoinLatest=info;const body=coinOverlay.querySelector('.gl-coin-body'),localWon=Number(info.firstSeat)===Number(info.localSeat),winner=info.winnerName||(localWon?'YOU':info.opponentName||'OPPONENT'),start=!!info.canStartOpening;

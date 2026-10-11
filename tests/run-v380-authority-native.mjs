@@ -302,6 +302,32 @@ for(const firstSeat of [1,2]){
 }
 
 
+{
+  // Browser-parity payment regression: the UI may change a local draft selection many
+  // times, but PAY reaches the server as one atomic reconciliation batch.
+  for(const seat of [1,2]){
+    const a=create(seat),canonical=a.canonical.appState,hand=seat===1?canonical.playerHand:canonical.aiHand;
+    hand[0]='S1-EVT-002'; // Market Bargain, exact cost 2 with generic Shards in fixture.
+    a.applyIntent(seat,'beginPlayFromHand',[0]);
+    a.applyIntent(seat,'chooseHeroFromBoard',['PLAYER','LEFT']);
+    const before=a.viewForSeat(seat).appState,selected=(before.pending?.selected_shard_uids||[]).map(String),pool=before.playerManaPoolCards.map(x=>String(x.uid));
+    assert.equal(before.pending?.type,'mana_shard_payment_choice',`seat ${seat} must reach payment before atomic draft test`);
+    const remove=selected[0],add=pool.find(uid=>!selected.includes(uid));
+    assert.ok(remove&&add,'fixture needs one selected and one unselected generic Shard');
+    const rev=a.revision;
+    a.applyIntentBatch(seat,[
+      {name:'toggleManaShardPaymentChoice',args:[remove]},
+      {name:'toggleManaShardPaymentChoice',args:[add]},
+      {name:'commitManaShardPaymentChoice',args:[]}
+    ]);
+    assert.equal(a.revision,rev+1,'local payment draft must commit as one authoritative revision');
+    const after=a.viewForSeat(seat).appState;
+    assert.ok(after.responseWindow,'atomic PAY batch must leave payment and enter Response window');
+    assert.notEqual(after.pending?.type,'mana_shard_payment_choice','atomic PAY batch must leave the Mana payment pending state');
+  }
+}
+
+
 
 {
   for(const surrenderSeat of [1,2]){
@@ -350,5 +376,6 @@ console.log(JSON.stringify({
   customDeck50Accepted:true,
   opponentShardSelectionEndToEnd:true,
   manaPaymentEndToEnd:true,
+  manaPaymentSingleNetworkCommit:true,
   nativePvpSelfTests:2
 },null,2));

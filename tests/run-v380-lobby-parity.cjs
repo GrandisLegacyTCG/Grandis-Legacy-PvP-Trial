@@ -11,5 +11,7 @@ assert.match(css,/\.pvp-v260-lobby\{font-size:13px\}/,'Lobby base font must rema
 assert.match(css,/\.pvp-seat-kick\{[^}]*width:28px;[^}]*height:28px/s,'Kick button must be 28x28 on desktop');
 assert.match(css,/\.pvp-seat-kick img\{[^}]*width:16px;height:16px/s,'Kick icon must be 16x16');
 assert.match(css,/\.pvp-v260-actions \.pvp-v260-btn\{white-space:nowrap\}/,'JOIN AS PLAYER must stay on one line');
+assert.match(css,/\.pvp-v260-card\{[^}]*back-legacy\.webp/s,'Lobby Hero card slots must show a card-back placeholder while artwork is loading');
+assert.match(css,/\.pvp-v260-summary \.deck-section-start\{margin-top:/,'Deck summary must visually separate Legacy Deck from Main Deck');
 for(const name of Object.keys(parity.lobby_assets))assert.ok(host.includes(`assets/lobby/${name}`)||css.includes(`assets/lobby/${name}`)||css.includes(`../assets/lobby/${name}`),`Lobby asset is packaged but not referenced: ${name}`);
 console.log(JSON.stringify({ok:true,lobbyAssetHashes:Object.keys(parity.lobby_assets).length,joinAsPlayerSingleLine:true,kickButton:'28x28',kickIcon:'16x16'},null,2));

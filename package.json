@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.2",
+  "version": "3.80.3",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.2 — v6.91.4 gameplay-parity multiplayer handshake: exact v6.91.4 headless authority/presentation donor, PvP v3.76.6 Lobby, v6.48↔v3.51 as architecture reference only.",
+  "description": "Grandis Legacy PvP v3.80.3 — v6.91.4 gameplay-parity multiplayer handshake: exact v6.91.4 headless authority/presentation donor, PvP v3.76.6 Lobby, v6.48↔v3.51 as architecture reference only.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",

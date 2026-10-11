@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.2');
+assert.equal(pkg.version,'3.80.3');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6914-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -44,6 +44,9 @@ assert.doesNotMatch(pvpCss,/\.gl-coin-overlay\s*\{[^}]*background\s*:/s,'PvP int
 assert.match(pvpCss,/html\.gl-pvp-coin-gated \.app\{pointer-events:none!important/,'Coin Flip gate must block battlefield pointer interaction');
 assert.doesNotMatch(pvpCss,/\.app\s*\{[^}]*visibility\s*:/s,'PvP integration must not force the battlefield visible during the donor Coin Flip lifecycle');
 assert.match(app,/function pvpCoinChoice\(info=\{\}\)\{[^}]*gl-lobby-hidden/s,'PvP Coin Flip choice must keep the donor battlefield hidden');
+assert.doesNotMatch(app,/Waiting for ['\"]?\+?esc\(info\.chooserName|Waiting for .*choose Heads or Tails/i,'non-chooser must not get a separate waiting-card Coin Flip presentation');
+assert.match(app,/Both seats use the exact donor coin-choice presentation/,'both PvP seats must render the same Heads/Tails choice layout');
+assert.match(app,/else body\.querySelectorAll\('\[data-coin-choice\]'\).*aria-disabled/s,'non-chooser coin faces must remain visible but inert');
 assert.match(app,/function pvpCoinResult\(info=\{\}\)\{[^}]*gl-lobby-hidden/s,'PvP Coin Flip result must keep the donor battlefield hidden');
 assert.match(host,/if\(m\.status==='opening'\)[\s\S]*importBoard\(state\.snapshot,\{render:false\}\)/,'opening board must import silently before the single explicit v6.91.4 opening presentation');
 
@@ -88,6 +91,29 @@ assert.match(host,/if\(me\?\.hasDeck\|\|me\?\.deckKey\|\|me\?\.deckName\)return/
 assert.match(host,/!meNow\?\.hasDeck/,'default starter selection must not overwrite a retained server Custom Deck');
 assert.doesNotMatch(host,/subscribe\(fn\).*\},send,sendIntent/s,'raw transport send must not be exposed through GL_PVP_HOST');
 assert.doesNotMatch(app,/LOCAL AI|AI Deck|Player Deck/,'shared PvP runtime must not retain Local-AI/deck prototype labels');
+
+
+// Payment parity: selection is a local UI draft; only PAY crosses the network.
+assert.match(host,/window\.GL_PVP_SHARED_BOARD_ACTIVE=true/,'browser donor must run in shared-board mode');
+assert.match(host,/function localDraftIntent\(/,'PvP must keep Mana/Response selection drafts local');
+assert.match(host,/name==='toggleManaShardPaymentChoice'\|\|name==='toggleResponseManaShardChoice'\|\|name==='selectResponsePaymentChoice'/,'payment toggles must not round-trip through WebSocket');
+assert.match(host,/function commitLocalPaymentDraft\(responsePay=false\)/,'PAY must reconcile the local draft against the authoritative pending state');
+assert.match(host,/steps\.push\(\{name:responsePay\?'commitResponsePaymentChoice':'commitManaShardPaymentChoice'/,'PAY must end with one authoritative commit step');
+assert.match(host,/const INTENT_BATCH_LIMIT=24/,'payment reconciliation batch must cover the full 12-Shard Pool plus commit/additional cost steps');
+assert.match(server,/Array\.isArray\(msg\.steps\)\?msg\.steps\.slice\(0,24\)/,'server transport must accept the full payment reconciliation batch');
+assert.match(authority,/steps\.slice\(0,24\)/,'headless authority must execute the full payment reconciliation batch');
+
+// Asset warm-up: never show text-only card fallbacks while art is decoding.
+assert.match(host,/function preloadDeckAssets\(/,'selected deck artwork must be preloaded in lobby');
+assert.match(host,/function warmAllCardArt\(/,'card art should warm in the background before gameplay');
+assert.match(host,/function installImageDecodeGuard\(/,'dynamic card/shard images need a decode guard');
+assert.match(host,/preloadImages\(visibleBoardAssetUrls\(state\.snapshot\)\)/,'opening must wait for visible board art before starting motions');
+assert.match(pvpCss,/img\.gl-image-pending\{color:transparent!important/,'loading images must not expose alt-text card names');
+
+// Deck summary must reflect the two physical decks as two visual groups.
+const statsMarkup=host.match(/\$\('pvpDeckStats'\)\.innerHTML=([^;]+);/)?.[1]||'';
+assert.ok(statsMarkup.indexOf('Heroes')<statsMarkup.indexOf('Legacies')&&statsMarkup.indexOf('Legacies')<statsMarkup.indexOf('Legacy Deck'),'Legacy Deck total must immediately follow its Hero/Legacy components');
+assert.ok(statsMarkup.indexOf('Legacy Deck')<statsMarkup.indexOf('Skills')&&statsMarkup.indexOf('Skills')<statsMarkup.indexOf('Items')&&statsMarkup.indexOf('Items')<statsMarkup.indexOf('Events')&&statsMarkup.indexOf('Events')<statsMarkup.indexOf('Main Deck'),'Main Deck total must follow Skill/Item/Event components as a separate group');
 
 // Explicit product requirement: imported Custom Decks keep the existing 50–60 Main Deck acceptance.
 // Do not silently tighten this to 60 cards in this PvP hotfix.

@@ -1,4 +1,4 @@
-/* v3.80.2 integration boundary: v6.91.4 owns gameplay presentation; PvP only gates transport/lifecycle. */
+/* v3.80.3 integration boundary: v6.91.4 owns gameplay presentation; PvP only gates transport/lifecycle. */
 html.gl-pvp-game-active .gl-lobby-overlay,
 .gl-lobby-overlay{display:none!important}
 
@@ -14,3 +14,6 @@ html.gl-pvp-coin-gated .app *{cursor:default!important}
 
 /* Keep the approved donor lobby button label on one line at every supported width. */
 .pvp-v260-actions .pvp-v260-btn{white-space:nowrap}
+
+/* Never expose text-only card names while artwork is still downloading/decoding. */
+img.gl-image-pending{color:transparent!important;background:#0b1118!important}

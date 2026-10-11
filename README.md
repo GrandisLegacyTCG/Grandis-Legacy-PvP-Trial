@@ -1,6 +1,6 @@
-# Grandis Legacy PvP v3.80.2
+# Grandis Legacy PvP v3.80.3
 
-Grandis Legacy PvP v3.80.2 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
+Grandis Legacy PvP v3.80.3 is a **gameplay-parity patch** on the v6.91.4-native PvP handshake. The multiplayer layer must preserve VS AI v6.91.4 gameplay/presentation behavior and only replace local-AI authority with remote-player/server authority where required.
 
 ## Locked bases
 
@@ -56,6 +56,14 @@ When PvP is integrated into the main website later, this resolver boundary can b
 Coin Flip follows the VS AI v6.91.4 lifecycle: the battlefield keeps `gl-lobby-hidden` through Coin Flip choice/result, the donor Coin Flip overlay owns the visible screen, and the PvP integration does not override its backdrop. The Coin Flip gate also keeps the battlefield `inert` and blocks pointer/focus interaction.
 
 The opening board is imported **without rendering** and then presented exactly once by the v6.91.4 opening presenter. This prevents duplicate opening Draw/Shard motion and card-motion audio under the Coin Flip screen. The server begins the first authoritative turn only after both clients acknowledge opening; once mandatory Draw/replacement/Mana Regen is resolved, authority automatically transitions Draw -> Deploy like VS AI.
+
+## Mana payment interaction boundary
+
+Mana/Response Shard selection now follows the same interaction model as VS AI v6.91.4: selecting or deselecting Shards is a **local, non-committed UI draft**. Those draft clicks do not round-trip through WebSocket. When the player presses **PAY**, the client sends one authoritative reconciliation batch; the server replays the selection delta against the current pending payment and commits it atomically in one revision. This removes the previous network-per-click stall while keeping final payment authority on the server.
+
+## Asset warm-up and deck summary
+
+The selected deck artwork is preloaded in the lobby, the full local card-art set warms in the background, and visible opening-board art is decoded before opening presentation starts. Dynamic card/shard images suppress text fallback while decoding. The deck summary is grouped by the two physical decks: `Heroes + Legacies -> Legacy Deck`, then `Skills + Items + Events -> Main Deck`.
 
 ## Local run
 

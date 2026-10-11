@@ -293,10 +293,13 @@ export class V6914Authority{
     const viewSeat=Number(seat)===2?2:1;this.ctx.GL_PVP_LOCAL_SEAT=viewSeat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,viewSeat),{skipImportAnimations:true});
     assertLocalSeatMayAct(this.bridge.getSnapshot(),steps[0]?.name);
     const results=[];let any=false;
-    for(const step of steps.slice(0,8)){
+    for(const step of steps.slice(0,24)){
       const name=String(step?.name||''),args=Array.isArray(step?.args)?clone(step.args):[];if(!name)continue;
-      const r=this.bridge.applyServerIntent(name,args);results.push({name,ok:!!r?.ok,error:r?.error||null});if(r?.ok)any=true;
-      if(!r?.ok&&/Unknown Local AI runtime intent/i.test(String(r?.error||'')))throw new Error(r.error);
+      const r=this.bridge.applyServerIntent(name,args);results.push({name,ok:!!r?.ok,error:r?.error||null});
+      // A transport batch is one authoritative action. Fail closed before canonicalizing
+      // so local draft reconciliation (especially Mana PAY) is atomic, never half-applied.
+      if(!r?.ok)throw new Error(r?.error||('Intent batch step rejected: '+name));
+      any=true;
     }
     if(!any)throw new Error(results.map(x=>x.error).filter(Boolean).join('; ')||'Intent batch rejected.');
     this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.autoAdvanceResolvedHumanDraw();

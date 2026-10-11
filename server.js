@@ -10,8 +10,8 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.2';
-const BUILD_ID='gl-pvp-3.80.2-v6914-gameplay-parity-2026-10-11';
+const VERSION='3.80.3';
+const BUILD_ID='gl-pvp-3.80.3-v6914-payment-parity-rebuild-2026-10-11';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 
@@ -126,7 +126,7 @@ function applyIntent(client,msg,batch=false){
   }
   const base=Number(msg.baseRevision);if(base!==room.authority.revision)throw Object.assign(new Error('STALE_REVISION'),{code:'STALE_REVISION'});
   if(batch){
-    const steps=Array.isArray(msg.steps)?msg.steps.slice(0,8):[];if(!steps.length)throw new Error('Intent batch is empty.');
+    const steps=Array.isArray(msg.steps)?msg.steps.slice(0,24):[];if(!steps.length)throw new Error('Intent batch is empty.');
     room.authority.applyIntentBatch(client.seat,steps);
   }else{
     const name=safeText(msg.intent,100);if(!name)throw new Error('Intent name is required.');
