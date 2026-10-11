@@ -1,10 +1,10 @@
 {
-  "release": "v3.80.7",
+  "release": "v3.80.8",
   "generated_from": {
     "presentation": "VS AI v6.91.4",
     "lobby": "PvP v3.76.6",
     "architecture_reference": "VS AI Tutorial v6.48 ↔ PvP v3.51 (reference only)",
-    "payment_policy": "VS AI v6.91.4 exact manual Shard selection in the browser; PAY submits the final selected Shard UID set once to the authoritative server, which validates and calls the donor commit once"
+    "payment_policy": "VS AI v6.91.4 exact Shard payment rules represented by a center-only ephemeral UID draft; PAY submits the final selected Shard UID set once to the authoritative server, which validates and calls the donor commit once"
   },
   "lobby_assets": {
     "background.webp": {

@@ -7,7 +7,7 @@ import { V6914Authority, sourceHashes, internals } from '../server/v6914-authori
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const hashes=sourceHashes();
-assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.7 source set with the exact v6.91.4 donor engine and narrow final-Shard-UID payment seam');
+assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.8 source set with the exact v6.91.4 donor engine and narrow final-Shard-UID payment seam');
 
 const probe=new V6914Authority();
 const starterKeys=Object.keys(probe.starters);
@@ -264,8 +264,8 @@ for(const firstSeat of [1,2]){
 }
 
 {
-  // Browser-local donor draft -> one final UID PAY commit. Event Class Shards are
-  // worth 1 Mana, so this fixture deliberately submits a mixed exact payment.
+  // Center UI draft -> one final UID PAY commit. UI-only selection behavior is tested
+  // separately; this authority fixture submits the resulting mixed exact UID set.
   for(const seat of [1,2]){
     const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState,owner=seat===1?'PLAYER':'AI';
     const poolKey=seat===1?'playerManaPoolCards':'aiManaPoolCards',handKey=seat===1?'playerHand':'aiHand';
@@ -285,14 +285,10 @@ for(const firstSeat of [1,2]){
     assert.equal(Object.hasOwn(view.pending||{},'class_manual_enabled'),false,'removed PvP Class-only fields must not survive in donor pending state');
     assert.deepEqual((view.pending?.selected_shard_uids||[]).map(String),[`EVT-${seat}-M1`,`EVT-${seat}-M2`],'donor recommendation should initially prefer normal Mana when it exactly covers the Event cost');
 
-    // Simulate the real browser seam: mutate only the mounted local donor state.
-    // This must not alter the server canonical state until PAY is sent.
-    assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`EVT-${seat}-M2`])?.ok,true,'local donor must allow a normal Mana Shard to be deselected');
-    assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`EVT-${seat}-CW`])?.ok,true,'local donor must allow a Class Shard to be selected');
-    const localPending=a.bridge.getSnapshot().appState.pending;
-    const finalUids=(localPending?.selected_shard_uids||[]).map(String);
-    assert.deepEqual(finalUids,[`EVT-${seat}-M1`,`EVT-${seat}-CW`],'local donor draft must preserve exact clicked Shard UIDs');
-    assert.deepEqual((a.canonical.appState[poolKey]||[]).map(x=>String(x.uid)),[`EVT-${seat}-M1`,`EVT-${seat}-M2`,`EVT-${seat}-CW`],'local draft must not spend or mutate the server canonical pool before PAY');
+    // The browser center UI owns only this ephemeral selection array. It does not call
+    // the donor bridge; the authoritative pool must remain untouched until PAY.
+    const finalUids=[`EVT-${seat}-M1`,`EVT-${seat}-CW`];
+    assert.deepEqual((a.canonical.appState[poolKey]||[]).map(x=>String(x.uid)),[`EVT-${seat}-M1`,`EVT-${seat}-M2`,`EVT-${seat}-CW`],'UI draft must not spend or mutate the server canonical pool before PAY');
 
     // Forged/invalid final IDs must fail closed without advancing revision or leaving payment.
     const rev=a.revision;
@@ -321,8 +317,8 @@ for(const firstSeat of [1,2]){
 }
 
 {
-  // Matching Class Shard = 2 for a matching Warrior Skill. The browser donor may
-  // replace its initial two-normal recommendation locally, then PAY submits [Class UID].
+  // Matching Class Shard = 2 for a matching Warrior Skill. The centered UI may replace
+  // the initial two-normal recommendation, then PAY submits only the final Class UID.
   for(const seat of [1,2]){
     const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState,owner=seat===1?'PLAYER':'AI';
     const poolKey=seat===1?'playerManaPoolCards':'aiManaPoolCards',handKey=seat===1?'playerHand':'aiHand',heroKey=seat===1?'playerHeroes':'aiHeroes';
@@ -340,9 +336,7 @@ for(const firstSeat of [1,2]){
     assert.equal(view.pending?.type,'mana_shard_payment_choice',`seat ${seat} Warrior Skill must enter donor payment`);
     assert.deepEqual((view.pending?.selected_shard_uids||[]).map(String),[`SKILL-${seat}-M1`,`SKILL-${seat}-M2`],'donor recommendation must initially use two exact normal Mana Shards');
 
-    assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`SKILL-${seat}-CW`])?.ok,true,'browser-local donor toggle must accept the matching Class Shard UID');
-    const local=a.bridge.getSnapshot().appState.pending,finalUids=(local?.selected_shard_uids||[]).map(String);
-    assert.deepEqual(finalUids,[`SKILL-${seat}-CW`],'matching Warrior Class Shard must locally replace both 1-value normal Mana Shards');
+    const finalUids=[`SKILL-${seat}-CW`];
 
     a.applyIntent(seat,'commitManaShardPaymentChoice',[finalUids]);
     view=a.viewForSeat(seat).appState;
@@ -384,7 +378,7 @@ for(const firstSeat of [1,2]){
 
 console.log(JSON.stringify({
   ok:true,
-  architecture:'v6.91.4 gameplay base + local exact-Shard draft + final-UID PvP commit seam',
+  architecture:'v6.91.4 gameplay base + center-only ephemeral UID draft + final-UID PvP commit seam',
   lockedAuthoritySources:Object.keys(hashes).length,
   starterDecks:starterKeys.length,
   actorLocalSeatOrientation:true,

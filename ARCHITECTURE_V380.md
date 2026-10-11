@@ -1,8 +1,8 @@
-# PvP v3.80.7 Architecture
+# PvP v3.80.8 Architecture
 
 ## 1. Purpose
 
-v3.80.7 restores gameplay parity around the v6.91.4-native PvP integration and removes the experimental PvP-only Mana-payment policy fork. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
+v3.80.8 narrows the critical Mana-payment path around the v6.91.4-native PvP integration and removes browser-local donor mutation from payment selection. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
 
 ### Bases
 
@@ -18,7 +18,7 @@ No v3.51 runtime/authority directory is shipped. The older repository remains an
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.7 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.8 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -117,24 +117,27 @@ runtime-intent-batch
 
 The server rejects stale revisions. Accepted actions create a new authoritative revision. `clientActionId` is kept in a bounded dedupe ledger. The originating browser receives one `intent-result` that contains the action ID, accepted/rejected status, resulting revision, and that viewer's authoritative snapshot. The client releases its action gate from that one result; it does not correlate a separate ACK against a later broadcast snapshot. Opponent/spectator state still arrives through the normal room broadcast.
 
-`intentBatch` exists because some v6 mobile/tablet interactions legitimately issue dependent operations in one UI action, for example select + confirm. Committed gameplay transitions are executed server-side against one authoritative actor-local runtime. There is no client-side gameplay queue: if another action is already in flight, a second click is rejected rather than stored for later replay. If an `intent-result` times out, the gate is released and the client requests a fresh snapshot. **Mana selection is the exception to the network-action rule: it is a browser-local draft inside the mounted donor runtime. Only PAY crosses the network with the final UID set.**
+`intentBatch` exists because some v6 mobile/tablet interactions legitimately issue dependent operations in one UI action, for example select + confirm. Committed gameplay transitions are executed server-side against one authoritative actor-local runtime. There is no client-side gameplay queue: if another action is already in flight, a second click is rejected rather than stored for later replay. If an `intent-result` times out, the gate is released and the client requests a fresh snapshot. **Mana selection is the exception to the network-action rule only as ephemeral UI form state. It does not mutate the mounted donor runtime. Only PAY crosses the network with the final UID set.**
 
 ## 5A. PvP Mana payment contract
 
-v3.80.7 uses the exact VS AI v6.91.4 Shard-selection model and keeps the active donor engine byte-identical to the donor repository:
+v3.80.8 keeps the active gameplay donor byte-identical to VS AI v6.91.4 while moving payment interaction ownership entirely into the centered PvP UI until PAY:
 
 ```text
 authoritative payment pending
         |
         v
-donor recommended exact selection
-        |
-        +-- click any normal Mana Shard -> local donor toggle only
-        |
-        +-- click any Class Shard       -> local donor toggle only
+server/donor recommended exact selection
         |
         v
-local selected_shard_uids
+center cloned Shards with canonical UIDs
+        |
+        +-- click normal Mana -> ephemeral UI UID draft only
+        |
+        +-- click Class Shard -> ephemeral UI UID draft only
+        |
+        v
+UI exact-value preview / PAY readiness
         |
         | PAY sends final UID list once
         v
@@ -152,11 +155,15 @@ inject validated final draft into server donor runtime
 untouched donor commitManaShardPaymentChoice / commitResponsePaymentChoice
 ```
 
-The donor itself determines exact payment legality. A Mana Shard is worth 1. A matching Class Shard is worth 2 when paying a matching Skill; otherwise a Class Shard is worth 1 according to the donor/rules. The server does not replay a sequence of browser toggles and does not maintain a PvP-specific FIFO payment formula.
+The battlefield Shard Pool is not a payment controller. It remains visible and hoverable, but has no own payment click handler and no separate PAY button. Center clones are the only payment-selection surface.
 
-This boundary preserves canonical identity end-to-end: the visible Shard UID is the local selected UID, the UID transmitted by PAY, and the UID validated against the authoritative Shard Pool. A local click cannot spend anything by itself; the authoritative state changes only when PAY is accepted.
+The UI mirrors the v6.91.4 exact-payment value rule solely to enable/disable PAY and show `MANA value / cost`: Mana Shard = 1; matching Class Shard = 2 for a matching Skill; otherwise Class Shard = 1. That browser calculation cannot spend or move a Shard. The server still validates canonical UIDs and the donor commit remains the authoritative legality/spend/resolution step.
 
-For Response payments, required additional Hand-card choices are kept in the same local donor draft while Mana is being selected, then submitted alongside the final Shard UID list on PAY.
+This boundary preserves canonical identity end-to-end: the center clone UID is the UI draft UID, the UID transmitted by PAY, and the UID validated against the authoritative Shard Pool. A Shard click cannot mutate gameplay state by itself.
+
+For Response payments, required additional Hand-card choices are held in the same ephemeral UI draft while Mana is being selected, then submitted alongside the final Shard UID list on PAY. A committed Response payment has no local full-state rollback path.
+
+The battlefield root also stops click propagation before the donor's legacy body-level gameplay router. PvP field/hand/hero handlers run first and committed gameplay continues only through server intents. This specifically prevents the source-selection divergence that caused zero-Mana Meditation to resolve locally and then roll back to the server's older pending state.
 
 ## 6. Viewer safety
 
@@ -214,7 +221,7 @@ The exact v6.91.4 donor remains the gameplay/read surface. PvP adds only an inte
 
 ## 9. Asset boundary
 
-Standalone v3.80.7 resolves visible media locally:
+Standalone v3.80.8 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -229,7 +236,7 @@ Asset loading is intentionally bounded: the selected own-deck artwork is preload
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.7 deliberately does not ship
+## 10. What v3.80.8 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;

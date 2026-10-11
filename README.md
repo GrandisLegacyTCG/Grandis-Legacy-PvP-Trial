@@ -1,6 +1,6 @@
-# Grandis Legacy PvP v3.80.7
+# Grandis Legacy PvP v3.80.8
 
-Grandis Legacy PvP v3.80.7 is a **gameplay-parity/payment-handshake patch** on the v6.91.4-native PvP line. The multiplayer layer preserves VS AI v6.91.4 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
+Grandis Legacy PvP v3.80.8 is a **critical Mana-payment/input-boundary patch** on the v6.91.4-native PvP line. The multiplayer layer preserves VS AI v6.91.4 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
 
 ## Locked bases
 
@@ -8,9 +8,9 @@ Grandis Legacy PvP v3.80.7 is a **gameplay-parity/payment-handshake patch** on t
 - **Lobby base:** PvP v3.76.6
 - **Architecture reference:** handshake lessons from VS AI Tutorial v6.48 and PvP v3.51
 - **Server gameplay authority:** the exact VS AI v6.91.4 shared gameplay engine, executed headlessly in Node
-- **PvP Mana seam:** browser-local donor Shard selection; one final selected-Shard-UID commit on PAY
+- **PvP Mana seam:** center-only ephemeral UI Shard selection; one final selected-Shard-UID commit on PAY
 
-PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.7 Mana interaction follows the current VS AI v6.91.4 donor behavior rather than the older Class-only/FIFO experiment.
+PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.8 Mana interaction follows the current VS AI v6.91.4 donor behavior rather than the older Class-only/FIFO experiment.
 
 ## Current handshake
 
@@ -42,7 +42,7 @@ See `ARCHITECTURE_V380.md` for the full contract.
 
 ## Mana payment boundary
 
-v3.80.7 removes the PvP-only Class-Shard/FIFO payment fork and restores the active donor engine tree byte-for-byte to VS AI v6.91.4.
+v3.80.8 keeps the active donor engine tree byte-for-byte at VS AI v6.91.4 and removes browser-local donor gameplay mutation from Mana selection.
 
 The browser interaction is now:
 
@@ -50,10 +50,10 @@ The browser interaction is now:
 authoritative payment pending arrives
         |
         v
-v6.91.4 recommended exact Shard selection
+center payment clones use canonical Shard UIDs
         |
         | click any normal Mana or Class Shard
-        | (browser-local donor state only)
+        | (ephemeral UI draft only; donor state does not move)
         v
 final selected_shard_uids draft
         |
@@ -71,13 +71,15 @@ Response / resolution authoritative snapshot
 
 Normal Mana and Class Shards are both selectable exactly as in VS AI v6.91.4. The donor remains responsible for exact Mana value, matching Class value, and legal payment calculation. The PvP server does not invent a second payment formula; it only verifies final identity/ownership and submits the validated draft to the donor commit routine.
 
-For Response payments that also require a Hand discard, the browser keeps both the Shard choice and required discard choice in the same local donor draft and sends the final Shard UIDs plus final discard-choice indices on PAY.
+The real battlefield Shard Pool is **hover/presentation only** during payment. Only the centered cloned Shards can be selected. The old battlefield payment click path and separate battlefield PAY button are removed.
+
+For Response payments that also require a Hand discard, the browser keeps both the Shard choice and required discard choice only in the same ephemeral UI draft and sends the final Shard UIDs plus final discard-choice indices on PAY.
 
 ## Gameplay transport boundary
 
 v3.80.x uses one atomic `intent-result` for each committed network action. Exactly one network gameplay action may be in flight. A second committed action while one is still in flight is rejected locally rather than silently queued. If the result times out, the client releases the gate and requests a fresh authoritative snapshot.
 
-Mana **selection clicks are intentionally not network actions** in v3.80.7; they only change the mounted donor's local payment draft. PAY is the single committed network action for that payment.
+Mana **selection clicks are intentionally not network actions** in v3.80.8; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
 
 The opening battlefield is non-interactive until the server reaches `started`. A client may finish its opening animation a few seconds before the other device, but it cannot send gameplay actions during that gap.
 
@@ -107,7 +109,7 @@ The opening board is imported **without rendering** and then presented exactly o
 
 ## Seat orientation and mirroring
 
-Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.7 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
+Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.8 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
 
 ## Deck summary
 
@@ -165,4 +167,4 @@ See `DEPLOYMENT_GUARDRAILS.md`.
 - package only after the user explicitly asks for the candidate build;
 - every future Takeover Note should carry the same workflow rule.
 
-v3.80.7 is being packaged because this update was explicitly requested after the payment-handshake audit.
+v3.80.8 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.

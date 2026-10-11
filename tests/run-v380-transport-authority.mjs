@@ -42,11 +42,13 @@ for(const seat of [1,2]){
   const heroes=seat===1?canonical.playerHeroes:canonical.aiHeroes;
   hand[0]='S1-MAG-006'; // Meditation
   heroes.LEFT.card_id='S1-MAG-H001';heroes.LEFT.exhausted=false;
-  const h=harness(a,seat);
+  const h=harness(a,seat),before=h.getSnapshot().match.board.appState.playerManaPoolCards.length;
   let s=h.roundTrip('beginPlayFromHand',[0]);assert.equal(s.pending?.type,'source_selection');
   s=h.roundTrip('chooseHeroFromBoard',['PLAYER','LEFT']);
   assert.equal(s.pending,null,`seat ${seat} Meditation must fully resolve through the network transport`);
   assert.ok(s.playerDiscard.includes('S1-MAG-006'),`seat ${seat} Meditation must reach Discard after transport round-trip`);
+  assert.equal(s.playerManaPoolCards.length,before+2,`seat ${seat} Meditation must add exactly two Shards to the visible local Pool`);
+  assert.ok(s.playerManaPoolCards.slice(-2).every(sh=>sh&&sh.uid&&!sh.hidden_identity),`seat ${seat} newly gained Meditation Shards must be viewer-visible identities, not card backs`);
   assert.equal(h.channel.getState().inFlight,false);
 }
 
@@ -69,12 +71,10 @@ for(const seat of [1,2]){
   assert.equal(s.pending?.type,'mana_shard_payment_choice');
   assert.deepEqual((s.pending?.selected_shard_uids||[]).map(String),[`SKILL-${seat}-M1`,`SKILL-${seat}-M2`]);
 
-  // Browser-local donor toggle: no websocket packet may be emitted for this click.
-  a.viewForSeat(seat);
-  assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`SKILL-${seat}-CW`])?.ok,true);
-  const finalUids=(a.bridge.getSnapshot().appState.pending?.selected_shard_uids||[]).map(String);
-  assert.deepEqual(finalUids,[`SKILL-${seat}-CW`]);
-  assert.equal(h.getOut().length,0,`seat ${seat} local Shard click must not emit a websocket action`);
+  // Center payment selection is an ephemeral browser UI draft. It must not emit a
+  // network action until PAY, so transport receives only the final canonical UID set.
+  const finalUids=[`SKILL-${seat}-CW`];
+  assert.equal(h.getOut().length,0,`seat ${seat} UI-only Shard draft must not emit a websocket action`);
 
   s=h.roundTrip('commitManaShardPaymentChoice',[finalUids]);
   assert.notEqual(s.pending?.type,'mana_shard_payment_choice',`seat ${seat} final-UID PAY must leave the payment gate`);
@@ -100,12 +100,8 @@ for(const seat of [1,2]){
   s=h.roundTrip('chooseHeroFromBoard',['PLAYER','LEFT']);
   assert.equal(s.pending?.type,'mana_shard_payment_choice',`seat ${seat} Event must enter payment`);
 
-  a.viewForSeat(seat);
-  assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`EVT-${seat}-M2`])?.ok,true);
-  assert.equal(a.bridge.applyServerIntent('toggleManaShardPaymentChoice',[`EVT-${seat}-CW`])?.ok,true);
-  const finalUids=(a.bridge.getSnapshot().appState.pending?.selected_shard_uids||[]).map(String);
-  assert.deepEqual(finalUids,[`EVT-${seat}-M1`,`EVT-${seat}-CW`]);
-  assert.equal(h.getOut().length,0,`seat ${seat} Event Shard draft must remain local`);
+  const finalUids=[`EVT-${seat}-M1`,`EVT-${seat}-CW`];
+  assert.equal(h.getOut().length,0,`seat ${seat} Event UI-only Shard draft must remain local`);
 
   s=h.roundTrip('commitManaShardPaymentChoice',[finalUids]);
   assert.notEqual(s.pending?.type,'mana_shard_payment_choice',`seat ${seat} Event PAY must leave payment`);
@@ -118,4 +114,4 @@ for(const seat of [1,2]){
   assert.ok((resolved.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M2`));
 }
 
-console.log(JSON.stringify({ok:true,meditationTransportBothSeats:true,localShardDraftNoNetwork:true,finalShardCommitBothSeats:true,payTransportBothSeats:true,eventPaymentTransportBothSeats:true,noIntentDeadlock:true},null,2));
+console.log(JSON.stringify({ok:true,meditationTransportBothSeats:true,localShardUiDraftNoNetwork:true,finalShardCommitBothSeats:true,payTransportBothSeats:true,eventPaymentTransportBothSeats:true,noIntentDeadlock:true},null,2));

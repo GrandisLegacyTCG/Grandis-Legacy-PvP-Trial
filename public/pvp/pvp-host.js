@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.7';
-const BUILD_ID='gl-pvp-3.80.7-final-shard-commit-2026-10-11';
+const VERSION='Grandis Legacy PvP v3.80.8';
+const BUILD_ID='gl-pvp-3.80.8-center-mana-authority-2026-10-12';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};
@@ -172,7 +172,7 @@ function connect(force=false){
       if(m.snapshot)onSnapshot(m.snapshot);
       if(!result.matched&&m.ok===false)intentError(m.message||'Authoritative PvP request failed.');
     }
-    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.7 completes actions with intent-result + snapshot. */}
+    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.8 completes actions with intent-result + snapshot. */}
     else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot);renderLobby();window.GL_GAME_UI?.render?.()}
     else if(m.type==='pong'){}
     else console.warn('[PvP] Unknown server message',m)
@@ -187,9 +187,9 @@ function startMatch(){return send('start-match')}
 function surrender(){const m=match();return send('surrender-match',{baseRevision:Number(m?.revision||0),clientActionId:state.clientId+'.surrender.'+(++state.intentSeq)})?{ok:true,pending:true}:{ok:false,error:'WebSocket unavailable.'}}
 function returnToLobby(){return send('return-to-lobby')?{ok:true,pending:true}:{ok:false,error:'WebSocket unavailable.'}}
 
-// PvP payment keeps the v6.91.4 donor interaction: every visible Shard may be
-// selected/deselected locally using its canonical UID. Selection is only a draft; PAY sends
-// the final UID set once, and the authoritative server validates it before donor commit.
+// PvP payment keeps v6.91.4 exact-Shard semantics without mutating donor gameplay state
+// in the browser. The centered payment UI holds only an ephemeral UID draft; PAY sends the
+// final UID set once, and the authoritative server validates it before donor commit.
 function pvpIntent(name,args=[]){return sendIntent(String(name||''),Array.isArray(args)?args:[])}
 // Presentation-facing authority facade: reads come from the exact v6.91.4 engine; gameplay writes become server intents.
 const engineFacade=new Proxy({}, {get(_t,prop){

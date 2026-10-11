@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.7",
+  "version": "3.80.8",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.7 — v6.91.4 gameplay/presentation base with atomic authoritative transport and donor-exact local Mana selection committed by final Shard UID set.",
+  "description": "Grandis Legacy PvP v3.80.8 \u2014 v6.91.4 gameplay/presentation base with center-only UI Mana draft and one authoritative final-Shard-UID PAY commit.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
@@ -11,7 +11,7 @@
     "test:handshake": "node tests/run-v380-handshake-static.cjs",
     "test:assets": "node tests/run-v380-assets.cjs",
     "test:lobby": "node tests/run-v380-lobby-parity.cjs",
-    "test": "npm run check:syntax && npm run test:authority && npm run test:transport && npm run test:handshake && npm run test:assets && npm run test:lobby",
+    "test": "npm run check:syntax && npm run test:authority && npm run test:mana-ui && npm run test:transport && npm run test:handshake && npm run test:assets && npm run test:lobby",
     "frontend-manifest": "node tools/build-public-manifest.cjs",
     "manifest": "node tools/build-file-manifest.cjs",
     "verify:manifest": "node tools/verify-manifests.cjs",
@@ -19,7 +19,8 @@
     "test:startup": "node tests/run-deployment-startup-live.cjs",
     "release:seal": "npm run test && npm run frontend-manifest && npm run manifest && npm run verify:manifest && npm run check:deployment",
     "verify:deployment": "npm run check:deployment && npm run test:startup",
-    "test:transport": "node tests/run-v380-intent-channel.cjs && node tests/run-v380-transport-authority.mjs"
+    "test:transport": "node tests/run-v380-intent-channel.cjs && node tests/run-v380-transport-authority.mjs",
+    "test:mana-ui": "node tests/run-v380-mana-ui-draft.cjs"
   },
   "engines": {
     "node": ">=18"
@@ -30,10 +31,10 @@
   "grandisLegacyArchitecture": {
     "presentationBase": "VS AI v6.91.4",
     "lobbyBase": "PvP v3.76.6",
-    "referenceArchitecture": "VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts; current Mana interaction follows VS AI v6.91.4 exact Shard selection with a narrow final-UID PvP commit seam",
-    "serverAuthority": "VS AI v6.91.4 shared gameplay engine executed headlessly in Node VM; PvP validates final selected Shard UIDs at PAY and calls the donor commit once",
+    "referenceArchitecture": "VS AI Tutorial v6.48 \u2194 PvP v3.51 handshake concepts; current Mana interaction follows VS AI v6.91.4 exact Shard selection with a center-only UI draft and final-UID PvP commit seam",
+    "serverAuthority": "VS AI v6.91.4 shared gameplay engine executed headlessly in Node VM; browser payment clicks do not mutate donor state, and PvP validates final selected Shard UIDs at PAY before calling donor commit once",
     "v351RuntimeShipped": false,
-    "pvpManaPayment": "VS AI v6.91.4 exact manual Shard selection stays browser-local until PAY; PAY sends final selected Shard UIDs once for authoritative validation and donor commit"
+    "pvpManaPayment": "VS AI v6.91.4 exact manual Shard selection is represented only as an ephemeral centered UI UID draft; PAY sends final selected Shard UIDs once for authoritative validation and donor commit"
   },
   "northflankDeployment": {
     "builder": "DOCKERFILE",

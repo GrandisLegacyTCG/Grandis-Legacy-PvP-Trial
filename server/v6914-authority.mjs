@@ -288,9 +288,9 @@ export class V6914Authority{
     if(!isMana&&!isResponse)return null;
     if(isMana&&pending?.type!=='mana_shard_payment_choice')throw new Error('MANA_PAYMENT_NOT_PENDING');
     if(isResponse&&pending?.type!=='response_payment_choice')throw new Error('RESPONSE_PAYMENT_NOT_PENDING');
-    // v3.80.7 PvP seam: Shard clicking is a browser-local draft exactly like the
-    // v6.91.4 donor. PAY submits the final canonical UIDs once; the server validates
-    // ownership/pool identity, injects only that draft into the authoritative pending
+    // v3.80.8 PvP seam: Shard clicking changes only an ephemeral centered UI UID draft.
+    // PAY submits the final canonical UIDs once; the server validates ownership/pool
+    // identity, injects only that submitted selection into the authoritative pending
     // object, then lets the untouched donor commit routine validate exact Mana value.
     if(Array.isArray(args?.[0])){
       const raw=args[0].map(x=>String(x||'')).filter(Boolean);

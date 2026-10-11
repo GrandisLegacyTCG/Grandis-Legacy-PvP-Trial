@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.7');
+assert.equal(pkg.version,'3.80.8');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6914-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -101,18 +101,22 @@ assert.match(html,/class="player-name gl-hover-geometry-only"/,'removed identity
 assert.match(app,/uiRect\(document\.querySelector\('\.player-name'\)\)/,'Hand hover preview must use the exact v6.91.4 player-name anchor selector, not the Hand center');
 assert.doesNotMatch(app,/kind==='hand'[\s\S]{0,220}querySelector\('\.hand\.bottom'\)/,'Hand hover preview must not drift by anchoring to the Hand container');
 
-// PvP Mana payment: preserve the donor's exact Shard-selection behavior, but keep
-// the draft local until PAY. The final canonical UID set crosses the network once.
+// PvP Mana payment: preserve v6.91.4 exact-Shard semantics while keeping the browser
+// free of local donor gameplay mutation. Only the centered UI owns an ephemeral UID draft.
 assert.match(host,/window\.GL_PVP_SHARED_BOARD_ACTIVE=true/,'browser donor must run in shared-board mode');
-assert.match(host,/selected\/deselected locally using its canonical UID/,'PvP host must document the donor-exact local payment draft boundary');
-assert.match(app,/function localRuntimeIntent\(name,args=\[\]\)/,'payment selection must have an explicit browser-local donor-intent seam');
-assert.match(app,/const fn=B\(\)\?\.applyServerIntent/,'local payment draft must mutate the mounted donor bridge, not a parallel ad-hoc Set');
-assert.match(app,/E\(\)\.getManaPlan\?\.\(\)/,'PvP UI must read donor exact-payment legality from the local donor state');
+assert.match(host,/centered payment UI holds only an ephemeral UID draft/,'PvP host must document the UI-only payment draft boundary');
+assert.doesNotMatch(app,/function localRuntimeIntent\(/,'PvP payment must not expose a generic local donor gameplay-intent escape hatch');
+assert.doesNotMatch(app,/B\(\)\?\.applyServerIntent/,'browser payment selection must never mutate the mounted donor bridge');
+assert.match(app,/let manaPaymentDraft=\{key:'',uids:\[\],responseIndices:\[\]\}/,'centered payment must keep only an ephemeral UI UID/discard draft');
+assert.match(app,/function exactManaDraftPlan\(/,'centered payment must calculate exact Mana legality from the authoritative visible Pool plus the UI draft');
 assert.match(app,/cards=pool\.map\(\(sh,i\)=>\(\{[^}]*clickable:true/s,'every normal Mana and Class Shard must remain selectable in the centered donor-style payment UI');
-assert.match(app,/localRuntimeIntent\(responsePay\?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',\[c\.dataset\.choiceUid\]\)/,'centered Shard click must preserve the clicked canonical UID inside the local donor draft');
-assert.match(app,/localRuntimeIntent\('toggleManaShardPaymentChoice',\[sh\.uid\]\)/,'battlefield Shard click must preserve its canonical UID inside the local donor draft');
+assert.match(app,/toggleManaPaymentDraftUid\(s,p,rawPool,c\.dataset\.choiceUid\)/,'centered Shard click must preserve the clicked canonical UID inside the UI-only draft');
+assert.doesNotMatch(app,/wrap\.addEventListener\('click',[\s\S]{0,260}toggleManaPaymentDraftUid/,'real battlefield Shards must not be a Mana-payment click surface');
+assert.match(app,/Battlefield Shards are presentation-only in PvP/,'battlefield Shard Pool must be explicitly hover\/presentation-only for payment');
+assert.doesNotMatch(app,/gl-pay-button/,'legacy battlefield PAY button must be removed; center payment is the only PAY owner');
 assert.match(app,/responsePay\?\[finalUids,selectedIndices\]:\[finalUids\]/,'PAY must send the final Shard UID set once; Response PAY must include its final discard draft too');
-assert.match(app,/if\(p\.type==='mana_shard_payment_choice'\)ready=!!E\(\)\.getManaPlan\?\.\(\)\?\.plan\?\.ok/,'battlefield PAY readiness must follow the donor exact-payment plan');
+assert.match(app,/BF\?\.addEventListener\('click',e=>e\.stopPropagation\(\)\)/,'battlefield clicks must stop before the donor body router can perform a second local gameplay mutation');
+assert.match(app,/laneEl\.onclick=heroSingleAction/,'the full legal Hero panel must route source\/target clicks through the authoritative PvP handler');
 assert.doesNotMatch(app,/animateCenterChoiceExit\(keys,selectedTarget,otherTarget,\{returnSide:'PLAYER'\}\).*commitManaShardPaymentChoice/s,'PAY must not play a fake spend animation before the server accepts the commit');
 assert.match(donor,/function computeExactManaPayment\(/,'active gameplay donor must retain v6.91.4 exact Shard payment');
 assert.match(donor,/function recommendedExactManaShardUids\(/,'donor recommendation must remain intact');
