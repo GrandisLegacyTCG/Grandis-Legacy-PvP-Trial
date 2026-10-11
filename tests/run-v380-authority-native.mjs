@@ -2,23 +2,23 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { V6914Authority, sourceHashes, internals } from '../server/v6914-authority.mjs';
+import { V6916Authority, sourceHashes, internals } from '../server/v6916-authority.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const hashes=sourceHashes();
-assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.8 source set with the exact v6.91.4 donor engine and narrow final-Shard-UID payment seam');
+assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.9 source set with the v6.91.6 donor baseline, explicit PvP DOM guard, and narrow final-Shard-UID payment seam');
 
-const probe=new V6914Authority();
+const probe=new V6916Authority();
 const starterKeys=Object.keys(probe.starters);
-assert.equal(starterKeys.length,5,'expected five v6.91.4 starter decks');
+assert.equal(starterKeys.length,5,'expected five v6.91.6 starter decks');
 for(const name of ['GL_PVP_POPUP_OWNERSHIP_AUDIT_SELF_TEST','GL_PVP_V117_ACTION_SYNC_AUDIT_SELF_TEST','GL_LAB_V07_PAYMENT_RACIAL_QA_SELF_TEST']){
   const result=probe.runNativeSelfTest(name);
-  assert.equal(result?.ok,true,`${name} must pass under the headless v6.91.4 authority`);
+  assert.equal(result?.ok,true,`${name} must pass under the headless v6.91.6 authority`);
 }
 
 function create(firstSeat){
-  const a=new V6914Authority();
+  const a=new V6916Authority();
   a.start({p1:{name:'Seat 1',deckKey:starterKeys[0]},p2:{name:'Seat 2',deckKey:starterKeys[1]}});
   const opening=a.commitOpening({choice:'HEADS',outcome:firstSeat===2?'TAILS':'HEADS',firstSeat});
   const pre=opening.board.appState;
@@ -28,7 +28,7 @@ function create(firstSeat){
   assert.equal(pre.aiManaPoolCards.length,3,'seat 2 opening shard pool must contain three shards');
   const revBefore=a.revision;
   a.beginFirstTurn(firstSeat);
-  assert.equal(a.revision,revBefore+2,'beginFirstTurn must commit Draw resolution plus the v6.91.4 automatic Draw-to-Deploy transition');
+  assert.equal(a.revision,revBefore+2,'beginFirstTurn must commit Draw resolution plus the v6.91.6 automatic Draw-to-Deploy transition');
   return a;
 }
 
@@ -152,7 +152,7 @@ for(const firstSeat of [1,2]){
   }};
   const safe=internals.viewerSafeLocalBoard(board,{spectator:false}).appState;
   assert.equal(safe.aiManaPoolCards[0].uid,'REAL-UID','opponent Shard Pool must preserve donor-visible identity during normal play');
-  assert.equal(safe.aiManaPoolCards[0].class_name,'Mage','opponent Class Shard must stay visible like v6.91.4');
+  assert.equal(safe.aiManaPoolCards[0].class_name,'Mage','opponent Class Shard must stay visible like v6.91.6');
   assert.equal(safe.pending.candidates[0].uid,'REAL-UID','blind choice must preserve shuffled donor UID so the v6 UI can resolve the face-down candidate to its pool card');
 }
 
@@ -234,6 +234,12 @@ for(const firstSeat of [1,2]){
     const a=create(seat),other=seat===1?2:1,canonical=a.canonical.appState;
     const hand=seat===1?canonical.playerHand:canonical.aiHand;
     const heroes=seat===1?canonical.playerHeroes:canonical.aiHeroes;
+    const opponentPoolKey=seat===1?'aiManaPoolCards':'playerManaPoolCards',opponentOwner=seat===1?'AI':'PLAYER';
+    canonical[opponentPoolKey]=[
+      {uid:`BLIND-${seat}-M1`,kind:'MANA',owner_side:opponentOwner},
+      {uid:`BLIND-${seat}-CM`,kind:'CLASS',class_name:'Mage',owner_side:opponentOwner},
+      {uid:`BLIND-${seat}-M2`,kind:'MANA',owner_side:opponentOwner}
+    ];
     hand[0]='S1-THF-005';
     heroes.LEFT.card_id='S1-THF-H001';
     heroes.LEFT.exhausted=false;
@@ -260,6 +266,26 @@ for(const firstSeat of [1,2]){
     assert.equal(after.playerManaPoolCards.length,ownPoolBefore+1,'Steal must gain exactly one Shard from the acting player own Shard Deck');
     assertPrivacy(a,seat);
     assert.equal(a.viewForSeat(other).appState.aiManaPoolCards.length,after.playerManaPoolCards.length,'opponent viewer must see the resulting public Shard Pool count in mirrored orientation');
+  }
+}
+
+{
+  // If the opponent Pool contains only normal Mana Shards, identity is meaningless:
+  // Steal must resolve immediately instead of opening an optional blind picker.
+  for(const seat of [1,2]){
+    const a=create(seat),canonical=a.canonical.appState,owner=seat===1?'PLAYER':'AI',opponentOwner=seat===1?'AI':'PLAYER';
+    const hand=seat===1?canonical.playerHand:canonical.aiHand;
+    const heroes=seat===1?canonical.playerHeroes:canonical.aiHeroes;
+    const oppPoolKey=seat===1?'aiManaPoolCards':'playerManaPoolCards';
+    hand[0]='S1-THF-005';
+    heroes.LEFT.card_id='S1-THF-H001';heroes.LEFT.exhausted=false;
+    canonical[oppPoolKey]=[{uid:`AUTO-${seat}-1`,kind:'MANA',owner_side:opponentOwner},{uid:`AUTO-${seat}-2`,kind:'MANA',owner_side:opponentOwner}];
+    const before=canonical[oppPoolKey].length;
+    a.applyIntent(seat,'beginPlayFromHand',[0]);
+    a.applyIntent(seat,'chooseHeroFromBoard',['PLAYER','LEFT']);
+    const after=a.viewForSeat(seat).appState;
+    assert.notEqual(after.pending?.type,'opponent_mana_selection',`seat ${seat} all-Mana opponent Pool must not open optional Shard selection`);
+    assert.equal(after.aiManaPoolCards.length,before-1,`seat ${seat} Steal must auto-return exactly one opponent Mana Shard`);
   }
 }
 
@@ -371,14 +397,14 @@ for(const firstSeat of [1,2]){
     base.main_deck[i].quantity=q-take;total-=take;if(base.main_deck[i].quantity<=0)base.main_deck.splice(i,1);
   }
   assert.equal(total,50,'test fixture must contain exactly 50 Main Deck cards');
-  const a=new V6914Authority();
+  const a=new V6916Authority();
   assert.doesNotThrow(()=>a.start({p1:{name:'50 Card Custom',customDeck:base},p2:{name:'Starter',deckKey:starterKeys[1]}}),'existing 50-card Custom Deck acceptance is a locked PvP requirement and must remain unchanged');
   assert.equal(a.canonical.appState.playerDeck.length,50,'50-card Custom Deck must enter the match as 50 cards');
 }
 
 console.log(JSON.stringify({
   ok:true,
-  architecture:'v6.91.4 gameplay base + center-only ephemeral UID draft + final-UID PvP commit seam',
+  architecture:'v6.91.6 gameplay base + center-only ephemeral UID draft + final-UID PvP commit seam',
   lockedAuthoritySources:Object.keys(hashes).length,
   starterDecks:starterKeys.length,
   actorLocalSeatOrientation:true,

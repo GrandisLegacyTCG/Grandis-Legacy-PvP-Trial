@@ -1,10 +1,10 @@
 {
-  "release": "v3.80.8",
+  "release": "v3.80.9",
   "generated_from": {
-    "presentation": "VS AI v6.91.4",
+    "presentation": "VS AI v6.91.6",
     "lobby": "PvP v3.76.6",
-    "architecture_reference": "VS AI Tutorial v6.48 ↔ PvP v3.51 (reference only)",
-    "payment_policy": "VS AI v6.91.4 exact Shard payment rules represented by a center-only ephemeral UID draft; PAY submits the final selected Shard UID set once to the authoritative server, which validates and calls the donor commit once"
+    "architecture_reference": "VS AI Tutorial v6.48 \u2194 PvP v3.51 (reference only)",
+    "payment_policy": "VS AI v6.91.6 exact replacement UX represented by a center-only ephemeral UID draft; PAY submits one final selected-Shard UID set to authoritative server donor commit"
   },
   "lobby_assets": {
     "background.webp": {
@@ -62,52 +62,69 @@
     "public/pvp/intent-channel.js",
     "public/pvp/pvp-integration.css",
     "public/lobby/pvp-lobby-v3.76.6.css",
+    "public/engine/shared-app/app.bundle.js",
     "server.js",
-    "server/v6914-authority.mjs"
+    "server/v6916-authority.mjs"
   ],
   "authority_source_hashes": {
     "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
     "engine/js/runtime-authority.js": "58a09b947a1d25b2e5e6018c6e0dac9508b5d534dd2a51192cd6dbaf2e1d4399",
     "engine/shared-app/active-starters.js": "9d536dffd4aa811428285c8db1652b8b509b61dadc2b3e200042a85289a09cfe",
-    "engine/shared-app/app.bundle.js": "7253f45e57eee3c083e6877b8062fca7210034409e089cbdd4d88622a5569e93"
+    "engine/shared-app/app.bundle.js": "1dc185f987f56b1d804de9d014e818d3f657a880737bf2e2d582f5bf8fd52806"
   },
-  "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6914_subset excludes assets/lobby/",
-  "exact_v6914_trees": {
+  "donor_baseline": {
+    "engine_shared_app_bundle_sha256": "a27b993ce32f1c4e345c05c0865a891ff8a27f97fc3173e0f5ec041b3078a301",
+    "packaged_engine_shared_app_bundle_sha256": "1dc185f987f56b1d804de9d014e818d3f657a880737bf2e2d582f5bf8fd52806",
+    "bundle_note": "Packaged bundle is VS AI v6.91.6 plus one PvP-only delegated DOM gameplay-input guard. Gameplay rules are otherwise donor-driven.",
+    "stale_engine_js_bundle_shipped": false
+  },
+  "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6916_subset excludes assets/lobby/",
+  "donor_trees_v6916": {
     "engine": {
-      "files": 54,
-      "bytes": 31153091,
-      "new_fingerprint": "5adf7e22ef77c0a655809872d56f18ff7e3e8a5b2d77c0c68afcff10bae7a100",
-      "donor_fingerprint": "5adf7e22ef77c0a655809872d56f18ff7e3e8a5b2d77c0c68afcff10bae7a100",
-      "exact": true,
-      "note": "Exact VS AI v6.91.4 engine tree. PvP Mana reconciliation now lives only at the browser/server integration seam; donor gameplay code is unmodified."
+      "files": 53,
+      "bytes": 29648220,
+      "new_fingerprint": "e6cb678dc8e1ec52373ebdc96c5197741e4a5385e192dbce93ce1285274bdd36",
+      "donor_fingerprint": "40fdb02959fd9c010cb6a3a3467eb49e5830d7525858c02a2f1f702743faa459",
+      "exact": false,
+      "donor_files": 54,
+      "donor_bytes": 31155543,
+      "note": "Intentional PvP seam: active donor bundle has one external-UI DOM guard and stale engine/js/app.bundle.js is removed."
     },
     "card-art": {
       "files": 200,
       "bytes": 14335118,
       "new_fingerprint": "29fa7cee25d6d39cd5199bb8c3bc976fe8796b3e24d4caf086260d6952a3eacb",
       "donor_fingerprint": "29fa7cee25d6d39cd5199bb8c3bc976fe8796b3e24d4caf086260d6952a3eacb",
-      "exact": true
+      "exact": true,
+      "donor_files": 200,
+      "donor_bytes": 14335118
     },
     "shared-ui": {
       "files": 1,
-      "bytes": 81317,
-      "new_fingerprint": "85eecc393a54d9d48714fb4afdd4016a59d6f379c049cc82e2b18f0584ad1d66",
-      "donor_fingerprint": "85eecc393a54d9d48714fb4afdd4016a59d6f379c049cc82e2b18f0584ad1d66",
-      "exact": true
+      "bytes": 82451,
+      "new_fingerprint": "e44121027f1d726d6bd46a9b4c036e5b813c17b2618b29df740e7c2eb0c0569f",
+      "donor_fingerprint": "e44121027f1d726d6bd46a9b4c036e5b813c17b2618b29df740e7c2eb0c0569f",
+      "exact": true,
+      "donor_files": 1,
+      "donor_bytes": 82451
     },
     "runtime": {
       "files": 3,
       "bytes": 2067,
       "new_fingerprint": "5041e4c4572dce72b5587c3f03716b77b3bbeb08fcd7d41077623fadfd4213ee",
       "donor_fingerprint": "5041e4c4572dce72b5587c3f03716b77b3bbeb08fcd7d41077623fadfd4213ee",
-      "exact": true
+      "exact": true,
+      "donor_files": 3,
+      "donor_bytes": 2067
     },
-    "assets_v6914_subset": {
+    "assets_v6916_subset": {
       "files": 13,
       "bytes": 3736346,
       "new_fingerprint": "354761c97f4e244efbb899d56afaa2d75be1a18983106ad657e7901fbadd034a",
       "donor_fingerprint": "354761c97f4e244efbb899d56afaa2d75be1a18983106ad657e7901fbadd034a",
-      "exact": true
+      "exact": true,
+      "donor_files": 13,
+      "donor_bytes": 3736346
     }
   }
 }

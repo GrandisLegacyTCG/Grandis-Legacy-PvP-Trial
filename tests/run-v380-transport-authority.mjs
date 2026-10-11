@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
-import { V6914Authority } from '../server/v6914-authority.mjs';
+import { V6916Authority } from '../server/v6916-authority.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const src=fs.readFileSync(path.join(root,'public/pvp/intent-channel.js'),'utf8');
@@ -12,7 +12,7 @@ const createChannel=ctx.GL_CREATE_PVP_INTENT_CHANNEL;
 assert.equal(typeof createChannel,'function');
 
 function setup(seat=1){
-  const a=new V6914Authority(),keys=Object.keys(a.starters);
+  const a=new V6916Authority(),keys=Object.keys(a.starters);
   a.start({p1:{name:'P1',deckKey:keys[0]},p2:{name:'P2',deckKey:keys[1]}});
   a.commitOpening({choice:'HEADS',outcome:'HEADS',firstSeat:seat});
   a.beginFirstTurn(seat);

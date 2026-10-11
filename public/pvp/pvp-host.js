@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.8';
-const BUILD_ID='gl-pvp-3.80.8-center-mana-authority-2026-10-12';
+const VERSION='Grandis Legacy PvP v3.80.9';
+const BUILD_ID='gl-pvp-3.80.9-v6916-sync-cleanup-2026-10-12';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};
@@ -103,12 +103,12 @@ function sendIntent(name,args=[]){return ensureIntentChannel().sendIntent(String
 function sendIntentBatch(steps=[]){const rows=(Array.isArray(steps)?steps:[]).slice(0,INTENT_BATCH_LIMIT).filter(x=>x?.name).map(x=>({name:String(x.name),args:Array.isArray(x.args)?clone(x.args):[]}));if(!rows.length)return{ok:false,error:'Intent batch is empty.'};return ensureIntentChannel().sendBatch(rows)}
 function clearIntent(error=''){if(intentChannel)intentChannel.reset(error)}
 
-function importBoard(snap,opts={}){const b=snap?.match?.board;if(!b||!bridge()?.importSnapshot)return false;const rev=Number(snap.match.revision||0),status=String(snap.match.status||'');if(rev===state.lastImportedRevision&&status===state.lastImportedStatus)return false;/* Server snapshots update donor state without bridge animation. Opening uses render:false so the explicit v6.91.4 opening presentation is the only owner of its animation/SFX. */bridge().importSnapshot(b,{notice:'',skipImportAnimations:true});state.lastImportedRevision=rev;state.lastImportedStatus=status;if(opts.render!==false)window.GL_GAME_UI?.render?.();return true}
+function importBoard(snap,opts={}){const b=snap?.match?.board;if(!b||!bridge()?.importSnapshot)return false;const rev=Number(snap.match.revision||0),status=String(snap.match.status||'');if(!opts.force&&rev===state.lastImportedRevision&&status===state.lastImportedStatus)return false;/* Accepted/rejected intent results and explicit resync may force-import the server snapshot even at the same revision, so stale browser-only state can never survive authority recovery. */bridge().importSnapshot(b,{notice:'',skipImportAnimations:true});state.lastImportedRevision=rev;state.lastImportedStatus=status;if(opts.render!==false)window.GL_GAME_UI?.render?.();return true}
 function playerName(seat){return(state.snapshot?.players||[]).find(p=>Number(p.seat)===Number(seat))?.name||('Player '+seat)}
-function syncPresentation(prevStatus){
+function syncPresentation(prevStatus,opts={}){
   const m=match(),me=local(),p=presentation();if(!m)return;
   const active=['coin-flip','coin-result','opening','started','finished'].includes(m.status),app=document.querySelector('.app');$('pvpSetupOverlay')?.classList.toggle('open',!active);document.documentElement.classList.toggle('gl-pvp-game-active',active);document.documentElement.classList.toggle('gl-pvp-opening-gated',m.status==='opening');if(app&&m.status==='opening')app.inert=true;
-  // Match v6.91.4 presentation lifecycle: battlefield stays hidden throughout Coin Flip.
+  // Match v6.91.6 presentation lifecycle: battlefield stays hidden throughout Coin Flip.
   // Opening itself removes gl-lobby-hidden only when the first opening motion is ready.
   if(app)app.classList.toggle('gl-lobby-hidden',m.status==='setup'||m.status==='coin-flip'||m.status==='coin-result');
   if(m.status==='setup'){state.lastImportedRevision=-1;state.lastImportedStatus='';state.lastCoinChoiceKey='';state.lastOpeningKey='';state.openingAssetKey='';state.openingAssetPromise=null;p?.setCoinGate?.(false);window.GL_GAME_UI?.resetForLobby?.();return}
@@ -123,23 +123,23 @@ function syncPresentation(prevStatus){
     // Import the already-committed Opening Hand/Shard state silently. Rendering before
     // playOpening() would let the normal diff presenter see the same draws first, causing
     // duplicate opening motions and Card Sound leaking under the Coin Flip screen.
-    importBoard(state.snapshot,{render:false});
+    importBoard(state.snapshot,{render:false,force:!!opts.force});
     if(me?.role==='player'&&m.opening&&p){const key=String(m.openingId||['opening',m.startedAt||'',m.opening.choice,m.opening.outcome,m.firstSeat||''].join('|'));if(key!==state.lastOpeningKey&&key!==state.openingAssetKey){state.openingAssetKey=key;state.openingAssetPromise=preloadImages(visibleBoardAssetUrls(state.snapshot)).finally(()=>{if(match()?.status!=='opening'||state.openingAssetKey!==key)return;state.lastOpeningKey=key;state.openingAssetKey='';state.openingAssetPromise=null;const opening=clone(match()?.opening||m.opening)||{};opening.presentationId=key;p.playOpening({opening});if(app)app.inert=true})}}
     else{p?.releaseGate?.();app?.classList.remove('gl-lobby-hidden');window.GL_GAME_UI?.render?.()}
     return;
   }
   if(m.status==='started'||m.status==='finished'){
-    app?.classList.remove('gl-lobby-hidden');if(app)app.inert=false;p?.releaseGate?.();importBoard(state.snapshot,{render:true});return;
+    app?.classList.remove('gl-lobby-hidden');if(app)app.inert=false;p?.releaseGate?.();importBoard(state.snapshot,{render:true,force:!!opts.force});return;
   }
 }
-function onSnapshot(msg){
+function onSnapshot(msg,opts={}){
   const prevStatus=match()?.status||'setup',prevRev=Number(match()?.revision||0);state.snapshot=msg;state.connected=true;
   if(msg.local?.seatToken){state.seatToken=msg.local.seatToken;persistSession('seat',state.seatToken)}
   if(msg.local?.role){state.role=msg.local.role;window.GL_PVP_LOCAL_ROLE=state.role;persistSession('role',state.role)}
   if(msg.local?.customDeck){state.customDeck=clone(msg.local.customDeck);state.customDeckName=msg.local.deckName||state.customDeck?.display_name||state.customDeck?.deck_name||'Imported Deck';state.deckKey='';state.formation=msg.local.formation||baseFormation(state.customDeck);persist('custom',JSON.stringify(state.customDeck));persist('customName',state.customDeckName);persist('deck','')}
   else if(msg.local?.deckKey){state.deckKey=msg.local.deckKey;state.customDeck=null;state.customDeckName='';state.formation=msg.local.formation||state.formation;persist('deck',state.deckKey);persist('custom','');persist('customName','')}
   else if(msg.local?.hasDeck&&msg.local?.deckName&&!state.customDeck){state.deckKey='';state.customDeckName=msg.local.deckName;state.formation=msg.local.formation||state.formation}
-  renderLobby();syncPresentation(prevStatus);syncSetupSelection();notify();
+  renderLobby();syncPresentation(prevStatus,opts);syncSetupSelection();notify();
   if(!presentation()&&msg.match?.status!=='setup')setTimeout(()=>syncPresentation(prevStatus),80);
 }
 function recoverBuildMismatch(){
@@ -166,14 +166,14 @@ function connect(force=false){
   };
   ws.onerror=()=>{if(state.ws!==ws)return;state.connected=false;renderLobby()};
   ws.onmessage=ev=>{if(state.ws!==ws)return;let m;try{m=JSON.parse(ev.data)}catch{return}
-    if(m.type==='snapshot')onSnapshot(m);
+    if(m.type==='snapshot')onSnapshot(m,{force:!!m.forceImport});
     else if(m.type==='intent-result'){
       const result=ensureIntentChannel().handleResult(m);
-      if(m.snapshot)onSnapshot(m.snapshot);
+      if(m.snapshot)onSnapshot(m.snapshot,{force:true});
       if(!result.matched&&m.ok===false)intentError(m.message||'Authoritative PvP request failed.');
     }
-    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.8 completes actions with intent-result + snapshot. */}
-    else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot);renderLobby();window.GL_GAME_UI?.render?.()}
+    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.9 completes actions with intent-result + snapshot. */}
+    else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot,{force:true});else{renderLobby();window.GL_GAME_UI?.render?.()}}
     else if(m.type==='pong'){}
     else console.warn('[PvP] Unknown server message',m)
   };
@@ -187,11 +187,11 @@ function startMatch(){return send('start-match')}
 function surrender(){const m=match();return send('surrender-match',{baseRevision:Number(m?.revision||0),clientActionId:state.clientId+'.surrender.'+(++state.intentSeq)})?{ok:true,pending:true}:{ok:false,error:'WebSocket unavailable.'}}
 function returnToLobby(){return send('return-to-lobby')?{ok:true,pending:true}:{ok:false,error:'WebSocket unavailable.'}}
 
-// PvP payment keeps v6.91.4 exact-Shard semantics without mutating donor gameplay state
+// PvP payment keeps v6.91.6 exact-Shard semantics without mutating donor gameplay state
 // in the browser. The centered payment UI holds only an ephemeral UID draft; PAY sends the
 // final UID set once, and the authoritative server validates it before donor commit.
 function pvpIntent(name,args=[]){return sendIntent(String(name||''),Array.isArray(args)?args:[])}
-// Presentation-facing authority facade: reads come from the exact v6.91.4 engine; gameplay writes become server intents.
+// Presentation-facing authority facade: reads come from the exact v6.91.6 engine; gameplay writes become server intents.
 const engineFacade=new Proxy({}, {get(_t,prop){
   if(prop==='intent')return pvpIntent;if(prop==='intentBatch')return sendIntentBatch;if(prop==='prepareLocalMatch'||prop==='commitOpeningSetup'||prop==='beginFirstTurn')return()=>({ok:false,error:'PvP lifecycle is server-owned.'});
   // Standalone asset boundary. The exact donor engine can still contain website CDN

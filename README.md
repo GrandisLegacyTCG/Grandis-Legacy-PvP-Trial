@@ -1,21 +1,21 @@
-# Grandis Legacy PvP v3.80.8
+# Grandis Legacy PvP v3.80.9
 
-Grandis Legacy PvP v3.80.8 is a **critical Mana-payment/input-boundary patch** on the v6.91.4-native PvP line. The multiplayer layer preserves VS AI v6.91.4 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
+Grandis Legacy PvP v3.80.9 is a **critical Mana-payment/input-boundary patch** on the v6.91.6-native PvP line. The multiplayer layer preserves VS AI v6.91.6 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
 
 ## Locked bases
 
-- **Presentation/gameplay base:** VS AI v6.91.4
+- **Presentation/gameplay base:** VS AI v6.91.6
 - **Lobby base:** PvP v3.76.6
 - **Architecture reference:** handshake lessons from VS AI Tutorial v6.48 and PvP v3.51
-- **Server gameplay authority:** the exact VS AI v6.91.4 shared gameplay engine, executed headlessly in Node
+- **Server gameplay authority:** the exact VS AI v6.91.6 shared gameplay engine, executed headlessly in Node
 - **PvP Mana seam:** center-only ephemeral UI Shard selection; one final selected-Shard-UID commit on PAY
 
-PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.8 Mana interaction follows the current VS AI v6.91.4 donor behavior rather than the older Class-only/FIFO experiment.
+PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.9 Mana interaction follows the current VS AI v6.91.6 donor behavior rather than the older Class-only/FIFO experiment.
 
 ## Current handshake
 
 ```text
-v6.91.4 desktop / tablet / mobile UI
+v6.91.6 desktop / tablet / mobile UI
                 |
                 | normal committed gameplay intent
                 v
@@ -23,7 +23,7 @@ v6.91.4 desktop / tablet / mobile UI
                 |
                 | one gameplay intent + base revision
                 v
-  exact v6.91.4 gameplay engine in headless Node
+  exact v6.91.6 gameplay engine in headless Node
                 |
                 | one atomic intent-result
                 | + viewer-safe localized snapshot
@@ -31,10 +31,10 @@ v6.91.4 desktop / tablet / mobile UI
         thin PvP client adapter
                 |
                 v
-       v6.91.4 presentation runtime
+       v6.91.6 presentation runtime
 ```
 
-The active remote human is always executed as v6.91.4's local `PLAYER` in actor-local seat orientation. This prevents the multiplayer server from invoking v6 Local AI for Player 2.
+The active remote human is always executed as v6.91.6's local `PLAYER` in actor-local seat orientation. This prevents the multiplayer server from invoking v6 Local AI for Player 2.
 
 The donor's internal side names (`PLAYER` / `AI`) remain an engine implementation detail. In PvP mode the presentation translates the remote side to **Opponent**; it does not expose Local-AI identity copy as player-facing PvP UI.
 
@@ -42,7 +42,7 @@ See `ARCHITECTURE_V380.md` for the full contract.
 
 ## Mana payment boundary
 
-v3.80.8 keeps the active donor engine tree byte-for-byte at VS AI v6.91.4 and removes browser-local donor gameplay mutation from Mana selection.
+v3.80.9 uses VS AI v6.91.6 as the active donor. The gameplay bundle carries one explicit PvP-only DOM guard so delegated donor clicks cannot mutate gameplay locally while the external PvP UI owns input; gameplay rules remain donor-driven.
 
 The browser interaction is now:
 
@@ -63,13 +63,13 @@ server validates every UID against the actor's authoritative Shard Pool
         |
         | inject validated final selection
         v
-untouched v6.91.4 donor commit once
+v6.91.6 donor commit once
         |
         v
 Response / resolution authoritative snapshot
 ```
 
-Normal Mana and Class Shards are both selectable exactly as in VS AI v6.91.4. The donor remains responsible for exact Mana value, matching Class value, and legal payment calculation. The PvP server does not invent a second payment formula; it only verifies final identity/ownership and submits the validated draft to the donor commit routine.
+Normal Mana and Class Shards are both selectable exactly as in VS AI v6.91.6. The donor remains responsible for exact Mana value, matching Class value, and legal payment calculation. The PvP server does not invent a second payment formula; it only verifies final identity/ownership and submits the validated draft to the donor commit routine.
 
 The real battlefield Shard Pool is **hover/presentation only** during payment. Only the centered cloned Shards can be selected. The old battlefield payment click path and separate battlefield PAY button are removed.
 
@@ -79,7 +79,7 @@ For Response payments that also require a Hand discard, the browser keeps both t
 
 v3.80.x uses one atomic `intent-result` for each committed network action. Exactly one network gameplay action may be in flight. A second committed action while one is still in flight is rejected locally rather than silently queued. If the result times out, the client releases the gate and requests a fresh authoritative snapshot.
 
-Mana **selection clicks are intentionally not network actions** in v3.80.8; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
+Mana **selection clicks are intentionally not network actions** in v3.80.9; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
 
 The opening battlefield is non-interactive until the server reaches `started`. A client may finish its opening animation a few seconds before the other device, but it cannot send gameplay actions during that gap.
 
@@ -103,13 +103,13 @@ The browser is never given a “top 5 deck order” preload hint. That would lea
 
 ## Coin Flip and opening boundary
 
-Coin Flip follows the VS AI v6.91.4 lifecycle: the battlefield keeps `gl-lobby-hidden` through Coin Flip choice/result, the donor Coin Flip overlay owns the visible screen, and the PvP integration does not override its backdrop. The Coin Flip gate also keeps the battlefield `inert` and blocks pointer/focus interaction.
+Coin Flip follows the VS AI v6.91.6 lifecycle: the battlefield keeps `gl-lobby-hidden` through Coin Flip choice/result, the donor Coin Flip overlay owns the visible screen, and the PvP integration does not override its backdrop. The Coin Flip gate also keeps the battlefield `inert` and blocks pointer/focus interaction.
 
-The opening board is imported **without rendering** and then presented exactly once per client by the v6.91.4 opening presenter. A stable server-owned opening presentation ID makes presentation idempotent. Clients may start a few seconds apart, but the same opening cannot replay on one device.
+The opening board is imported **without rendering** and then presented exactly once per client by the v6.91.6 opening presenter. A stable server-owned opening presentation ID makes presentation idempotent. Clients may start a few seconds apart, but the same opening cannot replay on one device.
 
 ## Seat orientation and mirroring
 
-Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.8 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
+Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.9 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
 
 ## Deck summary
 
@@ -167,4 +167,4 @@ See `DEPLOYMENT_GUARDRAILS.md`.
 - package only after the user explicitly asks for the candidate build;
 - every future Takeover Note should carry the same workflow rule.
 
-v3.80.8 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.
+v3.80.9 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.

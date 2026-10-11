@@ -4,14 +4,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, randomInt, createHash } from 'node:crypto';
 import { WebSocketServer, WebSocket } from 'ws';
-import { V6914Authority, sourceHashes } from './server/v6914-authority.mjs';
+import { V6916Authority, sourceHashes } from './server/v6916-authority.mjs';
 
 const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.8';
-const BUILD_ID='gl-pvp-3.80.8-center-mana-authority-2026-10-12';
+const VERSION='3.80.9';
+const BUILD_ID='gl-pvp-3.80.9-v6916-sync-cleanup-2026-10-12';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 
@@ -55,7 +55,7 @@ function viewFor(client){
   return{type:'snapshot',version:VERSION,buildId:BUILD_ID,serverTime:now(),local,players:sortedPlayers().map(publicPlayer),spectators:[...room.spectators.values()].map(publicSpectator),match};
 }
 function send(ws,payload){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(payload))}
-function broadcast(){for(const p of [...room.players.values(),...room.spectators.values()])if(p.connected&&p.ws)send(p.ws,viewFor(p))}
+function broadcast(exceptClient=null){for(const p of [...room.players.values(),...room.spectators.values()])if(p!==exceptClient&&p.connected&&p.ws)send(p.ws,viewFor(p))}
 function fail(client,message,code='REQUEST_REJECTED'){send(client?.ws,{type:'error',code,message:String(message||'Request rejected.'),serverTime:now(),snapshot:viewFor(client)})}
 function intentResult(client,{clientActionId='',ok=true,code=null,message='',appliedRevision=null}={}){
   send(client?.ws,{type:'intent-result',clientActionId:String(clientActionId||''),ok:!!ok,code:code||null,message:String(message||''),revision:Number(room.authority?.revision||0),appliedRevision:appliedRevision==null?Number(room.authority?.revision||0):Number(appliedRevision),serverTime:now(),snapshot:viewFor(client)});
@@ -67,8 +67,8 @@ function validateFormation(deck,formation){
   if(!a.every(Boolean)||!b.every(Boolean)||new Set(b).size!==3||a.join('|')!==b.join('|'))throw new Error('Formation must be a permutation of the selected deck Heroes.');
   return{LEFT:String(formation.LEFT),CENTER:String(formation.CENTER),RIGHT:String(formation.RIGHT)};
 }
-// One immutable setup authority only supplies the exact v6.91.4 starter catalog. Match authority is always new per match.
-const setupAuthority=new V6914Authority();
+// One immutable setup authority only supplies the exact v6.91.6 starter catalog. Match authority is always new per match.
+const setupAuthority=new V6916Authority();
 function setupStarters(){return setupAuthority.starters}
 
 function setDeckFast(client,msg){
@@ -88,7 +88,7 @@ function startMatch(client){
   if(client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can start the match.');
   if(room.match.status!=='setup')throw new Error('Match already started.');
   if(!bothPlayersReady())throw new Error('Both players must be connected, have a deck, and be READY.');
-  const p1=playerBySeat(1),p2=playerBySeat(2),authority=new V6914Authority();
+  const p1=playerBySeat(1),p2=playerBySeat(2),authority=new V6916Authority();
   authority.start({p1:selectionOf(p1),p2:selectionOf(p2)});
   room.authority=authority;room.ledger.clear();
   room.match={...freshMatch(),status:'coin-flip',chooserSeat:2,startedAt:now()};
@@ -157,7 +157,7 @@ function handle(client,msg){
   if(String(msg.clientBuildId||'')!==BUILD_ID)throw Object.assign(new Error('CLIENT_BUILD_MISMATCH'),{code:'CLIENT_BUILD_MISMATCH'});
   switch(msg.type){
     case 'ping': send(client.ws,{type:'pong',serverTime:now()}); return false;
-    case 'resync': send(client.ws,viewFor(client)); return false;
+    case 'resync': send(client.ws,{...viewFor(client),forceImport:true}); return false;
     case 'rename': if(room.match.status!=='setup')throw new Error('Name is locked after match start.'); client.name=safeText(msg.name,20)||client.name;client.ready=false;break;
     case 'switch-role':{
       if(room.match.status!=='setup')throw new Error('Role is locked after match start.');const role=safeRole(msg.role);if(role===client.role)break;
@@ -188,7 +188,7 @@ const server=http.createServer(async(req,res)=>{
     const url=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
     if(url.pathname==='/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
-      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'v6.91.4-native-authority-handshake',authoritySources:sourceHashes()}));return;
+      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'v6.91.6-native-authority-handshake',authoritySources:sourceHashes()}));return;
     }
     let rel=decodeURIComponent(url.pathname);if(rel==='/'||rel==='')rel='/index.html';
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);
@@ -214,8 +214,8 @@ wss.on('connection',(ws,req)=>{
     }else{
       if(room.spectators.size>=MAX_SPECTATORS)throw new Error('Spectator capacity reached.');client={clientId,name,role:'spectator',ready:false,connected:true,ws};room.spectators.set(clientId,client);
     }
-    send(ws,viewFor(client));broadcast();
-    ws.on('message',raw=>{let msg=null;try{msg=JSON.parse(String(raw));const changed=handle(client,msg);if(changed)broadcast()}catch(err){
+    send(ws,viewFor(client));broadcast(client);
+    ws.on('message',raw=>{let msg=null;try{msg=JSON.parse(String(raw));const changed=handle(client,msg);if(changed){const gameplay=['runtime-intent','runtime-intent-batch','surrender-match'].includes(String(msg?.type||''));broadcast(gameplay?client:null)}}catch(err){
       const code=err?.code||'REQUEST_REJECTED',actionId=safeText(msg?.clientActionId,160),isGameplay=!!actionId&&['runtime-intent','runtime-intent-batch','surrender-match'].includes(String(msg?.type||''));
       if(isGameplay)intentResult(client,{clientActionId:actionId,ok:false,code,message:String(err?.message||err),appliedRevision:room.authority?.revision||0});
       else fail(client,err?.message||err,code);

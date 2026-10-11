@@ -1,24 +1,24 @@
-# PvP v3.80.8 Architecture
+# PvP v3.80.9 Architecture
 
 ## 1. Purpose
 
-v3.80.8 narrows the critical Mana-payment path around the v6.91.4-native PvP integration and removes browser-local donor mutation from payment selection. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
+v3.80.9 narrows the critical Mana-payment path around the v6.91.6-native PvP integration and removes browser-local donor mutation from payment selection. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
 
 ### Bases
 
 | Responsibility | Source |
 |---|---|
-| Gameplay presentation, timing, animation, sound, desktop/tablet/mobile interaction | VS AI v6.91.4 |
+| Gameplay presentation, timing, animation, sound, desktop/tablet/mobile interaction | VS AI v6.91.6 |
 | Pre-match Lobby presentation | PvP v3.76.6 |
 | Multiplayer design reference | VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts |
-| Server gameplay implementation | Exact VS AI v6.91.4 shared gameplay runtime, headless; final payment UID reconciliation lives outside the donor engine |
-| PvP Mana-payment policy | VS AI v6.91.4 exact Shard selection locally; one final selected-Shard-UID commit on PAY |
+| Server gameplay implementation | Exact VS AI v6.91.6 shared gameplay runtime, headless; final payment UID reconciliation lives outside the donor engine |
+| PvP Mana-payment policy | VS AI v6.91.6 exact Shard selection locally; one final selected-Shard-UID commit on PAY |
 
-No v3.51 runtime/authority directory is shipped. The older repository remains an architectural/networking reference only. The active Mana behavior comes from the current VS AI v6.91.4 donor.
+No v3.51 runtime/authority directory is shipped. The older repository remains an architectural/networking reference only. The active Mana behavior comes from the current VS AI v6.91.6 donor.
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.8 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.9 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -32,7 +32,7 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
 ## 3. Current handshake
 
 ```text
-          VS AI v6.91.4 presentation
+          VS AI v6.91.6 presentation
        desktop | tablet | mobile
                    |
               E().intent(...)
@@ -58,8 +58,8 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
         - coin/opening ACK gates
                    |
                    v
-      server/v6914-authority.mjs
-        - v6.91.4 gameplay scripts
+      server/v6916-authority.mjs
+        - v6.91.6 gameplay scripts
         - final selected-Shard-UID validation seam
         - exact donor engine stays unmodified
         - headless Node VM
@@ -75,7 +75,7 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
         silent bridge state import
                    |
                    v
-      v6.91.4 external presentation
+      v6.91.6 external presentation
 ```
 
 ## 4. Actor-local seat orientation
@@ -121,7 +121,7 @@ The server rejects stale revisions. Accepted actions create a new authoritative 
 
 ## 5A. PvP Mana payment contract
 
-v3.80.8 keeps the active gameplay donor byte-identical to VS AI v6.91.4 while moving payment interaction ownership entirely into the centered PvP UI until PAY:
+v3.80.9 uses the VS AI v6.91.6 gameplay donor with one explicit PvP-only DOM-input guard, while payment interaction ownership stays entirely in the centered PvP UI until PAY:
 
 ```text
 authoritative payment pending
@@ -157,7 +157,7 @@ untouched donor commitManaShardPaymentChoice / commitResponsePaymentChoice
 
 The battlefield Shard Pool is not a payment controller. It remains visible and hoverable, but has no own payment click handler and no separate PAY button. Center clones are the only payment-selection surface.
 
-The UI mirrors the v6.91.4 exact-payment value rule solely to enable/disable PAY and show `MANA value / cost`: Mana Shard = 1; matching Class Shard = 2 for a matching Skill; otherwise Class Shard = 1. That browser calculation cannot spend or move a Shard. The server still validates canonical UIDs and the donor commit remains the authoritative legality/spend/resolution step.
+The UI mirrors the v6.91.6 exact-payment value rule solely to enable/disable PAY and show `MANA value / cost`: Mana Shard = 1; matching Class Shard = 2 for a matching Skill; otherwise Class Shard = 1. That browser calculation cannot spend or move a Shard. The server still validates canonical UIDs and the donor commit remains the authoritative legality/spend/resolution step.
 
 This boundary preserves canonical identity end-to-end: the center clone UID is the UI draft UID, the UID transmitted by PAY, and the UID validated against the authoritative Shard Pool. A Shard click cannot mutate gameplay state by itself.
 
@@ -173,7 +173,7 @@ Before a snapshot reaches a viewer:
 - draw-pile orders are masked;
 - private pending/response data belonging to the other side is masked;
 - spectators do not receive either player's hand identity;
-- **Shard Pools remain visible public battlefield state**, matching VS AI v6.91.4; only the temporary opponent-Shard choice is presented face-down;
+- **Shard Pools remain visible public battlefield state**, matching VS AI v6.91.6; only the temporary opponent-Shard choice is presented face-down;
 - opponent-Shard choice candidates retain the donor UID needed to map the face-down option back to the visible pool card;
 - seat 2 receives the same board localized so its own side is `PLAYER` for the v6 presentation.
 
@@ -195,7 +195,7 @@ Flow:
 
 ```text
 both READY
--> server creates v6.91.4 match
+-> server creates v6.91.6 match
 -> Coin Flip choice/result
 -> both clients ACK Coin Flip presentation
 -> Start Game becomes authoritative
@@ -208,20 +208,20 @@ both READY
 -> server begins first turn in actor-local orientation
 -> authoritative v6 mandatory Draw/replacement/Mana Regen
 -> server automatically advances resolved Draw -> Deploy
--> v6.91.4 presentation renders the authoritative result
+-> v6.91.6 presentation renders the authoritative result
 ```
 
 ## 8. Presentation ownership
 
-Authoritative snapshots are imported with `skipImportAnimations:true`. Opening adds an extra boundary: the committed opening board is imported with `render:false`, and only the explicit v6.91.4 opening presenter is allowed to render/animate it.
+Authoritative snapshots are imported with `skipImportAnimations:true`. Opening adds an extra boundary: the committed opening board is imported with `render:false`, and only the explicit v6.91.6 opening presenter is allowed to render/animate it.
 
 That is intentional. The external `shared-app/app-runtime.js` owns visible animation/SFX by comparing prior and next authoritative visual state and by consuming the v6 battle-feedback surface. This avoids two presentation engines firing for the same transition.
 
-The exact v6.91.4 donor remains the gameplay/read surface. PvP adds only an integration boundary around final payment commit; it does not fork the donor payment rules or create a second battlefield renderer.
+The v6.91.6 donor remains the gameplay/read surface; PvP adds one DOM-input guard plus the network integration seam. PvP adds only an integration boundary around final payment commit; it does not fork the donor payment rules or create a second battlefield renderer.
 
 ## 9. Asset boundary
 
-Standalone v3.80.8 resolves visible media locally:
+Standalone v3.80.9 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -236,7 +236,7 @@ Asset loading is intentionally bounded: the selected own-deck artwork is preload
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.8 deliberately does not ship
+## 10. What v3.80.9 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;

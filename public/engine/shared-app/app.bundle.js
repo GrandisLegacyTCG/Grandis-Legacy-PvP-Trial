@@ -1750,14 +1750,42 @@
     return generic.slice(0,best.genericNeed).map(function(sh){return sh.uid;}).concat(best.classes.map(function(sh){return sh.uid;}));
   }
   function manaSelectionAfterToggle(state,side,c,cost,currentUids,toggleUid){
-    var pool=manaPoolCardsForSide(state,side),uid=String(toggleUid||''),selected=(currentUids||[]).map(String).filter(function(x,i,a){return a.indexOf(x)===i&&pool.some(function(sh){return String(sh.uid)===x;});}),at=selected.indexOf(uid);
-    if(at>=0){selected.splice(at,1);return selected;}
-    if(!pool.some(function(sh){return String(sh.uid)===uid;}))return selected;
-    var before=selected.slice();selected.push(uid);
-    var plan=computeExactManaPayment(state,side,c,cost,selected);
-    while(plan.value>cost&&selected.length>1){selected.shift();plan=computeExactManaPayment(state,side,c,cost,selected);}
-    if(plan.value>cost)return before;
-    return selected;
+    var pool=manaPoolCardsForSide(state,side),uid=String(toggleUid||''),selected=(currentUids||[]).map(String).filter(function(x,i,a){return a.indexOf(x)===i&&pool.some(function(sh){return String(sh.uid)===x;});}),before=selected.slice(),at=selected.indexOf(uid),target=Math.max(0,Number(cost||0));
+    function valueOf(sh){return sh&&sh.kind==='CLASS'?manaShardValueForCard(sh,c):1;}
+    function subsetForValue(candidates,need){
+      need=Math.max(0,Number(need||0));if(need===0)return[];
+      var best=null,total=Math.pow(2,candidates.length);
+      for(var mask=1;mask<total;mask++){
+        var picked=[],value=0,classCount=0;
+        for(var i=0;i<candidates.length;i++)if(mask&(1<<i)){var sh=candidates[i];picked.push(sh);value+=valueOf(sh);if(sh.kind==='CLASS')classCount++;if(value>need)break;}
+        if(value!==need)continue;
+        var candidate={uids:picked.map(function(sh){return String(sh.uid);}),count:picked.length,classCount:classCount,genericCount:picked.length-classCount};
+        // Auto-adjustment must spend/select normal Mana Shards before Class Shards.
+        // Only use a Class Shard when no exact replacement with fewer Class Shards exists.
+        // For equal Class-Shard usage, prefer the exact combination containing more Mana Shards;
+        // final ties keep deterministic Shard Pool order.
+        if(!best||candidate.classCount<best.classCount||(candidate.classCount===best.classCount&&candidate.genericCount>best.genericCount))best=candidate;
+      }
+      return best?best.uids:null;
+    }
+    var beforePlan=computeExactManaPayment(state,side,c,target,before);
+    // Payment opens with an exact recommendation. If a stale/invalid selection ever reaches
+    // this handler, restore a valid recommendation instead of allowing an underpaid state.
+    if(!beforePlan.ok){var fallback=recommendedExactManaShardUids(state,side,c,target);return fallback.length||target===0?fallback:before;}
+    if(at>=0){
+      // Deselecting a paid Shard must never make the payment insufficient. Replace its Mana
+      // value from currently-unselected Shards; if no exact replacement exists, keep it selected.
+      var removed=pool.find(function(sh){return String(sh.uid)===uid;}),need=valueOf(removed),remaining=before.filter(function(x){return x!==uid;}),remainingSet={};remaining.forEach(function(x){remainingSet[x]=true;});
+      var replacements=subsetForValue(pool.filter(function(sh){var k=String(sh.uid);return k!==uid&&!remainingSet[k];}),need);
+      return replacements?remaining.concat(replacements):before;
+    }
+    var toggled=pool.find(function(sh){return String(sh.uid)===uid;});if(!toggled)return before;
+    // Selecting an unselected Shard is a swap: remove already-selected Shard(s) with the same
+    // Mana value so the exact payment remains valid at all times.
+    var removeUids=subsetForValue(pool.filter(function(sh){return before.indexOf(String(sh.uid))!==-1;}),valueOf(toggled));
+    if(!removeUids)return before;
+    var removeSet={};removeUids.forEach(function(x){removeSet[x]=true;});
+    return before.filter(function(x){return !removeSet[x];}).concat([uid]);
   }
   function autoManaPaymentWithoutPrompt(state,side,c,cost){
     cost=Math.max(0,Number(cost||0));var selected=[],plan=computeManaPayment(state,side,c,cost,selected);
@@ -8410,6 +8438,8 @@ var desktopMarkup='<div class="gl-lab-authority '+(state.turn==='AI'?'turn-ai':'
       if(gameplayInputLocked()&&!safeDuringLock&&!passiveLandscapeShardDuringLock){ev.preventDefault();ev.stopPropagation();return;}
       if(ev.target.id==='mobileMatchMenuOverlay'){ closeMobileMatchMenu(); return; }
       if(ev.target.closest('#hoverCardZoom.is-click-zoom')){ v55ClickZoomHide(); return; }
+      var pvpExternalGameplay=!!(EXTERNAL_HUMAN_UI&&typeof window!=='undefined'&&window.GL_PVP_SHARED_BOARD_ACTIVE);
+      if(!pvpExternalGameplay){
       var play=ev.target.closest('[data-play-index]'); if(play){ if(isTouchTabletViewport())v94HoverZoomHide(); var playIndex=Number(play.getAttribute('data-play-index')); beginPlayFromHand(playIndex); return; }
       var tribute=ev.target.closest('[data-tribute-index]'); if(tribute){ if(isTouchTabletViewport())v94HoverZoomHide(); var tributeIndex=Number(tribute.getAttribute('data-tribute-index')); beginTributeFromHand(tributeIndex); return; }
       var heroPick=ev.target.closest('.hero-panel'); if(heroPick && appState && appState.pending && (appState.pending.type==='warp_scroll_selection'||appState.pending.type==='source_selection'||appState.pending.type==='target_selection'||appState.pending.type==='exact_two_target_selection'||appState.pending.type==='scouting_target_selection'||appState.pending.type==='tribute_target'||appState.pending.type==='racial_target_selection'||appState.pending.type==='hero_ability_target_selection'||appState.pending.type==='legacy_hero_target_selection'||appState.pending.type==='double_casting_target_selection')){ chooseHeroFromBoard(heroPick.getAttribute('data-side'), heroPick.getAttribute('data-lane')); return; }
@@ -8446,6 +8476,7 @@ var desktopMarkup='<div class="gl-lab-authority '+(state.turn==='AI'?'turn-ai':'
       var mr=ev.target.closest('[data-reposition-pair]'); if(mr){ performManualReposition(mr.getAttribute('data-reposition-pair')); return; }
       if(ev.target.closest('#manualRepositionCancel')){ cancelManualReposition(); return; }
       if(ev.target.closest('#optionalTargetSwapNo')){ performOptionalTargetSwapDecision(false); return; }
+      }
       var opEvt=ev.target.closest('[data-op-event-id]'); if(opEvt && appState){ appState.selectedOpponentEventId=opEvt.getAttribute('data-op-event-id'); }
       var opArch=ev.target.closest('[data-op-archive-id]'); if(opArch && appState){ var ae=(appState.opponentPlayedEvents||[]).find(function(e){ return e.id===opArch.getAttribute('data-op-archive-id'); }); if(ae){ appState.selectedOpponentEventId=ae.id; showOpponentEventDetail(ae); } return; }
       var info=ev.target.closest('[data-info-title]'); if(info){ showInfo(info.getAttribute('data-info-title'), info.getAttribute('data-info-body')); return; }

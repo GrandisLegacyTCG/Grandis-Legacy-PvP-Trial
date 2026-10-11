@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.8",
+  "version": "3.80.9",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.8 \u2014 v6.91.4 gameplay/presentation base with center-only UI Mana draft and one authoritative final-Shard-UID PAY commit.",
+  "description": "Grandis Legacy PvP v3.80.9 \u2014 VS AI v6.91.6 gameplay donor with exact center Mana draft, authoritative final-UID PAY, opponent-Shard no-choice auto-resolve, and cleaned snapshot/render ownership.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
@@ -29,12 +29,12 @@
     "ws": "^8.18.0"
   },
   "grandisLegacyArchitecture": {
-    "presentationBase": "VS AI v6.91.4",
+    "presentationBase": "VS AI v6.91.6",
     "lobbyBase": "PvP v3.76.6",
-    "referenceArchitecture": "VS AI Tutorial v6.48 \u2194 PvP v3.51 handshake concepts; current Mana interaction follows VS AI v6.91.4 exact Shard selection with a center-only UI draft and final-UID PvP commit seam",
-    "serverAuthority": "VS AI v6.91.4 shared gameplay engine executed headlessly in Node VM; browser payment clicks do not mutate donor state, and PvP validates final selected Shard UIDs at PAY before calling donor commit once",
+    "referenceArchitecture": "VS AI Tutorial v6.48 \u2194 PvP v3.51 handshake concepts; current Mana interaction follows VS AI v6.91.6 exact replacement behavior with a center-only UI draft and final-UID PvP commit seam",
+    "serverAuthority": "VS AI v6.91.6 shared gameplay engine executed headlessly in Node VM; browser payment clicks hold only an ephemeral UI draft, and PvP validates final selected Shard UIDs at PAY before calling donor commit once",
     "v351RuntimeShipped": false,
-    "pvpManaPayment": "VS AI v6.91.4 exact manual Shard selection is represented only as an ephemeral centered UI UID draft; PAY sends final selected Shard UIDs once for authoritative validation and donor commit"
+    "pvpManaPayment": "VS AI v6.91.6 exact-selection UX (including exact replacement and normal-Mana preference) is represented by a centered ephemeral UID draft; PAY sends final selected Shard UIDs once for authoritative validation and donor commit"
   },
   "northflankDeployment": {
     "builder": "DOCKERFILE",

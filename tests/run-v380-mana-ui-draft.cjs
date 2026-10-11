@@ -50,12 +50,20 @@ let draft=ctx.ensureManaPaymentDraft(state,normalPending,pool);
 assert.deepEqual(Array.from(draft.uids),['CW'],'matching Class click must replace the two recommended normal Mana Shards exactly like donor selection semantics');
 assert.equal(ctx.toggleManaPaymentDraftUid(state,normalPending,pool,'CW'),true);
 draft=ctx.ensureManaPaymentDraft(state,normalPending,pool);
-assert.deepEqual(Array.from(draft.uids),[],'clicking selected Shard again must deselect it');
+assert.deepEqual(Array.from(draft.uids),['M1','M2'],'deselecting a selected matching Class Shard must auto-replace it with an exact normal-Mana payment');
 
 ctx.manaPaymentDraft={key:'',uids:[],responseIndices:[]};
 assert.equal(ctx.toggleManaPaymentDraftUid(state,normalPending,pool,'CM'),true);
 draft=ctx.ensureManaPaymentDraft(state,normalPending,pool);
 assert.deepEqual(Array.from(draft.uids),['M2','CM'],'nonmatching Class selection must keep an exact 2-Mana payment');
+
+// v6.91.6 replacement preference: auto-adjustment spends/selects normal Mana before Class.
+const preferNormalPool=[{uid:'A',kind:'MANA'},{uid:'B',kind:'MANA'},{uid:'C',kind:'MANA'},{uid:'CW2',kind:'CLASS',class_name:'Warrior'}];
+const preferPending={type:'mana_shard_payment_choice',card_id:'S1-WAR-005',cost:2,selected_shard_uids:['CW2']};
+ctx.manaPaymentDraft={key:'',uids:[],responseIndices:[]};
+assert.equal(ctx.toggleManaPaymentDraftUid(state,preferPending,preferNormalPool,'CW2'),true);
+draft=ctx.ensureManaPaymentDraft(state,preferPending,preferNormalPool);
+assert.deepEqual(Array.from(draft.uids),['A','B'],'deselecting matching Class 2 must prefer two normal Mana Shards when available');
 
 const responsePending={type:'response_payment_choice',mana_cost:2,response_option:{card_id:'S1-WAR-005'},required_discard_count:1,selected_shard_uids:['M1','M2'],selected_indices:[],candidates:[{hand_index:2},{hand_index:3}]};
 ctx.manaPaymentDraft={key:'',uids:[],responseIndices:[]};
@@ -66,4 +74,4 @@ assert.equal(ctx.toggleResponsePaymentDraftIndex(state,responsePending,0),true);
 draft=ctx.ensureManaPaymentDraft(state,responsePending,pool);
 assert.deepEqual(Array.from(draft.responseIndices),[0],'single required Response discard must replace prior UI draft selection');
 
-console.log(JSON.stringify({ok:true,exactManaDraft:true,matchingClassValue:true,eventClassValue:true,donorStyleToggle:true,responseDiscardDraft:true},null,2));
+console.log(JSON.stringify({ok:true,exactManaDraft:true,matchingClassValue:true,eventClassValue:true,v6916ExactReplacement:true,normalManaPreference:true,responseDiscardDraft:true},null,2));

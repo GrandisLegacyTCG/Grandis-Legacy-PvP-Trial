@@ -11,6 +11,10 @@
 .card-actions button.discard{border-color:#8b4249;background:#411920;color:#ffd8db}
 .card-actions button.tribute{border-color:#826d2c;background:#332b13;color:#ffe07a}
 .card-actions button.play{border-color:#4f8e69;background:#164e33;color:#fff;-webkit-text-stroke:.35px #b8952f;paint-order:stroke fill;text-shadow:none}
+/* v6.91.5: cards blocked only by Mana keep a visible, disabled PLAY action. */
+.card-actions button.play.gl-mana-disabled{position:relative!important;border-color:#686b70!important;background:#45484d!important;color:#c5c7ca!important;-webkit-text-stroke:0!important;text-shadow:none!important;filter:none!important;opacity:1!important;cursor:not-allowed!important;pointer-events:auto!important;overflow:visible!important}
+.card-actions button.play.gl-mana-disabled::after{content:attr(data-reason);position:absolute;left:50%;bottom:calc(100% + 5px);transform:translateX(-50%) translateY(2px);min-width:max-content;padding:4px 7px;border:1px solid #6b6f75;border-radius:5px;background:#202327;color:#f0f1f2;font-size:7px;font-weight:850;letter-spacing:0;text-transform:none;-webkit-text-stroke:0;text-shadow:none;white-space:nowrap;box-shadow:0 5px 14px rgba(0,0,0,.45);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .1s ease,transform .1s ease,visibility .1s ease;z-index:400}
+.card-actions button.play.gl-mana-disabled:hover::after{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 /* Copy the approved Battlefield UI hover interaction unit: button + card share the extended hit area. */
 .hand.bottom .hand-card:hover,.hand.bottom .hand-card.is-hovered,.hand.bottom .hand-card.is-selected{z-index:80!important;transform:translateY(0) rotate(0deg) scale(1.04)!important}
 .hand.bottom .hand-card:after{content:""!important;position:absolute!important;left:-4px!important;right:-4px!important;top:-34px!important;bottom:-18px!important;z-index:-1!important;pointer-events:auto!important}
@@ -166,7 +170,7 @@
 .zone[data-zone-type="Discard Pile"]:hover,.zone[data-zone-side="PLAYER"][data-zone-type="Legacy Deck"]:hover{filter:brightness(1.08)}
 
 /* VS AI parity: inspect the defeated Hero underneath a Legacy. */
-.gl-legacy-under-hero{position:absolute;right:-7px;top:-7px;z-index:95;width:19px;height:19px;padding:0;border:1px solid #f0c84e;border-radius:50%;background:#241d08;color:#ffe87a;font-size:11px;line-height:17px;font-weight:1000;text-align:center;cursor:pointer;box-shadow:0 2px 7px rgba(0,0,0,.58)}
+.gl-legacy-under-hero{position:absolute;left:6px;right:auto;top:6px;z-index:225;width:19px;height:19px;padding:0;border:1px solid #f0c84e;border-radius:50%;background:#241d08;color:#ffe87a;font-size:11px;line-height:17px;font-weight:1000;text-align:center;cursor:pointer;box-shadow:0 2px 7px rgba(0,0,0,.58)}
 .gl-legacy-under-hero:hover{transform:scale(1.08);filter:brightness(1.12)}
 
 /* Mana Regen counter: top-left of each Shard Deck; pile/deck count remains top-right. */

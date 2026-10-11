@@ -46,7 +46,7 @@ function makeHeadlessContext(){
   const context={
     console,setTimeout,clearTimeout,setInterval,clearInterval,Date,Math,JSON,Promise,URL,
     structuredClone:globalThis.structuredClone,performance:{now:()=>Date.now()},document,
-    navigator:{maxTouchPoints:0,userAgent:'GrandisLegacy-Headless-v6914'},location:{href:'http://127.0.0.1/'},localStorage,
+    navigator:{maxTouchPoints:0,userAgent:'GrandisLegacy-Headless-v6916'},location:{href:'http://127.0.0.1/'},localStorage,
     MutationObserver,CustomEvent,Audio,Image,requestAnimationFrame:fn=>setTimeout(()=>fn(Date.now()),0),cancelAnimationFrame:clearTimeout,
     matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}}),CSS:{escape:v=>String(v)},crypto:crypto.webcrypto
   };
@@ -55,7 +55,7 @@ function makeHeadlessContext(){
   context.window.addEventListener=()=>{};context.window.removeEventListener=()=>{};context.window.dispatchEvent=()=>true;
   vm.createContext(context);
   for(const {script} of COMPILED_SCRIPTS)script.runInContext(context,{timeout:30000});
-  if(!context.GL_LOCAL_AI_BRIDGE||!context.GL_GAME_ENGINE)throw new Error('v6.91.4 authority surface did not initialize.');
+  if(!context.GL_LOCAL_AI_BRIDGE||!context.GL_GAME_ENGINE)throw new Error('v6.91.6 authority surface did not initialize.');
   context.GL_LOCAL_AI_BRIDGE.setRenderSuppressed(true);
   context.GL_LOCAL_AI_BRIDGE.setSharedBoardMode(true);
   context.GL_LOCAL_AI_BRIDGE.setExternalHumanUi(true);
@@ -145,7 +145,7 @@ function maskPending(p,localSide='PLAYER'){
   if(out.type==='opponent_hand_choice'&&!out.reveal_cards&&Array.isArray(out.candidates)){
     out.candidates=out.candidates.map((_,i)=>({choice_index:i,card_id:HIDDEN_CARD,hidden_identity:true,card_back:true}));
   }
-  // Keep the donor's shuffled candidate UIDs intact for the acting player. v6.91.4
+  // Keep the donor's shuffled candidate UIDs intact for the acting player. v6.91.6
   // renders these candidates face-down, but its choice UI resolves each shuffled candidate
   // back to the visible opponent Shard Pool by UID. Replacing those UIDs breaks selection.
   return out;
@@ -206,7 +206,7 @@ function viewerSafeLocalBoard(board,{spectator=false,cardNames={}}={}){
   if(spectator)s.playerLegacyPackageSlots=maskLegacyPackages(s.playerLegacyPackageSlots,'hidden-player-legacy-package');
   s.aiLegacyPackageSlots=maskLegacyPackages(s.aiLegacyPackageSlots,'hidden-opponent-legacy-package');
   for(const k of ['playerManaDeck','aiManaDeck']){const a=Array.isArray(s[k])?s[k]:[];s[k]=Array.from({length:a.length},(_,i)=>({hidden_identity:true,slot_index:i}))}
-  // Shard Pools are public battlefield state in v6.91.4. The cards stay visible during
+  // Shard Pools are public battlefield state in v6.91.6. The cards stay visible during
   // normal play; only the *choice presentation* becomes face-down for effects that choose
   // an opponent Shard. Preserve exact objects/UIDs so donor rendering and payment/choice
   // lookup semantics remain intact.
@@ -232,7 +232,7 @@ function localizeOpening(opening,seat){
   out.handEvents=(out.handEvents||[]).map(mapEvent);
   out.manaEvents=(out.manaEvents||[]).map((e)=>{
     const x=clone(e);if(x?.side)x.side=swap(x.side);
-    // Opening animation in v6.91.4 hides the on-board Shard by its real UID until the
+    // Opening animation in v6.91.6 hides the on-board Shard by its real UID until the
     // face-down flying card arrives. Preserve that UID for both sides; otherwise the
     // destination lookup misses and opening presentation diverges/double-falls back.
     if(typeof x?.asset==='string'){const m=x.asset.match(/([^/]+\.webp)(?:\?.*)?$/i);if(m)x.asset='assets/shards/'+m[1]}
@@ -246,7 +246,7 @@ export function sourceHashes(){
   const out={};for(const rel of SCRIPT_PATHS){const b=fs.readFileSync(path.join(PUBLIC,rel));out[rel]=crypto.createHash('sha256').update(b).digest('hex')}return out;
 }
 
-export class V6914Authority{
+export class V6916Authority{
   constructor(){this.ctx=makeHeadlessContext();this.bridge=this.ctx.GL_LOCAL_AI_BRIDGE;this.game=this.ctx.GL_GAME_ENGINE;this.canonical=null;this.revision=0;this.opening=null;this.starters=clone(this.bridge.getStarterDeckOptions?.()||{});this.cardNames=Object.fromEntries((this.ctx.GL_CARD_DEFINITIONS?.cards||[]).map(c=>[String(c.card_id||''),String(c.name||c.card_name||c.card_id||'')]).filter(x=>x[0]))}
   deckForSelection(sel){if(sel?.customDeck)return normalizeFormation(sel.customDeck,sel.formation);const opt=this.starters?.[sel?.deckKey];if(!opt?.deck)throw new Error('Unknown starter deck: '+String(sel?.deckKey||''));return normalizeFormation(opt.deck,sel.formation)}
   start({p1,p2}){
@@ -266,7 +266,7 @@ export class V6914Authority{
     const activeSeat=canonicalState.turn==='AI'?2:canonicalState.turn==='PLAYER'?1:null;if(!activeSeat)return false;
     this.ctx.GL_PVP_LOCAL_SEAT=activeSeat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,activeSeat),{skipImportAnimations:true});
     const localState=this.bridge.getSnapshot()?.appState;
-    // v6.91.4 Local play auto-advances Draw -> Deploy once mandatory Draw, replacements,
+    // v6.91.6 Local play auto-advances Draw -> Deploy once mandatory Draw, replacements,
     // and Mana Regen are complete. Shared-board mode suppresses that browser timer, so the
     // server reproduces the same terminal transition only when the donor says Draw is done.
     if(!localState||localState.turn!=='PLAYER'||localState.phase!=='Draw'||localState.drawPhaseResolvedFor!=='PLAYER'||localState.drawPresentationPending||localState.pending||localState.responseWindow||localState.gameOver)return false;
@@ -281,6 +281,14 @@ export class V6914Authority{
     this.ctx.GL_PVP_LOCAL_SEAT=seat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,seat),{skipImportAnimations:true});
     const r=this.game.beginFirstTurn('PLAYER');if(!r?.ok)throw new Error(r?.error||'First turn failed.');
     this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),seat);this.revision++;this.autoAdvanceResolvedHumanDraw();return {board:this.snapshot(),revision:this.revision};
+  }
+  autoResolveMeaninglessOpponentShardChoice(){
+    const board=this.bridge.getSnapshot(),state=board?.appState,p=state?.pending;if(p?.type!=='opponent_mana_selection')return false;
+    const owner=p.decision_side||p.side||null;if(owner&&owner!=='PLAYER')return false;
+    const target=p.target_side==='PLAYER'?'PLAYER':'AI',pool=target==='PLAYER'?(state.playerManaPoolCards||[]):(state.aiManaPoolCards||[]),required=Math.min(Math.max(0,Number(p.required_count||1)),Number((p.candidates||[]).length));
+    const noMeaningfulChoice=required>=pool.length||!pool.some(sh=>sh&&sh.kind==='CLASS');if(!noMeaningfulChoice)return false;
+    for(let i=0;i<required;i++){const pick=this.bridge.applyServerIntent('selectOpponentManaChoice',[i]);if(!pick?.ok)throw new Error(pick?.error||'Automatic opponent Shard selection failed.')}
+    const commit=this.bridge.applyServerIntent('commitOpponentManaSelection',[]);if(!commit?.ok)throw new Error(commit?.error||'Automatic opponent Shard commit failed.');return true;
   }
   applyFinalPaymentDraft(name,args=[]){
     const board=this.bridge.getSnapshot(),state=board?.appState,pending=state?.pending;
@@ -321,6 +329,7 @@ export class V6914Authority{
     assertLocalSeatMayAct(this.bridge.getSnapshot(),name);
     const cleanArgs=Array.isArray(args)?clone(args):[],intentName=String(name||'');
     const result=(intentName==='commitManaShardPaymentChoice'||intentName==='commitResponsePaymentChoice')?this.applyFinalPaymentDraft(intentName,cleanArgs):this.bridge.applyServerIntent(intentName,cleanArgs);if(!result?.ok)throw new Error(result?.error||('Intent rejected: '+name));
+    this.autoResolveMeaninglessOpponentShardChoice();
     this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.autoAdvanceResolvedHumanDraw();return {board:this.snapshot(),revision:this.revision};
   }
   applyIntentBatch(seat,steps=[]){
@@ -334,6 +343,7 @@ export class V6914Authority{
       // A transport batch is one authoritative action. Fail closed before canonicalizing
       // so local draft reconciliation (especially Mana PAY) is atomic, never half-applied.
       if(!r?.ok)throw new Error(r?.error||('Intent batch step rejected: '+name));
+      this.autoResolveMeaninglessOpponentShardChoice();
       any=true;
     }
     if(!any)throw new Error(results.map(x=>x.error).filter(Boolean).join('; ')||'Intent batch rejected.');
@@ -341,12 +351,12 @@ export class V6914Authority{
     return {board:this.snapshot(),revision:this.revision,results};
   }
   viewForSeat(seat){
-    if(!this.canonical)return null;const n=Number(seat)===2?2:1;this.ctx.GL_PVP_LOCAL_SEAT=n;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,n),{skipImportAnimations:true});
-    return viewerSafeLocalBoard(this.bridge.getSnapshot(),{spectator:false,cardNames:this.cardNames});
+    if(!this.canonical)return null;const n=Number(seat)===2?2:1;
+    return viewerSafeLocalBoard(localizeBoardForSeat(this.canonical,n),{spectator:false,cardNames:this.cardNames});
   }
   viewForSpectator(){return this.canonical?viewerSafeLocalBoard(this.canonical,{spectator:true,cardNames:this.cardNames}):null}
   openingForSeat(seat){return localizeOpening(this.opening,seat)}
-  runNativeSelfTest(name){const fn=this.ctx?.[String(name||'')];if(typeof fn!=='function')throw new Error('Unknown v6.91.4 native self-test: '+String(name||''));return clone(fn())}
+  runNativeSelfTest(name){const fn=this.ctx?.[String(name||'')];if(typeof fn!=='function')throw new Error('Unknown v6.91.6 native self-test: '+String(name||''));return clone(fn())}
 }
 
 export const internals={viewerSafeLocalBoard,localizeOpening,mirrorSeatState,localizeBoardForSeat,maskPending,sanitizeViewerLogs,HIDDEN_CARD};
