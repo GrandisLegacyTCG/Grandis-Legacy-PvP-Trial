@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.10');
+assert.equal(pkg.version,'3.80.11');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6916-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -171,7 +171,7 @@ assert.match(server,/closeClientSocket\(client,4006,'Seat session replaced by an
 assert.match(server,/SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}/,'seat-token rejection needs a dedicated error code');
 assert.match(server,/code==='SEAT_TOKEN_MISMATCH'\?4004/,'seat-token mismatch must not use the normal reconnect close path');
 
-// v3.80.10 input/snapshot/presentation ownership guards.
+// v3.80.11 input/snapshot/presentation ownership guards.
 assert.match(donor,/pvpExternalGameplay=!!\(EXTERNAL_HUMAN_UI[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)/,'donor delegated gameplay clicks must be gated off while PvP external UI owns input');
 assert.match(host,/if\(!opts\.force&&rev===state\.lastImportedRevision/,'normal duplicate revisions may be skipped');
 assert.match(host,/onSnapshot\(m\.snapshot,\{force:true\}\)/,'intent-result snapshots must force authoritative recovery even at the same revision');
@@ -200,4 +200,12 @@ assert.match(app,/const blocked=!!visualPhaseOverride/,'gameplay input must stay
 assert.match(app,/x\.ready\?' is-available'/,'legal active Hero abilities must receive the visible available state');
 assert.match(host,/setInterval\(sendPing,4000\)/,'PvP host must maintain a lightweight connection heartbeat');
 assert.match(server,/connections:connectionRows\(\)/,'server pong must return both player connection rows');
+assert.match(server,/LOBBY_IDLE_MS=60\*1000/,'lobby player seats must expire after one minute of inactivity');
+assert.match(server,/MATCH_IDLE_MS=3\*60\*1000/,'started-match inactivity must surrender after three minutes');
+assert.match(server,/case 'activity': client\.lastActivityAt=Date\.now\(\)/,'idle authority must use explicit user-activity signals rather than ping traffic');
+assert.match(host,/installActivityTracking\(\)/,'browser must report real user activity for authoritative idle handling');
+assert.match(host,/function syncLobbyScale\(\)/,'mobile and tablet lobby must scale the canonical desktop composition instead of reflowing it');
+assert.match(app,/WAITING FOR OPPONENT RESPONSE/,'waiting player must receive an explicit opponent-response status');
+assert.match(app,/gl-response-action-host/,'legal Hero response actions must have an above-dim presentation path');
+assert.match(app,/presentationPlan\.battle\?\.length/,'authoritative battle feedback must be flushed before the full battlefield rerender');
 console.log(JSON.stringify({ok:true,version:pkg.version,presentation:'VS AI v6.91.6',lobby:'PvP v3.76.6',v351:'architecture/networking reference only',legacyAuthorityShipped:false,legacySyncLayerShipped:false,automaticDrawToDeploy:true,authoritativeRematchReset:true,legacyIdentityBadgesRemoved:true,customDeck50to60Preserved:true,privacyProjection:true,publicShardPoolParity:true,openingSinglePresentationOwner:true,donorCoinFlipLifecycle:true,resetRoomGuarded:true,customDeckReconnectSafe:true,buildMismatchRecovery:true,pvpPresentationLabels:true},null,2));

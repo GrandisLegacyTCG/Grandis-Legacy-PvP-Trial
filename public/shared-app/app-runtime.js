@@ -27,6 +27,7 @@ const battleLogPanel=document.getElementById('battleLogPanel');
 const appRoot=document.querySelector('.app');
 const soundBtn=document.querySelector('.bottom-actions button:not(.danger)');
 const focusDimmer=document.createElement('div');focusDimmer.className='gl-focus-dimmer';focusDimmer.setAttribute('aria-hidden','true');appRoot.appendChild(focusDimmer);
+const responseWaitingBox=document.createElement('div');responseWaitingBox.className='gl-response-waiting';responseWaitingBox.textContent='WAITING FOR OPPONENT RESPONSE...';responseWaitingBox.setAttribute('aria-hidden','true');BF.appendChild(responseWaitingBox);
 const centerChoiceStage=document.createElement('div');centerChoiceStage.className='gl-center-choice-stage';centerChoiceStage.setAttribute('aria-hidden','true');centerChoiceStage.innerHTML='<div class="gl-center-choice-copy"><h2 class="gl-center-choice-title"></h2><p class="gl-center-choice-helper"></p><strong class="gl-center-choice-status"></strong></div><div class="gl-center-choice-cards"></div><div class="gl-center-choice-actions"></div>';document.body.appendChild(centerChoiceStage);
 const battlefieldHoverPreview=document.createElement('div');battlefieldHoverPreview.className='gl-battlefield-hover-preview';battlefieldHoverPreview.setAttribute('aria-hidden','true');const battlefieldHoverImg=document.createElement('img');battlefieldHoverPreview.appendChild(battlefieldHoverImg);document.body.appendChild(battlefieldHoverPreview);
 const matchTimer=document.getElementById('matchTimer');
@@ -219,12 +220,13 @@ function placePhaseIndicator(activeLabel,animate){
 }
 function clearResponseFocusLights(){
   document.querySelectorAll('.gl-focus-lit').forEach(el=>el.classList.remove('gl-focus-lit'));
+  document.querySelectorAll('.gl-response-action-host').forEach(el=>el.classList.remove('gl-response-action-host'));
   sidebar?.classList.remove('gl-focus-response-sidebar');
 }
 function addResponseFocusLight(el){if(el)el.classList.add('gl-focus-lit')}
 function renderResponseFocusLights(s){
   clearResponseFocusLights();
-  if(s?.responseWindow?.response_owner!=='PLAYER')return;
+  if(!s?.responseWindow)return;
   sidebar?.classList.add('gl-focus-response-sidebar');
   addResponseFocusLight(activeStage?.closest('.active-card-pane')||activeStage);
   const rw=s.responseWindow,action=normalizeAction(rw.action||rw,rw.card_id);
@@ -236,14 +238,15 @@ function renderResponseFocusLights(s){
   });
 }
 function renderInteractionFocus(s){
-  const p=s?.pending,responseOwned=s?.responseWindow?.response_owner==='PLAYER';
+  const p=s?.pending,responseActive=!!s?.responseWindow,responseOwned=s?.responseWindow?.response_owner==='PLAYER';
   const payment=pendingOwner(p)==='PLAYER'&&['mana_shard_payment_choice','mana_spend_choice','response_payment_choice'].includes(p?.type)&&Number(p?.mana_cost??p?.selected_mana??1)>0;
   const blindMana=pendingOwner(p)==='PLAYER'&&p?.type==='opponent_mana_selection';
   const centerOnly=pendingOwner(p)==='PLAYER'&&['opponent_hand_choice','magic_scope_reveal'].includes(p?.type);
-  const mode=payment?'payment':(responseOwned?'response':(blindMana?'blind-mana':(centerOnly?'center-choice':'')));
+  const mode=payment?'payment':(responseActive?'response':(blindMana?'blind-mana':(centerOnly?'center-choice':'')));
   BF.classList.toggle('gl-focus-payment',mode==='payment');BF.classList.toggle('gl-focus-response',mode==='response');BF.classList.toggle('gl-focus-blind-mana',mode==='blind-mana');
   focusDimmer.classList.toggle('is-visible',!!mode);focusDimmer.setAttribute('aria-hidden',mode?'false':'true');
   if(mode==='response')renderResponseFocusLights(s);else clearResponseFocusLights();
+  const waiting=mode==='response'&&!responseOwned;responseWaitingBox.classList.toggle('is-visible',waiting);responseWaitingBox.setAttribute('aria-hidden',waiting?'false':'true');
   if(mode!==lastInteractionFocusMode){
     lastInteractionFocusMode=mode;const el=mode==='payment'?centerChoiceStage.querySelector('.gl-center-choice-primary'):(mode==='response'&&primary.classList.contains('gl-pass')?primary:null);
     if(el){el.classList.remove('gl-attention-enter');void el.offsetWidth;el.classList.add('gl-attention-enter');setTimeout(()=>el.classList.remove('gl-attention-enter'),520)}
@@ -390,7 +393,8 @@ function uiRect(el){
   }catch(_){return r;}
 }
 function connectionLevel(connected,rtt){if(!connected)return 0;const n=Number(rtt);if(!Number.isFinite(n))return 2;if(n<=110)return 4;if(n<=190)return 3;if(n<=320)return 2;return 1}
-function syncIdentityPlate(el,name,deck,connected,rtt){if(!el)return;const nameEl=el.querySelector('.identity-name'),deckEl=el.querySelector('.identity-deck'),bars=el.querySelector('.gl-connection-bars');if(nameEl)nameEl.textContent=String(name||'PLAYER');if(deckEl)deckEl.textContent=String(deck||'');if(bars){const level=connectionLevel(connected,rtt);bars.dataset.level=String(level);bars.setAttribute('aria-label',connected?(Number.isFinite(Number(rtt))?'Connection '+Math.round(Number(rtt))+' ms':'Connection online'):'Connection offline');bars.title=bars.getAttribute('aria-label')}}
+function identityLine(v,fallback=''){const full=String(v||fallback||'').trim(),shown=full.length>25?full.slice(0,22)+'...':full;return{full,shown}}
+function syncIdentityPlate(el,name,deck,connected,rtt){if(!el)return;const nameEl=el.querySelector('.identity-name'),deckEl=el.querySelector('.identity-deck'),bars=el.querySelector('.gl-connection-bars'),n=identityLine(name,'PLAYER'),d=identityLine(deck,'');if(nameEl){nameEl.textContent=n.shown;nameEl.title=n.full}if(deckEl){deckEl.textContent=d.shown;deckEl.title=d.full}if(bars){const level=connectionLevel(connected,rtt);bars.dataset.level=String(level);bars.setAttribute('aria-label',connected?(Number.isFinite(Number(rtt))?'Connection '+Math.round(Number(rtt))+' ms':'Connection online'):'Connection offline');bars.title=bars.getAttribute('aria-label')}}
 function syncPlayerNameBox(){if(window.GL_APP_MODE!=='PVP')return;const id=window.GL_PVP_HOST?.identity?.()||{};syncIdentityPlate(document.getElementById('pvpPlayerName'),id.localName||'PLAYER',id.localDeck||'',!!id.localConnected,id.localRttMs);syncIdentityPlate(document.getElementById('pvpOpponentName'),id.opponentName||'OPPONENT',id.opponentDeck||'',!!id.opponentConnected,id.opponentRttMs)}
 function lockPrimaryActionWidth(){
   if(!primary)return;
@@ -1228,14 +1232,14 @@ function renderHeroActions(laneEl,side,lane,s){
   if(!rw&&!s.pending&&s.turn==='PLAYER'){
     const a=E().getHeroActions(side,lane)||{};
     // Legal active abilities must look active as well as remain clickable.
-    if((a.racialAbilities||[]).length)racialReady=true;
-    if((a.classAbilities||[]).length)classReady=true;
+    
     (a.racialAbilities||[]).forEach(x=>items.push({key:'racial:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||heroRacialAbilityName(hero)||'RACIAL TRAIT',ready:true,fn:()=>intent('beginActivatedRacialAbility',[side,lane,x.abilityId])}));
     (a.classAbilities||[]).forEach(x=>items.push({key:'class:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||heroClassAbilityName(hero)||'CLASS SKILL',ready:true,fn:()=>intent('beginActivatedHeroAbility',[side,lane,x.abilityId])}));
     (a.legacyAbilities||[]).forEach(x=>items.push({key:'legacy:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||'LEGACY',fn:()=>intent('beginActivatedLegacyAbility',[side,lane,x.abilityId])}));
   }
   laneEl.classList.toggle('gl-class-ability-ready',classReady);
   laneEl.classList.toggle('gl-racial-trait-ready',racialReady);
+  laneEl.classList.toggle('gl-response-action-host',!!(rw?.response_owner==='PLAYER'&&items.some(x=>String(x.key||'').startsWith('response:'))));
   const existing=laneEl.querySelector(':scope > .gl-hero-actions');
   if(!items.length){if(existing)existing.remove();return;}
   const sig=JSON.stringify(items.map(x=>[x.key,x.label]));
@@ -1760,6 +1764,7 @@ function renderNow(){
   // Only normalize objectively inconsistent Response state. Mandatory gameplay choices are never force-cleared.
   if(repairBlockingStateIfNeeded(s)){setTimeout(renderNow,0);return;}
   const presentationPlan=buildPresentationPlan(s);
+  if(presentationPlan.battle?.length){presentationPlan.battle.forEach(evt=>E()?.queueAuthoritativeBattleFeedback?.(evt));E()?.flushBattleFeedback?.();presentationPlan.battle=[];}
   if(uiResponseSourceChoice&&s.responseWindow?.response_owner!=='PLAYER')uiResponseSourceChoice=null;
   autoSpecialChoices(s);const chain=renderCombatStacks(s);
   for(const side of ['PLAYER','AI'])for(const lane of laneOrder)renderHero(side,lane,sideHeroes(s,side)?.[lane],s);

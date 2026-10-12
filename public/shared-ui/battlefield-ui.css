@@ -1106,3 +1106,16 @@ body.gl-center-choice-active #sharedPreviewBox.previewing{opacity:0!important;po
 }
 .gl-vsai-choice-overlay.gl-choice-main-deck-preview .gl-choice-list-pane{display:contents!important}
 .gl-vsai-choice-overlay .gl-choice-fixed-preview-slot{display:none!important}
+
+
+/* v3.80.11 — PvP response focus: keep only legal response buttons above the dim layer. */
+.hero-lane.gl-class-ability-ready::before,.hero-lane.gl-racial-trait-ready::before,
+.hero-lane.gl-class-ability-ready.gl-racial-trait-ready::before{background:transparent!important;box-shadow:none!important}
+.battlefield.gl-focus-response .hero-lane.gl-response-action-host:not(.gl-focus-lit){z-index:950!important}
+.battlefield.gl-focus-response .hero-lane.gl-response-action-host:not(.gl-focus-lit)::after{
+  content:"";position:absolute;inset:0;z-index:940;pointer-events:none;border-radius:14px;background:rgba(0,0,0,.65)
+}
+.battlefield.gl-focus-response .hero-lane.gl-response-action-host .gl-hero-actions{z-index:960!important}
+.battlefield.gl-focus-response .hero-lane.gl-response-action-host .gl-hero-action{position:relative;z-index:961!important;filter:none!important;opacity:1!important}
+.gl-response-waiting{position:absolute;left:50%;top:8px;transform:translateX(-50%);z-index:975;display:none;pointer-events:none;padding:7px 13px;border:1px solid rgba(244,211,94,.62);border-radius:8px;background:rgba(3,11,18,.94);color:#f4d35e;font-size:9px;font-weight:950;letter-spacing:.055em;white-space:nowrap;box-shadow:0 8px 22px rgba(0,0,0,.46)}
+.gl-response-waiting.is-visible{display:block}

@@ -174,3 +174,21 @@ body.deck-setup-active #previewOverlay{z-index:10060!important}
 
 /* v3.79 PvP lobby parity guard: the donor renders JOIN AS PLAYER on one line. */
 .pvp-v260-actions .pvp-v260-btn{white-space:nowrap}
+
+
+/* v3.80.11 — Desktop lobby is canonical on every device. Touch/mobile keeps its existing interaction model; only geometry is unified. */
+@media(max-width:1160px),(hover:none) and (pointer:coarse){
+  .pvp-v260-lobby{overflow:hidden!important;background-attachment:fixed!important}
+  .pvp-v260-page{position:absolute!important;left:50%!important;top:50%!important;width:1366px!important;height:768px!important;min-height:768px!important;padding:14px 36px 16px!important;transform:translate(-50%,-50%) scale(var(--pvp-lobby-scale,1))!important;transform-origin:center center!important;display:flex!important;flex-direction:column!important}
+  .pvp-v260-topbar{min-height:58px!important;display:grid!important;grid-template-columns:194px minmax(280px,1fr)!important;align-items:start!important;gap:20px!important;margin-bottom:10px!important}
+  .pvp-v260-logo{width:190px!important;height:58px!important;flex:initial!important}
+  .pvp-v260-heading{padding-top:6px!important;min-width:0!important}.pvp-v260-heading h1{font-size:17px!important}.pvp-v260-heading p{font-size:13px!important;line-height:normal!important;margin-top:7px!important}
+  .pvp-v260-layout{display:grid!important;grid-template-columns:minmax(0,1fr) 340px!important;gap:14px!important;align-items:stretch!important;flex:1!important;min-height:0!important}
+  .pvp-v260-deck-panel{padding:16px 22px 15px!important}.pvp-v260-picker{grid-template-columns:142px minmax(0,1fr)!important;gap:13px!important}.pvp-v260-picker>label{font-size:17px!important}
+  .pvp-v260-lobby select{height:48px!important;font-size:15px!important;padding-left:17px!important}.pvp-v260-title{display:flex!important;align-items:baseline!important;gap:16px!important;margin-top:14px!important}.pvp-v260-title h2{font-size:28px!important}.pvp-v260-title p{font-size:13px!important;margin-top:0!important}
+  .pvp-v260-showcase{display:grid!important;grid-template-columns:minmax(0,1fr) 214px!important;gap:14px!important;margin-top:10px!important}.pvp-v260-formation{grid-template-columns:minmax(0,1fr) 27px minmax(0,1fr) 27px minmax(0,1fr)!important;gap:6px!important}.pvp-v260-swap-button{width:27px!important;height:27px!important;font-size:17px!important}
+  .pvp-v260-hero{padding:10px 10px 9px!important}.pvp-v260-position{font-size:15px!important;margin:auto 0 0!important;padding-top:9px!important}.pvp-v260-summary{margin-top:0!important;padding:12px 14px 10px!important}.pvp-v260-summary dl{display:flex!important;grid-template-columns:none!important}.pvp-v260-summary dl>div{min-height:25px!important}.pvp-v260-summary .total{min-height:37px!important}.pvp-v260-summary .deck-section-start{margin-top:10px!important}
+  .pvp-v260-footer{display:flex!important;margin-top:auto!important;padding-top:9px!important}.pvp-v260-footer .pvp-v260-btn{width:auto!important}.pvp-v260-status{text-align:left!important;margin-top:0!important}
+  .pvp-v260-room-panel{padding:17px 20px 15px!important}.pvp-v260-room-id{grid-template-columns:minmax(0,1fr) auto!important;gap:10px!important}.pvp-v260-switch{width:auto!important;min-height:34px!important;font-size:10px!important}.pvp-v260-seat{min-height:55px!important}
+  .pvp-progression-card{padding:20px!important}.pvp-progression-row{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr)!important;gap:8px!important}.pvp-progression-arrow{font-size:28px!important}.pvp-progression-card header h2{font-size:24px!important}.pvp-progression-card .pvp-v260-position{font-size:11px!important}
+}

@@ -10,10 +10,12 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.10';
-const BUILD_ID='gl-pvp-3.80.10-v6916-authority-presentation-cleanup-2026-10-12';
+const VERSION='3.80.11';
+const BUILD_ID='gl-pvp-3.80.11-v6916-ui-parity-idle-response-2026-10-12';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
+const LOBBY_IDLE_MS=60*1000;
+const MATCH_IDLE_MS=3*60*1000;
 
 const mime={
   '.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8',
@@ -156,10 +158,12 @@ function kickSeat2(client){
 function handle(client,msg){
   if(!msg||typeof msg!=='object')throw new Error('Invalid message.');
   if(String(msg.clientBuildId||'')!==BUILD_ID)throw Object.assign(new Error('CLIENT_BUILD_MISMATCH'),{code:'CLIENT_BUILD_MISMATCH'});
+  if(!['ping','resync'].includes(String(msg.type||'')))client.lastActivityAt=Date.now();
   switch(msg.type){
+    case 'activity': client.lastActivityAt=Date.now(); return false;
     case 'ping': {const reported=Number(msg.reportedRtt);if(Number.isFinite(reported)&&reported>=0&&reported<=60000)client.rttMs=Math.round(reported);client.lastSeenAt=Date.now();send(client.ws,{type:'pong',serverTime:now(),clientTime:Number(msg.clientTime)||0,connections:connectionRows()}); return false;}
     case 'resync': send(client.ws,{...viewFor(client),forceImport:true}); return false;
-    case 'rename': if(room.match.status!=='setup')throw new Error('Name is locked after match start.'); client.name=safeText(msg.name,20)||client.name;client.ready=false;break;
+    case 'rename': client.lastActivityAt=Date.now(); if(room.match.status!=='setup')throw new Error('Name is locked after match start.'); client.name=safeText(msg.name,25)||client.name;client.ready=false;break;
     case 'switch-role':{
       if(room.match.status!=='setup')throw new Error('Role is locked after match start.');const role=safeRole(msg.role);if(role===client.role)break;
       if(role==='spectator'){if(client.role==='player')room.players.delete(client.clientId);client.role='spectator';delete client.seat;client.ready=false;room.spectators.set(client.clientId,client)}
@@ -184,6 +188,30 @@ function handle(client,msg){
   return true;
 }
 
+function moveIdleLobbyPlayerToSpectator(p){
+  if(!p||p.role!=='player')return false;
+  room.players.delete(p.clientId);p.role='spectator';delete p.seat;p.ready=false;p.seatToken='';p.seatTokenHash='';room.spectators.set(p.clientId,p);
+  send(p.ws,{type:'idle-timeout',scope:'lobby',message:'Moved to Spectator after 1 minute of inactivity.',serverTime:now()});
+  return true;
+}
+function surrenderIdleMatchPlayer(p){
+  if(!p||p.role!=='player'||room.match.status!=='started'||!room.authority)return false;
+  try{room.authority.applyIntent(p.seat,'executeConfirmedSurrender',[]);}catch(err){console.warn('[idle] surrender failed',err?.message||err);return false}
+  const state=room.authority.canonical?.appState;if(state?.gameOver)state.gameEndReason='Match ended by inactivity surrender.';
+  room.match.status='finished';room.match.finishedAt=now();send(p.ws,{type:'idle-timeout',scope:'match',message:'Match surrendered after 3 minutes of inactivity.',serverTime:now()});return true;
+}
+function enforceIdleTimeouts(){
+  const t=Date.now();let changed=false;
+  if(room.match.status==='setup'){
+    for(const p of [...room.players.values()])if(t-Number(p.lastActivityAt||t)>=LOBBY_IDLE_MS)changed=moveIdleLobbyPlayerToSpectator(p)||changed;
+  }else if(room.match.status==='started'&&!room.authority?.canonical?.appState?.gameOver){
+    const idle=sortedPlayers().filter(p=>t-Number(p.lastActivityAt||t)>=MATCH_IDLE_MS).sort((a,b)=>Number(a.lastActivityAt||0)-Number(b.lastActivityAt||0));
+    if(idle.length)changed=surrenderIdleMatchPlayer(idle[0])||changed;
+  }
+  if(changed)broadcast();
+}
+setInterval(enforceIdleTimeouts,5000).unref?.();
+
 const server=http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
@@ -202,18 +230,18 @@ const wss=new WebSocketServer({server,path:'/ws',maxPayload:MAX_WS_PAYLOAD,perMe
 wss.on('connection',(ws,req)=>{
   let client=null;
   try{
-    const url=new URL(req.url||'/ws','http://localhost'),clientId=safeClient(url.searchParams.get('client')),name=safeText(url.searchParams.get('name')||'Player',20)||'Player',requested=safeRole(url.searchParams.get('role')),seatToken=url.searchParams.get('seatToken')||'',clientBuildId=String(url.searchParams.get('buildId')||'');
+    const url=new URL(req.url||'/ws','http://localhost'),clientId=safeClient(url.searchParams.get('client')),name=safeText(url.searchParams.get('name')||'Player',25)||'Player',requested=safeRole(url.searchParams.get('role')),seatToken=url.searchParams.get('seatToken')||'',clientBuildId=String(url.searchParams.get('buildId')||'');
     if(clientBuildId!==BUILD_ID)throw Object.assign(new Error('CLIENT_BUILD_MISMATCH'),{code:'CLIENT_BUILD_MISMATCH'});
     const existing=room.players.get(clientId)||room.spectators.get(clientId);
     if(existing&&existing.role==='player'){
       if(!seatToken||existing.seatTokenHash!==tokenHash(seatToken))throw Object.assign(new Error('SEAT_TOKEN_MISMATCH'),{code:'SEAT_TOKEN_MISMATCH'});
-      client=existing;closeClientSocket(client,4006,'Seat session replaced by another tab');client.ws=ws;client.connected=true;client.name=name;
+      client=existing;closeClientSocket(client,4006,'Seat session replaced by another tab');client.ws=ws;client.connected=true;client.name=name;client.lastActivityAt=Date.now();
     }else if(existing&&existing.role==='spectator'){
-      client=existing;closeClientSocket(client);client.ws=ws;client.connected=true;client.name=name;
+      client=existing;closeClientSocket(client);client.ws=ws;client.connected=true;client.name=name;client.lastActivityAt=Date.now();
     }else if(requested==='player'&&!room.kickedClients.has(clientId)&&room.match.status==='setup'&&chooseSeat()){
-      const seat=chooseSeat(),seatTokenNew=token();client={clientId,name,role:'player',seat,seatToken:seatTokenNew,seatTokenHash:tokenHash(seatTokenNew),ready:false,deckKey:null,customDeck:null,deckName:null,formation:null,connected:true,ws};room.players.set(clientId,client);
+      const seat=chooseSeat(),seatTokenNew=token();client={clientId,name,role:'player',seat,seatToken:seatTokenNew,seatTokenHash:tokenHash(seatTokenNew),ready:false,deckKey:null,customDeck:null,deckName:null,formation:null,connected:true,ws,lastActivityAt:Date.now()};room.players.set(clientId,client);
     }else{
-      if(room.spectators.size>=MAX_SPECTATORS)throw new Error('Spectator capacity reached.');client={clientId,name,role:'spectator',ready:false,connected:true,ws};room.spectators.set(clientId,client);
+      if(room.spectators.size>=MAX_SPECTATORS)throw new Error('Spectator capacity reached.');client={clientId,name,role:'spectator',ready:false,connected:true,ws,lastActivityAt:Date.now()};room.spectators.set(clientId,client);
     }
     send(ws,viewFor(client));broadcast(client);
     ws.on('message',raw=>{let msg=null;try{msg=JSON.parse(String(raw));const changed=handle(client,msg);if(changed){const gameplay=['runtime-intent','runtime-intent-batch','surrender-match'].includes(String(msg?.type||''));broadcast(gameplay?client:null)}}catch(err){

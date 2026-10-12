@@ -1,9 +1,9 @@
 {
-  "release": "v3.80.10",
+  "release": "v3.80.11",
   "generated_from": {
     "presentation": "VS AI v6.91.6",
     "lobby": "PvP v3.76.6",
-    "architecture_reference": "VS AI Tutorial v6.48 ↔ PvP v3.51 (reference only)",
+    "architecture_reference": "VS AI Tutorial v6.48 \u2194 PvP v3.51 (reference only)",
     "payment_policy": "VS AI v6.91.6 exact replacement UX represented by a center-only ephemeral UID draft; PAY submits one final selected-Shard UID set to authoritative server donor commit"
   },
   "lobby_assets": {
@@ -64,7 +64,8 @@
     "public/lobby/pvp-lobby-v3.76.6.css",
     "public/engine/shared-app/app.bundle.js",
     "server.js",
-    "server/v6916-authority.mjs"
+    "server/v6916-authority.mjs",
+    "public/shared-ui/battlefield-ui.css"
   ],
   "authority_source_hashes": {
     "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
@@ -102,11 +103,12 @@
     "shared-ui": {
       "files": 1,
       "bytes": 82451,
-      "new_fingerprint": "e44121027f1d726d6bd46a9b4c036e5b813c17b2618b29df740e7c2eb0c0569f",
+      "new_fingerprint": "b679a2e989d897e67448cb4da5ed15132dc40b58afd88d7b2dbb0ec46d19be68",
       "donor_fingerprint": "e44121027f1d726d6bd46a9b4c036e5b813c17b2618b29df740e7c2eb0c0569f",
-      "exact": true,
+      "exact": false,
       "donor_files": 1,
-      "donor_bytes": 82451
+      "donor_bytes": 82451,
+      "note": "VS AI v6.91.6 shared-ui baseline plus narrow PvP response-focus layering/waiting-status seam; no gameplay rules changed."
     },
     "runtime": {
       "files": 3,

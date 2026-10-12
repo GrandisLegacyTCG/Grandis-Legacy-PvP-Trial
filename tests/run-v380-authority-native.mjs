@@ -7,7 +7,7 @@ import { V6916Authority, sourceHashes, internals } from '../server/v6916-authori
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const hashes=sourceHashes();
-assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.10 source set with the v6.91.6 donor baseline, explicit PvP DOM guard, and narrow final-Shard-UID payment seam');
+assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.11 source set with the v6.91.6 donor baseline, explicit PvP DOM guard, and narrow final-Shard-UID payment seam');
 
 const probe=new V6916Authority();
 const starterKeys=Object.keys(probe.starters);
