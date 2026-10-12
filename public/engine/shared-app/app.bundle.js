@@ -257,6 +257,31 @@
     if(!r||!isFinite(r.left)||!isFinite(r.top)||r.width<1||r.height<1)return null;
     return{left:r.left,top:r.top,width:r.width,height:r.height};
   }
+  // PvP tablet/mobile only: adaptive-stage transforms the entire 1600x747 body.
+  // getBoundingClientRect() is viewport-space, while VFX nodes live inside that
+  // transformed body and therefore need logical stage coordinates. Desktop keeps
+  // the original rect path byte-for-byte in behavior by returning before conversion.
+  function battleHeroVfxRect(side,lane){
+    var rect=battleHeroRect(side,lane);if(!rect)return null;
+    if(!document.documentElement||!document.documentElement.classList.contains('gl-adaptive-stage'))return rect;
+    var Matrix=typeof DOMMatrixReadOnly!=='undefined'?DOMMatrixReadOnly:(typeof DOMMatrix!=='undefined'?DOMMatrix:null);
+    if(!Matrix||typeof DOMPoint==='undefined'||!document.body)return rect;
+    var raw='';try{raw=getComputedStyle(document.body).transform||'';}catch(_){return rect;}
+    if(!raw||raw==='none')return rect;
+    try{
+      var inv=new Matrix(raw).inverse();
+      var pts=[
+        new DOMPoint(rect.left,rect.top).matrixTransform(inv),
+        new DOMPoint(rect.left+rect.width,rect.top).matrixTransform(inv),
+        new DOMPoint(rect.left,rect.top+rect.height).matrixTransform(inv),
+        new DOMPoint(rect.left+rect.width,rect.top+rect.height).matrixTransform(inv)
+      ];
+      var xs=pts.map(function(p){return p.x}),ys=pts.map(function(p){return p.y});
+      var left=Math.min.apply(null,xs),right=Math.max.apply(null,xs),top=Math.min.apply(null,ys),bottom=Math.max.apply(null,ys);
+      if(!isFinite(left)||!isFinite(top)||!isFinite(right)||!isFinite(bottom)||right-left<1||bottom-top<1)return rect;
+      return{left:left,top:top,width:right-left,height:bottom-top};
+    }catch(_){return rect;}
+  }
   function battleFeedbackLayer(){
     if(!animationDocumentReady()||!document.body)return null;
     var layer=document.getElementById('glBattleFeedbackLayer');
@@ -332,7 +357,7 @@
   }
   function runBattleFeedback(evt){
     if(!evt||(SUPPRESS_RENDER&&!EXTERNAL_HUMAN_UI)||!animationDocumentReady())return false;
-    var rect=battleHeroRect(evt.side,evt.lane);if(!rect)return false;
+    var rect=battleHeroVfxRect(evt.side,evt.lane);if(!rect)return false;
     GL_BATTLE_FEEDBACK_ACTIVE++;
     playBattleFeedbackAudioNow(evt);
     var duration=720,attackKind=evt.attack_kind||'P',attackSrc=attackKind==='M'?GL_BATTLE_VFX.mAttack:GL_BATTLE_VFX.pAttack;
@@ -354,7 +379,7 @@
         duration=820;
         var defKind=evt.defense_kind||'P',defSrc=defKind==='M'?GL_BATTLE_VFX.mDefense:GL_BATTLE_VFX.pDefense;
         setTimeout(function(){
-          var fresh=battleHeroRect(evt.side,evt.lane)||rect;
+          var fresh=battleHeroVfxRect(evt.side,evt.lane)||rect;
           var isMagicDefense=defKind==='M';
           var defNode=battleVfxNode(defSrc,isMagicDefense?'gl-battle-mdef':'gl-battle-pdef',fresh,1.08,isMagicDefense?false:true);
           battleRemoveLater(defNode,640);

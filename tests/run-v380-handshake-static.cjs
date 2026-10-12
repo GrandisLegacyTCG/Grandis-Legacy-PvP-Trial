@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.16');
+assert.equal(pkg.version,'3.80.17');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),battlefieldCss=read('public/shared-ui/battlefield-ui.css'),pvpIntegration=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6916-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -175,7 +175,7 @@ assert.match(server,/closeClientSocket\(client,4006,'Seat session replaced by an
 assert.match(server,/SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}/,'seat-token rejection needs a dedicated error code');
 assert.match(server,/code==='SEAT_TOKEN_MISMATCH'\?4004/,'seat-token mismatch must not use the normal reconnect close path');
 
-// v3.80.16 input/snapshot/presentation ownership guards.
+// v3.80.17 input/snapshot/presentation ownership guards.
 assert.match(donor,/pvpExternalGameplay=!!\(EXTERNAL_HUMAN_UI[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)/,'donor delegated gameplay clicks must be gated off while PvP external UI owns input');
 assert.match(host,/if\(!opts\.force&&rev===state\.lastImportedRevision/,'normal duplicate revisions may be skipped');
 assert.match(host,/onSnapshot\(m\.snapshot,\{force:true\}\)/,'intent-result snapshots must force authoritative recovery even at the same revision');
@@ -228,6 +228,11 @@ assert.match(pvpIntegration,/gl-adaptive-stage \.hand\.bottom \.hand-card::after
 assert.match(host,/primeEarlyBattleFeedback\(previousSnapshot,msg\)/,'new authoritative battle feedback must inspect the incoming snapshot before import');
 assert.match(host,/playEarlyBattleAudio\(row\)/,'battle SFX must use the preloaded PvP audio element immediately on snapshot receipt');
 assert.match(host,/VFX must wait until the authoritative snapshot has rendered/,'battle VFX must explicitly defer geometry lookup until after authoritative render');
+assert.match(donor,/function battleHeroVfxRect\(side,lane\)/,'tablet/mobile battle VFX must have a dedicated adaptive-stage geometry path');
+assert.match(donor,/classList\.contains\('gl-adaptive-stage'\)\)return rect/,'desktop battle VFX must return the existing viewport rect unchanged when adaptive stage is inactive');
+assert.match(donor,/new Matrix\(raw\)\.inverse\(\)/,'adaptive-stage battle VFX must invert the body transform before placement');
+assert.match(donor,/var rect=battleHeroVfxRect\(evt\.side,evt\.lane\)/,'battle VFX must use the adaptive-aware target rect');
+assert.match(donor,/var fresh=battleHeroVfxRect\(evt\.side,evt\.lane\)\|\|rect/,'delayed defense VFX must re-read adaptive-aware target geometry');
 assert.match(donor,/playAuthoritativeBattleFeedback:function/,'browser donor bridge must expose authoritative visual battle feedback without rerunning gameplay');
 assert.match(app,/GL_PVP_EARLY_BATTLE_EVENT_IDS[\s\S]*play_sound:false[\s\S]*plan\.battle\.push/,'normal presentation planning must still replay VFX after render while suppressing only duplicate early audio');
 assert.match(app,/presentationPlan\.battle\?\.length/,'fallback authoritative battle feedback must still flush before the full battlefield rerender');

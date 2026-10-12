@@ -1,9 +1,9 @@
 {
-  "release": "v3.80.16",
+  "release": "v3.80.17",
   "generated_from": {
     "presentation": "VS AI v6.91.6",
     "lobby": "PvP v3.76.6",
-    "architecture_reference": "VS AI Tutorial v6.48 \u2194 PvP v3.51 (reference only)",
+    "architecture_reference": "VS AI Tutorial v6.48 ↔ PvP v3.51 (reference only)",
     "payment_policy": "VS AI v6.91.6 exact replacement UX represented by a center-only ephemeral UID draft; PAY submits one final selected-Shard UID set to authoritative server donor commit"
   },
   "lobby_assets": {
@@ -71,25 +71,25 @@
     "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
     "engine/js/runtime-authority.js": "58a09b947a1d25b2e5e6018c6e0dac9508b5d534dd2a51192cd6dbaf2e1d4399",
     "engine/shared-app/active-starters.js": "9d536dffd4aa811428285c8db1652b8b509b61dadc2b3e200042a85289a09cfe",
-    "engine/shared-app/app.bundle.js": "947888765805ed3fda5ce1cdfb964afcb4e947af70674c23f0608f7f3e4aa52d"
+    "engine/shared-app/app.bundle.js": "9f4f2daa1a99b3ad5c7464277f953d614fbb6a62bc3e4357f2dbea169c0cb147"
   },
   "donor_baseline": {
     "engine_shared_app_bundle_sha256": "a27b993ce32f1c4e345c05c0865a891ff8a27f97fc3173e0f5ec041b3078a301",
-    "packaged_engine_shared_app_bundle_sha256": "947888765805ed3fda5ce1cdfb964afcb4e947af70674c23f0608f7f3e4aa52d",
-    "bundle_note": "Packaged bundle is VS AI v6.91.6 plus narrow PvP seams and two rule corrections queued for upstream VS AI: committed card Mana is spent before reactive cancel windows, and Response payment stays cancelable until PAY. DOM ownership and battle-feedback bridge hooks remain PvP-only.",
+    "packaged_engine_shared_app_bundle_sha256": "9f4f2daa1a99b3ad5c7464277f953d614fbb6a62bc3e4357f2dbea169c0cb147",
+    "bundle_note": "Packaged bundle is VS AI v6.91.6 plus existing narrow PvP seams/rule corrections and one tablet/mobile-only battle-VFX coordinate conversion gated by gl-adaptive-stage; desktop/gameplay/network behavior is unchanged.",
     "stale_engine_js_bundle_shipped": false
   },
   "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6916_subset excludes assets/lobby/",
   "donor_trees_v6916": {
     "engine": {
       "files": 53,
-      "bytes": 29651859,
-      "new_fingerprint": "930e730aeb8d0973525b550bed89448be4d2ba979e21ad0594efa685c8a62beb",
+      "bytes": 29653541,
+      "new_fingerprint": "10e3ad32cc26c25449471453b20ad5c4c455ba730b99ccf6a90ea5e44df1fc8a",
       "donor_fingerprint": "40fdb02959fd9c010cb6a3a3467eb49e5830d7525858c02a2f1f702743faa459",
       "exact": false,
       "donor_files": 54,
       "donor_bytes": 31155543,
-      "note": "Intentional PvP seams plus v3.80.16 reactive-payment corrections: incoming paid Event/Item Mana is committed before Intercept/Flashpowder priority, Response payment remains cancelable until PAY, delegated/direct donor gameplay DOM ownership is gated, battle-feedback bridge hooks remain active, and stale engine/js/app.bundle.js remains removed."
+      "note": "Intentional PvP seams plus prior reactive-payment corrections and v3.80.17 tablet/mobile-only adaptive-stage battle-VFX coordinate conversion; desktop path returns the original rect unchanged."
     },
     "card-art": {
       "files": 200,

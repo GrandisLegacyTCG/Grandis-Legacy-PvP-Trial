@@ -1,8 +1,8 @@
-# PvP v3.80.16 Architecture
+# PvP v3.80.17 Architecture
 
 ## 1. Purpose
 
-v3.80.16 keeps the proven v3.80.15 gameplay/input boundary and tightens the response/payment commitment contract: card Mana is spent authoritatively at PAY before reactive cancel priority, Response payment remains cancelable until PAY, and low-latency SFX is separated from geometry-dependent VFX so tablet transforms use the post-import target layout. It keeps committed gameplay server-authoritative while transporting transient battle/draw presentation explicitly. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
+v3.80.17 is a tablet/mobile presentation-only hotfix on top of v3.80.16. Battle VFX now converts target Hero geometry from viewport coordinates back into the logical 1600×747 adaptive-stage coordinate space before placing effects inside the transformed body. Desktop geometry returns through the unchanged path, and gameplay, Mana, network, authority, privacy, and response commitment behavior are not modified.
 
 ### Bases
 
@@ -18,7 +18,7 @@ No v3.51 runtime/authority directory is shipped. The older repository remains an
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.16 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.17 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -122,7 +122,7 @@ The server rejects stale revisions. Accepted actions create a new authoritative 
 
 ## 5A. PvP Mana payment contract
 
-v3.80.16 uses the VS AI v6.91.6 gameplay donor with one explicit PvP-only DOM-input guard, while payment interaction ownership stays entirely in the centered PvP UI until PAY:
+v3.80.17 uses the VS AI v6.91.6 gameplay donor with one explicit PvP-only DOM-input guard, while payment interaction ownership stays entirely in the centered PvP UI until PAY:
 
 ```text
 authoritative payment pending
@@ -236,13 +236,13 @@ Authoritative snapshots are imported with `skipImportAnimations:true`. Opening a
 
 That is intentional. The external `shared-app/app-runtime.js` owns visible animation/SFX by comparing prior and next authoritative visual state and by consuming the v6 battle-feedback surface. This avoids two presentation engines firing for the same transition.
 
-For battle feedback, v3.80.16 splits low-latency audio from geometry-dependent visuals. `pvp-host.js` may play a newly arrived authoritative battle SFX immediately and records the event ID. The same event still enters the normal post-import presentation plan with `play_sound:false`; after authoritative render, the donor VFX resolves `side/lane` against current DOM geometry. This preserves low audio latency while preventing transformed tablet layouts from placing P.Atk/M.Atk on stale/source coordinates or missing the target.
+For battle feedback, v3.80.17 splits low-latency audio from geometry-dependent visuals. `pvp-host.js` may play a newly arrived authoritative battle SFX immediately and records the event ID. The same event still enters the normal post-import presentation plan with `play_sound:false`; after authoritative render, the donor VFX resolves `side/lane` against current DOM geometry. This preserves low audio latency while preventing transformed tablet layouts from placing P.Atk/M.Atk on stale/source coordinates or missing the target.
 
 The v6.91.6 donor remains the gameplay/read surface; PvP adds one DOM-input guard plus the network integration seam. PvP adds only an integration boundary around final payment commit; it does not fork the donor payment rules or create a second battlefield renderer.
 
 ## 9. Asset boundary
 
-Standalone v3.80.16 resolves visible media locally:
+Standalone v3.80.17 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -257,14 +257,14 @@ Asset loading is intentionally bounded: the selected own-deck artwork is preload
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.16 deliberately does not ship
+## 10. What v3.80.17 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;
 - no Local-AI authority adapter in the PvP page;
 - no PvP-specific desktop/tablet/mobile gameplay renderer;
 - no client-authored final board mutation.
-## 8. Authoritative presentation boundary (v3.80.16)
+## 8. Authoritative presentation boundary (v3.80.17)
 
 Gameplay resolution and presentation are deliberately separate:
 
