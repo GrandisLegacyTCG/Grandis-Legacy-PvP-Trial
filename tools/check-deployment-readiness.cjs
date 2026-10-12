@@ -2,13 +2,16 @@
 const fs=require('fs'),path=require('path'),{spawnSync}=require('child_process');
 const root=path.resolve(__dirname,'..'),failures=[],passes=[];const read=r=>fs.readFileSync(path.join(root,r),'utf8'),exists=r=>fs.existsSync(path.join(root,r));const pass=x=>passes.push('PASS: '+x),fail=x=>failures.push(x);
 const pkg=JSON.parse(read('package.json')),lock=JSON.parse(read('package-lock.json')),docker=read('Dockerfile'),server=read('server.js'),auth=read('server/v6916-authority.mjs'),readme=read('README.md');
-if(pkg.version==='3.80.13')pass('package version is v3.80.13');else fail(`package version ${pkg.version}`);
+if(pkg.version==='3.80.14')pass('package version is v3.80.14');else fail(`package version ${pkg.version}`);
 if(pkg.dependencies?.ws)pass(`production ws dependency declared ${pkg.dependencies.ws}`);else fail('production dependency ws missing');
 if(lock.packages?.['']?.dependencies?.ws)pass('package-lock root locks ws');else fail('package-lock root ws missing');
 if(/npm\s+ci\s+--omit=dev/.test(docker))pass('Docker production install uses npm ci --omit=dev');else fail('Docker npm ci --omit=dev missing');
 if(/COPY\s+server\.js\s+\.\/server\.js/.test(docker)&&/COPY\s+server\s+\.\/server/.test(docker)&&/COPY\s+public\s+\.\/public/.test(docker))pass('Docker copies every runtime source root (server.js, server/, public/)');else fail('Docker runtime COPY coverage incomplete');
 if(/CMD\s*\[\s*"node"\s*,\s*"server\.js"\s*\]/.test(docker))pass('Docker starts node server.js');else fail('Docker CMD incorrect');
 if(/process\.env\.PORT/.test(server)&&/0\.0\.0\.0/.test(server)&&/url\.pathname==='\/health'/.test(server))pass('PORT / 0.0.0.0 / health contract present');else fail('server deployment contract incomplete');
+const host=read('public/pvp/pvp-host.js'),html=read('public/index.html');
+const buildMetaPos=html.indexOf('build-meta.js'),hostPos=html.indexOf('pvp/pvp-host.js');
+if(/url\.pathname==='\/build-meta\.js'/.test(server)&&/const BUILD_ID=`gl-pvp-\$\{VERSION\}-v6916-2026-10-12`/.test(server)&&/window\.GL_PVP_BUILD_META/.test(host)&&buildMetaPos>=0&&hostPos>buildMetaPos&&!/const BUILD_ID=['"]gl-pvp-/.test(host))pass('client/server build handshake has one server-owned BUILD_ID source');else fail('client/server BUILD_ID source can drift or build metadata loads too late');
 if(/brotliCompressSync\s*\(|gzipSync\s*\(/.test(server))fail('synchronous compression found in server request path');else pass('no synchronous Brotli/Gzip request compression');
 if(/\.\/server\/v6916-authority\.mjs/.test(server)&&/engine\/js\/static-data\.js/.test(auth)&&/engine\/shared-app\/app\.bundle\.js/.test(auth))pass('server authority executes packaged v6.91.6 gameplay sources with locked PvP payment seam');else fail('v6.91.6 native authority source wiring missing');
 if(exists('authority')||exists('sync'))fail('legacy v3.51/v3.78 authority compatibility tree is shipped');else pass('no legacy v3.51 authority tree or v3.78 sync compatibility layer');

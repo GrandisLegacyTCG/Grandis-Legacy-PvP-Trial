@@ -1,7 +1,8 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.13';
-const BUILD_ID='gl-pvp-3.80.13-v6916-touch-lobby-response-latency-2026-10-12';
+const BUILD_META=window.GL_PVP_BUILD_META||{};
+const VERSION=String(BUILD_META.versionLabel||'Grandis Legacy PvP');
+const BUILD_ID=String(BUILD_META.buildId||'MISSING_BUILD_META');
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};

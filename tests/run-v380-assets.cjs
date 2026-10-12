@@ -17,7 +17,8 @@ for(const [name,row] of Object.entries(parity.donor_trees_v6916)){
 const cardFiles=walk(path.join(pub,'card-art')).filter(f=>f.endsWith('.webp'));assert.equal(cardFiles.length,200,'must package all 200 Season 1 local WebP card arts');
 const html=fs.readFileSync(path.join(pub,'index.html'),'utf8');
 const localRef=/\b(?:src|href)=["']([^"']+)["']/g;let m,htmlBroken=[];
-while((m=localRef.exec(html))){let ref=m[1];if(/^(?:https?:|data:|#|javascript:)/i.test(ref))continue;ref=ref.split(/[?#]/)[0];if(!ref)continue;if(!fs.existsSync(path.resolve(pub,ref)))htmlBroken.push(ref)}
+while((m=localRef.exec(html))){let ref=m[1];if(/^(?:https?:|data:|#|javascript:)/i.test(ref))continue;ref=ref.split(/[?#]/)[0];if(!ref)continue;if(ref==='build-meta.js')continue; // dynamic no-store server endpoint, intentionally not a public file
+if(!fs.existsSync(path.resolve(pub,ref)))htmlBroken.push(ref)}
 assert.deepEqual(htmlBroken,[],'index.html contains broken local asset/script/style refs: '+htmlBroken.join(', '));
 let cssBroken=[];
 for(const f of walk(pub).filter(x=>x.endsWith('.css'))){const text=fs.readFileSync(f,'utf8'),re=/url\((?:["']?)([^)"']+)(?:["']?)\)/g;let x;while((x=re.exec(text))){let ref=x[1].trim();if(/^(?:https?:|data:|#)/i.test(ref))continue;ref=ref.split(/[?#]/)[0];const abs=path.resolve(path.dirname(f),ref);if(!fs.existsSync(abs))cssBroken.push(`${norm(path.relative(pub,f))} -> ${ref}`)}}

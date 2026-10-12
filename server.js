@@ -10,8 +10,9 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.13';
-const BUILD_ID='gl-pvp-3.80.13-v6916-ui-parity-idle-response-2026-10-12';
+const VERSION='3.80.14';
+const BUILD_ID=`gl-pvp-${VERSION}-v6916-2026-10-12`;
+const BUILD_LABEL=`Grandis Legacy PvP v${VERSION}`;
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 const LOBBY_IDLE_MS=60*1000;
@@ -215,6 +216,11 @@ setInterval(enforceIdleTimeouts,5000).unref?.();
 const server=http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
+    if(url.pathname==='/build-meta.js'){
+      const js=`window.GL_PVP_BUILD_META=Object.freeze(${JSON.stringify({version:VERSION,versionLabel:BUILD_LABEL,buildId:BUILD_ID})});\n`;
+      res.writeHead(200,{'content-type':'text/javascript; charset=utf-8','content-length':Buffer.byteLength(js),'cache-control':'no-store'});
+      res.end(js);return;
+    }
     if(url.pathname==='/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
       res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'v6.91.6-native-authority-handshake',authoritySources:sourceHashes()}));return;
