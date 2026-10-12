@@ -234,7 +234,8 @@ function renderResponseFocusLights(s){
   const contexts=activeTargetContexts(s,chainActions(s));
   contexts.forEach(ctx=>{
     if(ctx?.source_kind!=='active-card'&&ctx?.source_side&&ctx?.source_lane)addResponseFocusLight(uiLaneElement(ctx.source_side,ctx.source_lane));
-    addResponseFocusLight(targetElementForContext(ctx));
+    if(ctx?.target_kind!=='zone'&&ctx?.target_side&&ctx?.target_lane)addResponseFocusLight(uiLaneElement(ctx.target_side,ctx.target_lane));
+    else addResponseFocusLight(targetElementForContext(ctx));
   });
 }
 function renderInteractionFocus(s){

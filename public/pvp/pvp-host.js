@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.11';
-const BUILD_ID='gl-pvp-3.80.11-v6916-ui-parity-idle-response-2026-10-12';
+const VERSION='Grandis Legacy PvP v3.80.12';
+const BUILD_ID='gl-pvp-3.80.12-v6916-ui-parity-idle-response-2026-10-12';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};
@@ -184,7 +184,7 @@ function connect(force=false){
       if(m.snapshot)onSnapshot(m.snapshot,{force:true});
       if(!result.matched&&m.ok===false)intentError(m.message||'Authoritative PvP request failed.');
     }
-    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.11 completes actions with intent-result + snapshot. */}
+    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.12 completes actions with intent-result + snapshot. */}
     else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot,{force:true});else{renderLobby();window.GL_GAME_UI?.render?.()}}
     else if(m.type==='idle-timeout'){state.idleNotice=String(m.message||'');if(m.scope==='lobby'){state.role='spectator';state.seatToken='';persistSession('role','spectator');persistSession('seat','')}renderLobby();}
     else if(m.type==='pong'){const sent=Number(m.clientTime||state.pingSentAt||0);if(sent>0){const rtt=Math.max(0,Date.now()-sent);state.rttMs=state.rttMs==null?rtt:Math.round(state.rttMs*.65+rtt*.35)}state.peerConnections.clear();for(const row of (m.connections||[])){if(Number.isFinite(Number(row?.seat)))state.peerConnections.set(Number(row.seat),{connected:!!row.connected,rttMs:Number.isFinite(Number(row.rttMs))?Number(row.rttMs):null})}publishConnection()}

@@ -1,4 +1,4 @@
-/* v3.80.11 integration boundary: v6.91.6 owns gameplay presentation; PvP only gates transport/lifecycle. */
+/* v3.80.12 integration boundary: v6.91.6 owns gameplay presentation; PvP only gates transport/lifecycle. */
 html.gl-pvp-game-active .gl-lobby-overlay,
 .gl-lobby-overlay{display:none!important}
 
@@ -20,7 +20,7 @@ html.gl-pvp-opening-gated .app *{cursor:default!important}
 /* Never expose text-only card names while artwork is still downloading/decoding. */
 img.gl-image-pending{color:transparent!important;background:#0b1118!important}
 
-/* v3.80.11: legal active Hero abilities must read as available, not disabled. */
+/* v3.80.12: legal active Hero abilities must read as available, not disabled. */
 .gl-hero-action.is-available{
   border-color:rgba(244,207,88,.82)!important;
   background:linear-gradient(180deg,rgba(49,62,35,.96),rgba(13,33,27,.96))!important;

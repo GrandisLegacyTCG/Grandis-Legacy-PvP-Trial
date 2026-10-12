@@ -796,8 +796,15 @@
 .battlefield.gl-focus-payment #phasePrimaryAction.gl-cancel,
 .battlefield.gl-focus-response #phasePrimaryAction.gl-pass{position:relative;z-index:4!important;opacity:1!important}
 .battlefield.gl-focus-response .bottom-hud{z-index:940!important}
-/* Response focus keeps the action itself readable: Active Card, source Hero (when any), and target Hero/zone remain above the 65% dimmer. */
-.battlefield.gl-focus-response .gl-focus-lit{z-index:950!important;filter:none!important}
+/* Response focus keeps the action context readable. Lift the Hero grids above the global dimmer,
+   then locally dim every unrelated Hero lane so the full attacker + current-target boxes stay clear. */
+.battlefield.gl-focus-response .hero-grid{position:relative;z-index:950!important}
+.battlefield.gl-focus-response .hero-lane{position:relative}
+.battlefield.gl-focus-response .hero-lane.gl-focus-lit{z-index:2!important;filter:none!important}
+.battlefield.gl-focus-response .hero-lane:not(.gl-focus-lit):not(.gl-response-action-host)::after{
+  content:"";position:absolute;inset:0;z-index:940;pointer-events:none;border-radius:14px;background:rgba(0,0,0,.65)
+}
+.battlefield.gl-focus-response .gl-focus-lit:not(.hero-lane){z-index:950!important;filter:none!important}
 .sidebar.gl-focus-response-sidebar{z-index:940!important}
 .sidebar.gl-focus-response-sidebar::after{content:"";position:absolute;inset:0;z-index:40;pointer-events:none;background:rgba(0,0,0,.65)}
 .sidebar.gl-focus-response-sidebar .active-card-pane{z-index:50!important}
@@ -1108,7 +1115,7 @@ body.gl-center-choice-active #sharedPreviewBox.previewing{opacity:0!important;po
 .gl-vsai-choice-overlay .gl-choice-fixed-preview-slot{display:none!important}
 
 
-/* v3.80.11 — PvP response focus: keep only legal response buttons above the dim layer. */
+/* v3.80.12 — PvP response focus: whole attacker/target lanes stay clear; legal response buttons may still rise above a locally dimmed unrelated lane. */
 .hero-lane.gl-class-ability-ready::before,.hero-lane.gl-racial-trait-ready::before,
 .hero-lane.gl-class-ability-ready.gl-racial-trait-ready::before{background:transparent!important;box-shadow:none!important}
 .battlefield.gl-focus-response .hero-lane.gl-response-action-host:not(.gl-focus-lit){z-index:950!important}

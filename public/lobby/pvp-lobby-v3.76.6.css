@@ -176,7 +176,7 @@ body.deck-setup-active #previewOverlay{z-index:10060!important}
 .pvp-v260-actions .pvp-v260-btn{white-space:nowrap}
 
 
-/* v3.80.11 — Desktop lobby is canonical on every device. Touch/mobile keeps its existing interaction model; only geometry is unified. */
+/* v3.80.12 — Desktop lobby is canonical on every device. Touch/mobile keeps its existing interaction model; only geometry is unified. */
 @media(max-width:1160px),(hover:none) and (pointer:coarse){
   .pvp-v260-lobby{overflow:hidden!important;background-attachment:fixed!important}
   .pvp-v260-page{position:absolute!important;left:50%!important;top:50%!important;width:1366px!important;height:768px!important;min-height:768px!important;padding:14px 36px 16px!important;transform:translate(-50%,-50%) scale(var(--pvp-lobby-scale,1))!important;transform-origin:center center!important;display:flex!important;flex-direction:column!important}

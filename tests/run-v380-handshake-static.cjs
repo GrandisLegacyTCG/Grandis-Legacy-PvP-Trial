@@ -3,8 +3,8 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.11');
-const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6916-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
+assert.equal(pkg.version,'3.80.12');
+const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),battlefieldCss=read('public/shared-ui/battlefield-ui.css'),server=read('server.js'),authority=read('server/v6916-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
 const channelPos=html.indexOf('pvp/intent-channel.js'),hostPos=html.indexOf('pvp/pvp-host.js'),appPos=html.indexOf('shared-app/app-runtime.js');
@@ -171,7 +171,7 @@ assert.match(server,/closeClientSocket\(client,4006,'Seat session replaced by an
 assert.match(server,/SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}/,'seat-token rejection needs a dedicated error code');
 assert.match(server,/code==='SEAT_TOKEN_MISMATCH'\?4004/,'seat-token mismatch must not use the normal reconnect close path');
 
-// v3.80.11 input/snapshot/presentation ownership guards.
+// v3.80.12 input/snapshot/presentation ownership guards.
 assert.match(donor,/pvpExternalGameplay=!!\(EXTERNAL_HUMAN_UI[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)/,'donor delegated gameplay clicks must be gated off while PvP external UI owns input');
 assert.match(host,/if\(!opts\.force&&rev===state\.lastImportedRevision/,'normal duplicate revisions may be skipped');
 assert.match(host,/onSnapshot\(m\.snapshot,\{force:true\}\)/,'intent-result snapshots must force authoritative recovery even at the same revision');
@@ -207,5 +207,8 @@ assert.match(host,/installActivityTracking\(\)/,'browser must report real user a
 assert.match(host,/function syncLobbyScale\(\)/,'mobile and tablet lobby must scale the canonical desktop composition instead of reflowing it');
 assert.match(app,/WAITING FOR OPPONENT RESPONSE/,'waiting player must receive an explicit opponent-response status');
 assert.match(app,/gl-response-action-host/,'legal Hero response actions must have an above-dim presentation path');
+assert.match(app,/target_kind!==['"]zone['"].*target_side.*target_lane.*uiLaneElement/s,'Hero response targets must light the full lane box rather than only the Hero card');
+assert.match(battlefieldCss,/gl-focus-response \.hero-grid\{position:relative;z-index:950!important\}/,'Response focus must lift Hero grids above the global dimmer');
+assert.match(battlefieldCss,/hero-lane:not\(\.gl-focus-lit\).*background:rgba\(0,0,0,\.65\)/s,'Unrelated Hero lane boxes must receive local response dimming');
 assert.match(app,/presentationPlan\.battle\?\.length/,'authoritative battle feedback must be flushed before the full battlefield rerender');
 console.log(JSON.stringify({ok:true,version:pkg.version,presentation:'VS AI v6.91.6',lobby:'PvP v3.76.6',v351:'architecture/networking reference only',legacyAuthorityShipped:false,legacySyncLayerShipped:false,automaticDrawToDeploy:true,authoritativeRematchReset:true,legacyIdentityBadgesRemoved:true,customDeck50to60Preserved:true,privacyProjection:true,publicShardPoolParity:true,openingSinglePresentationOwner:true,donorCoinFlipLifecycle:true,resetRoomGuarded:true,customDeckReconnectSafe:true,buildMismatchRecovery:true,pvpPresentationLabels:true},null,2));
