@@ -2182,7 +2182,9 @@
   }
   function validateCost(state, side, cardId, sourceLane, context){
     var c=card(cardId), h=sourceLane?sideHeroes(state,side)[sourceLane]:null, cost=cardPlayCostForSource(c,h), reasons=[];
-    if(manaAvailableValueForCard(state,side,c)<cost) reasons.push('not enough mana');
+    // Once PAY has committed an incoming Event/Item cost, later reactive-window continuation
+    // must validate against that already-paid commitment instead of requiring the same Mana again.
+    if(!(context&&context.manaAlreadyPaid) && manaAvailableValueForCard(state,side,c)<cost) reasons.push('not enough mana');
     return {ok:reasons.length===0, reasons:reasons, cost:cost};
   }
   function validateAction(state, side, action, context){
@@ -3836,10 +3838,12 @@
   function openResponsePaymentChoice(state,rw,responseOption){
     var side=rw.target_side||rw.response_owner||'PLAYER', rc=card(responseOption.card_id), spec=responsePaymentSpec(rc), candidates=responsePaymentCandidates(state,side,responseOption),sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side),classes=Number(cost||0)>0?manaClassShardsInPool(state,side):[];
     if(candidates.length<spec.discard_from_hand){showInfo(cardName(rc)+' — Additional Cost','This Response is no longer payable because there are not enough other cards in Hand.');return false;}
-    // Confirm Response is the commit boundary. The old Response Window is gone; this is mandatory payment.
+    // Choosing a Response is still reversible while its mandatory payment screen is open.
+    // PAY is the actual commit boundary; CANCEL restores the original Response Window with
+    // no Mana/card cost spent and lets the player choose another Response or Pass.
     state.responseWindow=null;closeResponseWindowUI();
     var pool=manaPoolCardsForSide(state,side),selectedShards=recommendedExactManaShardUids(state,side,rc,cost);
-    state.pending={type:'response_payment_choice',decision_side:side,side:side,response_owner:side,response_option:clone(responseOption),incoming_response_window:clone(rw),required_discard_count:spec.discard_from_hand,candidates:candidates,selected_indices:[],mana_cost:cost,mana_class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,rc),asset:manaShardAsset(sh)};}),selected_mana_class_uids:pool.filter(function(sh){return sh.kind==='CLASS'&&selectedShards.map(String).indexOf(String(sh.uid))!==-1;}).map(function(sh){return sh.uid;}),selected_shard_uids:selectedShards,shard_choices:pool.map(function(sh){return{uid:sh.uid,kind:sh.kind,class_name:sh.class_name||'',value:sh.kind==='CLASS'?manaShardValueForCard(sh,rc):1,asset:manaShardAsset(sh)};}),committed:true,commit_stage:'committed'};
+    state.pending={type:'response_payment_choice',decision_side:side,side:side,response_owner:side,response_option:clone(responseOption),incoming_response_window:clone(rw),required_discard_count:spec.discard_from_hand,candidates:candidates,selected_indices:[],mana_cost:cost,mana_class_choices:classes.map(function(sh){return{uid:sh.uid,class_name:sh.class_name,value:manaShardValueForCard(sh,rc),asset:manaShardAsset(sh)};}),selected_mana_class_uids:pool.filter(function(sh){return sh.kind==='CLASS'&&selectedShards.map(String).indexOf(String(sh.uid))!==-1;}).map(function(sh){return sh.uid;}),selected_shard_uids:selectedShards,shard_choices:pool.map(function(sh){return{uid:sh.uid,kind:sh.kind,class_name:sh.class_name||'',value:sh.kind==='CLASS'?manaShardValueForCard(sh,rc):1,asset:manaShardAsset(sh)};}),committed:false,commit_stage:'pre_commit_payment'};
     renderResponsePaymentChoice();return true;
   }
   function renderResponsePaymentChoice(){
@@ -3848,8 +3852,8 @@
     if(!pvpLocalOwnsPending(p)){pvpHideChoiceForNonOwner();return;}if(SUPPRESS_RENDER||!$('choiceOverlay'))return;
     var classContribution=Number(manaPlan.class_value||0),remainingMana=Math.max(0,manaCost-Number(manaPlan.value||0)),shortage=Math.max(0,manaCost-Number(manaPlan.value||0)),manaReady=!!manaPlan.ok,allReady=manaReady&&selected.length===need;
     var sourceName=cardName(rc);$('choiceTitle').textContent=sourceName+' — Pay Response Cost';$('choiceConfirm').style.display='';$('choiceConfirm').textContent=!manaReady?('Need '+shortage+' More Mana'):(need>0?'Pay Cost':('Pay '+remainingMana+' Mana'));$('choiceConfirm').disabled=!allReady;setManaConfirmState($('choiceConfirm'),manaReady,allReady,shortage);
-    if($('choiceClose'))$('choiceClose').hidden=true;
-    var responsePool=manaPoolCardsForSide(appState,p.side),manaHtml='<h4 class="choice-section-title">Mana Shards</h4><p class="choice-instruction">Response is committed. Choose an exact Shard payment.</p><p class="choice-instruction mana-payment-summary"><strong>Selected Mana: '+manaPlan.value+' / '+manaCost+'.</strong></p><div class="choice-grid card-search-choice-grid mana-shard-choice-grid">'+responsePool.map(function(sh){var uid=String(sh.uid),sel=selectedMana.indexOf(uid)!==-1,val=sh.kind==='CLASS'?manaShardValueForCard(sh,rc):1;return '<article class="discard-choice mana-shard-choice '+(sel?'selected':'')+'"><button type="button" class="discard-preview" data-response-mana-uid="'+esc(uid)+'"><img src="'+esc(manaShardAsset(sh))+'" alt="'+esc((sh.class_name||'Mana')+' Shard')+'"><span><strong>'+esc((sh.class_name||'Mana')+' Shard')+'</strong><small>'+val+' Mana</small></span></button><button class="discard-select" type="button" data-response-mana-uid="'+esc(uid)+'">'+(sel?'Selected':'Use Shard')+'</button></article>';}).join('')+'</div>';
+    if($('choiceClose'))$('choiceClose').hidden=false;
+    var responsePool=manaPoolCardsForSide(appState,p.side),manaHtml='<h4 class="choice-section-title">Mana Shards</h4><p class="choice-instruction">Choose an exact Shard payment. PAY commits the Response; CANCEL returns to the Response Window.</p><p class="choice-instruction mana-payment-summary"><strong>Selected Mana: '+manaPlan.value+' / '+manaCost+'.</strong></p><div class="choice-grid card-search-choice-grid mana-shard-choice-grid">'+responsePool.map(function(sh){var uid=String(sh.uid),sel=selectedMana.indexOf(uid)!==-1,val=sh.kind==='CLASS'?manaShardValueForCard(sh,rc):1;return '<article class="discard-choice mana-shard-choice '+(sel?'selected':'')+'"><button type="button" class="discard-preview" data-response-mana-uid="'+esc(uid)+'"><img src="'+esc(manaShardAsset(sh))+'" alt="'+esc((sh.class_name||'Mana')+' Shard')+'"><span><strong>'+esc((sh.class_name||'Mana')+' Shard')+'</strong><small>'+val+' Mana</small></span></button><button class="discard-select" type="button" data-response-mana-uid="'+esc(uid)+'">'+(sel?'Selected':'Use Shard')+'</button></article>';}).join('')+'</div>';
     var discardHtml=need?'<h4 class="choice-section-title">Additional Card Cost</h4><p class="choice-instruction">Choose exactly '+need+' other card'+(need===1?'':'s')+' from your Hand to discard.</p><div class="choice-grid card-search-choice-grid">'+choices.map(function(x,idx){var sel=selected.indexOf(idx)!==-1;return '<article class="discard-choice '+(sel?'selected':'')+'"><button class="discard-preview" type="button" data-preview="'+esc(x.card_id)+'"><img src="'+esc(thumbFor(x.card_id))+'" alt="'+esc(cardName(card(x.card_id)))+' thumbnail"><span>'+esc(cardName(card(x.card_id)))+'</span></button><button class="discard-select" type="button" data-response-payment-index="'+idx+'">'+(sel?'Selected':'Select')+'</button></article>';}).join('')+'</div>':'<p class="choice-instruction">No additional card discard is required.</p>';
     $('choiceBody').innerHTML=manaHtml+discardHtml;$('choiceOverlay').classList.add('open');
   }
@@ -3859,6 +3863,15 @@
   }
   function toggleResponseManaShardChoice(uid){
     if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return false;uid=String(uid||'');var p=appState.pending,rc=card(p.response_option&&p.response_option.card_id),pool=manaPoolCardsForSide(appState,p.side);if(!pool.some(function(sh){return String(sh.uid)===uid;}))return false;var selected=manaSelectionAfterToggle(appState,p.side,rc,p.mana_cost,p.selected_shard_uids||[],uid);p.selected_shard_uids=selected;p.selected_mana_class_uids=pool.filter(function(sh){return sh.kind==='CLASS'&&selected.indexOf(String(sh.uid))!==-1;}).map(function(sh){return sh.uid;});renderResponsePaymentChoice();if(!SUPPRESS_RENDER)render();return true;
+  }
+  function cancelResponsePaymentChoice(){
+    if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return false;
+    var p=clone(appState.pending),rw=clone(p.incoming_response_window||null);if(!rw)return false;
+    // Cancel means the selected Response was never committed. Restore the original window
+    // without a preselected option so the player may pick another Response or simply Pass.
+    rw.selected=null;appState.pending=null;appState.responseWindow=rw;closeChoice();
+    pushLog(appState,'Response payment canceled before PAY. No Mana or additional card cost was spent.');
+    syncCounts(appState);renderResponseWindow();if(!SUPPRESS_RENDER)render();return true;
   }
   function finalizeResponsePayment(state,rw,responseOption,selectedHandIndices,selectedShardUids){
     var side=rw.target_side||rw.response_owner||'PLAYER',rc=card(responseOption.card_id),hand=sideHand(state,side)||[],responseIndex=Number(responseOption.hand_index);
@@ -3886,7 +3899,7 @@
     var rc=card(responseOption.card_id),side=rw.target_side||rw.response_owner||'PLAYER',spec=responsePaymentSpec(rc),hand=sideHand(state,side)||[],idx=Number(responseOption.hand_index),sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side);
     if(hand[idx]!==responseOption.card_id)return false;
     if(!handHasResponseExtraDiscard(hand,idx,rc)){showInfo('Cannot Respond',cardName(rc)+' requires '+spec.discard_from_hand+' other card'+(spec.discard_from_hand===1?'':'s')+' in Hand as an additional cost.');return false;}
-    // Confirm Response is final commit. Mana/card costs are paid here before a new counter-response window can open.
+    // Human Response payment remains pre-commit until PAY. AI/no-choice paths commit immediately because no payment UI is shown.
     if(side==='AI'&&!state.pvpHumanVsHuman){
       var aiCandidates=responsePaymentCandidates(state,side,responseOption);if(aiCandidates.length<spec.discard_from_hand)return false;var aiPaymentIndices=aiCandidates.slice(0,spec.discard_from_hand).map(function(x){return x.hand_index;}),aiPlan=autoManaPaymentForAI(state,side,rc,cost);if(!aiPlan.ok)return false;state.responseWindow=null;closeResponseWindowUI();pushLog(state,'AI confirms '+cardName(rc)+' and pays all mandatory costs before counter-response priority.');return finalizeResponsePayment(state,clone(rw),clone(responseOption),aiPaymentIndices,(aiPlan.shards||[]).map(function(sh){return sh.uid;}));
     }
@@ -4186,7 +4199,7 @@
       if(responseOption._response_card_staged) discardStagedResponseCard(appState,owner,responseOption,'counter-response resolved');
       else { var ph=sideHand(appState,owner), pi=responseOption.hand_index; if(ph[pi]!==responseOption.card_id) pi=ph.indexOf(responseOption.card_id); if(pi>=0){ ph.splice(pi,1); sideDiscard(appState,owner).push(responseOption.card_id); } }
       var srcSide=rw.source_side||'AI', srcHand=sideHand(appState,srcSide), idx=rw.hand_index; if(srcHand[idx]!==rw.card_id) idx=srcHand.indexOf(rw.card_id);
-      var incomingAction=rw.action||{},incomingPayment=isArrowBarrageCard(incoming)?spendAllManaForCard(appState,srcSide,incoming):(Array.isArray(incomingAction.selected_mana_shard_uids)?spendExactManaPayment(appState,srcSide,incoming,Number(rw.original_cost||0),incomingAction.selected_mana_shard_uids,'Canceled card payment'):spendManaPayment(appState,srcSide,incoming,Number(rw.original_cost||0),incomingAction.selected_mana_class_uids||[],'Canceled card payment'));
+      var incomingAction=rw.action||{},incomingPayment=incomingAction._mana_payment_committed?{ok:true,value:Number(incomingAction._paid_mana||rw.original_cost||0),context:'Already committed before reactive Response'}:(isArrowBarrageCard(incoming)?spendAllManaForCard(appState,srcSide,incoming):(Array.isArray(incomingAction.selected_mana_shard_uids)?spendExactManaPayment(appState,srcSide,incoming,Number(rw.original_cost||0),incomingAction.selected_mana_shard_uids,'Canceled card payment'):spendManaPayment(appState,srcSide,incoming,Number(rw.original_cost||0),incomingAction.selected_mana_class_uids||[],'Canceled card payment')));
       if(!incomingPayment||!incomingPayment.ok){showInfo('Mana Payment','The committed incoming card could not complete its Mana payment.');return false;}
       var srcHero=(rw.source_lane?sideHeroes(appState,srcSide)[rw.source_lane]:null);
       if(srcHero && sourceShouldExhaust(incoming,srcHero)){ srcHero.exhausted=true; srcHero.exhaust_reason='Played '+cardName(incoming)+'; canceled by response.'; }
@@ -4929,7 +4942,7 @@
     refreshResponseWindowOptions(appState,rw);
     var idx=rw.selected, opt=(typeof idx==='number') && rw.options && rw.options[idx];
     if(!opt){ showInfo('Response Window','Select a response card first, then confirm.'); return false; }
-    // Confirm Response is the single commit boundary for every Response. Payment follows as a separate mandatory step when required.
+    // Selecting/confirming a Response opens its payment gate when needed. PAY, not this selection step, is the final commit boundary.
     return resolveResponseWindow(clone(opt));
   }
   function hideResponseReasonTooltip(){var tip=document.getElementById('responseReasonTooltip');if(tip){tip.hidden=true;tip.textContent='';}}
@@ -5546,6 +5559,7 @@
   }
   function localPendingClosePolicy(state,p){
     if(!p) return 'CLOSE_ONLY';
+    if(p.type==='response_payment_choice') return 'RESPONSE_PAYMENT_CANCEL';
     if(['optional_swap','optional_target_swap','post_attack_reposition_choice'].indexOf(p.type)!==-1) return 'POST_RESOLUTION_DECLINE';
     if(['legacy_defeat_choice','racial_stoneblood','saint_purify_choice','hand_limit_discard','draw_replacement_choice','crystal_ball_reorder','response_window'].indexOf(p.type)!==-1) return 'MANDATORY_NO_CANCEL';
     if(pendingRevealsHiddenInformation(p) || pendingActionCommitted(p) || (state&&state.responseWindow)) return 'MANDATORY_NO_CANCEL';
@@ -6076,20 +6090,32 @@ function getActivatedHeroAbilities(state, side, lane){
     }
     var hostInfo=attachmentHostForAction(state,c,action,sourceHero);
     if(hostInfo){ hostHero=hostInfo.hero;hostSide=hostInfo.side;hostLane=hostInfo.lane;attachmentPolicy=hostInfo.policy;attachmentSlot=attachmentSlotIndex(hostHero); if(attachmentSlot<0){ showInfo('Cannot Play',(attachmentPolicy.host==='target'?'Target':'Source')+' Hero has no empty Attachment Slot.'); state.pending=null; render(); return false; } }
-    action.side=side; var gate=validateAction(state,side,Object.assign({type:'PLAY_CARD'},action),{committingPending:true}); if(!gate.ok){ showInfo('Cannot Play', gate.reasons.join('\n')); state.pending=null; render(); return false; }
+    action.side=side; var gate=validateAction(state,side,Object.assign({type:'PLAY_CARD'},action),{committingPending:true,manaAlreadyPaid:!!action._mana_payment_committed}); if(!gate.ok){ showInfo('Cannot Play', gate.reasons.join('\n')); state.pending=null; render(); return false; }
     var cost=cardPlayCostForSource(c,sourceHero,state,action.source_side||action.side||'PLAYER');
     if(isArrowBarrageCard(c)){ if(!action.mana_spent) action.mana_spent=arrowBarrageSpendMax(state,side); cost=Number(action.mana_spent||0); }
     if(isArrowBarrageCard(c) && !arrowBarrageSpendValid(state,side,cost)){ showInfo('Cannot Play','Arrow Barrage requires spending all available Mana Shards after target validation.'); state.pending=null; render(); return false; }
-    if(manaAvailableValueForCard(state,side,c)<cost){ showInfo('Cannot Play','Not enough Mana value in the Shard Pool.'); state.pending=null; render(); return false; }
+    if(!action._mana_payment_committed && manaAvailableValueForCard(state,side,c)<cost){ showInfo('Cannot Play','Not enough Mana value in the Shard Pool.'); state.pending=null; render(); return false; }
     if(requiredDiscardSpecificIds(c).length && !handHasRequiredDiscards(hand,c)){ showInfo('Cannot Play','Required discard cards are missing from hand.'); state.pending=null; render(); return false; }
     if((side==='PLAYER'||state.pvpHumanVsHuman) && typeof action.use_magical_surge==='undefined' && magicalSurgeChoiceAvailable(state,action,sourceHero,c)){ return openMagicalSurgeChoice(state,action); }
-    if(!isArrowBarrageCard(c)){
+    if(!isArrowBarrageCard(c) && !action._mana_payment_committed){
       if(side==='PLAYER' && shouldPromptManaPayment(state,side,c,cost) && !action._mana_choice_complete) return openManaShardPaymentChoice(state,action,cost);
       if(side==='AI' && !action._mana_choice_complete){var aiManaPlan=autoManaPaymentForAI(state,side,c,cost);if(!aiManaPlan.ok){pushLog(state,'AI cannot pay '+cardName(c)+' with its current Shard Pool.');state.pending=null;return false;}action.selected_mana_class_uids=aiManaPlan.selected_class_uids||[];action._mana_choice_complete=true;}
       if(!action._mana_choice_complete){var autoPlayerPlan=autoManaPaymentWithoutPrompt(state,side,c,cost);if(!autoPlayerPlan.ok){showInfo('Cannot Play','Mana payment could not be completed from the current Shard Pool.');state.pending=null;render();return false;}action.selected_mana_class_uids=(autoPlayerPlan.selected_class_uids||[]).slice();action._mana_choice_complete=true;}
     }
     var reactiveResponderSide=side==='PLAYER'?'AI':'PLAYER';
     if(!action.reactiveChecked && canOpenReactiveCancelWindow(state,c,reactiveResponderSide,side)){
+      // PAY is the commitment boundary. Spend the selected Shards BEFORE the opponent is
+      // allowed to Intercept/Flashpowder, so every counter-response legality check sees the
+      // real remaining Mana. A canceled card never refunds this committed payment.
+      if(!action._mana_payment_committed){
+        var reactivePayment=Array.isArray(action.selected_mana_shard_uids)?spendExactManaPayment(state,side,c,cost,action.selected_mana_shard_uids,'Committed card payment before reactive Response'):spendManaPayment(state,side,c,cost,action.selected_mana_class_uids||[],'Committed card payment before reactive Response');
+        if(!reactivePayment||!reactivePayment.ok){showInfo('Cannot Play','Mana payment could not be completed from the current Shard Pool.');state.pending=null;render();return false;}
+        action._mana_payment_committed=true;
+        action._paid_mana=Number(reactivePayment.value||cost||0);
+        action._paid_mana_shard_uids=(reactivePayment.spent||[]).map(function(sh){return sh.uid;});
+        action._paid_mana_class_uids=(reactivePayment.spent||[]).filter(function(sh){return sh.kind==='CLASS';}).map(function(sh){return sh.uid;});
+        pushLog(state,side+' commits '+action._paid_mana+' Mana for '+cardName(c)+' before the opponent Response Window opens.');
+      }
       openReactiveCancelWindow(state,Object.assign({},action,{side:side}),cost,reactiveResponderSide);
       if(reactiveResponderSide==='AI'&&!state.pvpHumanVsHuman)autoResolveCurrentAIReactiveCancelWindow(state);
       syncCounts(state); render(); return true;
@@ -6099,7 +6125,7 @@ function getActivatedHeroAbilities(state, side, lane){
     // Source/target selection is pre-commit UI state. Clear it before the card leaves Hand so it
     // cannot masquerade as an active post-commit destination if a later resolver exits early.
     state.pending=null;
-    var manaPaymentResult=isArrowBarrageCard(c)?spendAllManaForCard(state,side,c):(Array.isArray(action.selected_mana_shard_uids)?spendExactManaPayment(state,side,c,cost,action.selected_mana_shard_uids,'Card payment'):spendManaPayment(state,side,c,cost,action.selected_mana_class_uids||[],'Card payment'));
+    var manaPaymentResult=action._mana_payment_committed?{ok:true,value:Number(action._paid_mana||cost||0),cost:cost,context:'Already committed before reactive Response'}:(isArrowBarrageCard(c)?spendAllManaForCard(state,side,c):(Array.isArray(action.selected_mana_shard_uids)?spendExactManaPayment(state,side,c,cost,action.selected_mana_shard_uids,'Card payment'):spendManaPayment(state,side,c,cost,action.selected_mana_class_uids||[],'Card payment')));
     if(!manaPaymentResult||!manaPaymentResult.ok){showInfo('Cannot Play','Mana payment could not be completed from the current Shard Pool.');restoreStateSnapshot(state,committedSnapshot);render();return false;}
     if(isArrowBarrageCard(c)){action.mana_spent=Number(manaPaymentResult.value||0);cost=action.mana_spent;}
     hand=sideHand(state,side);if(hand[action.hand_index]!==cardId){var paidFound=hand.indexOf(cardId);if(paidFound<0){restoreStateSnapshot(state,committedSnapshot);showInfo('Cannot Play','Card left Hand before payment completed.');render();return false;}action.hand_index=paidFound;}
@@ -8495,6 +8521,7 @@ var desktopMarkup='<div class="gl-lab-authority '+(state.turn==='AI'?'turn-ai':'
     $('choiceClose').addEventListener('click', function(){
       if(EXTERNAL_HUMAN_UI&&typeof window!=='undefined'&&window.GL_PVP_SHARED_BOARD_ACTIVE)return;
       var p=appState&&appState.pending, policy=localPendingClosePolicy(appState,p);
+      if(policy==='RESPONSE_PAYMENT_CANCEL'){ cancelResponsePaymentChoice(); return; }
       if(policy==='PRE_COMMIT_CANCEL'){ cancelPendingAction(); return; }
       if(policy==='POST_RESOLUTION_DECLINE'){
         if(p.type==='optional_swap'){ performOptionalSwapDecision(false); return; }
@@ -10810,6 +10837,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
         moveCrystalBallOrder:moveCrystalBallOrder,
         performDualArrowPairChoice:performDualArrowPairChoice,
         selectResponsePaymentChoice:selectResponsePaymentChoice,
+        cancelResponsePaymentChoice:cancelResponsePaymentChoice,
         commitResponsePaymentChoice:commitResponsePaymentChoice,
         toggleDiscardIndex:toggleDiscardIndex,
         selectCardSearchChoice:selectCardSearchChoice,

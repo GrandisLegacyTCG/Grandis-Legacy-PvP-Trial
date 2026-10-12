@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.15');
+assert.equal(pkg.version,'3.80.16');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),battlefieldCss=read('public/shared-ui/battlefield-ui.css'),pvpIntegration=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6916-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -175,7 +175,7 @@ assert.match(server,/closeClientSocket\(client,4006,'Seat session replaced by an
 assert.match(server,/SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}/,'seat-token rejection needs a dedicated error code');
 assert.match(server,/code==='SEAT_TOKEN_MISMATCH'\?4004/,'seat-token mismatch must not use the normal reconnect close path');
 
-// v3.80.15 input/snapshot/presentation ownership guards.
+// v3.80.16 input/snapshot/presentation ownership guards.
 assert.match(donor,/pvpExternalGameplay=!!\(EXTERNAL_HUMAN_UI[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)/,'donor delegated gameplay clicks must be gated off while PvP external UI owns input');
 assert.match(host,/if\(!opts\.force&&rev===state\.lastImportedRevision/,'normal duplicate revisions may be skipped');
 assert.match(host,/onSnapshot\(m\.snapshot,\{force:true\}\)/,'intent-result snapshots must force authoritative recovery even at the same revision');
@@ -185,6 +185,10 @@ assert.match(app,/if\(window\.GL_APP_MODE!=='PVP'\)setInterval\(\(\)=>\{if\(!lob
 assert.equal(fs.existsSync(path.join(root,'public/engine/js/app.bundle.js')),false,'stale duplicate donor app.bundle.js must not ship');
 assert.match(authority,/autoResolveMeaninglessOpponentShardChoice/,'authority must auto-resolve opponent Shard choices with no meaningful identity choice');
 assert.match(app,/function bestExactManaDraftSubset/,'center Mana draft must implement v6.91.6 exact replacement logic');
+assert.match(donor,/_mana_payment_committed/,'paid Event/Item Mana must carry an authoritative committed-payment marker through reactive windows');
+assert.match(donor,/commits .* Mana for .* before the opponent Response Window opens/,'incoming reactive cards must spend Mana before the opponent may respond');
+assert.match(donor,/function cancelResponsePaymentChoice/,'Response payment must expose a dedicated pre-PAY cancel path that restores the Response Window');
+assert.match(app,/responsePay\?'cancelResponsePaymentChoice':'cancelPendingAction'/,'center PAY UI must always render CANCEL and route Response payment cancellation to the dedicated authority intent');
 assert.match(app,/pendingOwner\(p\)==='PLAYER'&&\(isPrecommitCancelable\(s\)\|\|p\?\.type==='manual_reposition'\)/,'CANCEL must only render for the local owner of the pending action');
 assert.match(donor,/choiceClose'[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)return/,'donor choice-close gameplay mutation must be disabled while PvP external UI owns input');
 assert.match(donor,/choiceConfirm'[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)return;handleChoiceConfirm/,'donor choice-confirm gameplay mutation must be disabled while PvP external UI owns input');
@@ -221,9 +225,10 @@ assert.match(battlefieldCss,/hero-lane:not\(\.gl-focus-lit\).*background:rgba\(0
 assert.match(battlefieldCss,/\.gl-hero-actions\{[^}]*right:6px!important;[^}]*top:6px!important/s,'Hero ability controls must sit 2px farther inward than the donor 4px corner position');
 assert.match(battlefieldCss,/gl-response-waiting\.gl-turn-banner\{[^}]*top:49%/s,'Waiting Response must be centered with the turn-banner geometry');
 assert.match(pvpIntegration,/gl-adaptive-stage \.hand\.bottom \.hand-card::after\{pointer-events:none!important\}/,'tablet/mobile must disable the desktop extended hover hitbox so Response PLAY taps reach the button');
-assert.match(host,/primeEarlyBattleFeedback\(previousSnapshot,msg\)/,'new authoritative battle feedback must be started before snapshot import/full rerender');
+assert.match(host,/primeEarlyBattleFeedback\(previousSnapshot,msg\)/,'new authoritative battle feedback must inspect the incoming snapshot before import');
 assert.match(host,/playEarlyBattleAudio\(row\)/,'battle SFX must use the preloaded PvP audio element immediately on snapshot receipt');
-assert.match(donor,/playAuthoritativeBattleFeedback:function/,'browser donor bridge must expose immediate visual battle feedback without rerunning gameplay');
-assert.match(app,/GL_PVP_EARLY_BATTLE_EVENT_IDS/,'normal presentation planning must suppress battle events already played by the low-latency PvP path');
+assert.match(host,/VFX must wait until the authoritative snapshot has rendered/,'battle VFX must explicitly defer geometry lookup until after authoritative render');
+assert.match(donor,/playAuthoritativeBattleFeedback:function/,'browser donor bridge must expose authoritative visual battle feedback without rerunning gameplay');
+assert.match(app,/GL_PVP_EARLY_BATTLE_EVENT_IDS[\s\S]*play_sound:false[\s\S]*plan\.battle\.push/,'normal presentation planning must still replay VFX after render while suppressing only duplicate early audio');
 assert.match(app,/presentationPlan\.battle\?\.length/,'fallback authoritative battle feedback must still flush before the full battlefield rerender');
 console.log(JSON.stringify({ok:true,version:pkg.version,presentation:'VS AI v6.91.6',lobby:'PvP v3.76.6',v351:'architecture/networking reference only',legacyAuthorityShipped:false,legacySyncLayerShipped:false,automaticDrawToDeploy:true,authoritativeRematchReset:true,legacyIdentityBadgesRemoved:true,customDeck50to60Preserved:true,privacyProjection:true,publicShardPoolParity:true,openingSinglePresentationOwner:true,donorCoinFlipLifecycle:true,resetRoomGuarded:true,customDeckReconnectSafe:true,buildMismatchRecovery:true,pvpPresentationLabels:true},null,2));

@@ -1,6 +1,6 @@
-# Grandis Legacy PvP v3.80.15
+# Grandis Legacy PvP v3.80.16
 
-Grandis Legacy PvP v3.80.15 uses **v3.80.12 as the gameplay/input baseline** and reapplies the intended tablet/presentation fixes with corrected Response hit-testing and the server-owned build handshake. The multiplayer layer preserves VS AI v6.91.6 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
+Grandis Legacy PvP v3.80.16 uses **v3.80.12 as the gameplay/input baseline** and reapplies the intended tablet/presentation fixes with corrected Response hit-testing and the server-owned build handshake. The multiplayer layer preserves VS AI v6.91.6 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
 
 ## Locked bases
 
@@ -10,24 +10,27 @@ Grandis Legacy PvP v3.80.15 uses **v3.80.12 as the gameplay/input baseline** and
 - **Server gameplay authority:** VS AI v6.91.6 shared gameplay engine executed headlessly in Node, with narrow PvP-only input guards and battle-presentation bridge hooks
 - **PvP Mana seam:** center-only ephemeral UI Shard selection; one final selected-Shard-UID commit on PAY
 
-PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.15 Mana interaction follows the current VS AI v6.91.6 donor behavior rather than the older Class-only/FIFO experiment.
+PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.16 Mana interaction follows the current VS AI v6.91.6 donor behavior rather than the older Class-only/FIFO experiment.
 
-## v3.80.15 stabilization scope
+## v3.80.16 stabilization scope
 
-- Battlefield player/opponent names are restored with live connection bars (local bar left of name, opponent bar right of name).
-- Tablet/mobile Lobby uses the same single 1600×747 adaptive stage as Battlefield; no nested Lobby scale is applied.
-- `WAITING FOR OPPONENT RESPONSE...` uses the centered persistent turn-banner presentation.
-- Response Hand/card actions are stacked above the lifted Hero grids, while tablet/mobile disables only the desktop extended-hover pseudo-hitbox; this keeps Response PLAY clickable on mouse and touch.
-- Client/server build identity is owned by the server and injected through no-store `build-meta.js`.
-- CANCEL is rendered only for the local owner of the pending decision.
-- Battle Attack / Block / Dodge / Heal feedback is transported as stable server-owned presentation events, then replayed once per browser through the donor VFX/SFX layer.
-- Automatic Draw -> Deploy remains server-authoritative, while the client visually holds the phase tracker on Draw until committed Draw + Mana Regen presentation finishes.
-- Legal Racial/Class Response buttons remain readable above Response dimming without a global glow/shadow restyle.
-- Browser gameplay state is never restored from a local rollback snapshot; committed state changes remain server-owned.
-- Intent batches are restricted to approved two-step atomic UI pairs and ownership is revalidated after the first step.
-- Donor delegated and direct choice handlers are gated while PvP external UI owns gameplay input.
+This patch keeps the proven v3.80.15 UI/input boundary and fixes three gameplay-critical response/payment issues without redesigning Mana selection:
 
-Mana Payment remains the already-proven v3.80.8/v3.80.9 final-UID handshake and is regression-tested, not redesigned.
+- **Card Mana is committed at PAY time before Intercept/Flashpowder/reactive-cancel priority opens.** If a player has 4 Mana and pays 3 for an Event, later counter-response legality sees the remaining 1 Mana immediately. A canceled card does not refund that committed cost, and resumed resolution does not spend it twice.
+- **Response payment stays pre-commit until PAY.** Every Response PAY MANA screen has CANCEL. CANCEL restores the original Response Window with the response unselected, leaves the Response card in Hand, and spends no Mana/additional cost; PAY is the commitment boundary.
+- **Low-latency battle feedback separates audio from geometry.** SFX may prime immediately when the authoritative event arrives, but P.Atk/M.Atk and other target-anchored VFX wait until the authoritative snapshot has been imported/rendered so tablet transforms cannot anchor the effect to stale/source geometry. Duplicate SFX is suppressed when the deferred visual event is replayed.
+
+The following v3.80.15 stabilization behavior remains in place:
+
+- Battlefield player/opponent names and live connection bars.
+- Single 1600×747 adaptive stage for tablet/mobile Battlefield and Lobby.
+- Centered persistent `WAITING FOR OPPONENT RESPONSE...` presentation.
+- Response Hand/card actions layered above Hero focus boxes on mouse and touch.
+- Server-owned build identity through no-store `build-meta.js`.
+- Authoritative Response focus/presentation, Draw -> Deploy presentation hold, seat localization, privacy, reconnect, and idle handling.
+- Final selected-Shard-UID Mana Payment handshake and VS AI v6.91.6 exact-selection behavior.
+
+Mana selection itself is regression-tested and not redesigned in this patch.
 
 ## Current handshake
 
@@ -59,7 +62,7 @@ See `ARCHITECTURE_V380.md` for the full contract.
 
 ## Mana payment boundary
 
-v3.80.15 uses VS AI v6.91.6 as the active donor. The gameplay bundle carries one explicit PvP-only DOM guard so delegated donor clicks cannot mutate gameplay locally while the external PvP UI owns input; gameplay rules remain donor-driven.
+v3.80.16 uses VS AI v6.91.6 as the active donor. The gameplay bundle carries one explicit PvP-only DOM guard so delegated donor clicks cannot mutate gameplay locally while the external PvP UI owns input; gameplay rules remain donor-driven.
 
 The browser interaction is now:
 
@@ -96,7 +99,7 @@ For Response payments that also require a Hand discard, the browser keeps both t
 
 v3.80.x uses one atomic `intent-result` for each committed network action. Exactly one network gameplay action may be in flight. A second committed action while one is still in flight is rejected locally rather than silently queued. If the result times out, the client releases the gate and requests a fresh authoritative snapshot.
 
-Mana **selection clicks are intentionally not network actions** in v3.80.15; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
+Mana **selection clicks are intentionally not network actions** in v3.80.16; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
 
 The opening battlefield is non-interactive until the server reaches `started`. A client may finish its opening animation a few seconds before the other device, but it cannot send gameplay actions during that gap.
 
@@ -126,7 +129,7 @@ The opening board is imported **without rendering** and then presented exactly o
 
 ## Seat orientation and mirroring
 
-Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.15 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
+Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.16 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
 
 ## Deck summary
 
@@ -184,4 +187,4 @@ See `DEPLOYMENT_GUARDRAILS.md`.
 - package only after the user explicitly asks for the candidate build;
 - every future Takeover Note should carry the same workflow rule.
 
-v3.80.15 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.
+v3.80.16 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.

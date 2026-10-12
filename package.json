@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.15",
+  "version": "3.80.16",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.15 — v3.80.12 gameplay baseline with corrected tablet/mobile Lobby/Response interaction, centered Response waiting banner, low-latency battle feedback, and server-owned build metadata.",
+  "description": "Grandis Legacy PvP v3.80.16 \u2014 committed Mana is spent immediately before reactive Response windows, Response payment can be canceled before PAY, and battle VFX waits for authoritative target geometry while SFX stays low-latency.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
@@ -31,7 +31,7 @@
   "grandisLegacyArchitecture": {
     "presentationBase": "VS AI v6.91.6",
     "lobbyBase": "PvP v3.76.6",
-    "referenceArchitecture": "VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts; current Mana interaction follows VS AI v6.91.6 exact replacement behavior with a center-only UI draft and final-UID PvP commit seam",
+    "referenceArchitecture": "VS AI Tutorial v6.48 \u2194 PvP v3.51 handshake concepts; current Mana interaction follows VS AI v6.91.6 exact replacement behavior with a center-only UI draft and final-UID PvP commit seam",
     "serverAuthority": "VS AI v6.91.6 shared gameplay engine executed headlessly in Node VM; browser payment clicks hold only an ephemeral UI draft, and PvP validates final selected Shard UIDs at PAY before calling donor commit once",
     "v351RuntimeShipped": false,
     "pvpManaPayment": "VS AI v6.91.6 exact-selection UX (including exact replacement and normal-Mana preference) is represented by a centered ephemeral UID draft; PAY sends final selected Shard UIDs once for authoritative validation and donor commit"

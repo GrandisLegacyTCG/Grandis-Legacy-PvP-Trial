@@ -7,7 +7,7 @@ import { V6916Authority, sourceHashes, internals } from '../server/v6916-authori
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const hashes=sourceHashes();
-assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.15 source set with the v6.91.6 donor baseline, explicit PvP DOM guard, and narrow final-Shard-UID payment seam');
+assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.16 source set with the v6.91.6 donor baseline, explicit PvP DOM guard, and narrow final-Shard-UID payment seam');
 
 const probe=new V6916Authority();
 const starterKeys=Object.keys(probe.starters);
@@ -329,17 +329,70 @@ for(const firstSeat of [1,2]){
     view=a.viewForSeat(seat).appState;
     assert.ok(view.responseWindow,'final Event PAY must leave payment and continue into the normal remote Response window');
     assert.notEqual(view.pending?.type,'mana_shard_payment_choice','accepted PAY must leave the Mana payment gate');
+    assert.ok(!(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M1`),'Event PAY must spend the selected normal Mana UID before the opponent Response window opens');
+    assert.ok(!(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-CW`),'Event PAY must spend the selected Class UID before the opponent Response window opens');
+    assert.ok((view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M2`),'unselected normal Mana UID must remain in the pool while the opponent is choosing a Response');
+    assert.equal(view.playerManaPoolCards.length,poolBefore-2,'Event cost must be reflected immediately after PAY, not after the opponent responds');
     a.applyIntent(other,'responsePassNoStuck',[]);
     view=a.viewForSeat(seat).appState;
     assert.equal(view.pending,null,`seat ${seat} Event payment/resolution must clear pending state`);
     assert.equal(view.responseWindow,null,`seat ${seat} Event payment/resolution must clear Response window`);
-    assert.ok(!(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M1`),'selected normal Mana UID must actually be spent when the action resolves');
-    assert.ok(!(view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-CW`),'selected Event Class UID must actually be spent at value 1 when the action resolves');
-    assert.ok((view.playerManaPoolCards||[]).some(sh=>String(sh.uid)===`EVT-${seat}-M2`),'unselected normal Mana UID must remain in the pool');
-    assert.equal(view.playerManaPoolCards.length,poolBefore-2,'cost-2 mixed Event payment must spend exactly two selected Shards');
+    assert.equal(view.playerManaPoolCards.length,poolBefore-2,'passing the reactive window must not charge the already-paid Event a second time');
     assert.ok(view.playerDiscard.includes('S1-EVT-002'),'resolved paid Event must reach acting player Discard');
   }
 }
+
+{
+  // Reactive-cancel payment commitment regression:
+  // PAY must reduce the incoming Event player's Mana BEFORE Intercept legality is checked,
+  // and a Response payment screen must remain cancelable until its own PAY is pressed.
+  const a=create(1),s=a.canonical.appState;
+  s.playerHand[0]='S1-EVT-002'; // Market Bargain, cost 2.
+  s.playerHand[1]='S1-EVT-007'; // Intercept, cost 2; should become unaffordable after Event PAY.
+  s.aiHand[0]='S1-EVT-007';
+  s.playerManaPoolCards=[
+    {uid:'PRE-P1',kind:'MANA',owner_side:'PLAYER'},
+    {uid:'PRE-P2',kind:'MANA',owner_side:'PLAYER'},
+    {uid:'PRE-P3',kind:'MANA',owner_side:'PLAYER'}
+  ];s.mana=3;
+  s.aiManaPoolCards=[
+    {uid:'PRE-A1',kind:'MANA',owner_side:'AI'},
+    {uid:'PRE-A2',kind:'MANA',owner_side:'AI'}
+  ];s.aiMana=2;
+
+  a.applyIntent(1,'beginPlayFromHand',[0]);
+  a.applyIntent(1,'chooseHeroFromBoard',['PLAYER','LEFT']);
+  a.applyIntent(1,'commitManaShardPaymentChoice',[['PRE-P1','PRE-P2']]);
+  let p1=a.viewForSeat(1).appState,p2=a.viewForSeat(2).appState;
+  assert.deepEqual(p1.playerManaPoolCards.map(x=>x.uid),['PRE-P3'],'Event PAY must immediately leave the acting player with only the true remaining Mana before Intercept');
+  const interceptIndex=(p2.responseWindow?.options||[]).findIndex(o=>o.card_id==='S1-EVT-007');
+  assert.ok(interceptIndex>=0,'opponent Intercept must be offered against the paid incoming Event');
+
+  a.applyIntentBatch(2,[{name:'responseSelectNoStuck',args:[interceptIndex]},{name:'confirmSelectedResponse',args:[]}]);
+  p2=a.viewForSeat(2).appState;
+  assert.equal(p2.pending?.type,'response_payment_choice','choosing paid Intercept must open its pre-commit payment screen');
+  assert.deepEqual(p2.playerManaPoolCards.map(x=>x.uid),['PRE-A1','PRE-A2'],'opening Response payment must not spend anything before PAY');
+  assert.ok(p2.playerHand.includes('S1-EVT-007'),'Response card must remain in Hand before PAY');
+
+  a.applyIntent(2,'cancelResponsePaymentChoice',[]);
+  p2=a.viewForSeat(2).appState;
+  assert.equal(p2.pending,null,'CANCEL must leave the Response payment pending state');
+  assert.equal(p2.responseWindow?.kind,'incoming_card','CANCEL must restore the original Response Window');
+  assert.equal(p2.responseWindow?.selected,null,'restored Response Window must not keep the canceled Response preselected');
+  assert.deepEqual(p2.playerManaPoolCards.map(x=>x.uid),['PRE-A1','PRE-A2'],'canceling before Response PAY must spend no Mana');
+  assert.ok(p2.playerHand.includes('S1-EVT-007'),'canceling before Response PAY must keep the Response card in Hand');
+
+  const interceptIndex2=(p2.responseWindow?.options||[]).findIndex(o=>o.card_id==='S1-EVT-007');
+  a.applyIntentBatch(2,[{name:'responseSelectNoStuck',args:[interceptIndex2]},{name:'confirmSelectedResponse',args:[]}]);
+  a.applyIntent(2,'commitResponsePaymentChoice',[['PRE-A1','PRE-A2'],[]]);
+  p1=a.viewForSeat(1).appState;p2=a.viewForSeat(2).appState;
+  assert.equal(p1.responseWindow,null,'the original player must not receive an illegal counter-Intercept window after spending down to 1 Mana');
+  assert.equal(p1.pending,null,'canceled incoming Event chain must finish cleanly');
+  assert.deepEqual(p1.playerManaPoolCards.map(x=>x.uid),['PRE-P3'],'Intercept resolution must not refund or double-spend the original Event payment');
+  assert.ok(p1.playerDiscard.includes('S1-EVT-002'),'Intercept must cancel and discard the already-paid incoming Event');
+  assert.ok(p2.playerDiscard.includes('S1-EVT-007'),'paid Intercept must resolve to the responder Discard');
+}
+
 
 {
   // Matching Class Shard = 2 for a matching Warrior Skill. The centered UI may replace

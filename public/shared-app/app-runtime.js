@@ -613,7 +613,7 @@ function buildPresentationPlan(s){
     seenPresentationEvents.add(e.id);
     if(!presentationPrimed)return;
     if(e.type==='CARD_DRAWN')plan.draws.push(e);
-    else if(e.type==='BATTLE_FEEDBACK'){const early=window.GL_PVP_EARLY_BATTLE_EVENT_IDS,id=String(e.id||'');if(early?.has?.(id))early.delete(id);else plan.battle.push(e);}
+else if(e.type==='BATTLE_FEEDBACK'){const early=window.GL_PVP_EARLY_BATTLE_EVENT_IDS,id=String(e.id||'');if(early?.has?.(id)){early.delete(id);const visual={...e,play_sound:false};plan.battle.push(visual)}else plan.battle.push(e);}
   });
   // The server may already be authoritatively in Deploy when the completed mandatory
   // Draw snapshot reaches the browser. Keep the tracker visually on Draw only while the
@@ -1027,7 +1027,7 @@ function renderCenterChoiceStage(s){
   if(mode==='pay'){
     const responsePay=p.type==='response_payment_choice',rawPool=s.playerManaPoolCards||[],draft=ensureManaPaymentDraft(s,p,rawPool),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),live=exactManaDraftPlan(rawPool,draft.uids,cardId,cost),discardReady=!responsePay||draft.responseIndices.length===Number(p.required_discard_count||0),planReady=!!live.ok;
     cardsHost.querySelectorAll('.gl-center-choice-card.is-clickable').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;toggleManaPaymentDraftUid(s,p,rawPool,c.dataset.choiceUid)});
-    if(!responsePay)makeBtn('CANCEL','gl-center-choice-cancel',false,()=>{if(centerChoiceBusy)return;clearManaPaymentDraft();intent('cancelPendingAction',[])});
+    makeBtn('CANCEL','gl-center-choice-cancel',false,()=>{if(centerChoiceBusy)return;clearManaPaymentDraft();intent(responsePay?'cancelResponsePaymentChoice':'cancelPendingAction',[])});
     makeBtn('PAY','gl-center-choice-primary',!(planReady&&discardReady),()=>{if(centerChoiceBusy)return;const finalUids=live.selected_shard_uids.map(String),selectedIndices=responsePay?draft.responseIndices.slice():[],sent=intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',responsePay?[finalUids,selectedIndices]:[finalUids]);if(sent?.ok!==false){centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy')}});
   }else if(mode==='opponent-shard'){
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentManaChoice',[Number(c.dataset.choiceIndex)])});

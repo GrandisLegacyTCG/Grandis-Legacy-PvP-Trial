@@ -1,8 +1,8 @@
-# PvP v3.80.15 Architecture
+# PvP v3.80.16 Architecture
 
 ## 1. Purpose
 
-v3.80.15 keeps the proven v3.80.12 gameplay/input boundary, reapplies the intended tablet/presentation fixes, and corrects Response hit-testing without redesigning Mana Payment. It keeps committed gameplay server-authoritative while transporting transient battle/draw presentation explicitly. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
+v3.80.16 keeps the proven v3.80.15 gameplay/input boundary and tightens the response/payment commitment contract: card Mana is spent authoritatively at PAY before reactive cancel priority, Response payment remains cancelable until PAY, and low-latency SFX is separated from geometry-dependent VFX so tablet transforms use the post-import target layout. It keeps committed gameplay server-authoritative while transporting transient battle/draw presentation explicitly. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
 
 ### Bases
 
@@ -18,7 +18,7 @@ No v3.51 runtime/authority directory is shipped. The older repository remains an
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.15 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.16 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -122,7 +122,7 @@ The server rejects stale revisions. Accepted actions create a new authoritative 
 
 ## 5A. PvP Mana payment contract
 
-v3.80.15 uses the VS AI v6.91.6 gameplay donor with one explicit PvP-only DOM-input guard, while payment interaction ownership stays entirely in the centered PvP UI until PAY:
+v3.80.16 uses the VS AI v6.91.6 gameplay donor with one explicit PvP-only DOM-input guard, while payment interaction ownership stays entirely in the centered PvP UI until PAY:
 
 ```text
 authoritative payment pending
@@ -212,17 +212,37 @@ both READY
 -> v6.91.6 presentation renders the authoritative result
 ```
 
+## 7A. Mana commitment and Response cancel boundary
+
+PAY is the resource commitment boundary. For a normal Skill/Item/Event payment, the server validates the selected Shards and spends them immediately when PAY is accepted **before** opening any Intercept/Flashpowder/reactive-cancel window. The pending card carries an internal committed-payment marker so later PASS/cancel resolution reuses the already-paid result instead of spending again. Reactive cancellation never refunds that paid Mana.
+
+Response payment is intentionally different before PAY: choosing a Response can open `response_payment_choice`, but that pending is `pre_commit_payment`. The response card remains in Hand and its Mana/additional costs remain unspent until PAY. CANCEL invokes `cancelResponsePaymentChoice`, restores the incoming Response Window, clears the selected Response, and lets the player choose another Response or Pass. PAY performs the authoritative spend and only then makes the Response committed.
+
+This prevents both resource exploits and accidental commitment:
+
+```text
+4 Mana -> Event cost 3 -> PAY -> authoritative pool is now 1
+                               -> opponent Intercept window
+                               -> counter-response legality sees 1, not 4
+
+choose Response -> payment screen
+  CANCEL -> original Response Window, no spend/discard
+  PAY    -> spend costs -> Response committed
+```
+
 ## 8. Presentation ownership
 
 Authoritative snapshots are imported with `skipImportAnimations:true`. Opening adds an extra boundary: the committed opening board is imported with `render:false`, and only the explicit v6.91.6 opening presenter is allowed to render/animate it.
 
 That is intentional. The external `shared-app/app-runtime.js` owns visible animation/SFX by comparing prior and next authoritative visual state and by consuming the v6 battle-feedback surface. This avoids two presentation engines firing for the same transition.
 
+For battle feedback, v3.80.16 splits low-latency audio from geometry-dependent visuals. `pvp-host.js` may play a newly arrived authoritative battle SFX immediately and records the event ID. The same event still enters the normal post-import presentation plan with `play_sound:false`; after authoritative render, the donor VFX resolves `side/lane` against current DOM geometry. This preserves low audio latency while preventing transformed tablet layouts from placing P.Atk/M.Atk on stale/source coordinates or missing the target.
+
 The v6.91.6 donor remains the gameplay/read surface; PvP adds one DOM-input guard plus the network integration seam. PvP adds only an integration boundary around final payment commit; it does not fork the donor payment rules or create a second battlefield renderer.
 
 ## 9. Asset boundary
 
-Standalone v3.80.15 resolves visible media locally:
+Standalone v3.80.16 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -237,14 +257,14 @@ Asset loading is intentionally bounded: the selected own-deck artwork is preload
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.15 deliberately does not ship
+## 10. What v3.80.16 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;
 - no Local-AI authority adapter in the PvP page;
 - no PvP-specific desktop/tablet/mobile gameplay renderer;
 - no client-authored final board mutation.
-## 8. Authoritative presentation boundary (v3.80.15)
+## 8. Authoritative presentation boundary (v3.80.16)
 
 Gameplay resolution and presentation are deliberately separate:
 

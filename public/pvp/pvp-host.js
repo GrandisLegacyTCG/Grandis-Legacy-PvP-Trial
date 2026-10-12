@@ -87,11 +87,11 @@ function primeEarlyBattleFeedback(previousSnapshot,nextSnapshot){
   const rows=battlePresentationEvents(nextSnapshot).filter(e=>e?.type==='BATTLE_FEEDBACK'&&e?.id&&!previousIds.has(String(e.id)));
   if(!rows.length)return;
   for(const row of rows){
+    // Audio does not depend on DOM geometry, so play it immediately for low latency.
+    // VFX must wait until the authoritative snapshot has rendered; measuring the old DOM
+    // on transformed tablet stages can anchor P.Atk/M.Atk on the source or miss the target.
     const id=String(row.id);earlyBattleEventIds.add(id);playEarlyBattleAudio(row);
-    const visual=clone(row);visual.play_sound=false;
-    const engine=nativeEngine();if(engine?.playAuthoritativeBattleFeedback)engine.playAuthoritativeBattleFeedback(visual);else engine?.queueAuthoritativeBattleFeedback?.(visual);
   }
-  if(!nativeEngine()?.playAuthoritativeBattleFeedback)nativeEngine()?.flushBattleFeedback?.();
 }
 function installImageDecodeGuard(){
   const guard=img=>{if(!img)return;const src=String(img.getAttribute('src')||'');if(!/(?:card-art\/|assets\/shards\/|assets\/ui\/back-)/i.test(src))return;if(img.dataset.glGuardedSrc===src)return;img.dataset.glGuardedSrc=src;const alt=img.getAttribute('alt')||'';img.dataset.glResolvedAlt=alt;if(!(img.complete&&img.naturalWidth>0)){img.classList.add('gl-image-pending');img.setAttribute('alt','')}
@@ -218,7 +218,7 @@ function connect(force=false){
       if(m.snapshot)onSnapshot(m.snapshot,{force:true});
       if(!result.matched&&m.ok===false)intentError(m.message||'Authoritative PvP request failed.');
     }
-    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.15 completes actions with intent-result + snapshot. */}
+    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.16 completes actions with intent-result + snapshot. */}
     else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot,{force:true});else{renderLobby();window.GL_GAME_UI?.render?.()}}
     else if(m.type==='idle-timeout'){state.idleNotice=String(m.message||'');if(m.scope==='lobby'){state.role='spectator';state.seatToken='';persistSession('role','spectator');persistSession('seat','')}renderLobby();}
     else if(m.type==='pong'){const sent=Number(m.clientTime||state.pingSentAt||0);if(sent>0){const rtt=Math.max(0,Date.now()-sent);state.rttMs=state.rttMs==null?rtt:Math.round(state.rttMs*.65+rtt*.35)}state.peerConnections.clear();for(const row of (m.connections||[])){if(Number.isFinite(Number(row?.seat)))state.peerConnections.set(Number(row.seat),{connected:!!row.connected,rttMs:Number.isFinite(Number(row.rttMs))?Number(row.rttMs):null})}publishConnection()}
