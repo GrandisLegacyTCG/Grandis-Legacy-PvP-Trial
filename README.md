@@ -1,6 +1,6 @@
-# Grandis Legacy PvP v3.80.14
+# Grandis Legacy PvP v3.80.15
 
-Grandis Legacy PvP v3.80.14 is a **gameplay-input and authoritative-presentation stabilization patch** on the v6.91.6-native PvP line. The multiplayer layer preserves VS AI v6.91.6 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
+Grandis Legacy PvP v3.80.15 uses **v3.80.12 as the gameplay/input baseline** and reapplies the intended tablet/presentation fixes with corrected Response hit-testing and the server-owned build handshake. The multiplayer layer preserves VS AI v6.91.6 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
 
 ## Locked bases
 
@@ -10,20 +10,19 @@ Grandis Legacy PvP v3.80.14 is a **gameplay-input and authoritative-presentation
 - **Server gameplay authority:** VS AI v6.91.6 shared gameplay engine executed headlessly in Node, with narrow PvP-only input guards and battle-presentation bridge hooks
 - **PvP Mana seam:** center-only ephemeral UI Shard selection; one final selected-Shard-UID commit on PAY
 
-PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.14 Mana interaction follows the current VS AI v6.91.6 donor behavior rather than the older Class-only/FIFO experiment.
+PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.15 Mana interaction follows the current VS AI v6.91.6 donor behavior rather than the older Class-only/FIFO experiment.
 
-## v3.80.14 stabilization scope
-
-- Tablet/mobile Lobby now uses the same 1600×747 adaptive stage as Battlefield; the old nested Lobby scale is disabled on touch devices.
-- `WAITING FOR OPPONENT RESPONSE...` uses the centered turn-banner presentation family instead of the small top-of-field chip.
-- Tablet/mobile disables the desktop-only extended Hand hover hitbox so legal Response PLAY buttons receive taps directly.
-- Hero Racial/Class controls move 2px inward from the donor corner position (`4px` → `6px`) and no longer receive a global availability glow/shadow.
-- PvP battle SFX and VFX start from newly received authoritative `BATTLE_FEEDBACK` events before full snapshot import/rerender; the normal presentation planner suppresses the already-played event to prevent duplicates.
+## v3.80.15 stabilization scope
 
 - Battlefield player/opponent names are restored with live connection bars (local bar left of name, opponent bar right of name).
+- Tablet/mobile Lobby uses the same single 1600×747 adaptive stage as Battlefield; no nested Lobby scale is applied.
+- `WAITING FOR OPPONENT RESPONSE...` uses the centered persistent turn-banner presentation.
+- Response Hand/card actions are stacked above the lifted Hero grids, while tablet/mobile disables only the desktop extended-hover pseudo-hitbox; this keeps Response PLAY clickable on mouse and touch.
+- Client/server build identity is owned by the server and injected through no-store `build-meta.js`.
 - CANCEL is rendered only for the local owner of the pending decision.
 - Battle Attack / Block / Dodge / Heal feedback is transported as stable server-owned presentation events, then replayed once per browser through the donor VFX/SFX layer.
 - Automatic Draw -> Deploy remains server-authoritative, while the client visually holds the phase tracker on Draw until committed Draw + Mana Regen presentation finishes.
+- Legal Racial/Class Response buttons remain readable above Response dimming without a global glow/shadow restyle.
 - Browser gameplay state is never restored from a local rollback snapshot; committed state changes remain server-owned.
 - Intent batches are restricted to approved two-step atomic UI pairs and ownership is revalidated after the first step.
 - Donor delegated and direct choice handlers are gated while PvP external UI owns gameplay input.
@@ -60,7 +59,7 @@ See `ARCHITECTURE_V380.md` for the full contract.
 
 ## Mana payment boundary
 
-v3.80.14 uses VS AI v6.91.6 as the active donor. The gameplay bundle carries one explicit PvP-only DOM guard so delegated donor clicks cannot mutate gameplay locally while the external PvP UI owns input; gameplay rules remain donor-driven.
+v3.80.15 uses VS AI v6.91.6 as the active donor. The gameplay bundle carries one explicit PvP-only DOM guard so delegated donor clicks cannot mutate gameplay locally while the external PvP UI owns input; gameplay rules remain donor-driven.
 
 The browser interaction is now:
 
@@ -97,7 +96,7 @@ For Response payments that also require a Hand discard, the browser keeps both t
 
 v3.80.x uses one atomic `intent-result` for each committed network action. Exactly one network gameplay action may be in flight. A second committed action while one is still in flight is rejected locally rather than silently queued. If the result times out, the client releases the gate and requests a fresh authoritative snapshot.
 
-Mana **selection clicks are intentionally not network actions** in v3.80.14; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
+Mana **selection clicks are intentionally not network actions** in v3.80.15; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
 
 The opening battlefield is non-interactive until the server reaches `started`. A client may finish its opening animation a few seconds before the other device, but it cannot send gameplay actions during that gap.
 
@@ -127,7 +126,7 @@ The opening board is imported **without rendering** and then presented exactly o
 
 ## Seat orientation and mirroring
 
-Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.14 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
+Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.15 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
 
 ## Deck summary
 
@@ -185,4 +184,4 @@ See `DEPLOYMENT_GUARDRAILS.md`.
 - package only after the user explicitly asks for the candidate build;
 - every future Takeover Note should carry the same workflow rule.
 
-v3.80.14 is being packaged because the user explicitly requested the consolidated tablet/touch, response-status, Hero-action positioning, and battle-feedback latency fixes after real-browser testing.
+v3.80.15 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.

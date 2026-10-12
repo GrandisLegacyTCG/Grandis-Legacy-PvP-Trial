@@ -176,7 +176,7 @@ body.deck-setup-active #previewOverlay{z-index:10060!important}
 .pvp-v260-actions .pvp-v260-btn{white-space:nowrap}
 
 
-/* v3.80.13 — Desktop lobby is canonical on every device. Touch/mobile keeps its existing interaction model; only geometry is unified. */
+/* v3.80.15 — Desktop lobby is canonical on every device. Touch/mobile keeps its existing interaction model; only geometry is unified. */
 @media(max-width:1160px),(hover:none) and (pointer:coarse){
   .pvp-v260-lobby{overflow:hidden!important;background-attachment:fixed!important}
   .pvp-v260-page{position:absolute!important;left:50%!important;top:50%!important;width:1366px!important;height:768px!important;min-height:768px!important;padding:14px 36px 16px!important;transform:translate(-50%,-50%) scale(var(--pvp-lobby-scale,1))!important;transform-origin:center center!important;display:flex!important;flex-direction:column!important}
@@ -194,7 +194,7 @@ body.deck-setup-active #previewOverlay{z-index:10060!important}
 }
 
 
-/* v3.80.13 — touch Lobby uses the exact same 1600x747 adaptive stage as Battlefield.
+/* v3.80.15 — touch Lobby uses the exact same 1600x747 adaptive stage as Battlefield.
    The body owns the only viewport transform; Lobby must never apply a second scale. */
 html.gl-adaptive-stage .pvp-v260-lobby{position:absolute!important;inset:0!important;width:1600px!important;height:747px!important;overflow:hidden!important;background-attachment:fixed!important}
 html.gl-adaptive-stage .pvp-v260-page{position:absolute!important;left:0!important;top:0!important;width:1600px!important;height:747px!important;min-height:747px!important;transform:none!important;transform-origin:0 0!important;padding:14px 36px 16px!important}

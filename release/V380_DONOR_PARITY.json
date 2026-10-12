@@ -1,5 +1,5 @@
 {
-  "release": "v3.80.14",
+  "release": "v3.80.15",
   "generated_from": {
     "presentation": "VS AI v6.91.6",
     "lobby": "PvP v3.76.6",
@@ -102,13 +102,13 @@
     },
     "shared-ui": {
       "files": 1,
-      "bytes": 84309,
-      "new_fingerprint": "f8d3ff68f1816237606c28256161d9cc98d05deb64eca902526021a13a456c6b",
+      "bytes": 84509,
+      "new_fingerprint": "52de6fc1bb492f4ea50316f9a84e4aeb2d8cd7953854bde7f766a1c949297ec5",
       "donor_fingerprint": "e44121027f1d726d6bd46a9b4c036e5b813c17b2618b29df740e7c2eb0c0569f",
       "exact": false,
       "donor_files": 1,
       "donor_bytes": 82451,
-      "note": "VS AI v6.91.6 shared-ui baseline plus narrow PvP Response-focus lane-box layering, centered waiting-status, and Hero-action positioning seams; no gameplay rules changed."
+      "note": "VS AI v6.91.6 shared-ui baseline plus narrow PvP Response-focus lane-box layering, centered waiting-status, Hero-action positioning, and Response Hand hit-test hierarchy; no gameplay rules changed."
     },
     "runtime": {
       "files": 3,

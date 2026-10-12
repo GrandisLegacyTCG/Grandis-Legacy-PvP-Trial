@@ -1,9 +1,9 @@
 {
   "name": "grandis-legacy-pvp",
-  "version": "3.80.14",
+  "version": "3.80.15",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.14 — VS AI v6.91.6 authority with stable Mana PAY, unified desktop/mobile lobby geometry, response-focus parity, low-latency battle feedback, connection identity UI, and server-enforced idle handling.",
+  "description": "Grandis Legacy PvP v3.80.15 — v3.80.12 gameplay baseline with corrected tablet/mobile Lobby/Response interaction, centered Response waiting banner, low-latency battle feedback, and server-owned build metadata.",
   "scripts": {
     "start": "node server.js",
     "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",

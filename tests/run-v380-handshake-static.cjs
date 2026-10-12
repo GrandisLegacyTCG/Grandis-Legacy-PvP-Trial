@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.14');
+assert.equal(pkg.version,'3.80.15');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),battlefieldCss=read('public/shared-ui/battlefield-ui.css'),pvpIntegration=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6916-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -11,7 +11,7 @@ const channelPos=html.indexOf('pvp/intent-channel.js'),buildMetaPos=html.indexOf
 assert.ok(channelPos>=0&&buildMetaPos>channelPos&&hostPos>buildMetaPos&&appPos>hostPos,'intent channel -> server build metadata -> PvP host -> external v6 app runtime load order must stay deterministic');
 assert.match(host,/window\.GL_PVP_BUILD_META/,'browser must receive BUILD_ID from server-owned runtime metadata');
 assert.doesNotMatch(host,/const BUILD_ID=['"]gl-pvp-/,'browser must not carry an independent hard-coded BUILD_ID');
-assert.match(server,/const BUILD_ID=`gl-pvp-\$\{VERSION\}-v6916-2026-10-12`/,'server must derive BUILD_ID from the single release VERSION source');
+assert.match(server,/const BUILD_ID=`gl-pvp-\$\{VERSION\}-v6916-2026-10-13`/,'server must derive BUILD_ID from the single release VERSION source');
 assert.match(server,/url\.pathname==='\/build-meta\.js'/,'server must expose no-store runtime build metadata before WebSocket connect');
 for(const f of ['public/runtime/adapters/authority-adapter.js','public/runtime/adapters/pvp-adapter.js'])assert.ok(fs.existsSync(path.join(root,f)),`${f} missing`);
 
@@ -175,7 +175,7 @@ assert.match(server,/closeClientSocket\(client,4006,'Seat session replaced by an
 assert.match(server,/SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}/,'seat-token rejection needs a dedicated error code');
 assert.match(server,/code==='SEAT_TOKEN_MISMATCH'\?4004/,'seat-token mismatch must not use the normal reconnect close path');
 
-// v3.80.14 input/snapshot/presentation ownership guards.
+// v3.80.15 input/snapshot/presentation ownership guards.
 assert.match(donor,/pvpExternalGameplay=!!\(EXTERNAL_HUMAN_UI[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)/,'donor delegated gameplay clicks must be gated off while PvP external UI owns input');
 assert.match(host,/if\(!opts\.force&&rev===state\.lastImportedRevision/,'normal duplicate revisions may be skipped');
 assert.match(host,/onSnapshot\(m\.snapshot,\{force:true\}\)/,'intent-result snapshots must force authoritative recovery even at the same revision');
@@ -215,6 +215,8 @@ assert.match(app,/WAITING FOR OPPONENT RESPONSE/,'waiting player must receive an
 assert.match(app,/gl-response-action-host/,'legal Hero response actions must have an above-dim presentation path');
 assert.match(app,/target_kind!==['"]zone['"].*target_side.*target_lane.*uiLaneElement/s,'Hero response targets must light the full lane box rather than only the Hero card');
 assert.match(battlefieldCss,/gl-focus-response \.hero-grid\{position:relative;z-index:950!important\}/,'Response focus must lift Hero grids above the global dimmer');
+assert.match(battlefieldCss,/gl-focus-response \.bottom-hud\{position:relative;z-index:980!important\}/,'Response Hand must be above the lifted Hero grids so visible PLAY buttons receive mouse/touch input');
+assert.match(battlefieldCss,/gl-focus-response \.bottom-hud \.card-actions\{z-index:990!important\}/,'Response card action buttons must stay at the top of the local response-hand stacking context');
 assert.match(battlefieldCss,/hero-lane:not\(\.gl-focus-lit\).*background:rgba\(0,0,0,\.65\)/s,'Unrelated Hero lane boxes must receive local response dimming');
 assert.match(battlefieldCss,/\.gl-hero-actions\{[^}]*right:6px!important;[^}]*top:6px!important/s,'Hero ability controls must sit 2px farther inward than the donor 4px corner position');
 assert.match(battlefieldCss,/gl-response-waiting\.gl-turn-banner\{[^}]*top:49%/s,'Waiting Response must be centered with the turn-banner geometry');
