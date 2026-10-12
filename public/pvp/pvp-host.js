@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.12';
-const BUILD_ID='gl-pvp-3.80.12-v6916-ui-parity-idle-response-2026-10-12';
+const VERSION='Grandis Legacy PvP v3.80.13';
+const BUILD_ID='gl-pvp-3.80.13-v6916-touch-lobby-response-latency-2026-10-12';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};
@@ -57,8 +57,41 @@ function visibleBoardAssetUrls(snap){const s=snap?.match?.board?.appState||snap?
 function preloadDeckAssets(deck){return preloadImages([...deckAssetUrls(deck),'assets/ui/back-main.webp','assets/ui/back-legacy.webp','assets/ui/back-shard.webp','assets/shards/Generic.webp','assets/shards/Warrior.webp','assets/shards/Mage.webp','assets/shards/Archer.webp','assets/shards/Cleric.webp','assets/shards/Thief.webp'])}
 const BATTLE_VFX_ASSETS=['engine/assets/battle/P.Attack.png','engine/assets/battle/M.Attack.png','engine/assets/battle/P.Defense.png','engine/assets/battle/M.Defense.png','engine/assets/battle/Heal.png','engine/assets/battle/Blade.png'];
 const BATTLE_AUDIO_ASSETS=['engine/assets/audio/battle/P.Atk.mp3','engine/assets/audio/battle/M.Atk.mp3','engine/assets/audio/battle/P.Def.mp3','engine/assets/audio/battle/M.Def.mp3','engine/assets/audio/battle/Dodge.mp3','engine/assets/audio/battle/Heal.mp3'];
-const battleAudioPrime=[];
-function primeBattleAssets(){preloadImages(BATTLE_VFX_ASSETS);if(typeof Audio!=='undefined'&&!battleAudioPrime.length)for(const src of BATTLE_AUDIO_ASSETS){try{const a=new Audio();a.preload='auto';a.src=src;a.load();battleAudioPrime.push(a)}catch{}}}
+const battleAudioPrime=new Map();
+const earlyBattleEventIds=new Set();
+window.GL_PVP_EARLY_BATTLE_EVENT_IDS=earlyBattleEventIds;
+function primeBattleAssets(){
+  preloadImages(BATTLE_VFX_ASSETS);
+  if(typeof Audio!=='undefined'&&!battleAudioPrime.size)for(const src of BATTLE_AUDIO_ASSETS){try{const a=new Audio();a.preload='auto';a.src=src;a.load();battleAudioPrime.set(src,a)}catch{}}
+}
+function battleAudioSpec(evt){
+  if(!evt||evt.play_sound===false)return null;
+  if(evt.kind==='heal')return['engine/assets/audio/battle/Heal.mp3',.52];
+  if(evt.outcome==='dodge')return['engine/assets/audio/battle/Dodge.mp3',.62];
+  if(evt.outcome==='block')return[(evt.defense_kind||'P')==='M'?'engine/assets/audio/battle/M.Def.mp3':'engine/assets/audio/battle/P.Def.mp3',.60];
+  return[(evt.attack_kind||'P')==='M'?'engine/assets/audio/battle/M.Atk.mp3':'engine/assets/audio/battle/P.Atk.mp3',.60];
+}
+function playEarlyBattleAudio(evt){
+  if(nativeEngine()?.getSoundEnabled?.()===false)return false;
+  const spec=battleAudioSpec(evt);if(!spec||typeof Audio==='undefined')return false;
+  const [src,volume]=spec;let a=battleAudioPrime.get(src);
+  if(!a){try{a=new Audio();a.preload='auto';a.src=src;a.load();battleAudioPrime.set(src,a)}catch{return false}}
+  try{a.pause();a.currentTime=0;a.volume=volume;const pr=a.play();if(pr&&typeof pr.catch==='function')pr.catch(()=>{});return true}catch{return false}
+}
+function battlePresentationEvents(snap){return snap?.match?.board?.appState?.presentationEvents||snap?.appState?.presentationEvents||[]}
+function primeEarlyBattleFeedback(previousSnapshot,nextSnapshot){
+  const nextStatus=String(nextSnapshot?.match?.status||''),prevStatus=String(previousSnapshot?.match?.status||'');
+  if(!['started','finished'].includes(nextStatus)||!['started','finished'].includes(prevStatus))return;
+  const previousIds=new Set(battlePresentationEvents(previousSnapshot).filter(e=>e?.type==='BATTLE_FEEDBACK'&&e?.id).map(e=>String(e.id)));
+  const rows=battlePresentationEvents(nextSnapshot).filter(e=>e?.type==='BATTLE_FEEDBACK'&&e?.id&&!previousIds.has(String(e.id)));
+  if(!rows.length)return;
+  for(const row of rows){
+    const id=String(row.id);earlyBattleEventIds.add(id);playEarlyBattleAudio(row);
+    const visual=clone(row);visual.play_sound=false;
+    const engine=nativeEngine();if(engine?.playAuthoritativeBattleFeedback)engine.playAuthoritativeBattleFeedback(visual);else engine?.queueAuthoritativeBattleFeedback?.(visual);
+  }
+  if(!nativeEngine()?.playAuthoritativeBattleFeedback)nativeEngine()?.flushBattleFeedback?.();
+}
 function installImageDecodeGuard(){
   const guard=img=>{if(!img)return;const src=String(img.getAttribute('src')||'');if(!/(?:card-art\/|assets\/shards\/|assets\/ui\/back-)/i.test(src))return;if(img.dataset.glGuardedSrc===src)return;img.dataset.glGuardedSrc=src;const alt=img.getAttribute('alt')||'';img.dataset.glResolvedAlt=alt;if(!(img.complete&&img.naturalWidth>0)){img.classList.add('gl-image-pending');img.setAttribute('alt','')}
     const done=async()=>{if(String(img.getAttribute('src')||'')!==src)return;try{await img.decode?.()}catch{}img.classList.remove('gl-image-pending');img.setAttribute('alt',alt)};img.addEventListener('load',done,{once:true});img.addEventListener('error',()=>{if(String(img.getAttribute('src')||'')===src)img.classList.remove('gl-image-pending')},{once:true});if(img.complete&&img.naturalWidth>0)done()};
@@ -145,7 +178,7 @@ function syncPresentation(prevStatus,opts={}){
   }
 }
 function onSnapshot(msg,opts={}){
-  const prevStatus=match()?.status||'setup',prevRev=Number(match()?.revision||0);state.snapshot=msg;state.connected=true;if(msg.local?.role==='player')state.idleNotice='';
+  const previousSnapshot=state.snapshot,prevStatus=match()?.status||'setup',prevRev=Number(match()?.revision||0);primeEarlyBattleFeedback(previousSnapshot,msg);state.snapshot=msg;state.connected=true;if(msg.local?.role==='player')state.idleNotice='';
   if(msg.local?.seatToken){state.seatToken=msg.local.seatToken;persistSession('seat',state.seatToken)}
   if(msg.local?.role){state.role=msg.local.role;window.GL_PVP_LOCAL_ROLE=state.role;persistSession('role',state.role)}
   if(msg.local?.customDeck){state.customDeck=clone(msg.local.customDeck);state.customDeckName=msg.local.deckName||state.customDeck?.display_name||state.customDeck?.deck_name||'Imported Deck';state.deckKey='';state.formation=msg.local.formation||baseFormation(state.customDeck);persist('custom',JSON.stringify(state.customDeck));persist('customName',state.customDeckName);persist('deck','')}
@@ -184,7 +217,7 @@ function connect(force=false){
       if(m.snapshot)onSnapshot(m.snapshot,{force:true});
       if(!result.matched&&m.ok===false)intentError(m.message||'Authoritative PvP request failed.');
     }
-    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.12 completes actions with intent-result + snapshot. */}
+    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.13 completes actions with intent-result + snapshot. */}
     else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot,{force:true});else{renderLobby();window.GL_GAME_UI?.render?.()}}
     else if(m.type==='idle-timeout'){state.idleNotice=String(m.message||'');if(m.scope==='lobby'){state.role='spectator';state.seatToken='';persistSession('role','spectator');persistSession('seat','')}renderLobby();}
     else if(m.type==='pong'){const sent=Number(m.clientTime||state.pingSentAt||0);if(sent>0){const rtt=Math.max(0,Date.now()-sent);state.rttMs=state.rttMs==null?rtt:Math.round(state.rttMs*.65+rtt*.35)}state.peerConnections.clear();for(const row of (m.connections||[])){if(Number.isFinite(Number(row?.seat)))state.peerConnections.set(Number(row.seat),{connected:!!row.connected,rttMs:Number.isFinite(Number(row.rttMs))?Number(row.rttMs):null})}publishConnection()}
@@ -231,7 +264,7 @@ function ensureLobby(){
   $('pvpSetupReadyButton').onclick=()=>send('ready',{ready:!local()?.ready});$('pvpSetupSpectatorButton').onclick=()=>{state.role=local()?.role==='spectator'?'player':'spectator';persistSession('role',state.role);send('switch-role',{role:state.role})};$('pvpSetupStartButton').onclick=startMatch;$('pvpSetupReconnectButton').onclick=()=>connect(true);$('pvpImportDeckButton').onclick=()=>$('pvpImportDeckInput').click();
   $('pvpImportDeckInput').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(String(r.result||''));state.customDeck=d;state.customDeckName=d.display_name||d.deck_name||f.name.replace(/\.json$/i,'');state.deckKey='';state.formation=baseFormation(d);persist('custom',JSON.stringify(d));persist('customName',state.customDeckName);persist('deck','');send('set-deck',{customDeck:d,deckName:state.customDeckName,formation:state.formation});renderLobby()}catch(err){$('pvpLoadedDeckStatus').textContent=String(err.message||err)}};r.readAsText(f)};
 }
-function syncLobbyScale(){const wrap=$('pvpSetupOverlay');if(!wrap)return;const coarse=window.matchMedia?.('(hover:none) and (pointer:coarse)')?.matches||false,fit=coarse||window.innerWidth<=1160;if(!fit){wrap.style.removeProperty('--pvp-lobby-scale');return}const scale=Math.max(.2,Math.min(1,(window.innerWidth||1)/1366,(window.innerHeight||1)/768));wrap.style.setProperty('--pvp-lobby-scale',String(scale))}
+function syncLobbyScale(){const wrap=$('pvpSetupOverlay');if(!wrap)return;if(document.documentElement.classList.contains('gl-adaptive-stage')){wrap.style.removeProperty('--pvp-lobby-scale');return}const fit=window.innerWidth<=1160;if(!fit){wrap.style.removeProperty('--pvp-lobby-scale');return}const scale=Math.max(.2,Math.min(1,(window.innerWidth||1)/1366,(window.innerHeight||1)/768));wrap.style.setProperty('--pvp-lobby-scale',String(scale))}
 function renderLobby(){
   ensureLobby();syncLobbyScale();const active=['coin-flip','coin-result','opening','started','finished'].includes(match()?.status),wrap=$('pvpSetupOverlay');wrap.classList.toggle('open',!active);if(active)return;
   const keys=optionKeys(),meNow=local();if(!state.deckKey&&!state.customDeck&&!meNow?.hasDeck&&keys[0]){state.deckKey=keys[0];state.formation=baseFormation(starterDeck(keys[0]));persist('deck',state.deckKey);if(state.connected&&meNow?.role==='player')send('set-deck',{deckKey:state.deckKey,formation:state.formation})}

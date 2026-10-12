@@ -14,7 +14,7 @@ assert.match(css,/\.pvp-v260-actions \.pvp-v260-btn\{white-space:nowrap\}/,'JOIN
 assert.match(css,/\.pvp-v260-card\{[^}]*back-legacy\.webp/s,'Lobby Hero card slots must show a card-back placeholder while artwork is loading');
 assert.match(css,/\.pvp-v260-summary \.deck-section-start\{margin-top:/,'Deck summary must visually separate Legacy Deck from Main Deck');
 assert.match(css,/Desktop lobby is canonical on every device/,'mobile/tablet lobby must use the desktop composition as canonical geometry');
-assert.match(css,/width:1366px!important;height:768px!important/,'mobile/tablet lobby scale-to-fit canvas must be single-screen desktop geometry');
-assert.match(host,/--pvp-lobby-scale/,'lobby runtime must calculate one scale-to-fit factor rather than reflowing content');
+assert.match(css,/html\.gl-adaptive-stage \.pvp-v260-page\{[^}]*width:1600px!important;[^}]*height:747px!important;[^}]*transform:none!important/s,"tablet/mobile lobby must use Battlefield's 1600x747 logical canvas with no nested transform");
+assert.match(host,/classList\.contains\('gl-adaptive-stage'\)\)\{wrap\.style\.removeProperty\('--pvp-lobby-scale'\)/,'adaptive-stage Lobby must explicitly disable the legacy second scale');
 for(const name of Object.keys(parity.lobby_assets))assert.ok(host.includes(`assets/lobby/${name}`)||css.includes(`assets/lobby/${name}`)||css.includes(`../assets/lobby/${name}`),`Lobby asset is packaged but not referenced: ${name}`);
 console.log(JSON.stringify({ok:true,lobbyAssetHashes:Object.keys(parity.lobby_assets).length,joinAsPlayerSingleLine:true,kickButton:'28x28',kickIcon:'16x16'},null,2));

@@ -27,7 +27,7 @@ const battleLogPanel=document.getElementById('battleLogPanel');
 const appRoot=document.querySelector('.app');
 const soundBtn=document.querySelector('.bottom-actions button:not(.danger)');
 const focusDimmer=document.createElement('div');focusDimmer.className='gl-focus-dimmer';focusDimmer.setAttribute('aria-hidden','true');appRoot.appendChild(focusDimmer);
-const responseWaitingBox=document.createElement('div');responseWaitingBox.className='gl-response-waiting';responseWaitingBox.textContent='WAITING FOR OPPONENT RESPONSE...';responseWaitingBox.setAttribute('aria-hidden','true');BF.appendChild(responseWaitingBox);
+const responseWaitingBox=document.createElement('div');responseWaitingBox.className='gl-turn-banner gl-response-waiting';responseWaitingBox.innerHTML='<strong>WAITING FOR OPPONENT RESPONSE...</strong>';responseWaitingBox.setAttribute('aria-hidden','true');document.body.appendChild(responseWaitingBox);
 const centerChoiceStage=document.createElement('div');centerChoiceStage.className='gl-center-choice-stage';centerChoiceStage.setAttribute('aria-hidden','true');centerChoiceStage.innerHTML='<div class="gl-center-choice-copy"><h2 class="gl-center-choice-title"></h2><p class="gl-center-choice-helper"></p><strong class="gl-center-choice-status"></strong></div><div class="gl-center-choice-cards"></div><div class="gl-center-choice-actions"></div>';document.body.appendChild(centerChoiceStage);
 const battlefieldHoverPreview=document.createElement('div');battlefieldHoverPreview.className='gl-battlefield-hover-preview';battlefieldHoverPreview.setAttribute('aria-hidden','true');const battlefieldHoverImg=document.createElement('img');battlefieldHoverPreview.appendChild(battlefieldHoverImg);document.body.appendChild(battlefieldHoverPreview);
 const matchTimer=document.getElementById('matchTimer');
@@ -613,7 +613,7 @@ function buildPresentationPlan(s){
     seenPresentationEvents.add(e.id);
     if(!presentationPrimed)return;
     if(e.type==='CARD_DRAWN')plan.draws.push(e);
-    else if(e.type==='BATTLE_FEEDBACK')plan.battle.push(e);
+    else if(e.type==='BATTLE_FEEDBACK'){const early=window.GL_PVP_EARLY_BATTLE_EVENT_IDS,id=String(e.id||'');if(early?.has?.(id))early.delete(id);else plan.battle.push(e);}
   });
   // The server may already be authoritatively in Deploy when the completed mandatory
   // Draw snapshot reaches the browser. Keep the tracker visually on Draw only while the

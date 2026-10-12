@@ -10918,6 +10918,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     toggleSound:function(){toggleCardMotionSound();return !!GL_CARD_SOUND_ENABLED;},
     playCardMotionSound:function(){return playCardMotionSound();},
     flushBattleFeedback:function(){return flushBattleFeedbackQueue();},
+    playAuthoritativeBattleFeedback:function(evt){return runBattleFeedback(clone(evt||{}));},
     queueAuthoritativeBattleFeedback:function(evt){return queueBattleFeedback(clone(evt||{}));},
     getDeckSetupState:function(){
       return clone({selectedDeckKey:selectedDeckKey,player:{deck_name:(decks.PLAYER&&decks.PLAYER.deck_name)||'Player Deck',default_formation:(decks.PLAYER&&decks.PLAYER.default_formation)||{},rank_preview:setupRankView('PLAYER')},ai:{deck_name:(decks.AI&&decks.AI.deck_name)||'AI Deck',default_formation:(decks.AI&&decks.AI.default_formation)||{},rank_preview:setupRankView('AI')},imported:{PLAYER:!!importedDecks.PLAYER,AI:!!importedDecks.AI}});

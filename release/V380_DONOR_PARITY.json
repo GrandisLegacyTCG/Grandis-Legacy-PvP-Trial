@@ -1,5 +1,5 @@
 {
-  "release": "v3.80.12",
+  "release": "v3.80.13",
   "generated_from": {
     "presentation": "VS AI v6.91.6",
     "lobby": "PvP v3.76.6",
@@ -71,25 +71,25 @@
     "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
     "engine/js/runtime-authority.js": "58a09b947a1d25b2e5e6018c6e0dac9508b5d534dd2a51192cd6dbaf2e1d4399",
     "engine/shared-app/active-starters.js": "9d536dffd4aa811428285c8db1652b8b509b61dadc2b3e200042a85289a09cfe",
-    "engine/shared-app/app.bundle.js": "0a8dd39392ddb8c09c03fb66f2fd215eef771ac9c07efe7ccdfd70fb25c80d05"
+    "engine/shared-app/app.bundle.js": "708d467c086495acf0a4c11032276c9ccf3e5a4234c14ecd2c19aa5f073563c8"
   },
   "donor_baseline": {
     "engine_shared_app_bundle_sha256": "a27b993ce32f1c4e345c05c0865a891ff8a27f97fc3173e0f5ec041b3078a301",
-    "packaged_engine_shared_app_bundle_sha256": "0a8dd39392ddb8c09c03fb66f2fd215eef771ac9c07efe7ccdfd70fb25c80d05",
-    "bundle_note": "Packaged bundle is VS AI v6.91.6 plus narrow PvP-only seams: delegated/direct donor gameplay-input guards and battle-feedback bridge hooks. Gameplay rules remain donor-driven.",
+    "packaged_engine_shared_app_bundle_sha256": "708d467c086495acf0a4c11032276c9ccf3e5a4234c14ecd2c19aa5f073563c8",
+    "bundle_note": "Packaged bundle is VS AI v6.91.6 plus narrow PvP-only seams: delegated/direct donor gameplay-input guards and battle-feedback bridge hooks, including immediate authoritative visual feedback playback. Gameplay rules remain donor-driven.",
     "stale_engine_js_bundle_shipped": false
   },
   "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6916_subset excludes assets/lobby/",
   "donor_trees_v6916": {
     "engine": {
       "files": 53,
-      "bytes": 29648626,
-      "new_fingerprint": "e20184d37740fb908acc487aee4d71ea47892ca1afe1d318419072a283ba7cfc",
+      "bytes": 29648720,
+      "new_fingerprint": "f73d955379dda3da1051d397287d2042d6c44368b73e896cddf2724b03a1bd4f",
       "donor_fingerprint": "40fdb02959fd9c010cb6a3a3467eb49e5830d7525858c02a2f1f702743faa459",
       "exact": false,
       "donor_files": 54,
       "donor_bytes": 31155543,
-      "note": "Intentional PvP seams: active v6.91.6 bundle gates donor gameplay DOM ownership, exposes transient battle-feedback bridge hooks, and stale engine/js/app.bundle.js remains removed."
+      "note": "Intentional PvP seams: active v6.91.6 bundle gates donor gameplay DOM ownership, exposes transient battle-feedback bridge hooks including immediate authoritative visual playback, and stale engine/js/app.bundle.js remains removed."
     },
     "card-art": {
       "files": 200,
@@ -102,13 +102,13 @@
     },
     "shared-ui": {
       "files": 1,
-      "bytes": 84346,
-      "new_fingerprint": "a93fefc8b427c522ec7c85464089a22bf91ab7b7dca471e547e9e6599bbe4a66",
+      "bytes": 84309,
+      "new_fingerprint": "f8d3ff68f1816237606c28256161d9cc98d05deb64eca902526021a13a456c6b",
       "donor_fingerprint": "e44121027f1d726d6bd46a9b4c036e5b813c17b2618b29df740e7c2eb0c0569f",
       "exact": false,
       "donor_files": 1,
       "donor_bytes": 82451,
-      "note": "VS AI v6.91.6 shared-ui baseline plus narrow PvP Response-focus lane-box layering/waiting-status seam; no gameplay rules changed."
+      "note": "VS AI v6.91.6 shared-ui baseline plus narrow PvP Response-focus lane-box layering, centered waiting-status, and Hero-action positioning seams; no gameplay rules changed."
     },
     "runtime": {
       "files": 3,
