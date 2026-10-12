@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Grandis Legacy — PvP v3.80.8</title>
+<title>Grandis Legacy — PvP v3.80.10</title>
 <style>
 @font-face{font-family:Noto;src:url('assets/fonts/NotoSans-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 :root{
@@ -58,10 +58,17 @@ button{font:inherit}
 /* Identity UI remains the approved v6.90.9 behavior: max 25 visible characters for each name/deck line. */
 
 /* Geometry-only donor anchor: preserves the exact v6.91.4 Hand-hover position without restoring the visible identity badge. */
-.player-name.gl-hover-geometry-only{position:absolute;z-index:-1;width:max-content;max-width:calc(100% - 16px);height:32px;display:flex;align-items:center;padding:4px 7px;border:1px solid transparent;right:8px;bottom:2px;visibility:hidden;pointer-events:none;overflow:hidden}
-.player-name.gl-hover-geometry-only .identity-copy{min-width:0;width:100%;display:flex;flex-direction:column;justify-content:center;line-height:1.02}
-.player-name.gl-hover-geometry-only .identity-name{font-size:9px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
-.player-name.gl-hover-geometry-only .identity-deck{margin-top:2px;font-size:8px;font-weight:720;letter-spacing:.02em;white-space:nowrap}
+.player-name.gl-pvp-nameplate{position:absolute;z-index:460;width:max-content;max-width:calc(100% - 16px);height:30px;display:flex;align-items:center;gap:7px;padding:4px 8px;border:1px solid rgba(211,177,68,.48);border-radius:8px;background:rgba(3,11,18,.90);box-shadow:0 4px 14px rgba(0,0,0,.34);pointer-events:none;overflow:hidden}
+.player-name.gl-pvp-nameplate--self{right:8px;bottom:2px}
+.player-name.gl-pvp-nameplate--opponent{right:8px;top:2px}
+.player-name.gl-pvp-nameplate .identity-copy{min-width:0;max-width:190px;display:flex;flex-direction:column;justify-content:center;line-height:1.02}
+.player-name.gl-pvp-nameplate .identity-name{font-size:9px;font-weight:900;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f4e6ad}
+.player-name.gl-pvp-nameplate .identity-deck{margin-top:2px;font-size:7px;font-weight:720;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#8794a2}
+.gl-connection-bars{height:14px;display:flex;align-items:flex-end;gap:2px;flex:0 0 auto}
+.gl-connection-bars i{display:block;width:3px;border-radius:2px 2px 0 0;background:#46515d;opacity:.38;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+.gl-connection-bars i:nth-child(1){height:4px}.gl-connection-bars i:nth-child(2){height:7px}.gl-connection-bars i:nth-child(3){height:10px}.gl-connection-bars i:nth-child(4){height:13px}
+.gl-connection-bars[data-level="1"] i:nth-child(-n+1),.gl-connection-bars[data-level="2"] i:nth-child(-n+2),.gl-connection-bars[data-level="3"] i:nth-child(-n+3),.gl-connection-bars[data-level="4"] i:nth-child(-n+4){background:#83d59a;opacity:1;box-shadow:0 0 5px rgba(131,213,154,.34)}
+.gl-connection-bars[data-level="0"] i{background:#9a4f4f;opacity:.5}
 
 /* v6.83: player Hand keeps the light fan with a small edge-only overlap. */
 .hand.bottom .hand-card{margin-left:-5px;transform-origin:50% 100%;}
@@ -271,6 +278,8 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 <div class="app gl-lobby-hidden">
   <main class="battlefield">
     <div class="concept" aria-hidden="true"></div>
+    <div class="player-name gl-pvp-nameplate gl-pvp-nameplate--self" id="pvpPlayerName"><span class="gl-connection-bars" data-level="0" aria-label="Connection"><i></i><i></i><i></i><i></i></span><span class="identity-copy"><strong class="identity-name">PLAYER</strong><span class="identity-deck"></span></span></div>
+    <div class="player-name gl-pvp-nameplate gl-pvp-nameplate--opponent" id="pvpOpponentName"><span class="identity-copy"><strong class="identity-name">OPPONENT</strong><span class="identity-deck"></span></span><span class="gl-connection-bars" data-level="0" aria-label="Connection"><i></i><i></i><i></i><i></i></span></div>
 
     <section class="hand top">
       <div class="hand-track"></div>
@@ -341,7 +350,6 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
       <div class="action-feedback" id="actionFeedback"></div>
       <section class="hand bottom"><div class="hand-track"></div></section>
     </section>
-    <div class="player-name gl-hover-geometry-only" aria-hidden="true"><span class="identity-copy"><strong class="identity-name">PLAYER</strong><span class="identity-deck">Player Deck</span></span></div>
   </main>
 
   <aside class="sidebar">

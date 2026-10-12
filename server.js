@@ -10,8 +10,8 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.9';
-const BUILD_ID='gl-pvp-3.80.9-v6916-sync-cleanup-2026-10-12';
+const VERSION='3.80.10';
+const BUILD_ID='gl-pvp-3.80.10-v6916-authority-presentation-cleanup-2026-10-12';
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 
@@ -35,8 +35,9 @@ const room={players:new Map(),spectators:new Map(),authority:null,match:freshMat
 function playerBySeat(seat){return [...room.players.values()].find(p=>Number(p.seat)===Number(seat))||null}
 function chooseSeat(){return !playerBySeat(1)?1:!playerBySeat(2)?2:null}
 function sortedPlayers(){return [...room.players.values()].sort((a,b)=>Number(a.seat)-Number(b.seat))}
-function publicPlayer(p){return{clientId:p.clientId,name:p.name,role:'player',seat:p.seat,connected:!!p.connected,ready:!!p.ready,hasDeck:!!(p.deckKey||p.customDeck),deckKey:p.deckKey||null,deckName:p.deckName||null,formation:p.formation?clone(p.formation):null}}
+function publicPlayer(p){return{clientId:p.clientId,name:p.name,role:'player',seat:p.seat,connected:!!p.connected,rttMs:Number.isFinite(Number(p.rttMs))?Math.max(0,Math.round(Number(p.rttMs))):null,ready:!!p.ready,hasDeck:!!(p.deckKey||p.customDeck),deckKey:p.deckKey||null,deckName:p.deckName||null,formation:p.formation?clone(p.formation):null}}
 function publicSpectator(p){return{clientId:p.clientId,name:p.name,role:'spectator',connected:!!p.connected}}
+function connectionRows(){return sortedPlayers().map(p=>({seat:Number(p.seat),connected:!!p.connected,rttMs:Number.isFinite(Number(p.rttMs))?Math.max(0,Math.round(Number(p.rttMs))):null}))}
 function bothPlayersPresent(){return !!playerBySeat(1)&&!!playerBySeat(2)}
 function bothPlayersReady(){return bothPlayersPresent()&&sortedPlayers().every(p=>p.connected&&p.ready&&(p.deckKey||p.customDeck))}
 function allPlayerSeatsAck(list){return [1,2].every(s=>list.includes(s))}
@@ -129,7 +130,7 @@ function applyIntent(client,msg,batch=false){
   }
   const base=Number(msg.baseRevision);if(base!==room.authority.revision)throw Object.assign(new Error('STALE_REVISION'),{code:'STALE_REVISION'});
   if(batch){
-    const steps=Array.isArray(msg.steps)?msg.steps.slice(0,24):[];if(!steps.length)throw new Error('Intent batch is empty.');
+    const steps=Array.isArray(msg.steps)?msg.steps.slice(0,2):[];if(!steps.length)throw new Error('Intent batch is empty.');
     room.authority.applyIntentBatch(client.seat,steps);
   }else{
     const name=safeText(msg.intent,100);if(!name)throw new Error('Intent name is required.');
@@ -156,7 +157,7 @@ function handle(client,msg){
   if(!msg||typeof msg!=='object')throw new Error('Invalid message.');
   if(String(msg.clientBuildId||'')!==BUILD_ID)throw Object.assign(new Error('CLIENT_BUILD_MISMATCH'),{code:'CLIENT_BUILD_MISMATCH'});
   switch(msg.type){
-    case 'ping': send(client.ws,{type:'pong',serverTime:now()}); return false;
+    case 'ping': {const reported=Number(msg.reportedRtt);if(Number.isFinite(reported)&&reported>=0&&reported<=60000)client.rttMs=Math.round(reported);client.lastSeenAt=Date.now();send(client.ws,{type:'pong',serverTime:now(),clientTime:Number(msg.clientTime)||0,connections:connectionRows()}); return false;}
     case 'resync': send(client.ws,{...viewFor(client),forceImport:true}); return false;
     case 'rename': if(room.match.status!=='setup')throw new Error('Name is locked after match start.'); client.name=safeText(msg.name,20)||client.name;client.ready=false;break;
     case 'switch-role':{

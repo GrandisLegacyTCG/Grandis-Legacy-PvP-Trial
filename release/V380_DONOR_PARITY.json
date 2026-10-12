@@ -1,9 +1,9 @@
 {
-  "release": "v3.80.9",
+  "release": "v3.80.10",
   "generated_from": {
     "presentation": "VS AI v6.91.6",
     "lobby": "PvP v3.76.6",
-    "architecture_reference": "VS AI Tutorial v6.48 \u2194 PvP v3.51 (reference only)",
+    "architecture_reference": "VS AI Tutorial v6.48 ↔ PvP v3.51 (reference only)",
     "payment_policy": "VS AI v6.91.6 exact replacement UX represented by a center-only ephemeral UID draft; PAY submits one final selected-Shard UID set to authoritative server donor commit"
   },
   "lobby_assets": {
@@ -70,25 +70,25 @@
     "engine/js/static-data.js": "817b8c7a95c13981be7992d1fa00736ca83ec7aeec75a2659effca0792858648",
     "engine/js/runtime-authority.js": "58a09b947a1d25b2e5e6018c6e0dac9508b5d534dd2a51192cd6dbaf2e1d4399",
     "engine/shared-app/active-starters.js": "9d536dffd4aa811428285c8db1652b8b509b61dadc2b3e200042a85289a09cfe",
-    "engine/shared-app/app.bundle.js": "1dc185f987f56b1d804de9d014e818d3f657a880737bf2e2d582f5bf8fd52806"
+    "engine/shared-app/app.bundle.js": "0a8dd39392ddb8c09c03fb66f2fd215eef771ac9c07efe7ccdfd70fb25c80d05"
   },
   "donor_baseline": {
     "engine_shared_app_bundle_sha256": "a27b993ce32f1c4e345c05c0865a891ff8a27f97fc3173e0f5ec041b3078a301",
-    "packaged_engine_shared_app_bundle_sha256": "1dc185f987f56b1d804de9d014e818d3f657a880737bf2e2d582f5bf8fd52806",
-    "bundle_note": "Packaged bundle is VS AI v6.91.6 plus one PvP-only delegated DOM gameplay-input guard. Gameplay rules are otherwise donor-driven.",
+    "packaged_engine_shared_app_bundle_sha256": "0a8dd39392ddb8c09c03fb66f2fd215eef771ac9c07efe7ccdfd70fb25c80d05",
+    "bundle_note": "Packaged bundle is VS AI v6.91.6 plus narrow PvP-only seams: delegated/direct donor gameplay-input guards and battle-feedback bridge hooks. Gameplay rules remain donor-driven.",
     "stale_engine_js_bundle_shipped": false
   },
   "fingerprint_algorithm": "sha256 of newline-joined sorted rows: relative_path\\0file_sha256\\0bytes; assets_v6916_subset excludes assets/lobby/",
   "donor_trees_v6916": {
     "engine": {
       "files": 53,
-      "bytes": 29648220,
-      "new_fingerprint": "e6cb678dc8e1ec52373ebdc96c5197741e4a5385e192dbce93ce1285274bdd36",
+      "bytes": 29648626,
+      "new_fingerprint": "e20184d37740fb908acc487aee4d71ea47892ca1afe1d318419072a283ba7cfc",
       "donor_fingerprint": "40fdb02959fd9c010cb6a3a3467eb49e5830d7525858c02a2f1f702743faa459",
       "exact": false,
       "donor_files": 54,
       "donor_bytes": 31155543,
-      "note": "Intentional PvP seam: active donor bundle has one external-UI DOM guard and stale engine/js/app.bundle.js is removed."
+      "note": "Intentional PvP seams: active v6.91.6 bundle gates donor gameplay DOM ownership, exposes transient battle-feedback bridge hooks, and stale engine/js/app.bundle.js remains removed."
     },
     "card-art": {
       "files": 200,

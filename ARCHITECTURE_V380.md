@@ -1,8 +1,8 @@
-# PvP v3.80.9 Architecture
+# PvP v3.80.10 Architecture
 
 ## 1. Purpose
 
-v3.80.9 narrows the critical Mana-payment path around the v6.91.6-native PvP integration and removes browser-local donor mutation from payment selection. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
+v3.80.10 stabilizes the v6.91.6-native PvP input and presentation boundary after Mana Payment was proven in a real browser. It keeps committed gameplay server-authoritative while transporting transient battle/draw presentation explicitly. The architecture uses the current VS AI runtime as the gameplay/presentation donor; PvP transport/privacy code must not redesign public battlefield behavior.
 
 ### Bases
 
@@ -11,14 +11,14 @@ v3.80.9 narrows the critical Mana-payment path around the v6.91.6-native PvP int
 | Gameplay presentation, timing, animation, sound, desktop/tablet/mobile interaction | VS AI v6.91.6 |
 | Pre-match Lobby presentation | PvP v3.76.6 |
 | Multiplayer design reference | VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts |
-| Server gameplay implementation | Exact VS AI v6.91.6 shared gameplay runtime, headless; final payment UID reconciliation lives outside the donor engine |
+| Server gameplay implementation | VS AI v6.91.6 shared gameplay runtime, headless; narrow PvP-only DOM-input guards, battle-feedback bridge hooks, and final payment UID reconciliation form the multiplayer seam |
 | PvP Mana-payment policy | VS AI v6.91.6 exact Shard selection locally; one final selected-Shard-UID commit on PAY |
 
 No v3.51 runtime/authority directory is shipped. The older repository remains an architectural/networking reference only. The active Mana behavior comes from the current VS AI v6.91.6 donor.
 
 ## 2. What was learned from the old handshake
 
-The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.9 preserves the architectural lessons, not the old implementation:
+The v6.48 Tutorial and PvP v3.51 repositories used byte-identical contract/adapter components for the core runtime handshake. v3.80.10 preserves the architectural lessons, not the old implementation:
 
 - clients send **intent**, not a client-authored final board;
 - the server is the mutation authority;
@@ -61,7 +61,8 @@ The exact evidence hashes are recorded in `release/V380_DONOR_PARITY.json`.
       server/v6916-authority.mjs
         - v6.91.6 gameplay scripts
         - final selected-Shard-UID validation seam
-        - exact donor engine stays unmodified
+        - donor gameplay rules remain v6.91.6
+        - narrow PvP input/presentation bridge hooks only
         - headless Node VM
         - actor-local orientation
                    |
@@ -121,7 +122,7 @@ The server rejects stale revisions. Accepted actions create a new authoritative 
 
 ## 5A. PvP Mana payment contract
 
-v3.80.9 uses the VS AI v6.91.6 gameplay donor with one explicit PvP-only DOM-input guard, while payment interaction ownership stays entirely in the centered PvP UI until PAY:
+v3.80.10 uses the VS AI v6.91.6 gameplay donor with one explicit PvP-only DOM-input guard, while payment interaction ownership stays entirely in the centered PvP UI until PAY:
 
 ```text
 authoritative payment pending
@@ -221,7 +222,7 @@ The v6.91.6 donor remains the gameplay/read surface; PvP adds one DOM-input guar
 
 ## 9. Asset boundary
 
-Standalone v3.80.9 resolves visible media locally:
+Standalone v3.80.10 resolves visible media locally:
 
 ```text
 cardView(id) -> card-art/<id>.webp
@@ -236,10 +237,31 @@ Asset loading is intentionally bounded: the selected own-deck artwork is preload
 
 Future Website integration should replace the resolver boundary, not scatter hard-coded Website URLs through gameplay code.
 
-## 10. What v3.80.9 deliberately does not ship
+## 10. What v3.80.10 deliberately does not ship
 
 - no PvP v3.51 authority/browser-runtime tree;
 - no v3.78 `sync/runtime-sync-lock` compatibility architecture;
 - no Local-AI authority adapter in the PvP page;
 - no PvP-specific desktop/tablet/mobile gameplay renderer;
 - no client-authored final board mutation.
+## 8. Authoritative presentation boundary (v3.80.10)
+
+Gameplay resolution and presentation are deliberately separate:
+
+```text
+server donor resolves Attack / Block / Dodge / Heal
+        -> drains transient donor battle feedback
+        -> emits stable BATTLE_FEEDBACK presentation event
+        -> viewer-safe seat localization
+        -> browser imports gameplay snapshot silently
+        -> browser replays donor VFX/SFX exactly once
+```
+
+The same principle applies to automatic Draw -> Deploy. The server may already be in Deploy after a completed Draw Phase, but the browser may temporarily display the Draw tracker while the committed Draw and Mana Regen motion finishes. This visual hold never rewinds or mutates gameplay state and blocks new gameplay input until presentation completion.
+
+## 9. Input ownership boundary
+
+In PvP, one committed gameplay action has one owner: the PvP external UI -> server authority path. Donor delegated gameplay clicks and direct donor choice Confirm/Close mutations are gated while shared-board PvP is active. Browser-local state is limited to presentation state and explicit ephemeral UI drafts such as the centered Mana selection before PAY.
+
+Atomic `intentBatch` is not a generic multi-action endpoint. It accepts only approved two-step UI pairs and revalidates action ownership before every step.
+

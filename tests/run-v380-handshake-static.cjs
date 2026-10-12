@@ -3,7 +3,7 @@ const assert=require('assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'3.80.9');
+assert.equal(pkg.version,'3.80.10');
 const html=read('public/index.html'),host=read('public/pvp/pvp-host.js'),channel=read('public/pvp/intent-channel.js'),app=read('public/shared-app/app-runtime.js'),pvpCss=read('public/pvp/pvp-integration.css'),server=read('server.js'),authority=read('server/v6916-authority.mjs'),donor=read('public/engine/shared-app/app.bundle.js');
 assert.match(html,/GL_APP_MODE\s*=\s*["']PVP["']/,'index must boot the v6 presentation in PVP mode');
 assert.doesNotMatch(html,/local-ai-adapter\.js/i,'PvP must not load the local-AI authority adapter');
@@ -35,7 +35,7 @@ assert.match(server,/function returnToLobby\(client\).*room\.match\.status!=='fi
 // Removed prototype Local-AI/player identity badges must not survive in final PvP layout or runtime fallbacks.
 for(const stale of ['opponentPlayerIdentityName','opponentDeckIdentity','playerIdentityName','playerDeckIdentity'])assert.doesNotMatch(html,new RegExp(stale,'i'),`${stale} legacy identity markup must be removed`);
 assert.doesNotMatch(html,/class=["'][^"']*identity-card/i,'legacy identity-card markup must be removed');
-assert.match(app,/function syncPlayerNameBox\(\)\{\}/,'legacy battlefield identity sync must be inert after badge removal');
+assert.match(app,/function syncPlayerNameBox\(\)\{[^}]*GL_PVP_HOST\?\.identity/s,'battlefield identity sync must render current PvP player names and connection state');
 assert.match(app,/hiddenShard=!!sh\?\.hidden_identity/,'masked opponent/spectator Shards must stay face-down in the visible battlefield');
 assert.match(app,/hiddenShard\)\?'assets\/ui\/back-shard\.webp'/,'masked Shard identities must render the Shard back rather than a generic front');
 
@@ -97,7 +97,11 @@ assert.doesNotMatch(host,/subscribe\(fn\).*\},send,sendIntent/s,'raw transport s
 assert.doesNotMatch(app,/LOCAL AI|AI Deck|Player Deck/,'shared PvP runtime must not retain Local-AI/deck prototype labels');
 
 
-assert.match(html,/class="player-name gl-hover-geometry-only"/,'removed identity UI must leave the exact donor player-name geometry invisibly for Hand-preview placement');
+assert.match(html,/class="player-name gl-pvp-nameplate gl-pvp-nameplate--self" id="pvpPlayerName"/,'local battlefield identity plate must be visible');
+assert.match(html,/class="player-name gl-pvp-nameplate gl-pvp-nameplate--opponent" id="pvpOpponentName"/,'opponent battlefield identity plate must be visible');
+assert.match(html,/pvpPlayerName[\s\S]*?gl-connection-bars[\s\S]*?identity-name/,'local connection bars must sit to the left of the local name');
+assert.match(html,/pvpOpponentName[\s\S]*?identity-name[\s\S]*?gl-connection-bars/,'opponent connection bars must sit to the right of the opponent name');
+assert.match(app,/function syncPlayerNameBox\(\)\{[^}]*GL_PVP_HOST\?\.identity/s,'battlefield identity plates must sync from authoritative PvP identity');
 assert.match(app,/uiRect\(document\.querySelector\('\.player-name'\)\)/,'Hand hover preview must use the exact v6.91.6 player-name anchor selector, not the Hand center');
 assert.doesNotMatch(app,/kind==='hand'[\s\S]{0,220}querySelector\('\.hand\.bottom'\)/,'Hand hover preview must not drift by anchoring to the Hand container');
 
@@ -167,7 +171,7 @@ assert.match(server,/closeClientSocket\(client,4006,'Seat session replaced by an
 assert.match(server,/SEAT_TOKEN_MISMATCH'\),\{code:'SEAT_TOKEN_MISMATCH'\}/,'seat-token rejection needs a dedicated error code');
 assert.match(server,/code==='SEAT_TOKEN_MISMATCH'\?4004/,'seat-token mismatch must not use the normal reconnect close path');
 
-// v3.80.9 input/snapshot ownership guards.
+// v3.80.10 input/snapshot/presentation ownership guards.
 assert.match(donor,/pvpExternalGameplay=!!\(EXTERNAL_HUMAN_UI[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)/,'donor delegated gameplay clicks must be gated off while PvP external UI owns input');
 assert.match(host,/if\(!opts\.force&&rev===state\.lastImportedRevision/,'normal duplicate revisions may be skipped');
 assert.match(host,/onSnapshot\(m\.snapshot,\{force:true\}\)/,'intent-result snapshots must force authoritative recovery even at the same revision');
@@ -177,4 +181,23 @@ assert.match(app,/if\(window\.GL_APP_MODE!=='PVP'\)setInterval\(\(\)=>\{if\(!lob
 assert.equal(fs.existsSync(path.join(root,'public/engine/js/app.bundle.js')),false,'stale duplicate donor app.bundle.js must not ship');
 assert.match(authority,/autoResolveMeaninglessOpponentShardChoice/,'authority must auto-resolve opponent Shard choices with no meaningful identity choice');
 assert.match(app,/function bestExactManaDraftSubset/,'center Mana draft must implement v6.91.6 exact replacement logic');
+assert.match(app,/pendingOwner\(p\)==='PLAYER'&&\(isPrecommitCancelable\(s\)\|\|p\?\.type==='manual_reposition'\)/,'CANCEL must only render for the local owner of the pending action');
+assert.match(donor,/choiceClose'[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)return/,'donor choice-close gameplay mutation must be disabled while PvP external UI owns input');
+assert.match(donor,/choiceConfirm'[\s\S]*GL_PVP_SHARED_BOARD_ACTIVE\)return;handleChoiceConfirm/,'donor choice-confirm gameplay mutation must be disabled while PvP external UI owns input');
+assert.doesNotMatch(app,/responseRollbackSnapshot|cancelResponsePrecommit/,'PvP Response flow must not restore a full local gameplay snapshot');
+assert.match(authority,/ALLOWED_INTENT_BATCH_PAIRS/,'server authority must explicitly whitelist atomic two-step intent batches');
+assert.match(authority,/assertLocalSeatMayAct\(this\.bridge\.getSnapshot\(\),name\)/,'each batch step must revalidate authoritative action ownership');
+assert.match(authority,/steps\.length!==2/,'arbitrary-length gameplay intent batches must be rejected');
+assert.match(server,/steps\.slice\(0,2\)/,'transport must cap intent batches to the same two-step authority boundary');
+assert.match(host,/const INTENT_BATCH_LIMIT=2/,'browser transport must cap atomic intent batches to two steps');
+assert.match(donor,/drainBattleFeedback:function/,'server donor bridge must expose transient battle feedback for authoritative presentation transport');
+assert.match(donor,/queueAuthoritativeBattleFeedback:function/,'browser donor bridge must accept authoritative battle feedback without rerunning gameplay');
+assert.match(authority,/type:'BATTLE_FEEDBACK'/,'server must serialize donor battle feedback as stable authoritative presentation events');
+assert.match(app,/e\.type==='BATTLE_FEEDBACK'/,'browser presentation plan must consume authoritative battle feedback events');
+assert.match(app,/queueAuthoritativeBattleFeedback/,'browser must requeue authoritative battle VFX\/SFX into the donor presentation layer');
+assert.match(app,/visualPhaseOverride='Draw'/,'completed authoritative Draw must visually hold the phase tracker on Draw until Draw\/Mana presentation finishes');
+assert.match(app,/const blocked=!!visualPhaseOverride/,'gameplay input must stay blocked while the visual Draw hold is active');
+assert.match(app,/x\.ready\?' is-available'/,'legal active Hero abilities must receive the visible available state');
+assert.match(host,/setInterval\(sendPing,4000\)/,'PvP host must maintain a lightweight connection heartbeat');
+assert.match(server,/connections:connectionRows\(\)/,'server pong must return both player connection rows');
 console.log(JSON.stringify({ok:true,version:pkg.version,presentation:'VS AI v6.91.6',lobby:'PvP v3.76.6',v351:'architecture/networking reference only',legacyAuthorityShipped:false,legacySyncLayerShipped:false,automaticDrawToDeploy:true,authoritativeRematchReset:true,legacyIdentityBadgesRemoved:true,customDeck50to60Preserved:true,privacyProjection:true,publicShardPoolParity:true,openingSinglePresentationOwner:true,donorCoinFlipLifecycle:true,resetRoomGuarded:true,customDeckReconnectSafe:true,buildMismatchRecovery:true,pvpPresentationLabels:true},null,2));

@@ -7,7 +7,7 @@ import { V6916Authority, sourceHashes, internals } from '../server/v6916-authori
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const parity=JSON.parse(fs.readFileSync(path.join(root,'release/V380_DONOR_PARITY.json'),'utf8'));
 const hashes=sourceHashes();
-assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.9 source set with the v6.91.6 donor baseline, explicit PvP DOM guard, and narrow final-Shard-UID payment seam');
+assert.deepEqual(hashes,parity.authority_source_hashes,'headless authority must execute the locked PvP v3.80.10 source set with the v6.91.6 donor baseline, explicit PvP DOM guard, and narrow final-Shard-UID payment seam');
 
 const probe=new V6916Authority();
 const starterKeys=Object.keys(probe.starters);
@@ -111,9 +111,8 @@ for(const firstSeat of [1,2]){
 
 {
   const a=create(1),before=a.revision;
-  a.applyIntentBatch(1,[{name:'advancePhase',args:[]}]);
-  assert.equal(a.revision,before+1,'an accepted non-Draw intent batch must commit one authoritative revision');
-  assert.equal(a.viewForSeat(1).appState.phase,'Battle');
+  assert.throws(()=>a.applyIntentBatch(1,[{name:'advancePhase',args:[]}]),/exactly two approved atomic steps/,'single-step gameplay must use the normal intent route, not the atomic batch API');
+  assert.equal(a.revision,before,'rejected single-step batch must not advance authoritative revision');
 }
 
 {
@@ -374,6 +373,55 @@ for(const firstSeat of [1,2]){
   }
 }
 
+
+
+{
+  // Presentation bridge regression: transient donor battle feedback must be converted
+  // to a stable canonical presentation event and mirror its side for Seat 2.
+  const a=create(1);
+  a.game.queueAuthoritativeBattleFeedback({kind:'attack',outcome:'hit',side:'PLAYER',lane:'LEFT',attack_kind:'P',has_damage:true,play_sound:true});
+  const rows=a.drainBattleFeedbackForCanonicalSeat(1);
+  assert.equal(rows.length,1,'headless donor battle queue must be drainable by PvP authority');
+  assert.equal(Object.hasOwn(rows[0],'_sound_played'),false,'server-only dummy audio marker must never ship to browsers');
+  a.appendBattlePresentation(rows);
+  const e1=a.viewForSeat(1).appState.presentationEvents.at(-1),e2=a.viewForSeat(2).appState.presentationEvents.at(-1);
+  assert.equal(e1.type,'BATTLE_FEEDBACK');assert.equal(e1.side,'PLAYER');assert.equal(e2.side,'AI','battle presentation side must mirror with seat orientation');
+}
+
+{
+  // Real resolved Attack regression: the authoritative donor queue must cross the
+  // server/browser boundary as one BATTLE_FEEDBACK presentation event without rerunning
+  // attack gameplay in either browser.
+  const a=create(1),canonical=a.canonical.appState;
+  canonical.phase='Battle';canonical.turn='PLAYER';canonical.round=2;canonical.pending=null;canonical.responseWindow=null;
+  canonical.playerHand[0]='S1-CLE-001'; // Smite, cost 2 Magical Attack.
+  canonical.playerHeroes.CENTER.card_id='S1-CLE-H001';canonical.playerHeroes.CENTER.exhausted=false;
+  canonical.playerManaPoolCards=[
+    {uid:'BFX-M1',kind:'MANA',owner_side:'PLAYER'},
+    {uid:'BFX-M2',kind:'MANA',owner_side:'PLAYER'},
+    {uid:'BFX-M3',kind:'MANA',owner_side:'PLAYER'}
+  ];
+  a.applyIntent(1,'beginPlayFromHand',[0]);
+  a.applyIntent(1,'chooseHeroFromBoard',['PLAYER','CENTER']);
+  a.applyIntent(1,'chooseHeroFromBoard',['AI','CENTER']);
+  a.applyIntent(1,'commitManaShardPaymentChoice',[['BFX-M1','BFX-M2']]);
+  assert.ok(a.viewForSeat(1).appState.responseWindow,'resolved payment must open the normal opponent Response window before battle feedback');
+  a.applyIntent(2,'responsePassNoStuck',[]);
+  const p1=(a.viewForSeat(1).appState.presentationEvents||[]).filter(e=>e?.type==='BATTLE_FEEDBACK');
+  const p2=(a.viewForSeat(2).appState.presentationEvents||[]).filter(e=>e?.type==='BATTLE_FEEDBACK');
+  assert.equal(p1.length,1,'one resolved single-target Attack must publish exactly one battle presentation event');
+  assert.equal(p1[0].kind,'attack');assert.equal(p1[0].outcome,'hit');assert.equal(p1[0].side,'AI');assert.equal(p1[0].lane,'CENTER');assert.equal(p1[0].attack_kind,'M');
+  assert.equal(p2.at(-1).side,'PLAYER','the exact same battle event must mirror to the target as local PLAYER on Seat 2');
+  assert.equal(Object.hasOwn(p1[0],'_sound_played'),false,'headless dummy-audio marker must not suppress browser sound');
+}
+
+{
+  // Generic arbitrary gameplay batches are not an authority API. Only exact UI atomic
+  // pairs are allowed, and a rejected pair may not advance authoritative revision.
+  const a=create(1),rev=a.revision;
+  assert.throws(()=>a.applyIntentBatch(1,[{name:'advancePhase',args:[]},{name:'advancePhase',args:[]}]),/INTENT_BATCH_NOT_ALLOWED/);
+  assert.equal(a.revision,rev,'rejected arbitrary batch must not advance revision');
+}
 
 
 

@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
-const VERSION='Grandis Legacy PvP v3.80.9';
-const BUILD_ID='gl-pvp-3.80.9-v6916-sync-cleanup-2026-10-12';
+const VERSION='Grandis Legacy PvP v3.80.10';
+const BUILD_ID='gl-pvp-3.80.10-v6916-authority-presentation-cleanup-2026-10-12';
 const CFG=window.GL_PVP_CONFIG||{};
 const STORE={name:'grandis_legacy_pvp_v380_name',deck:'grandis_legacy_pvp_v380_deck',custom:'grandis_legacy_pvp_v380_custom_deck',customName:'grandis_legacy_pvp_v380_custom_deck_name'};
 const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v379_deck'};
@@ -9,8 +9,8 @@ const STORE_PREV={name:'grandis_legacy_pvp_v379_name',deck:'grandis_legacy_pvp_v
 // on the same origin without sharing one localStorage client id / seat token and kicking
 // each other into an endless reconnect loop. sessionStorage survives reload in one tab.
 const SESSION={client:'grandis_legacy_pvp_v3801_tab_client_id',seat:'grandis_legacy_pvp_v3801_tab_seat_token',role:'grandis_legacy_pvp_v3801_tab_role'};
-const state={ws:null,connected:false,snapshot:null,name:'',role:'player',deckKey:'',customDeck:null,customDeckName:'',formation:null,rank:1,clientId:'',seatToken:'',reconnectDelay:1200,reconnectTimer:null,connectionError:'',sessionInvalid:false,intentSeq:0,lastImportedRevision:-1,lastImportedStatus:'',lastCoinChoiceKey:'',lastOpeningKey:'',openingAssetKey:'',openingAssetPromise:null,fatalBuildMismatch:false,listeners:new Set()};
-const INTENT_BATCH_LIMIT=24;
+const state={ws:null,connected:false,snapshot:null,name:'',role:'player',deckKey:'',customDeck:null,customDeckName:'',formation:null,rank:1,clientId:'',seatToken:'',reconnectDelay:1200,reconnectTimer:null,connectionError:'',sessionInvalid:false,intentSeq:0,lastImportedRevision:-1,lastImportedStatus:'',lastCoinChoiceKey:'',lastOpeningKey:'',openingAssetKey:'',openingAssetPromise:null,fatalBuildMismatch:false,listeners:new Set(),pingTimer:null,pingSentAt:0,rttMs:null,peerConnections:new Map()};
+const INTENT_BATCH_LIMIT=2;
 let intentChannel=null;
 // PvP is a shared human-vs-human board. Keep the donor runtime in its native shared-board mode
 // so browser-side timers/AI-only branches never compete with server authority.
@@ -69,7 +69,12 @@ function wsBase(){if(CFG.wsBase)return String(CFG.wsBase).replace(/\/$/,'');cons
 function wsUrl(){const q=new URLSearchParams({client:state.clientId,name:state.name||'Player',role:state.role,buildId:BUILD_ID});if(state.seatToken)q.set('seatToken',state.seatToken);return wsBase()+(CFG.wsPath||'/ws')+'?'+q}
 function send(type,payload={}){const ws=state.ws;if(!ws||ws.readyState!==WebSocket.OPEN)return false;ws.send(JSON.stringify({type,clientBuildId:BUILD_ID,...payload}));return true}
 function notify(){for(const fn of state.listeners){try{fn(state.snapshot)}catch(e){console.error(e)}}window.dispatchEvent(new CustomEvent('gl-pvp-snapshot',{detail:state.snapshot}))}
-function identity(){const me=local(),op=opponent();return{localName:me?.name||'PLAYER',opponentName:op?.name||'OPPONENT',localDeck:me?.deckName||'',opponentDeck:op?.deckName||'',seat:me?.seat||null,role:me?.role||state.role}}
+function identity(){const me=local(),op=opponent(),opConn=op?.seat?state.peerConnections.get(Number(op.seat)):null;return{localName:me?.name||'PLAYER',opponentName:op?.name||'OPPONENT',localDeck:me?.deckName||'',opponentDeck:op?.deckName||'',seat:me?.seat||null,role:me?.role||state.role,localConnected:!!state.connected,localRttMs:Number.isFinite(Number(state.rttMs))?Number(state.rttMs):null,opponentConnected:!!op?.connected,opponentRttMs:Number.isFinite(Number(opConn?.rttMs??op?.rttMs))?Number(opConn?.rttMs??op?.rttMs):null}}
+
+function clearHeartbeat(){if(state.pingTimer){clearInterval(state.pingTimer);state.pingTimer=null}}
+function publishConnection(){window.dispatchEvent(new CustomEvent('gl-pvp-connection',{detail:identity()}))}
+function sendPing(){if(!state.ws||state.ws.readyState!==WebSocket.OPEN)return false;state.pingSentAt=Date.now();return send('ping',{clientTime:state.pingSentAt,reportedRtt:Number.isFinite(Number(state.rttMs))?Math.round(Number(state.rttMs)):null})}
+function startHeartbeat(){clearHeartbeat();sendPing();state.pingTimer=setInterval(sendPing,4000)}
 function matchClock(){const m=match()||{},start=Date.parse(m.startedAt||''),finish=Date.parse(m.finishedAt||'');if(!Number.isFinite(start))return{active:false,elapsedMs:0};return{active:['coin-flip','coin-result','opening','started'].includes(m.status),elapsedMs:Math.max(0,(Number.isFinite(finish)?finish:Date.now())-start)}}
 function syncSetupSelection(){
   const me=local(),m=match();if(!state.connected||m?.status!=='setup'||me?.role!=='player')return;
@@ -155,8 +160,8 @@ function connect(force=false){
   clearReconnectTimer();
   if(state.ws)try{state.ws.close(4000,'rejoin')}catch{}
   let ws;try{ws=new WebSocket(wsUrl())}catch{scheduleReconnect();return}state.ws=ws;
-  ws.onopen=()=>{if(state.ws!==ws)return;state.connected=true;state.connectionError='';state.sessionInvalid=false;state.reconnectDelay=1200;renderLobby()};
-  ws.onclose=ev=>{if(state.ws!==ws)return;state.connected=false;clearIntent('Connection closed before the authoritative action completed.');const code=Number(ev?.code||0);
+  ws.onopen=()=>{if(state.ws!==ws)return;state.connected=true;state.connectionError='';state.sessionInvalid=false;state.reconnectDelay=1200;startHeartbeat();renderLobby();publishConnection()};
+  ws.onclose=ev=>{if(state.ws!==ws)return;clearHeartbeat();state.connected=false;state.rttMs=null;publishConnection();clearIntent('Connection closed before the authoritative action completed.');const code=Number(ev?.code||0);
     if(code===4003){recoverBuildMismatch();return}
     if(code===4002){state.role='spectator';state.seatToken='';persistSession('role','spectator');persistSession('seat','');renderLobby();scheduleReconnect(250);return}
     if(code===4006){/* Another tab/page took over this exact seat session. Fork this tab into a fresh player identity instead of fighting for the same socket forever. */forkConnectionIdentity();state.role='player';persistSession('role','player');state.connectionError='';renderLobby();scheduleReconnect(250);return}
@@ -164,7 +169,7 @@ function connect(force=false){
     if(code===4001){state.sessionInvalid=true;state.connectionError='Connection was rejected. Reconnect to retry with a fresh tab session.';renderLobby();return}
     renderLobby();scheduleReconnect();
   };
-  ws.onerror=()=>{if(state.ws!==ws)return;state.connected=false;renderLobby()};
+  ws.onerror=()=>{if(state.ws!==ws)return;state.connected=false;publishConnection();renderLobby()};
   ws.onmessage=ev=>{if(state.ws!==ws)return;let m;try{m=JSON.parse(ev.data)}catch{return}
     if(m.type==='snapshot')onSnapshot(m,{force:!!m.forceImport});
     else if(m.type==='intent-result'){
@@ -172,9 +177,9 @@ function connect(force=false){
       if(m.snapshot)onSnapshot(m.snapshot,{force:true});
       if(!result.matched&&m.ok===false)intentError(m.message||'Authoritative PvP request failed.');
     }
-    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.9 completes actions with intent-result + snapshot. */}
+    else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.10 completes actions with intent-result + snapshot. */}
     else if(m.type==='error'){const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot,{force:true});else{renderLobby();window.GL_GAME_UI?.render?.()}}
-    else if(m.type==='pong'){}
+    else if(m.type==='pong'){const sent=Number(m.clientTime||state.pingSentAt||0);if(sent>0){const rtt=Math.max(0,Date.now()-sent);state.rttMs=state.rttMs==null?rtt:Math.round(state.rttMs*.65+rtt*.35)}state.peerConnections.clear();for(const row of (m.connections||[])){if(Number.isFinite(Number(row?.seat)))state.peerConnections.set(Number(row.seat),{connected:!!row.connected,rttMs:Number.isFinite(Number(row.rttMs))?Number(row.rttMs):null})}publishConnection()}
     else console.warn('[PvP] Unknown server message',m)
   };
 }
@@ -228,6 +233,6 @@ function renderLobby(){
 }
 function boot(){state.clientId=makeClientId();try{const u=new URL(location.href),explicitDeck=u.searchParams.get('deck')||'';state.name=safeName(u.searchParams.get('name')||stored('name')||'Player');state.role=(u.searchParams.get('role')||sessionStored('role')||'player')==='spectator'?'spectator':'player';state.seatToken=sessionStored('seat')||'';const rawCustom=localStorage.getItem(STORE.custom)||'';if(rawCustom&&!explicitDeck){try{state.customDeck=JSON.parse(rawCustom);state.customDeckName=localStorage.getItem(STORE.customName)||state.customDeck?.display_name||state.customDeck?.deck_name||'Imported Deck';state.formation=baseFormation(state.customDeck)}catch{persist('custom','');persist('customName','')}}state.deckKey=explicitDeck||(!state.customDeck?stored('deck'):'')||''}catch{}persist('name',state.name);persistSession('role',state.role);window.GL_PVP_LOCAL_ROLE=state.role;installImageDecodeGuard();ensureLobby();renderLobby();connect(false)}
 
-window.GL_PVP_HOST={version:VERSION,buildId:BUILD_ID,getSnapshot:()=>state.snapshot,subscribe(fn){state.listeners.add(fn);return()=>state.listeners.delete(fn)},sendIntent,sendIntentBatch,startMatch,chooseCoin,coinPresented,confirmCoin,openingPresented,matchClock,surrender,returnToLobby,identity,reconnect:()=>connect(true),getConnection:()=>({connected:state.connected,buildMismatch:state.fatalBuildMismatch})};
+window.GL_PVP_HOST={version:VERSION,buildId:BUILD_ID,getSnapshot:()=>state.snapshot,subscribe(fn){state.listeners.add(fn);return()=>state.listeners.delete(fn)},sendIntent,sendIntentBatch,startMatch,chooseCoin,coinPresented,confirmCoin,openingPresented,matchClock,surrender,returnToLobby,identity,reconnect:()=>connect(true),getConnection:()=>({connected:state.connected,buildMismatch:state.fatalBuildMismatch,rttMs:Number.isFinite(Number(state.rttMs))?Number(state.rttMs):null,peers:[...state.peerConnections.entries()].map(([seat,v])=>({seat,...v}))})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();

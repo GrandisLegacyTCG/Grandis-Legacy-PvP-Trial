@@ -1,16 +1,29 @@
-# Grandis Legacy PvP v3.80.9
+# Grandis Legacy PvP v3.80.10
 
-Grandis Legacy PvP v3.80.9 is a **critical Mana-payment/input-boundary patch** on the v6.91.6-native PvP line. The multiplayer layer preserves VS AI v6.91.6 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
+Grandis Legacy PvP v3.80.10 is a **gameplay-input and authoritative-presentation stabilization patch** on the v6.91.6-native PvP line. The multiplayer layer preserves VS AI v6.91.6 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
 
 ## Locked bases
 
 - **Presentation/gameplay base:** VS AI v6.91.6
 - **Lobby base:** PvP v3.76.6
 - **Architecture reference:** handshake lessons from VS AI Tutorial v6.48 and PvP v3.51
-- **Server gameplay authority:** the exact VS AI v6.91.6 shared gameplay engine, executed headlessly in Node
+- **Server gameplay authority:** VS AI v6.91.6 shared gameplay engine executed headlessly in Node, with narrow PvP-only input guards and battle-presentation bridge hooks
 - **PvP Mana seam:** center-only ephemeral UI Shard selection; one final selected-Shard-UID commit on PAY
 
-PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.9 Mana interaction follows the current VS AI v6.91.6 donor behavior rather than the older Class-only/FIFO experiment.
+PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.10 Mana interaction follows the current VS AI v6.91.6 donor behavior rather than the older Class-only/FIFO experiment.
+
+## v3.80.10 stabilization scope
+
+- Battlefield player/opponent names are restored with live connection bars (local bar left of name, opponent bar right of name).
+- CANCEL is rendered only for the local owner of the pending decision.
+- Battle Attack / Block / Dodge / Heal feedback is transported as stable server-owned presentation events, then replayed once per browser through the donor VFX/SFX layer.
+- Automatic Draw -> Deploy remains server-authoritative, while the client visually holds the phase tracker on Draw until committed Draw + Mana Regen presentation finishes.
+- Legal Racial/Class action buttons receive an explicit available visual state.
+- Browser gameplay state is never restored from a local rollback snapshot; committed state changes remain server-owned.
+- Intent batches are restricted to approved two-step atomic UI pairs and ownership is revalidated after the first step.
+- Donor delegated and direct choice handlers are gated while PvP external UI owns gameplay input.
+
+Mana Payment remains the already-proven v3.80.8/v3.80.9 final-UID handshake and is regression-tested, not redesigned.
 
 ## Current handshake
 
@@ -42,7 +55,7 @@ See `ARCHITECTURE_V380.md` for the full contract.
 
 ## Mana payment boundary
 
-v3.80.9 uses VS AI v6.91.6 as the active donor. The gameplay bundle carries one explicit PvP-only DOM guard so delegated donor clicks cannot mutate gameplay locally while the external PvP UI owns input; gameplay rules remain donor-driven.
+v3.80.10 uses VS AI v6.91.6 as the active donor. The gameplay bundle carries one explicit PvP-only DOM guard so delegated donor clicks cannot mutate gameplay locally while the external PvP UI owns input; gameplay rules remain donor-driven.
 
 The browser interaction is now:
 
@@ -79,7 +92,7 @@ For Response payments that also require a Hand discard, the browser keeps both t
 
 v3.80.x uses one atomic `intent-result` for each committed network action. Exactly one network gameplay action may be in flight. A second committed action while one is still in flight is rejected locally rather than silently queued. If the result times out, the client releases the gate and requests a fresh authoritative snapshot.
 
-Mana **selection clicks are intentionally not network actions** in v3.80.9; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
+Mana **selection clicks are intentionally not network actions** in v3.80.10; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
 
 The opening battlefield is non-interactive until the server reaches `started`. A client may finish its opening animation a few seconds before the other device, but it cannot send gameplay actions during that gap.
 
@@ -109,7 +122,7 @@ The opening board is imported **without rendering** and then presented exactly o
 
 ## Seat orientation and mirroring
 
-Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.9 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
+Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.10 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
 
 ## Deck summary
 
@@ -167,4 +180,4 @@ See `DEPLOYMENT_GUARDRAILS.md`.
 - package only after the user explicitly asks for the candidate build;
 - every future Takeover Note should carry the same workflow rule.
 
-v3.80.9 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.
+v3.80.10 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.

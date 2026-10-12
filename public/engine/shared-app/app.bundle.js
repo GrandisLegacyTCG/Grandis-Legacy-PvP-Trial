@@ -8493,6 +8493,7 @@ var desktopMarkup='<div class="gl-lab-authority '+(state.turn==='AI'?'turn-ai':'
     $('previewClose').addEventListener('click', function(){ $('previewOverlay').classList.remove('open'); }); $('previewOverlay').addEventListener('click', function(ev){ if(ev.target.id==='previewOverlay') $('previewOverlay').classList.remove('open'); });
     $('infoClose').addEventListener('click', closeInfo); $('infoOverlay').addEventListener('click', function(ev){ if(ev.target.id==='infoOverlay') closeInfo(); });
     $('choiceClose').addEventListener('click', function(){
+      if(EXTERNAL_HUMAN_UI&&typeof window!=='undefined'&&window.GL_PVP_SHARED_BOARD_ACTIVE)return;
       var p=appState&&appState.pending, policy=localPendingClosePolicy(appState,p);
       if(policy==='PRE_COMMIT_CANCEL'){ cancelPendingAction(); return; }
       if(policy==='POST_RESOLUTION_DECLINE'){
@@ -8509,7 +8510,7 @@ var desktopMarkup='<div class="gl-lab-authority '+(state.turn==='AI'?'turn-ai':'
       }
       closeChoice();
     });
-    $('choiceConfirm').addEventListener('click', handleChoiceConfirm); $('choiceOverlay').addEventListener('click', function(ev){ if(ev.target.id==='choiceOverlay' && !(appState&&appState.pending)) closeChoice(); });
+    $('choiceConfirm').addEventListener('click', function(){if(EXTERNAL_HUMAN_UI&&typeof window!=='undefined'&&window.GL_PVP_SHARED_BOARD_ACTIVE)return;handleChoiceConfirm();}); $('choiceOverlay').addEventListener('click', function(ev){ if(ev.target.id==='choiceOverlay' && !(appState&&appState.pending)) closeChoice(); });
     document.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ if(exclusiveModalPurpose()==='invalid_deck_import'){ev.preventDefault();ev.stopPropagation();closeInfo();return;} v55ClickZoomHide(); $('previewOverlay').classList.remove('open'); if(!(appState&&appState.pending)) closeChoice(); closeInfo(); } });
   }
   function simulateCoreLoop(){
@@ -10708,6 +10709,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     getExternalHumanUi:function(){return !!EXTERNAL_HUMAN_UI;},
     getPendingClosePolicy:function(){ return localPendingClosePolicy(appState,appState&&appState.pending); },
     clearTransientUiState:clearTransientUiState,
+    drainBattleFeedback:function(){var items=GL_BATTLE_FEEDBACK_QUEUE.splice(0);return clone(items);},
     testSetManaPreviewHidden:function(side,uid,hidden){side=side==='AI'?'AI':'PLAYER';if(hidden){if(!hiddenManaDrawToken(side,uid))addHiddenManaDrawToken(side,uid);}else removeHiddenManaDrawToken(side,uid,{suppressRender:true});if(appState&&matchStarted&&!SUPPRESS_RENDER)render();return !!hiddenManaDrawToken(side,uid);},
     testCandidate6GainShardPresentation:function(side,amount,reason){return clone(gainMana(appState,side==='AI'?'AI':'PLAYER',Math.max(1,Number(amount||1)),reason||'Candidate 6 Shard gain'));},
     testCandidate6NormalShardDrawPresentation:function(side){side=side==='AI'?'AI':'PLAYER';return !!queueStagedManaRegenDraws(appState,side,1,'Candidate 6 normal Shard Draw',{onComplete:function(){}});},
@@ -10916,6 +10918,7 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     toggleSound:function(){toggleCardMotionSound();return !!GL_CARD_SOUND_ENABLED;},
     playCardMotionSound:function(){return playCardMotionSound();},
     flushBattleFeedback:function(){return flushBattleFeedbackQueue();},
+    queueAuthoritativeBattleFeedback:function(evt){return queueBattleFeedback(clone(evt||{}));},
     getDeckSetupState:function(){
       return clone({selectedDeckKey:selectedDeckKey,player:{deck_name:(decks.PLAYER&&decks.PLAYER.deck_name)||'Player Deck',default_formation:(decks.PLAYER&&decks.PLAYER.default_formation)||{},rank_preview:setupRankView('PLAYER')},ai:{deck_name:(decks.AI&&decks.AI.deck_name)||'AI Deck',default_formation:(decks.AI&&decks.AI.default_formation)||{},rank_preview:setupRankView('AI')},imported:{PLAYER:!!importedDecks.PLAYER,AI:!!importedDecks.AI}});
     },

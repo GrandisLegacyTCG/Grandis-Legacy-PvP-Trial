@@ -14,6 +14,15 @@ const SCRIPT_PATHS=[
   'engine/shared-app/app.bundle.js'
 ];
 const HIDDEN_CARD='__GL_HIDDEN_CARD__';
+const ALLOWED_INTENT_BATCH_PAIRS=new Set([
+  'responseSelectNoStuck>confirmSelectedResponse',
+  'selectStatusRemovalChoice>handleChoiceConfirm',
+  'selectSaintPurifyChoice>handleChoiceConfirm',
+  'selectCardSearchChoice>handleChoiceConfirm',
+  'toggleDiscardIndex>handleChoiceConfirm',
+  'selectResponsePaymentChoice>commitResponsePaymentChoice',
+  'selectLegacyCostChoice>handleChoiceConfirm'
+]);
 const COMPILED_SCRIPTS=SCRIPT_PATHS.map(rel=>({rel,script:new vm.Script(fs.readFileSync(path.join(PUBLIC,rel),'utf8'),{filename:rel})}));
 
 const clone=value=>value==null?value:JSON.parse(JSON.stringify(value));
@@ -247,7 +256,29 @@ export function sourceHashes(){
 }
 
 export class V6916Authority{
-  constructor(){this.ctx=makeHeadlessContext();this.bridge=this.ctx.GL_LOCAL_AI_BRIDGE;this.game=this.ctx.GL_GAME_ENGINE;this.canonical=null;this.revision=0;this.opening=null;this.starters=clone(this.bridge.getStarterDeckOptions?.()||{});this.cardNames=Object.fromEntries((this.ctx.GL_CARD_DEFINITIONS?.cards||[]).map(c=>[String(c.card_id||''),String(c.name||c.card_name||c.card_id||'')]).filter(x=>x[0]))}
+  constructor(){this.ctx=makeHeadlessContext();this.bridge=this.ctx.GL_LOCAL_AI_BRIDGE;this.game=this.ctx.GL_GAME_ENGINE;this.canonical=null;this.revision=0;this.opening=null;this.battlePresentationSequence=0;this.starters=clone(this.bridge.getStarterDeckOptions?.()||{});this.cardNames=Object.fromEntries((this.ctx.GL_CARD_DEFINITIONS?.cards||[]).map(c=>[String(c.card_id||''),String(c.name||c.card_name||c.card_id||'')]).filter(x=>x[0]))}
+  clearBattleFeedback(){try{return this.bridge.drainBattleFeedback?.()||[]}catch{return[]}}
+  drainBattleFeedbackForCanonicalSeat(seat){
+    const rows=this.clearBattleFeedback(),viewSeat=Number(seat)===2?2:1;
+    return rows.map(raw=>{
+      let x=clone(raw||{});delete x.id;delete x._sound_played;
+      if(viewSeat===2)x=deepSwapSides(x);
+      return x;
+    }).filter(x=>x&&['attack','heal'].includes(String(x.kind||''))&&['PLAYER','AI'].includes(String(x.side||''))&&x.lane);
+  }
+  appendBattlePresentation(rows=[]){
+    const state=this.canonical?.appState;if(!state||!rows.length)return;
+    if(!Array.isArray(state.presentationEvents))state.presentationEvents=[];
+    for(const row of rows){
+      state.presentationEvents.push({
+        id:'PVP-BATTLE-'+(++this.battlePresentationSequence),type:'BATTLE_FEEDBACK',
+        kind:String(row.kind||''),outcome:row.outcome==null?null:String(row.outcome),side:row.side,lane:String(row.lane||''),
+        card_id:row.card_id==null?null:String(row.card_id),attack_kind:row.attack_kind==null?null:String(row.attack_kind),
+        defense_kind:row.defense_kind==null?null:String(row.defense_kind),has_damage:!!row.has_damage,play_sound:row.play_sound!==false
+      });
+    }
+    if(state.presentationEvents.length>200)state.presentationEvents=state.presentationEvents.slice(-200);
+  }
   deckForSelection(sel){if(sel?.customDeck)return normalizeFormation(sel.customDeck,sel.formation);const opt=this.starters?.[sel?.deckKey];if(!opt?.deck)throw new Error('Unknown starter deck: '+String(sel?.deckKey||''));return normalizeFormation(opt.deck,sel.formation)}
   start({p1,p2}){
     const board=this.bridge.startSharedMatch({player1Name:p1.name,player2Name:p2.name,playerDeck:this.deckForSelection(p1),player2Deck:this.deckForSelection(p2)});
@@ -296,7 +327,7 @@ export class V6916Authority{
     if(!isMana&&!isResponse)return null;
     if(isMana&&pending?.type!=='mana_shard_payment_choice')throw new Error('MANA_PAYMENT_NOT_PENDING');
     if(isResponse&&pending?.type!=='response_payment_choice')throw new Error('RESPONSE_PAYMENT_NOT_PENDING');
-    // v3.80.8 PvP seam: Shard clicking changes only an ephemeral centered UI UID draft.
+    // PvP payment seam: Shard clicking changes only an ephemeral centered UI UID draft.
     // PAY submits the final canonical UIDs once; the server validates ownership/pool
     // identity, injects only that submitted selection into the authoritative pending
     // object, then lets the untouched donor commit routine validate exact Mana value.
@@ -326,28 +357,34 @@ export class V6916Authority{
   }
   applyIntent(seat,name,args=[]){
     if(!this.canonical)throw new Error('Match not initialized.');const viewSeat=Number(seat)===2?2:1;this.ctx.GL_PVP_LOCAL_SEAT=viewSeat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,viewSeat),{skipImportAnimations:true});
+    // Battle VFX/audio are transient donor runtime events, not gameplay state. Start every
+    // authoritative action with an empty presentation queue so only this action's result ships.
+    this.clearBattleFeedback();
     assertLocalSeatMayAct(this.bridge.getSnapshot(),name);
     const cleanArgs=Array.isArray(args)?clone(args):[],intentName=String(name||'');
-    const result=(intentName==='commitManaShardPaymentChoice'||intentName==='commitResponsePaymentChoice')?this.applyFinalPaymentDraft(intentName,cleanArgs):this.bridge.applyServerIntent(intentName,cleanArgs);if(!result?.ok)throw new Error(result?.error||('Intent rejected: '+name));
+    const result=(intentName==='commitManaShardPaymentChoice'||intentName==='commitResponsePaymentChoice')?this.applyFinalPaymentDraft(intentName,cleanArgs):this.bridge.applyServerIntent(intentName,cleanArgs);if(!result?.ok){this.clearBattleFeedback();throw new Error(result?.error||('Intent rejected: '+name))}
     this.autoResolveMeaninglessOpponentShardChoice();
-    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.autoAdvanceResolvedHumanDraw();return {board:this.snapshot(),revision:this.revision};
+    const battleRows=this.drainBattleFeedbackForCanonicalSeat(viewSeat);
+    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.appendBattlePresentation(battleRows);this.autoAdvanceResolvedHumanDraw();return {board:this.snapshot(),revision:this.revision};
   }
   applyIntentBatch(seat,steps=[]){
-    if(!this.canonical)throw new Error('Match not initialized.');if(!Array.isArray(steps)||!steps.length)throw new Error('Intent batch is empty.');
-    const viewSeat=Number(seat)===2?2:1;this.ctx.GL_PVP_LOCAL_SEAT=viewSeat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,viewSeat),{skipImportAnimations:true});
-    assertLocalSeatMayAct(this.bridge.getSnapshot(),steps[0]?.name);
-    const results=[];let any=false;
-    for(const step of steps.slice(0,24)){
-      const name=String(step?.name||''),args=Array.isArray(step?.args)?clone(step.args):[];if(!name)continue;
-      const r=this.bridge.applyServerIntent(name,args);results.push({name,ok:!!r?.ok,error:r?.error||null});
-      // A transport batch is one authoritative action. Fail closed before canonicalizing
-      // so local draft reconciliation (especially Mana PAY) is atomic, never half-applied.
-      if(!r?.ok)throw new Error(r?.error||('Intent batch step rejected: '+name));
-      this.autoResolveMeaninglessOpponentShardChoice();
-      any=true;
-    }
-    if(!any)throw new Error(results.map(x=>x.error).filter(Boolean).join('; ')||'Intent batch rejected.');
-    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.autoAdvanceResolvedHumanDraw();
+    if(!this.canonical)throw new Error('Match not initialized.');if(!Array.isArray(steps)||steps.length!==2)throw new Error('Intent batch must contain exactly two approved atomic steps.');
+    const pair=steps.map(step=>String(step?.name||'')).join('>');if(!ALLOWED_INTENT_BATCH_PAIRS.has(pair))throw new Error('INTENT_BATCH_NOT_ALLOWED');
+    const viewSeat=Number(seat)===2?2:1;this.ctx.GL_PVP_LOCAL_SEAT=viewSeat;this.bridge.importSnapshot(localizeBoardForSeat(this.canonical,viewSeat),{skipImportAnimations:true});this.clearBattleFeedback();
+    const results=[];let any=false,battleRows=[];
+    try{
+      for(const step of steps){
+        const name=String(step?.name||''),args=Array.isArray(step?.args)?clone(step.args):[];if(!name)throw new Error('Intent batch step is missing a name.');
+        // Re-check ownership after every state transition. A valid first step must never grant
+        // a stale second step permission merely because both arrived in one transport packet.
+        assertLocalSeatMayAct(this.bridge.getSnapshot(),name);
+        const r=this.bridge.applyServerIntent(name,args);results.push({name,ok:!!r?.ok,error:r?.error||null});
+        if(!r?.ok)throw new Error(r?.error||('Intent batch step rejected: '+name));
+        this.autoResolveMeaninglessOpponentShardChoice();battleRows.push(...this.drainBattleFeedbackForCanonicalSeat(viewSeat));any=true;
+      }
+    }catch(err){this.clearBattleFeedback();throw err}
+    if(!any)throw new Error('Intent batch rejected.');
+    this.canonical=canonicalizeBoardFromSeat(this.bridge.getSnapshot(),viewSeat);this.revision++;this.appendBattlePresentation(battleRows);this.autoAdvanceResolvedHumanDraw();
     return {board:this.snapshot(),revision:this.revision,results};
   }
   viewForSeat(seat){
