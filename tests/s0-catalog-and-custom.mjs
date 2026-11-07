@@ -58,13 +58,10 @@ try{
  a.send('start-match');await a.wait(x=>x.snap?.match?.status==='coin-flip');
  b.send('choose-coin-flip',{choice:'TAILS'});await a.wait(x=>x.snap?.match?.status==='coin-result');
  a.send('coin-presented');b.send('coin-presented');await a.wait(x=>x.snap?.match?.canStartOpening);
- a.send('confirm-coin-flip');await Promise.all([a.wait(x=>x.snap?.match?.status==='opening'),b.wait(x=>x.snap?.match?.status==='opening')]);
- const o=b.snap.match.opening;
- assert.deepEqual(o.heroIds, ['S0-WAR-H004','S0-WAR-H007','S0-CLE-H004']);
+ a.send('confirm-coin-flip');await Promise.all([a.wait(x=>x.snap?.match?.status==='started'),b.wait(x=>x.snap?.match?.status==='started')]);
+ assert.equal(b.snap.match.opening,undefined,'No invented Season 0 opening card overlay');
  assert.ok(b.snap.match.board.appState.playerHand.every(id=>id.startsWith('S0-')));
  assert.ok(a.snap.match.board.appState.aiHand.every(id=>id==='__HIDDEN_CARD_BACK__'));
- a.send('opening-presented');b.send('opening-presented');
- await Promise.all([a.wait(x=>x.snap?.match?.status==='started'),b.wait(x=>x.snap?.match?.status==='started')]);
  assert.equal(b.snap.match.board.appState.playerHeroes.LEFT.card_id,'S0-WAR-H004');
- console.log(JSON.stringify({ok:true,starterCatalog:5,sourceSeason:'S0',S0HeroArtPresent:true,S1ImportedRejected:true,S0DeckBuilderImport:true,S0OpeningBothPlayers:true,correctHeroesInBattle:true},null,2));
+ console.log(JSON.stringify({ok:true,starterCatalog:5,sourceSeason:'S0',S0HeroArtPresent:true,S1ImportedRejected:true,S0DeckBuilderImport:true,S0BattleStartsDirectly:true,correctHeroesInBattle:true},null,2));
 }finally{for(const c of clients)try{c.ws.close()}catch{}server.kill('SIGTERM')}

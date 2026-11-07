@@ -649,6 +649,54 @@ function fairCoinOutcome(){try{const a=new Uint32Array(1);crypto.getRandomValues
 function renderCoinChoice(){const body=coinOverlay.querySelector('.gl-coin-body');body.innerHTML='<p>Choose Heads or Tails. The winner takes the first Draw Phase.</p><div class="gl-coin-actions"><button type="button" data-coin-choice="HEADS"><img src="'+coinFaceSrc('HEADS')+'" alt="Heads"><span>Heads</span></button><button type="button" data-coin-choice="TAILS"><img src="'+coinFaceSrc('TAILS')+'" alt="Tails"><span>Tails</span></button></div>';body.querySelectorAll('[data-coin-choice]').forEach(btn=>btn.onclick=()=>runCoinFlip(btn.dataset.coinChoice));coinOverlay.classList.add('open')}
 function runCoinFlip(choice){openingChoice=choice==='TAILS'?'TAILS':'HEADS';openingOutcome=fairCoinOutcome();openingFirstSide=openingChoice===openingOutcome?'PLAYER':'AI';const body=coinOverlay.querySelector('.gl-coin-body');let face=openingOutcome==='HEADS'?'TAILS':'HEADS';body.innerHTML='<p>Flipping the coin...</p><div class="gl-coin-flip-stage"><img src="'+coinFaceSrc(face)+'" alt="Coin"></div>';const im=body.querySelector('img');let step=0;const totalSteps=8,halfDuration=72;B()?.playOpeningCoinSound?.();const runStep=()=>{if(step>=totalSteps){im.src=coinFaceSrc(openingOutcome);im.alt=openingOutcome==='HEADS'?'Heads':'Tails';im.style.transition='none';im.style.transform='translateY(0) scaleX(1)';const text=body.querySelector('p');if(text)text.textContent=(openingOutcome==='HEADS'?'Heads':'Tails')+'!';setTimeout(renderCoinResult,1000);return}const progress=(step+1)/totalSteps,lift=Math.round(Math.sin(progress*Math.PI)*22);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.45,0,.55,1)';im.style.transform='translateY(-'+lift+'px) scaleX(.04)';setTimeout(()=>{face=face==='HEADS'?'TAILS':'HEADS';im.src=coinFaceSrc(face);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.2,.75,.3,1)';im.style.transform='translateY(-'+lift+'px) scaleX(1)';setTimeout(()=>{step++;runStep()},halfDuration)},halfDuration)};runStep()}
 function renderCoinResult(){const body=coinOverlay.querySelector('.gl-coin-body'),won=openingFirstSide==='PLAYER';body.innerHTML='<div class="gl-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+(won?'YOU WON THE COIN FLIP':'LOCAL AI WON THE COIN FLIP')+'</strong><p>'+(won?'You will take the first turn.':'Local AI will take the first turn.')+'</p></div><div class="gl-coin-result"><div><span>Your choice</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+(openingChoice==='TAILS'?'Tails':'Heads')+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+(openingOutcome==='TAILS'?'Tails':'Heads')+'"></div></div><button class="gl-coin-start" type="button">Start Game</button>';body.querySelector('.gl-coin-start').onclick=beginOpeningPresentation}
+// Multiplayer coin flow reuses RC32's own coin overlay, card art, animation
+// timing and audio. Only the coin outcome and next-step permission come from
+// the authoritative server; never generate another browser-local result.
+let s0PvpCoinKey='',s0PvpCoinAnimating=false,s0PvpCoinLatest=null;
+function s0PvpCoinChoice(info={}){
+  lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('gl-lobby-hidden');
+  s0PvpCoinKey='';s0PvpCoinAnimating=false;s0PvpCoinLatest=null;
+  const body=coinOverlay.querySelector('.gl-coin-body');
+  body.innerHTML='<p>Choose Heads or Tails. The winner takes the first Draw Phase.</p><div class="gl-coin-actions"><button type="button" data-coin-choice="HEADS"><img src="'+coinFaceSrc('HEADS')+'" alt="Heads"><span>Heads</span></button><button type="button" data-coin-choice="TAILS"><img src="'+coinFaceSrc('TAILS')+'" alt="Tails"><span>Tails</span></button></div>';
+  body.querySelectorAll('[data-coin-choice]').forEach(btn=>{
+    btn.disabled=!info.canChoose;
+    if(info.canChoose)btn.onclick=()=>{body.querySelectorAll('[data-coin-choice]').forEach(b=>b.disabled=true);window.GL_PVP_HOST?.chooseCoin?.(btn.dataset.coinChoice)};
+  });
+  coinOverlay.classList.add('open');
+}
+function s0PvpDrawCoinResult(info){
+  if(!info)return;
+  const body=coinOverlay.querySelector('.gl-coin-body'),won=Number(info.firstSeat)===Number(info.localSeat);
+  openingChoice=info.choice==='TAILS'?'TAILS':'HEADS';openingOutcome=info.outcome==='TAILS'?'TAILS':'HEADS';openingFirstSide=won?'PLAYER':'AI';
+  const winner=won?'YOU WON THE COIN FLIP':esc(info.winnerName||'OPPONENT')+' WON THE COIN FLIP';
+  body.innerHTML='<div class="gl-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+winner+'</strong><p>'+(won?'You will take the first turn.':'Your opponent will take the first turn.')+'</p></div><div class="gl-coin-result"><div><span>'+(info.localWasChooser?'Your choice':'Player 2 choice')+'</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+openingChoice+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+openingOutcome+'"></div></div><button class="gl-coin-start" type="button" '+(info.canStart?'':'disabled')+'>'+(info.canStart?'Start Game':'Waiting for other player…')+'</button>';
+  const button=body.querySelector('.gl-coin-start');
+  if(info.canStart)button.onclick=()=>{button.disabled=true;window.GL_PVP_HOST?.confirmCoin?.()};
+  coinOverlay.classList.add('open');
+}
+function s0PvpCoinResult(info={}){
+  lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('gl-lobby-hidden');
+  coinOverlay.classList.add('open');s0PvpCoinLatest=info;
+  const key=String(info.choice)+'|'+String(info.outcome)+'|'+String(info.firstSeat);
+  if(key!==s0PvpCoinKey&&!s0PvpCoinAnimating){
+    s0PvpCoinKey=key;s0PvpCoinAnimating=true;
+    openingOutcome=info.outcome==='TAILS'?'TAILS':'HEADS';
+    const body=coinOverlay.querySelector('.gl-coin-body');
+    let face=openingOutcome==='HEADS'?'TAILS':'HEADS';
+    body.innerHTML='<p>Flipping the coin...</p><div class="gl-coin-flip-stage"><img src="'+coinFaceSrc(face)+'" alt="Coin"></div>';
+    const im=body.querySelector('img');let step=0;const totalSteps=8,halfDuration=72;
+    B()?.playOpeningCoinSound?.();
+    const runStep=()=>{
+      if(step>=totalSteps){im.src=coinFaceSrc(openingOutcome);im.alt=openingOutcome==='HEADS'?'Heads':'Tails';im.style.transition='none';im.style.transform='translateY(0) scaleX(1)';const t=body.querySelector('p');if(t)t.textContent=openingOutcome+'!';setTimeout(()=>{s0PvpCoinAnimating=false;s0PvpDrawCoinResult(s0PvpCoinLatest);window.GL_PVP_HOST?.coinPresented?.()},1000);return}
+      const progress=(step+1)/totalSteps,lift=Math.round(Math.sin(progress*Math.PI)*22);
+      im.style.transition='transform '+halfDuration+'ms cubic-bezier(.45,0,.55,1)';im.style.transform='translateY(-'+lift+'px) scaleX(.04)';
+      setTimeout(()=>{face=face==='HEADS'?'TAILS':'HEADS';im.src=coinFaceSrc(face);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.2,.75,.3,1)';im.style.transform='translateY(-'+lift+'px) scaleX(1)';setTimeout(()=>{step++;runStep()},halfDuration)},halfDuration);
+    };runStep();return;
+  }
+  if(!s0PvpCoinAnimating)s0PvpDrawCoinResult(info);
+}
+function s0PvpCoinRelease(){coinOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}
+window.GL_S0_RC32_PVP_COIN={showChoice:s0PvpCoinChoice,showResult:s0PvpCoinResult,release:s0PvpCoinRelease};
 function resetPresentationState(){seenCounterMessages.clear();seenRacialMessages.clear();presentationNoticeQueue.length=0;presentationNoticeActive=false;clearTimeout(counterBannerTimer);counterBanner.classList.remove('show','is-racial');counterBanner.style.removeProperty('--gl-notice-duration');presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;glPendingDrawReservations.PLAYER.length=0;glPendingDrawReservations.AI.length=0;glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();glOpeningHiddenShardUids.clear();glExternalDrawSequence=Promise.resolve();glExternalManaDrawSequence=Promise.resolve();glExternallyPresentedShardUids.clear();resultShown=false;resultOverlay.classList.remove('open');syncMatchActionButton(null);closeLobbyProgression();resetMatchTimer()}
 function startMatchFromLobby(){
   lobbyErrorText='';const r=E().prepareLocalMatch?.();if(!r?.ok){lobbyErrorText=r?.error||'Could not start match.';renderLobby();return}

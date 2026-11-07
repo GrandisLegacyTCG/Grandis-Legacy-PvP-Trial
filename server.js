@@ -14,7 +14,7 @@ const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
 const VERSION='3.80.17';
-const BUILD_ID='gl-s0-v38017-ui-rc32-data-2026-11-08';
+const BUILD_ID='gl-s0-v38017-lobby-rc32-coin-through-battle-2026-11-08';
 const BUILD_LABEL=`Grandis Legacy PvP · S1 v${VERSION} Lobby / S0 RC32 Battle`;
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
@@ -35,7 +35,7 @@ const safeRole=v=>String(v)==='spectator'?'spectator':'player';
 const token=()=>randomBytes(24).toString('base64url');
 const tokenHash=v=>v?createHash('sha256').update(String(v)).digest('hex'):'';
 
-function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,coinPresented:[],openingPresented:[],openingId:null,startedAt:null,finishedAt:null,lastError:null}}
+function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,coinPresented:[],startedAt:null,finishedAt:null,lastError:null}}
 const room={players:new Map(),spectators:new Map(),authority:null,match:freshMatch(),ledger:new Map(),kickedClients:new Set(),createdAt:now()};
 
 function playerBySeat(seat){return [...room.players.values()].find(p=>Number(p.seat)===Number(seat))||null}
@@ -53,12 +53,12 @@ function clearMatch(){room.authority=null;room.match=freshMatch();room.ledger.cl
 
 function viewFor(client){
   const local=client?{clientId:client.clientId,name:client.name,role:client.role,seat:client.seat||null,seatToken:client.role==='player'?client.seatToken:null,ready:!!client.ready,hasDeck:!!(client.deckKey||client.customDeck),deckKey:client.deckKey||null,deckName:client.deckName||null,customDeck:room.match.status==='setup'&&client.customDeck?clone(client.customDeck):null,formation:client.formation?clone(client.formation):null}:null;
-  let board=null,opening=null;
-  if(room.authority&&['opening','started','finished'].includes(room.match.status)){
-    if(client?.role==='player'&&client.seat){board=room.authority.viewForSeat(client.seat);opening=room.authority.openingForSeat(client.seat)}
+  let board=null;
+  if(room.authority&&['started','finished'].includes(room.match.status)){
+    if(client?.role==='player'&&client.seat)board=room.authority.viewForSeat(client.seat);
     else board=room.authority.viewForSpectator();
   }
-  const match={...clone(room.match),revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&allPlayerSeatsAck(room.match.coinPresented||[]),board,opening};
+  const match={...clone(room.match),revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&allPlayerSeatsAck(room.match.coinPresented||[]),board};
   return{type:'snapshot',version:VERSION,buildId:BUILD_ID,serverTime:now(),local,players:sortedPlayers().map(publicPlayer),spectators:[...room.spectators.values()].map(publicSpectator),match};
 }
 function send(ws,payload){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(payload))}
@@ -74,7 +74,7 @@ function validateFormation(deck,formation){
   if(!a.every(Boolean)||!b.every(Boolean)||new Set(b).size!==3||a.join('|')!==b.join('|'))throw new Error('Formation must be a permutation of the selected deck Heroes.');
   return{LEFT:String(formation.LEFT),CENTER:String(formation.CENTER),RIGHT:String(formation.RIGHT)};
 }
-// Keep the S1 room/ready/coin lifecycle, but all selected deck data comes from RC32 S0.
+// Keep S1 room/ready lifecycle, but RC32 S0 owns coin UI, opening and battle.
 function setupStarters(){return season0StarterCatalog}
 
 function setDeckFast(client,msg){
@@ -95,7 +95,7 @@ function setDeckFast(client,msg){
   client.ready=false;
 }
 
-// S1 owns the UI/room/coin lifecycle. RC32 S0 owns deck validation, opening
+// S1 owns UI/room/ready lifecycle. RC32 S0 owns coin UI, opening
 // cards/Mana and battle; no Season 1 card is ever used for an S0 match.
 function season0DeckFor(player){
   const src=player.customDeck||setupStarters()?.[player.deckKey]?.deck;
@@ -105,7 +105,7 @@ function season0DeckFor(player){
   return deck;
 }
 class Season0BattleAuthority {
-  constructor(){this.engine=new Season0HeadlessAuthority(path.join(PUBLIC,'battle'));this.opening=null}
+  constructor(){this.engine=new Season0HeadlessAuthority(path.join(PUBLIC,'battle'))}
   static prepare(p1,p2){
     const a=new Season0BattleAuthority();
     a.deckHeroIds={1:['LEFT','CENTER','RIGHT'].map(k=>season0DeckFor(p1).default_formation[k]),2:['LEFT','CENTER','RIGHT'].map(k=>season0DeckFor(p2).default_formation[k])};
@@ -115,7 +115,6 @@ class Season0BattleAuthority {
   }
   complete(firstSeat,face){
     this.engine.completeOpening(firstSeat,face);
-    this.opening={choice:face,outcome:face,firstSeat:Number(firstSeat),heroIdsBySeat:this.deckHeroIds};
   }
   get revision(){return this.engine.revision}
   get canonical(){return this.engine._canonicalForServerOnly()}
@@ -133,7 +132,6 @@ class Season0BattleAuthority {
     st.responseWindow=st.responseWindow?{kind:st.responseWindow.kind,private_masked:true}:null;
     return safe;
   }
-  openingForSeat(seat){if(!this.opening)return null;return {choice:this.opening.choice,outcome:this.opening.outcome,firstSeat:this.opening.firstSeat,heroIds:this.opening.heroIdsBySeat?.[seat]||[]}}
   applyIntent(seat,name,args=[]){
     if(name==='selectOpponentManaChoiceHandle'){
       const map=makeBlindChoices(this.engine._viewForMaskingOnly(seat).appState,this.revision,BLIND_SECRET,seat);
@@ -151,7 +149,7 @@ function startMatch(client){
   if(room.match.status!=='setup')throw new Error('Match already started.');
   if(!bothPlayersReady())throw new Error('Both players must be connected, have a deck, and be READY.');
   const p1=playerBySeat(1),p2=playerBySeat(2);
-  // Verify the battle transition before beginning the S1 coin animation.
+  // Verify the battle transition before entering the RC32 coin UI.
   season0DeckFor(p1);season0DeckFor(p2);
   const authority=Season0BattleAuthority.prepare(p1,p2);
   room.authority=authority;room.ledger.clear();
@@ -172,15 +170,11 @@ function confirmCoin(client){
   if(client.role!=='player')throw new Error('Spectators cannot start gameplay.');
   if(room.match.status!=='coin-result')throw new Error('Coin result is not ready.');
   if(!allPlayerSeatsAck(room.match.coinPresented))throw new Error('Waiting for both players to finish the Coin Flip presentation.');
+  // Coin presentation is handled inside the S0 RC32 battlefield document.
+  // Server commits a complete S0 board, never a fabricated opening modal.
   room.authority.complete(room.match.firstSeat,room.match.outcome);
-  room.match.openingId='opening:'+String(room.match.startedAt||now())+':'+String(room.match.firstSeat||0);room.match.status='opening';room.match.openingPresented=[];
-}
-function openingPresented(client){
-  if(client.role!=='player')return;if(room.match.status!=='opening')return;
-  if(!room.match.openingPresented.includes(client.seat))room.match.openingPresented.push(client.seat);
-  if(allPlayerSeatsAck(room.match.openingPresented)){
-    room.ledger.clear();room.match.status='started';
-  }
+  room.ledger.clear();
+  room.match.status='started';
 }
 function applyIntent(client,msg,batch=false){
   if(client.role!=='player')throw new Error('Spectators are read-only.');
@@ -236,7 +230,6 @@ function handle(client,msg){
     case 'choose-coin-flip': chooseCoin(client,msg);break;
     case 'coin-presented': coinPresented(client);break;
     case 'confirm-coin-flip': confirmCoin(client);break;
-    case 'opening-presented': openingPresented(client);break;
     case 'runtime-intent': applyIntent(client,msg,false);break;
     case 'runtime-intent-batch': applyIntent(client,msg,true);break;
     case 'surrender-match': applyIntent(client,{...msg,intent:'executeConfirmedSurrender',args:[]},false);break;
@@ -282,7 +275,7 @@ const server=http.createServer(async(req,res)=>{
     }
     if(url.pathname==='/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
-      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-ui__s0-rc32-decks-opening-battle',authoritySources:sourceHashes()}));return;
+      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lobby__s0-rc32-coin-and-battle',authoritySources:sourceHashes()}));return;
     }
     let rel=decodeURIComponent(url.pathname);if(rel==='/'||rel==='')rel='/index.html';if(rel==='/battle'||rel==='/battle/')rel='/battle/index.html';
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);

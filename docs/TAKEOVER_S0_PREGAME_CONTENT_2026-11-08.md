@@ -1,3 +1,5 @@
+**SUPERSEDED by `docs/TAKEOVER_DIRECT_RC32_START_2026-11-08.md`.** The prior S0 opening overlay / ACK stage is now removed.
+
 # PvP S0 RC32 — S1 v3.80.17 UI / S0 data — Takeover 2026-11-08
 
 ## Baseline and authorization

@@ -138,7 +138,7 @@ function startHeartbeat(){clearHeartbeat();sendPing();state.pingTimer=setInterva
 let lastActivitySentAt=0;
 function reportUserActivity(){const now=Date.now();if(now-lastActivitySentAt<4000)return;lastActivitySentAt=now;send('activity',{at:now})}
 function installActivityTracking(){const mark=e=>{if(e&&e.isTrusted===false)return;reportUserActivity()};['pointerdown','keydown','touchstart','wheel'].forEach(type=>window.addEventListener(type,mark,{passive:true,capture:true}));window.addEventListener('pointermove',mark,{passive:true,capture:true})}
-function matchClock(){const m=match()||{},start=Date.parse(m.startedAt||''),finish=Date.parse(m.finishedAt||'');if(!Number.isFinite(start))return{active:false,elapsedMs:0};return{active:['coin-flip','coin-result','opening','started'].includes(m.status),elapsedMs:Math.max(0,(Number.isFinite(finish)?finish:Date.now())-start)}}
+function matchClock(){const m=match()||{},start=Date.parse(m.startedAt||''),finish=Date.parse(m.finishedAt||'');if(!Number.isFinite(start))return{active:false,elapsedMs:0};return{active:['coin-flip','coin-result','started'].includes(m.status),elapsedMs:Math.max(0,(Number.isFinite(finish)?finish:Date.now())-start)}}
 function syncSetupSelection(){
   const me=local(),m=match();if(!state.connected||m?.status!=='setup'||me?.role!=='player')return;
   // Never overwrite a server-retained deck on refresh/reconnect. This is critical for
@@ -173,22 +173,11 @@ function clearIntent(error=''){if(intentChannel)intentChannel.reset(error)}
 
 function importBoard(snap,opts={}){const b=snap?.match?.board;if(!b||!bridge()?.importSnapshot)return false;const rev=Number(snap.match.revision||0),status=String(snap.match.status||'');if(!opts.force&&rev===state.lastImportedRevision&&status===state.lastImportedStatus)return false;/* Accepted/rejected intent results and explicit resync may force-import the server snapshot even at the same revision, so stale browser-only state can never survive authority recovery. */bridge().importSnapshot(b,{notice:'',skipImportAnimations:true});state.lastImportedRevision=rev;state.lastImportedStatus=status;if(opts.render!==false)window.GL_GAME_UI?.render?.();return true}
 function playerName(seat){return(state.snapshot?.players||[]).find(p=>Number(p.seat)===Number(seat))?.name||('Player '+seat)}
-let s0OpeningRun='';
-function showS0Opening(info,key){
-  if(s0OpeningRun===key)return;s0OpeningRun=key;
-  const wrap=document.querySelector('.gl-coin-overlay'),body=wrap?.querySelector('.gl-coin-body');
-  if(!wrap||!body){setTimeout(()=>{if(match()?.status==='opening')openingPresented()},1000);return}
-  const myHeroes=Array.isArray(info.heroIds)?info.heroIds:[];
-  const heroes=myHeroes.map(id=>'<img src="'+esc(localCardArt(id))+'" alt="'+esc(cardName(id))+'" style="height:116px;width:auto;max-width:31%;object-fit:contain">').join('');
-  body.innerHTML='<div style="text-align:center"><h2 style="margin:0 0 12px">SEASON 0 · OPENING</h2><div style="display:flex;justify-content:center;gap:12px">'+heroes+'</div><p style="margin:12px 0 6px">Opening Hand: <b>6 cards</b></p><div style="display:flex;gap:5px;justify-content:center">'+Array.from({length:6},()=>'<img src="assets/ui/back-main.webp" alt="Card back" style="width:35px;height:49px;object-fit:contain">').join('')+'</div><p style="margin:12px 0 6px">Starting Mana Pool: <b>3 Shards</b></p><div style="display:flex;gap:8px;justify-content:center">'+Array.from({length:3},()=>'<img src="assets/ui/back-shard.webp" alt="Mana Shard" style="width:44px;height:58px;object-fit:contain">').join('')+'</div><p style="font-size:14px;opacity:.75;margin:10px 0 0">Preparing the Season 0 battlefield…</p></div>';
-  wrap.classList.add('open');
-  setTimeout(()=>{if(match()?.status==='opening'&&s0OpeningRun===key)openingPresented()},2600);
-}
 function syncPresentation(prevStatus,opts={}){
   const m=match(),me=local(),p=presentation();if(!m)return;
-  const active=['coin-flip','coin-result','opening','started','finished'].includes(m.status),app=document.querySelector('.app');$('pvpSetupOverlay')?.classList.toggle('open',!active);document.documentElement.classList.toggle('gl-pvp-game-active',active);document.documentElement.classList.toggle('gl-pvp-opening-gated',m.status==='opening');if(app&&m.status==='opening')app.inert=true;
-  // Match v6.91.6 presentation lifecycle: battlefield stays hidden throughout Coin Flip.
-  // Opening itself removes gl-lobby-hidden only when the first opening motion is ready.
+  const active=['coin-flip','coin-result','started','finished'].includes(m.status),app=document.querySelector('.app');$('pvpSetupOverlay')?.classList.toggle('open',!active);document.documentElement.classList.toggle('gl-pvp-game-active',active);
+  // Pregame S1 UI is never allowed to present coin flip in this document.
+  // All coin UI is handled by S0 at /battle/.
   if(app)app.classList.toggle('gl-lobby-hidden',m.status==='setup'||m.status==='coin-flip'||m.status==='coin-result');
   if(m.status==='setup'){state.lastImportedRevision=-1;state.lastImportedStatus='';state.lastCoinChoiceKey='';state.lastOpeningKey='';state.openingAssetKey='';state.openingAssetPromise=null;p?.setCoinGate?.(false);window.GL_GAME_UI?.resetForLobby?.();return}
   if(m.status==='coin-flip'){
@@ -198,22 +187,14 @@ function syncPresentation(prevStatus,opts={}){
   if(m.status==='coin-result'){
     if(p){const localSeat=Number(me?.seat||1),firstSeat=Number(m.firstSeat||1);p.showCoinResult({choice:m.choice,outcome:m.outcome,firstSeat,localSeat,localWasChooser:Number(m.chooserSeat)===localSeat,winnerName:playerName(firstSeat),opponentName:opponent()?.name||'Opponent',canStartOpening:me?.role==='player'&&!!m.canStartOpening})}return;
   }
-  if(m.status==='opening'){
-    // Match is already committed in the canonical S0 RC32 authority. Do not
-    // render or import an S1 match snapshot during the S0 opening presentation.
-    if(app){app.classList.add('gl-lobby-hidden');app.inert=true}
-    if(me?.role==='player'&&m.opening){showS0Opening(m.opening,String(m.openingId||'opening'))}
-    else{p?.releaseGate?.();}
-    return;
-  }
   if(m.status==='started'||m.status==='finished'){
-    app?.classList.remove('gl-lobby-hidden');if(app)app.inert=false;p?.releaseGate?.();importBoard(state.snapshot,{render:true,force:!!opts.force});return;
+    app?.classList.remove('gl-lobby-hidden');if(app)app.inert=false;p?.releaseGate?.();return;
   }
 }
 function onSnapshot(msg,opts={}){
-  // Handoff ONLY after S1's complete lobby, coin flip and opening presentations.
-  // S0 client/engine never loads into the Season 1 lobby document.
-  if(['started','finished'].includes(msg?.match?.status)){location.replace('/battle/');return}
+  // Hand off at COIN FLIP, not after it: all coin UI and subsequent
+  // gameplay presentation now comes from Season 0 RC32 /battle/.
+  if(['coin-flip','coin-result','started','finished'].includes(msg?.match?.status)){location.replace('/battle/');return}
   const previousSnapshot=state.snapshot,prevStatus=match()?.status||'setup',prevRev=Number(match()?.revision||0);primeEarlyBattleFeedback(previousSnapshot,msg);state.snapshot=msg;state.connected=true;if(msg.local?.role==='player')state.idleNotice='';
   if(msg.local?.seatToken){state.seatToken=msg.local.seatToken;persistSession('seat',state.seatToken)}
   if(msg.local?.role){state.role=msg.local.role;window.GL_PVP_LOCAL_ROLE=state.role;persistSession('role',state.role)}
@@ -264,7 +245,6 @@ function connect(force=false){
 function chooseCoin(choice){return send('choose-coin-flip',{choice:String(choice).toUpperCase()})}
 function coinPresented(){return send('coin-presented')}
 function confirmCoin(){return send('confirm-coin-flip')}
-function openingPresented(){return send('opening-presented')}
 function startMatch(){return send('start-match')}
 function surrender(){const m=match();return send('surrender-match',{baseRevision:Number(m?.revision||0),clientActionId:state.clientId+'.surrender.'+(++state.intentSeq)})?{ok:true,pending:true}:{ok:false,error:'WebSocket unavailable.'}}
 function returnToLobby(){return send('return-to-lobby')?{ok:true,pending:true}:{ok:false,error:'WebSocket unavailable.'}}
@@ -289,17 +269,29 @@ function setDeck(key){state.customDeck=null;state.customDeckName='';state.deckKe
 function openS0CardPreview(id){
   const old=document.getElementById('pvpS0CardPreview');old?.remove();
   const p=document.createElement('div');p.id='pvpS0CardPreview';p.className='pvp-progression-modal';
-  p.innerHTML='<section class="pvp-progression-card" style="max-width:440px;text-align:center"><header><div><span>SEASON 0 · CARD PREVIEW</span><h2>'+esc(cardName(id))+'</h2></div><button id="pvpS0CardPreviewClose" class="pvp-progression-close" type="button">Close</button></header><img src="'+esc(localCardArt(id))+'" alt="'+esc(cardName(id))+'" style="max-width:min(90%,310px);max-height:66vh;object-fit:contain"></section>';
+  p.innerHTML='<section class="pvp-progression-card" style="max-width:440px;text-align:center"><header><div><span>CARD PREVIEW</span><h2>'+esc(cardName(id))+'</h2></div><button id="pvpS0CardPreviewClose" class="pvp-progression-close" type="button">Close</button></header><img src="'+esc(localCardArt(id))+'" alt="'+esc(cardName(id))+'" style="max-width:min(90%,310px);max-height:66vh;object-fit:contain"></section>';
   document.body.appendChild(p);p.querySelector('button').onclick=()=>p.remove();p.onclick=e=>{if(e.target===p)p.remove()};
 }
 function swapFormation(a,b){const lanes=['LEFT','CENTER','RIGHT'],f=currentFormation(),x=lanes[a],y=lanes[b];if(!x||!y)return;[f[x],f[y]]=[f[y],f[x]];state.formation=f;if(state.customDeck)send('set-deck',{customDeck:state.customDeck,deckName:state.customDeckName,formation:f});else send('set-deck',{deckKey:state.deckKey,formation:f});renderLobby()}
 function closeProgression(){document.getElementById('pvpHeroProgressionModal')?.remove()}
 async function openProgression(rankOne){closeProgression();const ids=heroProgressionIds(currentDeck(),rankOne);if(ids.length<3)return;const modal=document.createElement('div');modal.id='pvpHeroProgressionModal';modal.className='pvp-progression-modal';const cards=ids.map((id,i)=>'<article class="pvp-v260-hero pvp-progression-hero '+(i===0?'current':'')+'"><button class="pvp-v260-card pvp-progression-static-card" type="button" data-preview="'+esc(id)+'"><img src="'+esc(cardSrc(id))+'" alt="'+esc(cardName(id))+'"></button><div class="pvp-v260-position">RANK '+['I','II','III'][i]+'</div></article>');modal.innerHTML='<section class="pvp-progression-card"><header><div><span>HERO PROGRESSION</span><h2>'+esc(cardName(ids[0]))+'</h2></div><button id="pvpHeroProgressionClose" class="pvp-progression-close" type="button">Close</button></header><div class="pvp-progression-row">'+cards[0]+'<span class="pvp-progression-arrow">→</span>'+cards[1]+'<span class="pvp-progression-arrow">→</span>'+cards[2]+'</div><p>Select a Rank card to open Card Preview.</p></section>';document.body.appendChild(modal);$('pvpHeroProgressionClose').onclick=closeProgression;modal.onclick=e=>{const b=e.target.closest?.('[data-preview]');if(b){e.preventDefault();e.stopPropagation();openS0CardPreview(b.dataset.preview);return}if(e.target===modal)closeProgression()}}
-function formationHtml(){const d=currentDeck(),f=currentFormation(),lanes=['LEFT','CENTER','RIGHT'],parts=[];lanes.forEach((lane,i)=>{const r1=f[lane]||'',id=heroAtRank(d,r1);if(i)parts.push('<button class="pvp-v260-swap-button" type="button" data-swap-left="'+(i-1)+'" data-swap-right="'+i+'"><img src="assets/lobby/swap.png" alt=""></button>');parts.push('<article class="pvp-v260-hero"><button class="pvp-v260-card" type="button" data-pvp-progression="'+esc(r1)+'"><img decoding="async" src="'+esc(cardSrc(id))+'" alt=""></button><div class="pvp-v260-position">'+esc(lane[0]+lane.slice(1).toLowerCase())+'</div></article>')});return parts.join('')}
+/* The Hero Preview and Formation controls follow the native RC32 VS AI
+ * setupFormationCard()/deckSetupSide() component (source: app.bundle.js).
+ * The S1 lobby only supplies the surrounding shell and multiplayer seat UI.
+ * All card IDs/ranks/formations are calculated from Season 0 deck data. */
+function formationHtml(){
+  const deck=currentDeck(),formation=currentFormation(),lanes=['LEFT','CENTER','RIGHT'],parts=[];
+  lanes.forEach((lane,i)=>{
+    const rankOne=formation[lane]||'',id=heroAtRank(deck,rankOne);
+    parts.push('<article class="formation-card"><button type="button" data-pvp-progression="'+esc(rankOne)+'" aria-label="View '+esc(lane)+' Hero Progression"><img draggable="false" decoding="async" data-showcase-card-id="'+esc(id)+'" src="'+esc(cardSrc(id))+'" alt="'+esc(cardName(id))+'"></button><span class="formation-position">'+esc(lane.charAt(0)+lane.slice(1).toLowerCase())+'</span></article>');
+    if(i<lanes.length-1)parts.push('<button class="vsai-v643-swap-button" type="button" data-swap-left="'+i+'" data-swap-right="'+(i+1)+'" aria-label="Swap '+lane+' and '+lanes[i+1]+'"><img src="engine/assets/lobby/Swap.png" alt="" draggable="false" aria-hidden="true"></button>');
+  });
+  return parts.join('');
+}
 function seatHtml(n){const p=(state.snapshot?.players||[]).find(x=>Number(x.seat)===n),online=!!p?.connected,me=local(),canKick=n===2&&p&&Number(me?.seat)===1&&match()?.status==='setup';return'<article class="pvp-v260-seat"><div><span>Player '+n+'</span><strong>'+esc(p?.name||'Empty')+'</strong></div><p class="'+(online?'online':'')+'"><i></i>'+esc(p?(online?'online':'offline'):'offline')+(p?.ready?' · READY':'')+'</p>'+(canKick?'<button class="pvp-seat-kick" type="button" data-kick-seat="2" aria-label="Kick Player 2"><img src="assets/lobby/exit.png" alt=""></button>':'')+'</article>'}
 function ensureLobby(){
   if($('pvpSetupOverlay'))return;const wrap=document.createElement('div');wrap.id='pvpSetupOverlay';wrap.className='pvp-v260-lobby open';
-  wrap.innerHTML='<div class="pvp-v260-page"><header class="pvp-v260-topbar"><a id="pvpHomeLogo" class="pvp-v260-logo" aria-label="Back to Grandis Legacy home"><img src="assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"></a><div class="pvp-v260-heading"><h1>PVP LOBBY</h1><p>Choose your deck, then ready up or spectate.</p></div></header><main class="pvp-v260-layout"><section class="pvp-v260-panel pvp-v260-deck-panel"><div class="pvp-v260-picker"><label for="pvpSetupDeck">Choose a Deck</label><div class="pvp-v260-select"><select id="pvpSetupDeck"></select></div></div><div class="pvp-v260-title"><h2 id="pvpDeckTitle">Starter Deck</h2><p id="pvpDeckClassLine"></p></div><div class="pvp-v260-showcase"><div class="pvp-v260-formation-wrap"><div id="pvpFormationPreview" class="pvp-v260-formation"></div><div class="rank-control"><button id="pvpRankPrev" type="button">‹</button><strong id="pvpRankLabel">RANK I</strong><button id="pvpRankNext" type="button">›</button></div></div><aside class="pvp-v260-summary"><h3>YOUR DECK</h3><dl id="pvpDeckStats"></dl></aside></div><div class="pvp-v260-footer"><input id="pvpImportDeckInput" type="file" accept="application/json,.json" hidden><button id="pvpImportDeckButton" class="pvp-v260-btn pvp-v260-gold pvp-v260-compact" type="button">IMPORT CUSTOM DECK</button><div id="pvpLoadedDeckStatus" class="pvp-v260-status"></div></div></section><aside class="pvp-v260-panel pvp-v260-room-panel"><h2>MATCH PANEL</h2><label class="pvp-v260-label" for="pvpSetupName">PLAYER NAME</label><div class="pvp-v260-name"><input id="pvpSetupName" maxlength="25" placeholder="Your player name" autocomplete="off"><span id="pvpNameStateIcon" class="pvp-v260-name-icon"></span></div><div class="pvp-v260-actions"><button id="pvpSetupSpectatorButton" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline" type="button">SPECTATE</button><button id="pvpSetupReadyButton" class="pvp-v260-btn pvp-v260-gold" type="button">READY</button></div><div class="pvp-v260-divider"></div><div id="pvpSetupPeople" class="pvp-v260-seats"></div><div id="pvpSetupHint" class="pvp-v260-message"></div><div class="pvp-v260-room-footer"><button id="pvpSetupStartButton" class="pvp-v260-btn pvp-v260-gold" type="button" disabled>START MATCH</button><button id="pvpSetupReconnectButton" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline" type="button">RECONNECT</button></div></aside></main></div>';
+  wrap.innerHTML='<div class="pvp-v260-page"><header class="pvp-v260-topbar"><a id="pvpHomeLogo" class="pvp-v260-logo" aria-label="Back to Grandis Legacy home"><img src="assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"></a><div class="pvp-v260-heading"><h1>PVP LOBBY</h1><p>Choose your deck, then ready up or spectate.</p></div></header><main class="pvp-v260-layout"><section class="pvp-v260-panel pvp-v260-deck-panel"><div class="pvp-v260-picker"><label for="pvpSetupDeck">Choose a Deck</label><div class="pvp-v260-select"><select id="pvpSetupDeck"></select></div></div><div class="pvp-v260-title"><h2 id="pvpDeckTitle">Starter Deck</h2><p id="pvpDeckClassLine"></p></div><div class="pvp-v260-showcase"><div class="pvp-v260-formation-wrap"><div id="pvpFormationPreview" class="vsai-v643-formation-grid clean-hero-preview"></div><div class="vsai-v643-rank-control"><button id="pvpRankPrev" type="button">‹</button><strong id="pvpRankLabel">RANK I</strong><button id="pvpRankNext" type="button">›</button></div></div><aside class="pvp-v260-summary"><h3>YOUR DECK</h3><dl id="pvpDeckStats"></dl></aside></div><div class="pvp-v260-footer"><input id="pvpImportDeckInput" type="file" accept="application/json,.json" hidden><button id="pvpImportDeckButton" class="pvp-v260-btn pvp-v260-gold pvp-v260-compact" type="button">IMPORT CUSTOM DECK</button><div id="pvpLoadedDeckStatus" class="pvp-v260-status"></div></div></section><aside class="pvp-v260-panel pvp-v260-room-panel"><h2>MATCH PANEL</h2><label class="pvp-v260-label" for="pvpSetupName">PLAYER NAME</label><div class="pvp-v260-name"><input id="pvpSetupName" maxlength="25" placeholder="Your player name" autocomplete="off"><span id="pvpNameStateIcon" class="pvp-v260-name-icon"></span></div><div class="pvp-v260-actions"><button id="pvpSetupSpectatorButton" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline" type="button">SPECTATE</button><button id="pvpSetupReadyButton" class="pvp-v260-btn pvp-v260-gold" type="button">READY</button></div><div class="pvp-v260-divider"></div><div id="pvpSetupPeople" class="pvp-v260-seats"></div><div id="pvpSetupHint" class="pvp-v260-message"></div><div class="pvp-v260-room-footer"><button id="pvpSetupStartButton" class="pvp-v260-btn pvp-v260-gold" type="button" disabled>START MATCH</button><button id="pvpSetupReconnectButton" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline" type="button">RECONNECT</button></div></aside></main></div>';
   document.body.appendChild(wrap);$('pvpHomeLogo').href=CFG.homeUrl||'https://grandislegacytcg.github.io/';wrap.onclick=e=>{const k=e.target.closest?.('[data-kick-seat="2"]');if(k){send('kick-seat-2');return}const p=e.target.closest?.('[data-pvp-progression]');if(p)openProgression(p.dataset.pvpProgression)};
   $('pvpSetupName').onblur=()=>{const n=safeName($('pvpSetupName').value);if(n){state.name=n;try{localStorage.setItem(STORE.name,n)}catch{};send('rename',{name:n});renderLobby()}};
   $('pvpSetupDeck').onchange=e=>setDeck(e.target.value);$('pvpRankPrev').onclick=()=>{state.rank=Math.max(1,state.rank-1);renderLobby()};$('pvpRankNext').onclick=()=>{state.rank=Math.min(3,state.rank+1);renderLobby()};

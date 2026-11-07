@@ -2,15 +2,16 @@
 'use strict';
 /*
  * STRICT HANDOFF BOUNDARY:
- * This script exists ONLY on /battle/, after Season 1's original lobby,
- * coin flip and opening presentation have completed. No Season 0 script,
- * stylesheet, component, engine, or room-code control is loaded in /.
+ * Season 1 v3.80.17 owns lobby through READY/START MATCH only.
+ * At coin-flip the browser moves to /battle/ and S0 RC32 owns the
+ * coin animation, result, opening and gameplay presentation.
+ * The server remains authoritative for coin RNG, state and both players.
  */
 const bridge=window.GL_LOCAL_AI_BRIDGE,engine=window.GL_GAME_ENGINE,registry=window.GL_AUTHORITY_ADAPTER;
 if(!bridge||!engine||!registry)throw Error('Season 0 RC32 game runtime is unavailable.');
 const native=Object.create(engine);
 const SESSION={client:'grandis_legacy_pvp_v3801_tab_client_id',seat:'grandis_legacy_pvp_v3801_tab_seat_token',role:'grandis_legacy_pvp_v3801_tab_role'};
-const state={ws:null,snapshot:null,seat:null,role:'player',status:'connecting',revision:0,inflight:false,queue:[],seq:0,connected:false,pendingTimeout:null,reconnectTimer:null,disconnects:0,clientId:'',name:''};
+const state={ws:null,snapshot:null,seat:null,role:'player',status:'connecting',revision:0,inflight:false,queue:[],seq:0,connected:false,pendingTimeout:null,reconnectTimer:null,disconnects:0,clientId:'',name:'',lastCoinChoiceKey:''};
 const meta=window.GL_PVP_BUILD_META||{};
 const BUILD_ID=String(meta.buildId||'');
 const clone=v=>v==null?v:JSON.parse(JSON.stringify(v));
@@ -53,6 +54,21 @@ function update(snap){
  const m=snap?.match||{},me=snap?.local||{};
  state.status=m.status||'setup';state.role=me.role||'spectator';state.seat=me.seat||null;
  if(state.status==='setup'){location.replace('/');return}
+ const coin=window.GL_S0_RC32_PVP_COIN;
+ if(m.status==='coin-flip'){
+   const key=String(m.chooserSeat)+'|'+String(me.seat||'spectator');
+   if(key!==state.lastCoinChoiceKey){state.lastCoinChoiceKey=key;coin?.showChoice?.({canChoose:state.role==='player'&&Number(me.seat)===Number(m.chooserSeat)});}
+   return;
+ }
+ if(m.status==='coin-result'){
+   const firstSeat=Number(m.firstSeat||1);
+   coin?.showResult?.({choice:m.choice,outcome:m.outcome,firstSeat,localSeat:Number(me.seat||0),
+     localWasChooser:Number(m.chooserSeat)===Number(me.seat),
+     winnerName:(snap.players||[]).find(p=>Number(p.seat)===firstSeat)?.name||'Player '+firstSeat,
+     canStart:state.role==='player'&&!!m.canStartOpening});
+   return;
+ }
+ coin?.release?.();
  document.querySelector('.app')?.classList.remove('gl-lobby-hidden');
  const board=m.board;
  if(board){
@@ -105,6 +121,6 @@ function connect(){
  ws.onerror=()=>{};
 }
 window.GL_S0_PVP_NETWORK={state,connect,sendIntent:action};
-window.GL_PVP_HOST={getSnapshot:()=>state.snapshot,sendIntent:action,identity:()=>({seat:state.seat,role:state.role,localConnected:state.connected}),returnToLobby:()=>send('return-to-lobby')};
+window.GL_PVP_HOST={getSnapshot:()=>state.snapshot,sendIntent:action,identity:()=>({seat:state.seat,role:state.role,localConnected:state.connected}),returnToLobby:()=>send('return-to-lobby'),chooseCoin:choice=>send('choose-coin-flip',{choice}),coinPresented:()=>send('coin-presented'),confirmCoin:()=>send('confirm-coin-flip')};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',connect);else connect();
 })();
