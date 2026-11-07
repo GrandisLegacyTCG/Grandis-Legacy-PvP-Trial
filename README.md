@@ -1,6 +1,6 @@
 # Grandis Legacy PvP S0 RC32 — S1 lobby shell + networking only
 
-**Status:** staging build for GitHub and Northflank playtest. WebSocket contract and source/syntax checks PASS; full visual browser and actual Northflank gameplay are **NOT VERIFIED**.
+**Status:** deployment candidate (lobby blank-page bug fixed; not deployed). WebSocket contract and source/syntax checks PASS; full visual browser and actual Northflank gameplay are **NOT VERIFIED**.
 
 ## Exact ownership boundary
 
@@ -32,3 +32,12 @@ The S0 RC32 coin appearance is adapted to multiplayer: Player 2 chooses heads/ta
 Current verification: **PASS** for source/syntax + local WebSocket two-seat lifecycle, S1 shell CSS hash unchanged, RC32 Hero formation markup/asset checks, Season 0 Hero/Hand/Mana, private-hand masking. **NOT VERIFIED**: browser visual parity, all RC32 opening audio in hosted browser, full combat win, Northflank live deployment, all card interactions. User-side local testing remains waived; this waiver does not count as PASS.
 
 See `docs/TAKEOVER_S1_LOBBY_S0_FROM_COIN_2026-11-08.md`.
+
+## 2026-11-08 — Blank lobby correction (staging)
+
+Removed a stale `openingPresented` reference from `public/pvp/pvp-host.js` that threw a `ReferenceError` before the lobby initialized. Added `tests/lobby-init.mjs` as part of `npm run check`; all checks PASS. Real Northflank/browser-over-HTTP playability remains NOT VERIFIED. See `docs/TAKEOVER_LOBBY_BLANK_FIX_2026-11-08.md`. No release ZIP produced.
+
+
+## Complete deployment candidate (2026-11-08)
+
+This bundle includes the blank-lobby fix and all repository files. See `docs/DEPLOYMENT_HANDOFF_2026-11-08.md`. GitHub push and Northflank deployment have **not** been performed; do not mistake a deployment-ready ZIP for a running service.

@@ -8,10 +8,11 @@
     "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js",
     "test:transition": "npm run test:ws-gate",
     "check:parity": "node tests/s1-source-parity.mjs",
-    "check": "npm run check:syntax && npm run check:parity && npm run check:catalog && npm run test:ws-gate",
+    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:ws-gate",
     "test:s0-catalog": "npm run check:catalog",
     "check:catalog": "node tests/s0-catalog-static.mjs",
-    "test:ws-gate": "python3 tests/ws-gate.py"
+    "test:ws-gate": "python3 tests/ws-gate.py",
+    "test:lobby-init": "node tests/lobby-init.mjs"
   },
   "engines": {
     "node": ">=18"
