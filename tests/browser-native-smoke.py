@@ -55,7 +55,7 @@ else:
 try:
     wait_for_health(base)
     with sync_playwright() as playwright:
-        browser=playwright.chromium.launch(headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
+        browser=playwright.chromium.launch(headless=True,args=['--no-sandbox','--disable-dev-shm-usage'],executable_path=(os.environ.get('PVP_CHROMIUM_PATH') or ('/usr/bin/chromium' if pathlib.Path('/usr/bin/chromium').is_file() else None)))
         contexts=[];pages=[];errors=[]
         try:
             for i in range(2):

@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+const root=new URL('../',import.meta.url);
+const read=path=>readFileSync(new URL(path,root),'utf8');
+const html=read('client/index.html'),net=read('client/runtime/pvp-network.js'),style=read('client/runtime/s1-lobby.css');
+for(const asset of ['client/assets/lobby/background.webp','client/assets/lobby/grandis-legacy-logo.webp','client/assets/lobby/chevron-down.png','client/runtime/s1-lobby.css']) assert.ok(existsSync(new URL(asset,root)),`missing ${asset}`);
+assert.match(html,/runtime\/s1-lobby\.css\?v=1/);
+assert.match(net,/pvp-v260-layout/);
+assert.match(net,/pvp-v260-formation/);
+assert.match(net,/s0PvpRankNext/);
+assert.match(net,/LOAD DECK/);
+assert.match(net,/emit\('custom-deck',\{deck:clone\}\)/);
+assert.match(style,/#s0PvpOverlay\.playing\{display:none!important\}/);
+assert.match(style,/\.pvp-v260-room-panel/);
+assert.match(html,/engine\/shared-app\/app\.bundle\.js/);
+assert.doesNotMatch(html,/public\/js\/app\.bundle\.js/);
+console.log('PASS: original Season 1 lobby layout/scoped assets, S0 deck/formation controls, RC32 battlefield engine; no S1 gameplay dependency.');
