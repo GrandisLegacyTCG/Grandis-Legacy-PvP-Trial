@@ -1,0 +1,22 @@
+/* Shared header across Style 1 and Style 2, matching Style 1's top navigation. */
+.topbar{height:88px!important;flex:0 0 88px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:22px!important;padding:13px 46px!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.06)!important;border-radius:0!important;background:rgba(18,19,24,.76)!important;backdrop-filter:blur(10px)!important;box-sizing:border-box!important}
+.brand-block{display:flex!important;align-items:center!important;gap:22px!important;min-width:0!important;flex:1 1 auto!important}
+.brand-logo{width:172px!important;height:auto!important;max-height:68px!important;object-fit:contain!important;margin:0!important}
+.brand-copy{padding-left:20px!important;border-left:1px solid rgba(255,255,255,.1)!important;min-width:0!important}
+.brand-title-row{display:flex!important;gap:12px!important;align-items:center!important;flex-wrap:wrap!important}
+.brand-copy h1{font-size:17px!important;letter-spacing:.035em!important;margin:0!important}
+.global-nav{display:flex!important;align-items:center!important;gap:10px!important;flex:0 0 auto!important}
+.global-nav-link{height:38px!important;padding:0 18px!important;font-size:11px!important;border-radius:10px!important;font-weight:900!important;text-align:center!important}
+.global-nav-link--blue{min-width:132px!important}.style-switch-link{height:26px!important;padding:0 10px!important;border-radius:8px!important;font-size:9px!important}
+.review-condition-section,.review-keyword-explanation{grid-column:1/-1;min-width:0;background:rgba(12,24,42,.56);border:1px solid rgba(113,163,210,.27);border-radius:9px;padding:10px 12px;margin:5px 0}
+.review-condition-section>span,.review-keyword-heading{display:block;font-size:11px;font-weight:900;letter-spacing:.07em;color:#dcbf81;margin-bottom:6px}
+.review-condition-section p,.review-keyword-explanation p{margin:4px 0 0;white-space:normal;overflow-wrap:anywhere;line-height:1.5;font-size:12px}
+.review-keyword-line strong{font-size:11px;color:#8ed3ff}
+@media(max-width:900px){.topbar{padding:12px 18px!important;gap:12px!important}.brand-logo{width:130px!important}.brand-copy{padding-left:12px!important}.global-nav-link{padding:0 10px!important;font-size:9px!important}}
+@media(max-width:760px){.topbar{height:auto!important;flex:0 0 auto!important;padding:12px 15px!important;flex-wrap:wrap!important}.brand-logo{width:125px!important;max-height:52px!important}.brand-copy p{display:none!important}.brand-copy h1{font-size:13px!important}.global-nav{width:100%!important;justify-content:flex-end!important}.review-condition-section,.review-keyword-explanation{padding:9px 10px}}
+/* Style 2 historically pads its app shell, while Style 1's header is edge-to-edge. */
+body:has(.deck-tools-bar) .topbar{margin:-8px -10px 0!important;width:calc(100% + 20px)!important}
+.brand-logo{flex:0 0 172px!important;min-width:172px!important}
+@media(max-width:900px){.brand-logo{flex-basis:130px!important;min-width:130px!important}}
+@media(max-width:760px){.brand-logo{flex-basis:125px!important;min-width:125px!important}}
+@media(max-width:760px){.topbar{min-height:177px!important}.topbar .brand-logo{max-width:125px!important}}

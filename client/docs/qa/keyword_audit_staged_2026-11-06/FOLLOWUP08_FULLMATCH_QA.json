@@ -1,0 +1,1991 @@
+{
+  "result": {
+    "gameOver": true,
+    "winner": "AI",
+    "reason": "PLAYER loses: all 3 Heroes have been defeated.",
+    "round": 21,
+    "steps": 88,
+    "transitions": 88,
+    "playerPhasesAdvanced": 63,
+    "responsesPassed": 1,
+    "legacySelections": 2,
+    "handLimitCleanups": 19,
+    "playerDeck": 23,
+    "aiDeck": 11,
+    "playerHeroes": [
+      {
+        "lane": "LEFT",
+        "hp": null,
+        "legacy": true
+      },
+      {
+        "lane": "CENTER",
+        "hp": null,
+        "legacy": true
+      },
+      {
+        "lane": "RIGHT",
+        "hp": 0,
+        "legacy": null
+      }
+    ],
+    "aiHeroes": [
+      {
+        "lane": "LEFT",
+        "hp": 120,
+        "legacy": null
+      },
+      {
+        "lane": "CENTER",
+        "hp": 140,
+        "legacy": null
+      },
+      {
+        "lane": "RIGHT",
+        "hp": 120,
+        "legacy": null
+      }
+    ]
+  },
+  "issues": [],
+  "invariantIssues": [],
+  "timeline": [
+    {
+      "step": 0,
+      "round": 1,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 7,
+      "aiHand": 6,
+      "playerDeck": 43,
+      "aiDeck": 44,
+      "ph": [
+        100,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 1,
+      "round": 1,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 7,
+      "aiHand": 6,
+      "playerDeck": 43,
+      "aiDeck": 44,
+      "ph": [
+        100,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 2,
+      "round": 1,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 7,
+      "aiHand": 6,
+      "playerDeck": 43,
+      "aiDeck": 44,
+      "ph": [
+        100,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 3,
+      "round": 2,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 8,
+      "aiHand": 5,
+      "playerDeck": 42,
+      "aiDeck": 43,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 4,
+      "round": 2,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 8,
+      "aiHand": 5,
+      "playerDeck": 42,
+      "aiDeck": 43,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 5,
+      "round": 2,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 8,
+      "aiHand": 5,
+      "playerDeck": 42,
+      "aiDeck": 43,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 6,
+      "round": 3,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 41,
+      "aiDeck": 42,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 7,
+      "round": 3,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 41,
+      "aiDeck": 42,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 8,
+      "round": 3,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 41,
+      "aiDeck": 42,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 9,
+      "round": 3,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 41,
+      "aiDeck": 42,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        80,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 10,
+      "round": 4,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 40,
+      "aiDeck": 39,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 11,
+      "round": 4,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 40,
+      "aiDeck": 39,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 12,
+      "round": 4,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 40,
+      "aiDeck": 39,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 13,
+      "round": 4,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 40,
+      "aiDeck": 39,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 14,
+      "round": 5,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 39,
+      "aiDeck": 38,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 15,
+      "round": 5,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 39,
+      "aiDeck": 38,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 16,
+      "round": 5,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 39,
+      "aiDeck": 38,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 17,
+      "round": 5,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 39,
+      "aiDeck": 38,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 18,
+      "round": 6,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 38,
+      "aiDeck": 37,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 19,
+      "round": 6,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 38,
+      "aiDeck": 37,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 20,
+      "round": 6,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 38,
+      "aiDeck": 37,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 21,
+      "round": 6,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 38,
+      "aiDeck": 37,
+      "ph": [
+        70,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 22,
+      "round": 6,
+      "side": "AI",
+      "phase": "Battle",
+      "pending": "legacy_defeat_choice",
+      "response": null,
+      "playerHand": 8,
+      "aiHand": 7,
+      "playerDeck": 38,
+      "aiDeck": 36,
+      "ph": [
+        0,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 23,
+      "round": 6,
+      "side": "AI",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 8,
+      "aiHand": 7,
+      "playerDeck": 38,
+      "aiDeck": 36,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        80,
+        90
+      ]
+    },
+    {
+      "step": 24,
+      "round": 7,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 37,
+      "aiDeck": 34,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 25,
+      "round": 7,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 37,
+      "aiDeck": 34,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 26,
+      "round": 7,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 37,
+      "aiDeck": 34,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 27,
+      "round": 7,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 37,
+      "aiDeck": 34,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 28,
+      "round": 8,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 36,
+      "aiDeck": 33,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 29,
+      "round": 8,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 36,
+      "aiDeck": 33,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 30,
+      "round": 8,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 36,
+      "aiDeck": 33,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 31,
+      "round": 8,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 36,
+      "aiDeck": 33,
+      "ph": [
+        null,
+        100,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 32,
+      "round": 9,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 35,
+      "aiDeck": 32,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 33,
+      "round": 9,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 35,
+      "aiDeck": 32,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 34,
+      "round": 9,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 35,
+      "aiDeck": 32,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 35,
+      "round": 9,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 35,
+      "aiDeck": 32,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 36,
+      "round": 10,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 34,
+      "aiDeck": 31,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 37,
+      "round": 10,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 34,
+      "aiDeck": 31,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 38,
+      "round": 10,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 34,
+      "aiDeck": 31,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 39,
+      "round": 10,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 34,
+      "aiDeck": 31,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 40,
+      "round": 11,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 33,
+      "aiDeck": 30,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 41,
+      "round": 11,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 33,
+      "aiDeck": 30,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 42,
+      "round": 11,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 33,
+      "aiDeck": 30,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 43,
+      "round": 11,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 33,
+      "aiDeck": 30,
+      "ph": [
+        null,
+        40,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 44,
+      "round": 11,
+      "side": "AI",
+      "phase": "Battle",
+      "pending": "legacy_defeat_choice",
+      "response": null,
+      "playerHand": 8,
+      "aiHand": 5,
+      "playerDeck": 33,
+      "aiDeck": 29,
+      "ph": [
+        null,
+        0,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 45,
+      "round": 11,
+      "side": "AI",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 8,
+      "aiHand": 5,
+      "playerDeck": 33,
+      "aiDeck": 29,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 46,
+      "round": 12,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 32,
+      "aiDeck": 29,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 47,
+      "round": 12,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 32,
+      "aiDeck": 29,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 48,
+      "round": 12,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 32,
+      "aiDeck": 29,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 49,
+      "round": 12,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 5,
+      "playerDeck": 32,
+      "aiDeck": 29,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 50,
+      "round": 13,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 31,
+      "aiDeck": 28,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 51,
+      "round": 13,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 31,
+      "aiDeck": 28,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 52,
+      "round": 13,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 31,
+      "aiDeck": 28,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 53,
+      "round": 13,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 31,
+      "aiDeck": 28,
+      "ph": [
+        null,
+        null,
+        100
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 54,
+      "round": 14,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 30,
+      "aiDeck": 27,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 55,
+      "round": 14,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 30,
+      "aiDeck": 27,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 56,
+      "round": 14,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 30,
+      "aiDeck": 27,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 57,
+      "round": 14,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 6,
+      "playerDeck": 30,
+      "aiDeck": 27,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        90
+      ]
+    },
+    {
+      "step": 58,
+      "round": 15,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 29,
+      "aiDeck": 24,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 59,
+      "round": 15,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 29,
+      "aiDeck": 24,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 60,
+      "round": 15,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 29,
+      "aiDeck": 24,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 61,
+      "round": 15,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 29,
+      "aiDeck": 24,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 62,
+      "round": 16,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 28,
+      "aiDeck": 23,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 63,
+      "round": 16,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 28,
+      "aiDeck": 23,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 64,
+      "round": 16,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 28,
+      "aiDeck": 23,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 65,
+      "round": 16,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 28,
+      "aiDeck": 23,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        100,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 66,
+      "round": 17,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 27,
+      "aiDeck": 19,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 67,
+      "round": 17,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 27,
+      "aiDeck": 19,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 68,
+      "round": 17,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 27,
+      "aiDeck": 19,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 69,
+      "round": 17,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 27,
+      "aiDeck": 19,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 70,
+      "round": 18,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 26,
+      "aiDeck": 18,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 71,
+      "round": 18,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 26,
+      "aiDeck": 18,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 72,
+      "round": 18,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 26,
+      "aiDeck": 18,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 73,
+      "round": 18,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 26,
+      "aiDeck": 18,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 74,
+      "round": 19,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 25,
+      "aiDeck": 17,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 75,
+      "round": 19,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 25,
+      "aiDeck": 17,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 76,
+      "round": 19,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 25,
+      "aiDeck": 17,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 77,
+      "round": 19,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 25,
+      "aiDeck": 17,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 78,
+      "round": 20,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 24,
+      "aiDeck": 16,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 79,
+      "round": 20,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 24,
+      "aiDeck": 16,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 80,
+      "round": 20,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 24,
+      "aiDeck": 16,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 81,
+      "round": 20,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 7,
+      "playerDeck": 24,
+      "aiDeck": 16,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        110,
+        120
+      ]
+    },
+    {
+      "step": 82,
+      "round": 21,
+      "side": "PLAYER",
+      "phase": "Deploy",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 23,
+      "aiDeck": 12,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        140,
+        120
+      ]
+    },
+    {
+      "step": 83,
+      "round": 21,
+      "side": "PLAYER",
+      "phase": "Battle",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 23,
+      "aiDeck": 12,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        140,
+        120
+      ]
+    },
+    {
+      "step": 84,
+      "round": 21,
+      "side": "PLAYER",
+      "phase": "Reform",
+      "pending": null,
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 23,
+      "aiDeck": 12,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        140,
+        120
+      ]
+    },
+    {
+      "step": 85,
+      "round": 21,
+      "side": "PLAYER",
+      "phase": "End",
+      "pending": "hand_limit_discard",
+      "response": null,
+      "playerHand": 9,
+      "aiHand": 8,
+      "playerDeck": 23,
+      "aiDeck": 12,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        140,
+        120
+      ]
+    },
+    {
+      "step": 86,
+      "round": 21,
+      "side": "AI",
+      "phase": "Battle",
+      "pending": "response_window",
+      "response": "incoming_attack",
+      "playerHand": 8,
+      "aiHand": 9,
+      "playerDeck": 23,
+      "aiDeck": 11,
+      "ph": [
+        null,
+        null,
+        60
+      ],
+      "ah": [
+        120,
+        140,
+        120
+      ]
+    },
+    {
+      "step": 87,
+      "round": 21,
+      "side": "AI",
+      "phase": "Battle",
+      "pending": "racial_stoneblood",
+      "response": null,
+      "playerHand": 8,
+      "aiHand": 9,
+      "playerDeck": 23,
+      "aiDeck": 11,
+      "ph": [
+        null,
+        null,
+        0
+      ],
+      "ah": [
+        120,
+        140,
+        120
+      ]
+    }
+  ],
+  "browser_errors": []
+}

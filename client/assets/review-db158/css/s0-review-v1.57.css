@@ -1,0 +1,23 @@
+/* Grandis Legacy Deck Builder v1.57 — Hero Review artwork fit.
+   Keep the v1.56 modal/header/footer geometry unchanged for every Rank.
+   On desktop, expand the real artwork into available middle-panel height,
+   respecting its 5:7 aspect ratio and a 16px clear gap to footer divider.
+   The layout itself must never grow or scroll because of Rank I artwork.
+   Shared identically between Style 1 and Style 2. */
+@media (min-width: 761px) {
+  #cardReviewDialog[data-review-kind="hero"] .review-layout {
+    grid-template-columns:minmax(0,35%) minmax(0,1fr)!important;
+  }
+  #cardReviewDialog[data-review-kind="hero"] .review-art {
+    /* Modal height = min(790px, 100dvh - 28px).
+       Reserve 84px header, 110px footer, and 34px for middle padding.
+       Height-driven width keeps the artwork just above the footer. */
+    width:min(100%, calc((min(790px, 100dvh - 28px) - 228px) * 5 / 7))!important;
+    max-width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    aspect-ratio:5/7!important;
+    object-fit:contain!important;
+    object-position:top left!important;
+  }
+}

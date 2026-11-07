@@ -1,0 +1,2704 @@
+{
+  "stats": {
+    "assertions": 31,
+    "pass": 31,
+    "fail": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "group": "REACTION",
+      "name": "PLAYER Event opens Tactical Adaptation option",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "trace": {
+          "ret": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-EVT-006",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-WAR-H001",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-EVT-006:1793901683839:0.4167419664420905",
+            "_mana_payment_committed": true,
+            "_mana_payment_committed_cost": 1,
+            "_mana_payment_committed_value": 1,
+            "_mana_payment_committed_shard_uids": [
+              "MANA:PLAYER:F3-PLAYER-11"
+            ]
+          },
+          "window": "incoming_card",
+          "pending": "response_window"
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "PLAYER Intercept offered vs Physical Attack",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "trace": {
+          "ret": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-WAR-001",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-WAR-H001",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-WAR-001:1793901683854:0.49892908220388743",
+            "visual_hold_key": null,
+            "player_event_id": "you_1793901683860_889613"
+          },
+          "window": "incoming_attack",
+          "pending": "response_window"
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "PLAYER Defensive Formation offered vs Area, different=false",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "trace": {
+          "ret": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-MAG-014",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-MAG-014:1793901683868:0.16656226054025614",
+            "visual_hold_key": null,
+            "player_event_id": "you_1793901683869_993852"
+          },
+          "window": "incoming_attack",
+          "pending": "response_window"
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "PLAYER Defensive Formation reduction correct",
+      "expect": 20,
+      "got": 20,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REACTION",
+      "name": "PLAYER Defensive Formation offered vs Area, different=true",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "trace": {
+          "ret": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-MAG-014",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-MAG-014:1793901683874:0.6667132597298021",
+            "visual_hold_key": null,
+            "player_event_id": "you_1793901683874_943433"
+          },
+          "window": "incoming_attack",
+          "pending": "response_window"
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "PLAYER Defensive Formation reduction correct",
+      "expect": 40,
+      "got": 40,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Event opens Tactical Adaptation option",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "trace": {
+          "ret": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-EVT-006",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-WAR-H001",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-EVT-006:1793901683876:0.23791416336703153",
+            "_mana_payment_committed": true,
+            "_mana_payment_committed_cost": 1,
+            "_mana_payment_committed_value": 1,
+            "_mana_payment_committed_shard_uids": [
+              "MANA:AI:F3-AI-11"
+            ]
+          },
+          "window": "incoming_card",
+          "pending": "response_window"
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Tactical Adaptation consumed",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": null,
+          "window": null,
+          "debug": {
+            "incoming": "incoming_card",
+            "option": {
+              "card_id": "S0-EVT-009",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-009",
+                "internal_id": "S0-EVT-009",
+                "name": "Tactical Adaptation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Tactical Adaptation",
+                  "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)"
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)"
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                "effect_text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-009.webp",
+                  "sha256": "9da9c367ec12c485d701222c6c1f40e26f03973a2b5918301a00d534871fc92f",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-009.webp"
+                },
+                "canonical_hash": "5696711322045346076ce87dc91c1787f9c1081322c24f4614c19a414d8aade3",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 3
+                },
+                "cost_display": "3 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "3 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 3
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 74,
+                            "matchedText": "Negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-009.json",
+                    "sha256": "d27385ba9b818ccb188abb5f4a2dd8c79a01cc71d845a542229512d881d85ca3"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 74,
+                            "matchedText": "Negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 3,
+                "canonical_cost": {
+                  "mana": 3
+                },
+                "effect_strings_by_class": {}
+              },
+              "response_kind": "cancel_card"
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Event negated to discard",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": null,
+          "window": null,
+          "debug": {
+            "incoming": "incoming_card",
+            "option": {
+              "card_id": "S0-EVT-009",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-009",
+                "internal_id": "S0-EVT-009",
+                "name": "Tactical Adaptation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Tactical Adaptation",
+                  "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)"
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)"
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                "effect_text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-009.webp",
+                  "sha256": "9da9c367ec12c485d701222c6c1f40e26f03973a2b5918301a00d534871fc92f",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-009.webp"
+                },
+                "canonical_hash": "5696711322045346076ce87dc91c1787f9c1081322c24f4614c19a414d8aade3",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 3
+                },
+                "cost_display": "3 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "3 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 3
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 74,
+                            "matchedText": "Negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-009.json",
+                    "sha256": "d27385ba9b818ccb188abb5f4a2dd8c79a01cc71d845a542229512d881d85ca3"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 74,
+                            "matchedText": "Negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 3,
+                "canonical_cost": {
+                  "mana": 3
+                },
+                "effect_strings_by_class": {}
+              },
+              "response_kind": "cancel_card"
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Tactical Adaptation costs 3 Mana",
+      "expect": 3,
+      "got": 3,
+      "pass": true,
+      "details": {
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": null,
+          "window": null,
+          "debug": {
+            "incoming": "incoming_card",
+            "option": {
+              "card_id": "S0-EVT-009",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-009",
+                "internal_id": "S0-EVT-009",
+                "name": "Tactical Adaptation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Tactical Adaptation",
+                  "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)"
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)"
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                "effect_text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-009.webp",
+                  "sha256": "9da9c367ec12c485d701222c6c1f40e26f03973a2b5918301a00d534871fc92f",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-009.webp"
+                },
+                "canonical_hash": "5696711322045346076ce87dc91c1787f9c1081322c24f4614c19a414d8aade3",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 3
+                },
+                "cost_display": "3 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "3 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 3
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 74,
+                            "matchedText": "Negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-009.json",
+                    "sha256": "d27385ba9b818ccb188abb5f4a2dd8c79a01cc71d845a542229512d881d85ca3"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 74,
+                            "matchedText": "Negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 3,
+                "canonical_cost": {
+                  "mana": 3
+                },
+                "effect_strings_by_class": {}
+              },
+              "response_kind": "cancel_card"
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Intercept offered vs Physical Attack",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "trace": {
+          "ret": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-WAR-001",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-WAR-H001",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-WAR-001:1793901683883:0.599574510537414",
+            "visual_hold_key": null
+          },
+          "window": "incoming_attack",
+          "pending": "response_window"
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Intercept prevents HP loss",
+      "expect": 200,
+      "got": 200,
+      "pass": true,
+      "details": {
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": null,
+          "window": null,
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-007",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-007",
+                "internal_id": "S0-EVT-007",
+                "name": "Intercept",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Intercept",
+                  "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                "effect_text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-007.webp",
+                  "sha256": "50c1ecb1254012addb306d8531fe4051a096caddc8a8745388932af0acd6d932",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-007.webp"
+                },
+                "canonical_hash": "59908aeca18f0fa0e7e8a56331f5ab803a639200aff8d0fc126cfd55d481fbda",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 4
+                },
+                "cost_display": "4 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "CASTING",
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW",
+                    "RETURN_CARD",
+                    "TARGET_RESTRICTION"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "4 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 4
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 50,
+                            "matchedText": "targeted",
+                            "opcode": "TARGET_RESTRICTION"
+                          },
+                          {
+                            "charOffset": 116,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "return",
+                            "opcode": "RETURN_CARD"
+                          },
+                          {
+                            "charOffset": 189,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 198,
+                            "matchedText": "Casting",
+                            "opcode": "CASTING"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "RETURN_CARD",
+                          "CASTING",
+                          "TARGET_RESTRICTION",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "CASTING",
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW",
+                    "RETURN_CARD",
+                    "TARGET_RESTRICTION"
+                  ],
+                  "special_handlers": [],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-007.json",
+                    "sha256": "cd48c9ce6aedddeb807434fec1e94ec62d3dbd2a304a3eef406a72e46a535744"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 50,
+                            "matchedText": "targeted",
+                            "opcode": "TARGET_RESTRICTION"
+                          },
+                          {
+                            "charOffset": 116,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "return",
+                            "opcode": "RETURN_CARD"
+                          },
+                          {
+                            "charOffset": 189,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 198,
+                            "matchedText": "Casting",
+                            "opcode": "CASTING"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "RETURN_CARD",
+                          "CASTING",
+                          "TARGET_RESTRICTION",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 4,
+                "canonical_cost": {
+                  "mana": 4
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": "CENTER",
+              "source_card_id": "S0-WAR-H007",
+              "response_kind": "negate_return"
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Intercept returns incoming Attack to Hand",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": null,
+          "window": null,
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-007",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-007",
+                "internal_id": "S0-EVT-007",
+                "name": "Intercept",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Intercept",
+                  "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                "effect_text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-007.webp",
+                  "sha256": "50c1ecb1254012addb306d8531fe4051a096caddc8a8745388932af0acd6d932",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-007.webp"
+                },
+                "canonical_hash": "59908aeca18f0fa0e7e8a56331f5ab803a639200aff8d0fc126cfd55d481fbda",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 4
+                },
+                "cost_display": "4 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "CASTING",
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW",
+                    "RETURN_CARD",
+                    "TARGET_RESTRICTION"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "4 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 4
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 50,
+                            "matchedText": "targeted",
+                            "opcode": "TARGET_RESTRICTION"
+                          },
+                          {
+                            "charOffset": 116,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "return",
+                            "opcode": "RETURN_CARD"
+                          },
+                          {
+                            "charOffset": 189,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 198,
+                            "matchedText": "Casting",
+                            "opcode": "CASTING"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "RETURN_CARD",
+                          "CASTING",
+                          "TARGET_RESTRICTION",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "CASTING",
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW",
+                    "RETURN_CARD",
+                    "TARGET_RESTRICTION"
+                  ],
+                  "special_handlers": [],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-007.json",
+                    "sha256": "cd48c9ce6aedddeb807434fec1e94ec62d3dbd2a304a3eef406a72e46a535744"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 50,
+                            "matchedText": "targeted",
+                            "opcode": "TARGET_RESTRICTION"
+                          },
+                          {
+                            "charOffset": 116,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "return",
+                            "opcode": "RETURN_CARD"
+                          },
+                          {
+                            "charOffset": 189,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 198,
+                            "matchedText": "Casting",
+                            "opcode": "CASTING"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "RETURN_CARD",
+                          "CASTING",
+                          "TARGET_RESTRICTION",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 4,
+                "canonical_cost": {
+                  "mana": 4
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": "CENTER",
+              "source_card_id": "S0-WAR-H007",
+              "response_kind": "negate_return"
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Intercept consumes 4 Mana",
+      "expect": 8,
+      "got": 8,
+      "pass": true,
+      "details": {
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": null,
+          "window": null,
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-007",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-007",
+                "internal_id": "S0-EVT-007",
+                "name": "Intercept",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Intercept",
+                  "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                "effect_text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-007.webp",
+                  "sha256": "50c1ecb1254012addb306d8531fe4051a096caddc8a8745388932af0acd6d932",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-007.webp"
+                },
+                "canonical_hash": "59908aeca18f0fa0e7e8a56331f5ab803a639200aff8d0fc126cfd55d481fbda",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 4
+                },
+                "cost_display": "4 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "CASTING",
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW",
+                    "RETURN_CARD",
+                    "TARGET_RESTRICTION"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "4 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 4
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 50,
+                            "matchedText": "targeted",
+                            "opcode": "TARGET_RESTRICTION"
+                          },
+                          {
+                            "charOffset": 116,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "return",
+                            "opcode": "RETURN_CARD"
+                          },
+                          {
+                            "charOffset": 189,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 198,
+                            "matchedText": "Casting",
+                            "opcode": "CASTING"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "RETURN_CARD",
+                          "CASTING",
+                          "TARGET_RESTRICTION",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "CASTING",
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW",
+                    "RETURN_CARD",
+                    "TARGET_RESTRICTION"
+                  ],
+                  "special_handlers": [],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-007.json",
+                    "sha256": "cd48c9ce6aedddeb807434fec1e94ec62d3dbd2a304a3eef406a72e46a535744"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 50,
+                            "matchedText": "targeted",
+                            "opcode": "TARGET_RESTRICTION"
+                          },
+                          {
+                            "charOffset": 116,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 139,
+                            "matchedText": "return",
+                            "opcode": "RETURN_CARD"
+                          },
+                          {
+                            "charOffset": 189,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          },
+                          {
+                            "charOffset": 198,
+                            "matchedText": "Casting",
+                            "opcode": "CASTING"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "RETURN_CARD",
+                          "CASTING",
+                          "TARGET_RESTRICTION",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 4,
+                "canonical_cost": {
+                  "mana": 4
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": "CENTER",
+              "source_card_id": "S0-WAR-H007",
+              "response_kind": "negate_return"
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Defensive Formation offered vs Area, different=false",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "trace": {
+          "ret": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-MAG-014",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-MAG-014:1793901683888:0.38917455329584116",
+            "visual_hold_key": null
+          },
+          "window": "incoming_attack",
+          "pending": "response_window"
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Defensive Formation reduction correct",
+      "expect": 20,
+      "got": 20,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Defensive Formation commits and discards",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "response": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-012",
+                "internal_id": "S0-EVT-012",
+                "name": "Defensive Formation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Defensive Formation",
+                  "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "effect_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-012.webp",
+                  "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp"
+                },
+                "canonical_hash": "9f5025c73c485b82fa75d35422bdf121240741fc4017b2694821ddd931974073",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [
+                    "REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY"
+                  ],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-012.json",
+                    "sha256": "2446e3c75a1cdcb940787da2a9c3581beb70c156c86ce86b56ee236ddffd88c9"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": null,
+              "response_kind": "area_reduce",
+              "affected_lanes": [
+                "LEFT"
+              ]
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        },
+        "before": [
+          200,
+          200,
+          200
+        ],
+        "after": [
+          200,
+          200,
+          200
+        ]
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Defensive Formation pays 2 Mana",
+      "expect": 10,
+      "got": 10,
+      "pass": true,
+      "details": {
+        "response": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-012",
+                "internal_id": "S0-EVT-012",
+                "name": "Defensive Formation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Defensive Formation",
+                  "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "effect_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-012.webp",
+                  "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp"
+                },
+                "canonical_hash": "9f5025c73c485b82fa75d35422bdf121240741fc4017b2694821ddd931974073",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [
+                    "REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY"
+                  ],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-012.json",
+                    "sha256": "2446e3c75a1cdcb940787da2a9c3581beb70c156c86ce86b56ee236ddffd88c9"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": null,
+              "response_kind": "area_reduce",
+              "affected_lanes": [
+                "LEFT"
+              ]
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Defensive Formation offered vs Area, different=true",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "trace": {
+          "ret": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-MAG-014",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-MAG-014:1793901683895:0.36813639006187415",
+            "visual_hold_key": null
+          },
+          "window": "incoming_attack",
+          "pending": "response_window"
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Defensive Formation reduction correct",
+      "expect": 40,
+      "got": 40,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Defensive Formation commits and discards",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "response": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-012",
+                "internal_id": "S0-EVT-012",
+                "name": "Defensive Formation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Defensive Formation",
+                  "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "effect_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-012.webp",
+                  "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp"
+                },
+                "canonical_hash": "9f5025c73c485b82fa75d35422bdf121240741fc4017b2694821ddd931974073",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [
+                    "REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY"
+                  ],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-012.json",
+                    "sha256": "2446e3c75a1cdcb940787da2a9c3581beb70c156c86ce86b56ee236ddffd88c9"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": null,
+              "response_kind": "area_reduce",
+              "affected_lanes": [
+                "LEFT"
+              ]
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        },
+        "before": [
+          200,
+          200,
+          200
+        ],
+        "after": [
+          200,
+          200,
+          200
+        ]
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "AI Defensive Formation pays 2 Mana",
+      "expect": 10,
+      "got": 10,
+      "pass": true,
+      "details": {
+        "response": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-012",
+                "internal_id": "S0-EVT-012",
+                "name": "Defensive Formation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Defensive Formation",
+                  "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "effect_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-012.webp",
+                  "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp"
+                },
+                "canonical_hash": "9f5025c73c485b82fa75d35422bdf121240741fc4017b2694821ddd931974073",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [
+                    "REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY"
+                  ],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-012.json",
+                    "sha256": "2446e3c75a1cdcb940787da2a9c3581beb70c156c86ce86b56ee236ddffd88c9"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": null,
+              "response_kind": "area_reduce",
+              "affected_lanes": [
+                "LEFT"
+              ]
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-CLE-015 rejects when no Legacy",
+      "expect": false,
+      "got": false,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-CLE-015 fixture defeated to Legacy",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "defeated": true
+      }
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-CLE-015 finds allied Legacy target",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "lanes": [
+          "LEFT"
+        ]
+      }
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-WAR-014 rejects when no Legacy",
+      "expect": false,
+      "got": false,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-WAR-014 fixture defeated to Legacy",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "defeated": true
+      }
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-WAR-014 finds allied Legacy target",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "lanes": [
+          "LEFT"
+        ]
+      }
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-ITM-008 rejects when no Legacy",
+      "expect": false,
+      "got": false,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-ITM-008 fixture defeated to Legacy",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "defeated": true
+      }
+    },
+    {
+      "group": "REVIVE",
+      "name": "S0-ITM-008 finds allied Legacy target",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "lanes": [
+          "LEFT"
+        ]
+      }
+    }
+  ],
+  "browser_errors": []
+}

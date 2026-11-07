@@ -1,0 +1,6 @@
+{
+  "method": "Chromium full HTTP load from RC32 packaged source directory, no controlled gameplay",
+  "status": "BLOCKED",
+  "browser": "Chromium",
+  "reason": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:28774/index.html\nCall log:\n  - navigating to \"http://127.0.0.1:28774/index.html\", waiting until \"load\"\n"
+}

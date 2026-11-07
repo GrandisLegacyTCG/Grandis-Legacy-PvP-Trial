@@ -1,0 +1,339 @@
+{
+  "schema_version": "GL-DECK-1.0",
+  "season": "S0",
+  "deck_name": "Green-Yellow Deck",
+  "format": "Grandis Legacy Season 0 / Rulebook v2.9 / exactly 50-card Main Deck",
+  "main_deck_count": 50,
+  "main_deck": [
+    {
+      "card_id": "S0-ARC-003",
+      "card_name": "Escape Arrow",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-ARC-005",
+      "card_name": "Reload",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-ARC-010",
+      "card_name": "Arrow Barrage",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-012",
+      "card_name": "Deflect Arrow",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-ARC-014",
+      "card_name": "Replenish",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-ARC-015",
+      "card_name": "Power Shot",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-016",
+      "card_name": "Soul Blast Shot",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-021",
+      "card_name": "Aura Infusion Bolt",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-022",
+      "card_name": "Singularity Reload",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-025",
+      "card_name": "Colossal Dreadbolt",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-010",
+      "card_name": "Back Slash",
+      "quantity": 3
+    },
+    {
+      "card_id": "S0-THF-011",
+      "card_name": "Poison Mist",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-THF-012",
+      "card_name": "Elusive Escape",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-THF-014",
+      "card_name": "Viper's Fang",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-015",
+      "card_name": "Venom Sovereign",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-THF-016",
+      "card_name": "Finishing Strike",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-THF-018",
+      "card_name": "Venom Detonation",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-027",
+      "card_name": "Dodge Instinct",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-028",
+      "card_name": "Camouflage",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-030",
+      "card_name": "Flash Combo",
+      "quantity": 3
+    },
+    {
+      "card_id": "S0-EVT-001",
+      "card_name": "Begin Anew",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-002",
+      "card_name": "Market Bargain",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-003",
+      "card_name": "Scouting",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-004",
+      "card_name": "Relentless Leveling",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-007",
+      "card_name": "Intercept",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-002",
+      "card_name": "Greater Health Potion",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-008",
+      "card_name": "Phoenix Feather",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-012",
+      "card_name": "Spectral Grappling Hook",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-016",
+      "card_name": "Chain Mail",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-018",
+      "card_name": "Magic Compass",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-011",
+      "card_name": "Back Step",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-023",
+      "card_name": "Homing Shot",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-ITM-017",
+      "card_name": "Flashpowder Bomb",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-019",
+      "card_name": "Divine Edge",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-001",
+      "card_name": "Health Potion",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-009",
+      "card_name": "Tactical Adaptation",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-010",
+      "card_name": "Déjà vu",
+      "quantity": 1
+    }
+  ],
+  "mana_deck": [
+    {
+      "kind": "MANA",
+      "quantity": 10
+    },
+    {
+      "class_name": "Archer",
+      "kind": "CLASS",
+      "quantity": 1
+    },
+    {
+      "class_name": "Thief",
+      "kind": "CLASS",
+      "quantity": 1
+    }
+  ],
+  "mana_deck_count": 12,
+  "legacy_package_count": 3,
+  "legacy_deck_count": 12,
+  "legacy_deck_label": "Legacy Deck",
+  "legacy_deck_package_slots": [
+    {
+      "slot": "LEFT",
+      "progression": "S0-ARC-H004",
+      "legacy": "S0-ARC-L002",
+      "package_id": "S0-STARTER-04-PACKAGE-1",
+      "package_name": "Sylvan Galesong + Falconer's Whistle"
+    },
+    {
+      "slot": "CENTER",
+      "progression": "S0-ARC-H007",
+      "legacy": "S0-ARC-L001",
+      "package_id": "S0-STARTER-04-PACKAGE-2",
+      "package_name": "Alden Sterling + Golden Arrows"
+    },
+    {
+      "slot": "RIGHT",
+      "progression": "S0-THF-H001",
+      "legacy": "S0-THF-L001",
+      "package_id": "S0-STARTER-04-PACKAGE-3",
+      "package_name": "Finnian Copperpot + Hidden Stash"
+    }
+  ],
+  "legacy_deck_expanded": [
+    {
+      "card_id": "S0-ARC-H004",
+      "card_name": "Sylvan Galesong",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-1",
+      "package_name": "Sylvan Galesong + Falconer's Whistle"
+    },
+    {
+      "card_id": "S0-ARC-H005",
+      "card_name": "Sylvan Galesong",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-1",
+      "package_name": "Sylvan Galesong + Falconer's Whistle"
+    },
+    {
+      "card_id": "S0-ARC-H006",
+      "card_name": "Sylvan Galesong",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-1",
+      "package_name": "Sylvan Galesong + Falconer's Whistle"
+    },
+    {
+      "card_id": "S0-ARC-L002",
+      "card_name": "Falconer's Whistle",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-04-PACKAGE-1",
+      "package_name": "Sylvan Galesong + Falconer's Whistle"
+    },
+    {
+      "card_id": "S0-ARC-H007",
+      "card_name": "Alden Sterling",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-2",
+      "package_name": "Alden Sterling + Golden Arrows"
+    },
+    {
+      "card_id": "S0-ARC-H008",
+      "card_name": "Alden Sterling",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-2",
+      "package_name": "Alden Sterling + Golden Arrows"
+    },
+    {
+      "card_id": "S0-ARC-H009",
+      "card_name": "Alden Sterling",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-2",
+      "package_name": "Alden Sterling + Golden Arrows"
+    },
+    {
+      "card_id": "S0-ARC-L001",
+      "card_name": "Golden Arrows",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-04-PACKAGE-2",
+      "package_name": "Alden Sterling + Golden Arrows"
+    },
+    {
+      "card_id": "S0-THF-H001",
+      "card_name": "Finnian Copperpot",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-3",
+      "package_name": "Finnian Copperpot + Hidden Stash"
+    },
+    {
+      "card_id": "S0-THF-H002",
+      "card_name": "Finnian Copperpot",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-3",
+      "package_name": "Finnian Copperpot + Hidden Stash"
+    },
+    {
+      "card_id": "S0-THF-H003",
+      "card_name": "Finnian Copperpot",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-04-PACKAGE-3",
+      "package_name": "Finnian Copperpot + Hidden Stash"
+    },
+    {
+      "card_id": "S0-THF-L001",
+      "card_name": "Hidden Stash",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-04-PACKAGE-3",
+      "package_name": "Finnian Copperpot + Hidden Stash"
+    }
+  ],
+  "default_formation": {
+    "CENTER": "S0-ARC-H007",
+    "LEFT": "S0-ARC-H004",
+    "RIGHT": "S0-THF-H001"
+  },
+  "is_valid": true,
+  "validation_issues": [],
+  "validation_warnings": [],
+  "source_database_version": "OSA Season 0 DEV45 / current Starter Deck Authority DEV34 / Deck Builder v1.58",
+  "source_file": "engine/starter_deck_examples/s0_starter_04_green_yellow_GL_DECK_1_0.json",
+  "source_authority": "Generated/Season0-Current/season0-current-starters.dev34.json",
+  "source_export_sha256": "be9bdf6549b38d5c69b76d77e9dbab91d0996570d667cf36bd0d60bca80dfe5e",
+  "source_approval_basis": "Deck Builder v1.58 script header states Approved Season 0 starter decks 1-5; user directed using latest Deck Builder starters as reference",
+  "active_starter_id": "s0_starter_04_green_yellow",
+  "active_starter_slot": 4,
+  "generated_only": true
+}

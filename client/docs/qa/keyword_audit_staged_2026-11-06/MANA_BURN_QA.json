@@ -1,0 +1,127 @@
+{
+  "ok": true,
+  "rows": [
+    {
+      "test": "PLAYER S0-MAG-023 Spell Blade burn on 0-HP-damage Hit",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "test": "PLAYER S0-MAG-023 Spell Blade NO burn on Dodge/Negate",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "test": "PLAYER S0-MAG-023 Arcane Duelist burn on 0-HP-damage Hit",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "test": "PLAYER S0-MAG-023 Arcane Duelist NO burn on Dodge/Negate",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "test": "PLAYER S0-MAG-026 Arcane Warrior burn on 0-HP-damage Hit",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "test": "PLAYER S0-MAG-026 Arcane Warrior NO burn on Dodge/Negate",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "test": "PLAYER S0-MAG-020 Arcane Duelist burn on 0-HP-damage Hit",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "test": "PLAYER S0-MAG-020 Arcane Duelist NO burn on Dodge/Negate",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "test": "PLAYER Aether Sweep two connected hits aggregate Burn 2",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    },
+    {
+      "test": "PLAYER Aether Sweep single aggregated Mana selection",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "test": "AI S0-MAG-023 Spell Blade burn on 0-HP-damage Hit",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "test": "AI S0-MAG-023 Spell Blade NO burn on Dodge/Negate",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "test": "AI S0-MAG-023 Arcane Duelist burn on 0-HP-damage Hit",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "test": "AI S0-MAG-023 Arcane Duelist NO burn on Dodge/Negate",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "test": "AI S0-MAG-026 Arcane Warrior burn on 0-HP-damage Hit",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "test": "AI S0-MAG-026 Arcane Warrior NO burn on Dodge/Negate",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "test": "AI S0-MAG-020 Arcane Duelist burn on 0-HP-damage Hit",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "test": "AI S0-MAG-020 Arcane Duelist NO burn on Dodge/Negate",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "test": "AI Aether Sweep two connected hits aggregate Burn 2",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    },
+    {
+      "test": "AI Aether Sweep single aggregated Mana selection",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    }
+  ],
+  "failures": [],
+  "browser_errors": []
+}

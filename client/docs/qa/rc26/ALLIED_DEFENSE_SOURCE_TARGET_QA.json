@@ -1,0 +1,489 @@
+{
+  "blockTests": [
+    {
+      "label": "Holy Barrier Priest protects Crusader",
+      "card": "S0-CLE-010",
+      "source": "S0-CLE-H002",
+      "target": "S0-WAR-H009",
+      "official": 60,
+      "source_value": 60,
+      "target_value": 0,
+      "options": [
+        {
+          "src": "CENTER",
+          "kind": "block"
+        }
+      ],
+      "target_hp": 70,
+      "expected_hp": 70,
+      "log": [
+        "Holy Barrier moves to Discard Pile (response resolved).",
+        "AI completes payment for Holy Barrier (4 Mana value). Counter-response priority may now open.",
+        "AI confirms Holy Barrier and pays all mandatory costs before counter-response priority.",
+        "Response Window opens for Fiery Thrust targeting Aurex Sunsworn.",
+        "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+        "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+      ]
+    },
+    {
+      "label": "Holy Barrier Priest self",
+      "card": "S0-CLE-010",
+      "source": "S0-CLE-H002",
+      "target": "S0-CLE-H002",
+      "official": 60,
+      "source_value": 60,
+      "target_value": 60,
+      "options": [
+        {
+          "src": "LEFT",
+          "kind": "block"
+        },
+        {
+          "src": "CENTER",
+          "kind": "block"
+        }
+      ],
+      "target_hp": 70,
+      "expected_hp": 70,
+      "log": [
+        "Holy Barrier moves to Discard Pile (response resolved).",
+        "AI completes payment for Holy Barrier (4 Mana value). Counter-response priority may now open.",
+        "AI confirms Holy Barrier and pays all mandatory costs before counter-response priority.",
+        "Response Window opens for Fiery Thrust targeting Elara Heavens.",
+        "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+        "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+      ]
+    },
+    {
+      "label": "Holy Barrier Saint protects Warrior",
+      "card": "S0-CLE-010",
+      "source": "S0-CLE-H003",
+      "target": "S0-WAR-H001",
+      "official": 60,
+      "source_value": 60,
+      "target_value": 0,
+      "options": [
+        {
+          "src": "CENTER",
+          "kind": "block"
+        }
+      ],
+      "target_hp": 70,
+      "expected_hp": 70,
+      "log": [
+        "Holy Barrier moves to Discard Pile (response resolved).",
+        "AI completes payment for Holy Barrier (4 Mana value). Counter-response priority may now open.",
+        "AI confirms Holy Barrier and pays all mandatory costs before counter-response priority.",
+        "Response Window opens for Fiery Thrust targeting Draxen Blacksand.",
+        "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+        "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+      ]
+    },
+    {
+      "label": "Sacred Bulwark Paladin protects Priest",
+      "card": "S0-CLE-022",
+      "source": "S0-WAR-H008",
+      "target": "S0-CLE-H002",
+      "official": 30,
+      "source_value": 30,
+      "target_value": 0,
+      "options": [
+        {
+          "src": "CENTER",
+          "kind": "block"
+        }
+      ],
+      "target_hp": 40,
+      "expected_hp": 40,
+      "log": [
+        "Sacred Bulwark moves to Discard Pile (response resolved).",
+        "AI completes payment for Sacred Bulwark (3 Mana value). Counter-response priority may now open.",
+        "AI confirms Sacred Bulwark and pays all mandatory costs before counter-response priority.",
+        "Response Window opens for Fiery Thrust targeting Elara Heavens.",
+        "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+        "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+      ]
+    },
+    {
+      "label": "Sacred Bulwark Crusader protects Archer",
+      "card": "S0-CLE-022",
+      "source": "S0-WAR-H009",
+      "target": "S0-ARC-H001",
+      "official": 30,
+      "source_value": 30,
+      "target_value": 0,
+      "options": [
+        {
+          "src": "CENTER",
+          "kind": "block"
+        }
+      ],
+      "target_hp": 40,
+      "expected_hp": 40,
+      "log": [
+        "Sacred Bulwark moves to Discard Pile (response resolved).",
+        "AI completes payment for Sacred Bulwark (3 Mana value). Counter-response priority may now open.",
+        "AI confirms Sacred Bulwark and pays all mandatory costs before counter-response priority.",
+        "Response Window opens for Fiery Thrust targeting Korvak Ironfang.",
+        "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+        "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+      ]
+    },
+    {
+      "label": "Sacred Bulwark Paladin self",
+      "card": "S0-CLE-022",
+      "source": "S0-WAR-H008",
+      "target": "S0-WAR-H008",
+      "official": 30,
+      "source_value": 30,
+      "target_value": 30,
+      "options": [
+        {
+          "src": "LEFT",
+          "kind": "block"
+        },
+        {
+          "src": "CENTER",
+          "kind": "block"
+        }
+      ],
+      "target_hp": 40,
+      "expected_hp": 40,
+      "log": [
+        "Sacred Bulwark moves to Discard Pile (response resolved).",
+        "AI completes payment for Sacred Bulwark (3 Mana value). Counter-response priority may now open.",
+        "AI confirms Sacred Bulwark and pays all mandatory costs before counter-response priority.",
+        "Response Window opens for Fiery Thrust targeting Aurex Sunsworn.",
+        "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+        "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+      ]
+    }
+  ],
+  "healSourceTargetMatrix": [
+    {
+      "card": "S0-CLE-011",
+      "source": "S0-CLE-H001",
+      "source_class": "Cleric",
+      "legal": true,
+      "source_amount": 40,
+      "actually_healed": 40,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-011",
+      "source": "S0-CLE-H002",
+      "source_class": "Priest",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 70,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-011",
+      "source": "S0-CLE-H003",
+      "source_class": "Saint",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 70,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-011",
+      "source": "S0-WAR-H008",
+      "source_class": "Paladin",
+      "legal": true,
+      "source_amount": 40,
+      "actually_healed": 40,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-011",
+      "source": "S0-CLE-H008",
+      "source_class": "Bard",
+      "legal": true,
+      "source_amount": 40,
+      "actually_healed": 40,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-011",
+      "source": "S0-CLE-H009",
+      "source_class": "Maestro",
+      "legal": true,
+      "source_amount": 40,
+      "actually_healed": 40,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-016",
+      "source": "S0-CLE-H001",
+      "source_class": "Cleric",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-016",
+      "source": "S0-CLE-H002",
+      "source_class": "Priest",
+      "legal": true,
+      "source_amount": 30,
+      "actually_healed": 50,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-016",
+      "source": "S0-CLE-H003",
+      "source_class": "Saint",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 70,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-016",
+      "source": "S0-WAR-H008",
+      "source_class": "Paladin",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-016",
+      "source": "S0-CLE-H008",
+      "source_class": "Bard",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-016",
+      "source": "S0-CLE-H009",
+      "source_class": "Maestro",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-017",
+      "source": "S0-CLE-H001",
+      "source_class": "Cleric",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-017",
+      "source": "S0-CLE-H002",
+      "source_class": "Priest",
+      "legal": true,
+      "source_amount": 60,
+      "actually_healed": 70,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-017",
+      "source": "S0-CLE-H003",
+      "source_class": "Saint",
+      "legal": true,
+      "source_amount": 80,
+      "actually_healed": 70,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-017",
+      "source": "S0-WAR-H008",
+      "source_class": "Paladin",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-017",
+      "source": "S0-CLE-H008",
+      "source_class": "Bard",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-017",
+      "source": "S0-CLE-H009",
+      "source_class": "Maestro",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-023",
+      "source": "S0-CLE-H001",
+      "source_class": "Cleric",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 50,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-023",
+      "source": "S0-CLE-H002",
+      "source_class": "Priest",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 70,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-023",
+      "source": "S0-CLE-H003",
+      "source_class": "Saint",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 70,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-023",
+      "source": "S0-WAR-H008",
+      "source_class": "Paladin",
+      "legal": true,
+      "source_amount": 60,
+      "actually_healed": 60,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-023",
+      "source": "S0-CLE-H008",
+      "source_class": "Bard",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 50,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-023",
+      "source": "S0-CLE-H009",
+      "source_class": "Maestro",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 50,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-027",
+      "source": "S0-CLE-H001",
+      "source_class": "Cleric",
+      "legal": true,
+      "source_amount": 20,
+      "actually_healed": 20,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-027",
+      "source": "S0-CLE-H002",
+      "source_class": "Priest",
+      "legal": true,
+      "source_amount": 20,
+      "actually_healed": 40,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-027",
+      "source": "S0-CLE-H003",
+      "source_class": "Saint",
+      "legal": true,
+      "source_amount": 20,
+      "actually_healed": 40,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-027",
+      "source": "S0-WAR-H008",
+      "source_class": "Paladin",
+      "legal": true,
+      "source_amount": 20,
+      "actually_healed": 20,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-027",
+      "source": "S0-CLE-H008",
+      "source_class": "Bard",
+      "legal": true,
+      "source_amount": 30,
+      "actually_healed": 30,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-027",
+      "source": "S0-CLE-H009",
+      "source_class": "Maestro",
+      "legal": true,
+      "source_amount": 30,
+      "actually_healed": 30,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-030",
+      "source": "S0-CLE-H001",
+      "source_class": "Cleric",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-030",
+      "source": "S0-CLE-H002",
+      "source_class": "Priest",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 20,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-030",
+      "source": "S0-CLE-H003",
+      "source_class": "Saint",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 20,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-030",
+      "source": "S0-WAR-H008",
+      "source_class": "Paladin",
+      "legal": false,
+      "source_amount": 0,
+      "actually_healed": 0,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-030",
+      "source": "S0-CLE-H008",
+      "source_class": "Bard",
+      "legal": true,
+      "source_amount": 30,
+      "actually_healed": 30,
+      "recipient": "S0-ARC-H001"
+    },
+    {
+      "card": "S0-CLE-030",
+      "source": "S0-CLE-H009",
+      "source_class": "Maestro",
+      "legal": true,
+      "source_amount": 50,
+      "actually_healed": 50,
+      "recipient": "S0-ARC-H001"
+    }
+  ],
+  "jsErrors": []
+}

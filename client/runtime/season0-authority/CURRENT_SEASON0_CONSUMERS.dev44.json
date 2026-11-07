@@ -1,0 +1,63 @@
+{
+  "appEnginesChanged": false,
+  "authority": "OSA_ONE_SOURCE_AUTHORITY__ENGINES_AND_UIS_INDEPENDENT",
+  "checkpoint": "DEV44",
+  "exports": {
+    "assets": {
+      "path": "Generated/Season0-Consumers/season0-consumer-assets.dev44.json",
+      "sha256": "3af241d8f9711b8abc6199d2693b3d9ba28f2da4d7ed10b89cd871f4dba214f4"
+    },
+    "conformance": {
+      "path": "Generated/Season0-Consumers/season0-consumer-conformance.dev44.json",
+      "sha256": "76d0a34281d161bb32bfcb4aa8e70b6c5a5c4741d5aba872b61ad5a269b811af"
+    },
+    "contracts": {
+      "path": "Generated/Season0-Consumers/season0-consumer-contracts.dev44.json",
+      "sha256": "de4d0a165b0b9fe3446e4abdcc2bd1bdb1415b240dbc26e6a20fbe54fa253b52"
+    },
+    "data": {
+      "path": "Generated/Season0-Consumers/season0-consumer-data.dev44.json",
+      "sha256": "206e581216b06e8bd7c0d99e351bac864d958915095619e674095c4d1524277b"
+    },
+    "effects": {
+      "path": "Generated/Season0-Consumers/season0-consumer-effects.dev44.json",
+      "sha256": "717686c832e78237bfae86d92b942117439bdc6ce0c52f8d915bb687abb6254f"
+    },
+    "parity": {
+      "path": "Generated/Season0-Consumers/season0-s1-s0-applicable-parity.dev44.json",
+      "sha256": "b9ccbb630d971f8030a487a533bb64e47e9debf60001fd2f1e56641a7dea9cb0"
+    },
+    "rules": {
+      "path": "Generated/Season0-Consumers/season0-consumer-rules.dev44.json",
+      "sha256": "d564db05c5960e09129464928b6047ed11e4282347524a86d955a066a0b16673"
+    }
+  },
+  "historicalDEv37DEv38ExportIsSupersededForNewConsumerBuilds": true,
+  "newConditionContract": "FEASIBILITY_AND_ALL_LEGALITY_THEN_PLAY_ATOMIC_CONDITION_MANA_BEFORE_EFFECT",
+  "noMandatoryEngine": true,
+  "schema": "GL-S0-CURRENT-CONSUMERS-DEV44-1",
+  "sourceBranchCount": 426,
+  "sourceCardCount": 248,
+  "sourceDEV43Gate": {
+    "path": "Authority/Game/Season0-Recipes/DEV43/DEV43_RELEASE_READINESS.json",
+    "sha256": "ddf1397dade3fd4311f06d2298d980dc23b32df2d7789cea4484b19be749ab88"
+  },
+  "sourceExecution": {
+    "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json",
+    "sha256": "519023690a7420cf195e52f7db1d6985ccb5047215ade6d807dba39ab5ccc52c"
+  },
+  "sourceRecipes": {
+    "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RECIPES.dev41.json",
+    "sha256": "10dd33b791d73ad37b6c1b83b335e23f2e2ca9cf24f1ac125f8bec06472f16f9"
+  },
+  "sourceRules": {
+    "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RULES.dev35.json",
+    "sha256": "0bafadcf06955305beef481bae051068096944865b61f06b85febdfd3349c9ab"
+  },
+  "sourceVisualAuthority": {
+    "path": "Authority/Game/Season0-Visual/current-season0-visual-authority.json",
+    "sha256": "5a29531ca5eb6cf6e0a1661f6a7e031db82e8c2e61a491775625260edfd9291b"
+  },
+  "specialHandlerBindings": 36,
+  "status": "READY_FOR_DEV45_FINAL_AUTHORITY_GATE__NOT_APP_PLAYABILITY_CERTIFIED"
+}

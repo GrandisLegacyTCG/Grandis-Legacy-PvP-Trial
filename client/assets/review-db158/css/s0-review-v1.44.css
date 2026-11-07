@@ -1,0 +1,73 @@
+/* Grandis Legacy Deck Builder v1.44.0: Card Review artwork = 75% of v1.41.0 baseline;
+   Hero Lineage remains visible at the bottom of the Hero Review without scrolling.
+   Scoped to Review only. No card data or deck construction logic changed. */
+@media (min-width:761px){
+  /* v1.41.0 uses a 35% artwork column. 35% × 75% = 26.25%.
+     Do not compound the 75% scale with v1.42.0 or v1.43.0. */
+  #cardReviewDialog:not([data-review-kind="hero"]) .review-layout{
+    grid-template-columns:minmax(0,26.25%) minmax(0,1fr)!important;
+  }
+}
+@media (max-width:760px){
+  /* v1.41.0 mobile art max width was 250px. */
+  #cardReviewDialog:not([data-review-kind="hero"]) .review-art{
+    width:min(100%,187.5px)!important;
+  }
+}
+/* Reserve a permanently visible footer for Hero Lineage. Only the main Hero
+   content scrolls if the viewport is too short; the footer is never hidden. */
+#cardReviewDialog[data-review-kind="hero"] .review-card{
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:calc(100dvh - 28px)!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-header{
+  flex:0 0 auto!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-layout{
+  flex:0 1 auto!important;
+  min-height:0!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  scrollbar-gutter:auto!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-progression{
+  flex:0 0 auto!important;
+  position:relative!important;
+  z-index:1!important;
+  margin:0!important;
+  background:#242630!important;
+  border-top:1px solid #484a56!important;
+}
+/* Use a suitable Hero artwork size on short desktop viewports without
+   stretching or distorting the card. The content remains top-aligned. */
+@media (min-width:761px){
+  #cardReviewDialog[data-review-kind="hero"] .review-layout{
+    grid-template-columns:minmax(0,28%) minmax(0,1fr)!important;
+  }
+  #cardReviewDialog[data-review-kind="hero"] .review-art{
+    width:100%!important;
+    height:auto!important;
+    aspect-ratio:5 / 7!important;
+    max-height:min(62dvh,455px)!important;
+    object-fit:contain!important;
+    object-position:top left!important;
+  }
+}
+@media (max-width:760px){
+  #cardReviewDialog[data-review-kind="hero"] .review-card{
+    max-height:calc(100dvh - 12px)!important;
+  }
+  #cardReviewDialog[data-review-kind="hero"] .review-layout{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  #cardReviewDialog[data-review-kind="hero"] .review-art{
+    width:min(100%,min(220px,27dvh))!important;
+    max-height:none!important;
+    height:auto!important;
+    object-fit:contain!important;
+  }
+}

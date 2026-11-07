@@ -1,0 +1,1223 @@
+{
+  "GL_WAR_FIX_QA": {
+    "pass": 36,
+    "total": 36,
+    "failed": [],
+    "checks": [
+      {
+        "id": "taunt_forces_reachable_center",
+        "pass": true,
+        "actual": [
+          "RIGHT"
+        ],
+        "expected": [
+          "RIGHT"
+        ]
+      },
+      {
+        "id": "taunt_no_target_outside_left_aoa",
+        "pass": true,
+        "actual": [],
+        "expected": []
+      },
+      {
+        "id": "taunt_melee_right_unreachable",
+        "pass": true,
+        "actual": [],
+        "expected": []
+      },
+      {
+        "id": "taunt_range_can_reach_right",
+        "pass": true,
+        "actual": [
+          "RIGHT"
+        ],
+        "expected": [
+          "RIGHT"
+        ]
+      },
+      {
+        "id": "taunt_area_card_not_playable",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "taunt_ai_has_no_area_action",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "taunt_unreachable_preplay",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "taunt_unreachable_no_ai_action",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "taunt_after_expiry_area_restored",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "id": "deflect_R1_phys",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "deflect_R2_phys",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "id": "deflect_R2_magic",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "id": "deflect_R3_magic",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "id": "deflect_R2_block_to_zero",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "id": "runic_R1",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "runic_R2_phys",
+        "pass": true,
+        "actual": 30,
+        "expected": 30
+      },
+      {
+        "id": "runic_R2_magic",
+        "pass": true,
+        "actual": 30,
+        "expected": 30
+      },
+      {
+        "id": "runic_R3_phys",
+        "pass": true,
+        "actual": 30,
+        "expected": 30
+      },
+      {
+        "id": "runic_R3_magic",
+        "pass": true,
+        "actual": 30,
+        "expected": 30
+      },
+      {
+        "id": "deflect_R2_negated_no_reflect",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "runic_R3_negated_no_reflect",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "enrage_physical_bonus",
+        "pass": true,
+        "actual": 50,
+        "expected": 50
+      },
+      {
+        "id": "enrage_magical_no_bonus",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "enrage_inflicts_bleed_one",
+        "pass": true,
+        "actual": [
+          1
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "id": "enrage_no_bleed_when_dodged",
+        "pass": true,
+        "actual": [],
+        "expected": []
+      },
+      {
+        "id": "enrage_bleed_when_hit_zero_damage",
+        "pass": true,
+        "actual": [
+          1
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "id": "enrage_no_bleed_magical",
+        "pass": true,
+        "actual": [],
+        "expected": []
+      },
+      {
+        "id": "execute_R2_cost",
+        "pass": true,
+        "actual": 7,
+        "expected": 7
+      },
+      {
+        "id": "execute_R2_paid",
+        "pass": true,
+        "actual": 7,
+        "expected": 7
+      },
+      {
+        "id": "execute_R2_dodge_available",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "id": "execute_R2_cannot_block",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "id": "execute_R2_dodge_prevents_defeat",
+        "pass": true,
+        "actual": 40,
+        "expected": 40
+      },
+      {
+        "id": "execute_R3_cost",
+        "pass": true,
+        "actual": 5,
+        "expected": 5
+      },
+      {
+        "id": "execute_R3_paid",
+        "pass": true,
+        "actual": 5,
+        "expected": 5
+      },
+      {
+        "id": "execute_R3_dodge_available",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "execute_R3_cannot_block",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      }
+    ]
+  },
+  "GL_THF_FIX_QA": {
+    "pass": 35,
+    "total": 35,
+    "failed": [],
+    "checks": [
+      {
+        "name": "01 Missing X Cross prerequisites prevents PLAY",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "02 Missing X Cross no Mana spent",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "03 Missing X Cross card remains in Hand",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "04 Missing X Cross no Exhaust",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "05 Valid X Cross accepts PLAY",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "06 Valid X Cross exact 3 Mana payment",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "07 Valid X Cross discards both correct cards",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "08 Valid X Cross correct S0 90 damage",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "09 Back Slash Thief R1=50",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "10 Back Slash Rogue R2=60",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "11 Back Slash Renegade R3=70 with ability",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "12 Smoke Screen regular Attack remains legal",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "13 Smoke Screen Casting not legal",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "14 Smoke Screen Ultimate not offered",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "15 Smoke Screen Ultimate costs not paid",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "16 Venom Sovereign Rogue unpoisoned=20",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "17 Venom Sovereign Rogue Poison=60",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "18 Venom Sovereign Renegade unpoisoned=40",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "19 Venom Sovereign Renegade Poison=80",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "20 Venom Binding no unprinted Mana effect",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "21 Deflection Thief R1 no REFLECT",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "22 Deflection Spell Blade R2 REFLECT20",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "23 Deflection Arcane Duelist R3 REFLECT20",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "24 Normal Jump Slash swap option retained",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "25 Jump Slash Stun partner prohibited",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "26 Jump Slash Freeze partner prohibited",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "27 Jump Slash Stun source prohibited",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "28 Shadow Switch Stun partner not offered",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "29 Shadow Switch Stun partner not moved",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "30 Response engine zero browser-JS errors not inferred",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "31 Smoke Screen normal Attack pays and negates",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "32 Venom Sovereign Poison DODGE prevents bonus",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "33 Venom Sovereign Poison full BLOCK follows existing separate follow-up architecture",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "34 AI X Cross CONDITION missing prohibited",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "35 AI X Cross CONDITION satisfied legal",
+        "ok": true,
+        "info": null
+      }
+    ]
+  },
+  "GL_CLE_FIX_QA": {
+    "pass": 23,
+    "total": 23,
+    "failed": [],
+    "results": [
+      {
+        "name": "Purify: cleanses Bleed after payment",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "legal": {
+            "can": true,
+            "reasons": [],
+            "cost": 1
+          },
+          "remaining": [],
+          "mana": 11
+        }
+      },
+      {
+        "name": "Purify: cleanses Burn after payment",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "legal": {
+            "can": true,
+            "reasons": [],
+            "cost": 1
+          },
+          "remaining": [],
+          "mana": 11
+        }
+      },
+      {
+        "name": "Purify: cleanses Freeze after payment",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "legal": {
+            "can": true,
+            "reasons": [],
+            "cost": 1
+          },
+          "remaining": [],
+          "mana": 11
+        }
+      },
+      {
+        "name": "Purify: cleanses Poison after payment",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "legal": {
+            "can": true,
+            "reasons": [],
+            "cost": 1
+          },
+          "remaining": [],
+          "mana": 11
+        }
+      },
+      {
+        "name": "Purify: cleanses Sleep after payment",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "legal": {
+            "can": true,
+            "reasons": [],
+            "cost": 1
+          },
+          "remaining": [],
+          "mana": 11
+        }
+      },
+      {
+        "name": "Purify: cleanses Stun after payment",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "legal": {
+            "can": true,
+            "reasons": [],
+            "cost": 1
+          },
+          "remaining": [],
+          "mana": 11
+        }
+      },
+      {
+        "name": "Purify: no valid negative target is forbidden without payment",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "legal": {
+            "can": false,
+            "reasons": [
+              "Purify requires an allied active Hero with a negative status."
+            ],
+            "cost": 1
+          }
+        }
+      },
+      {
+        "name": "Purify: two statuses choice occurs before payment",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "beforePayment": [
+            "Sleep",
+            "Poison"
+          ],
+          "after": [
+            {
+              "name": "Sleep",
+              "duration": 2,
+              "text": "QA",
+              "sources": [
+                {
+                  "source_name": "QA",
+                  "amount": 2,
+                  "note": "QA"
+                }
+              ]
+            }
+          ],
+          "pendingAfterConfirm": "mana_shard_payment_choice",
+          "mana": 11
+        }
+      },
+      {
+        "name": "Purify: invalid selection never removes unrelated marker",
+        "pass": true,
+        "detail": {
+          "ok": true
+        }
+      },
+      {
+        "name": "Saint Holy Rejuvenation includes Sleep",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "r": {
+            "healed": 40
+          },
+          "okPending": true
+        }
+      },
+      {
+        "name": "Lun: S0-CLE-H001 Physical",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "offered": false,
+          "amt": 0,
+          "want": false
+        }
+      },
+      {
+        "name": "Lun: S0-CLE-H008 Physical",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "offered": true,
+          "amt": 20,
+          "want": true
+        }
+      },
+      {
+        "name": "Lun: S0-CLE-H009 Physical",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "offered": true,
+          "amt": 20,
+          "want": true
+        }
+      },
+      {
+        "name": "Lun: S0-CLE-H001 Magical",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "offered": true,
+          "amt": 20,
+          "want": true
+        }
+      },
+      {
+        "name": "Lun: S0-CLE-H008 Magical",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "offered": true,
+          "amt": 20,
+          "want": true
+        }
+      },
+      {
+        "name": "Lun: S0-CLE-H009 Magical",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "offered": true,
+          "amt": 20,
+          "want": true
+        }
+      },
+      {
+        "name": "Binding Light: S0 Defense classifies and can be countered",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "family": "DefendSkill"
+        }
+      },
+      {
+        "name": "Binding Light: nested Response window opens for paid normal Defense",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "openedNow": true,
+          "opts": [
+            {
+              "card_id": "S0-CLE-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-CLE-012",
+                "internal_id": "S0-CLE-012",
+                "name": "Binding Light",
+                "family": "Skill",
+                "card_type": "Skill",
+                "classification": "Tactical",
+                "action_category": "Tactical",
+                "class_group": "CLE",
+                "printed": {
+                  "name": "Binding Light",
+                  "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                  "rows": [
+                    {
+                      "label": "Priest (Rank II)",
+                      "damage": "",
+                      "effect": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                      "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)"
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Priest (Rank II)",
+                      "damage": "",
+                      "effect": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                      "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)"
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                "effect_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-CLE-012.webp",
+                  "sha256": "37b9376c654556142427d268693bb07e8b27abce766def0f2c61b1971ccde4ee",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-012.webp"
+                },
+                "canonical_hash": "6a1a6d624f09b46b99b82c73cb0a3bb1e33f12a2963933bc8984d377c2a4bdb9",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": true,
+                "target_required": false,
+                "runtime_tags": "SKILL;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {
+                  "source_mode": "Hero Mode only",
+                  "printed_class_rank_requirements": [
+                    {
+                      "class": "Priest",
+                      "rank": "Rank II",
+                      "effect_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                      "damage": null
+                    }
+                  ],
+                  "legal_active_classes": [
+                    "Priest",
+                    "Saint"
+                  ],
+                  "rank_gate": {
+                    "min_active_rank": 2,
+                    "eligible_active_classes": [
+                      "Priest",
+                      "Saint"
+                    ]
+                  }
+                },
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Skill",
+                  "subtype": "Tactical",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "printedRank": "Rank II",
+                      "requiredPrintedClass": "Priest",
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 9,
+                            "matchedText": "When",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 45,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": 1,
+                      "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                      "variant": "Priest (Rank II)"
+                    }
+                  ],
+                  "opcodes": [
+                    "CONDITION",
+                    "NEGATE",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-CLE-012.json",
+                    "sha256": "2b6000e56feccc6049a98a805ebfe794a1a034c93eb1b72738a3a076fcd9e04c"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "printedRank": "Rank II",
+                      "requiredPrintedClass": "Priest",
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 9,
+                            "matchedText": "When",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 45,
+                            "matchedText": "negate",
+                            "opcode": "NEGATE"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "NEGATE",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": 1,
+                      "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                      "variant": "Priest (Rank II)"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": true,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {
+                  "Priest": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)"
+                },
+                "printed_class_rank_requirements": [
+                  {
+                    "class": "Priest",
+                    "rank": "Rank II",
+                    "effect_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                    "damage": null
+                  }
+                ],
+                "source_requirement": {
+                  "legal_active_classes": [
+                    "Priest",
+                    "Saint"
+                  ]
+                },
+                "legal_active_classes": "Priest;Saint"
+              },
+              "source_lane": "CENTER",
+              "response_kind": "cancel_defend_skill"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Binding Light: Ultimate Defense cannot be countered",
+        "pass": true,
+        "detail": {
+          "ok": true
+        }
+      },
+      {
+        "name": "God's Blessing: precommit choice CANCEL does not spend",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "pending": "gods_blessing_precommit",
+          "mana": 12
+        }
+      },
+      {
+        "name": "God's Blessing: selected CONDITION + 2 Mana + Draw 3",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "pre": "gods_blessing_precommit",
+          "afterChoice": "mana_shard_payment_choice",
+          "unspent": true,
+          "handBefore": [
+            "S0-CLE-013",
+            "S0-WAR-001"
+          ],
+          "hand": [
+            "S0-ARC-001",
+            "S0-ARC-002",
+            "S0-ARC-004"
+          ],
+          "discard": [
+            "S0-WAR-001",
+            "S0-CLE-013"
+          ],
+          "mana": 10,
+          "deck": [
+            "S0-ARC-005"
+          ]
+        }
+      },
+      {
+        "name": "God's Blessing: AI legal direct uses CONDITION",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "res": true,
+          "pending": null,
+          "mana": 10,
+          "hand": [
+            "S0-ARC-001",
+            "S0-ARC-002",
+            "S0-ARC-004"
+          ],
+          "discard": [
+            "S0-WAR-001",
+            "S0-CLE-013"
+          ]
+        }
+      },
+      {
+        "name": "God's Blessing: second copy can be discarded",
+        "pass": true,
+        "detail": {
+          "ok": true,
+          "legal": {
+            "can": true,
+            "reasons": [],
+            "cost": 2
+          }
+        }
+      }
+    ]
+  },
+  "GL_MAG_STAGE5_FIX_QA": {
+    "checks": [
+      {
+        "id": "meditation_PLAYER",
+        "pass": true,
+        "detail": {
+          "before": 2,
+          "after": 4,
+          "manaDeck": 8,
+          "discard": true
+        }
+      },
+      {
+        "id": "tornado_dodge_PLAYER_2",
+        "pass": true,
+        "detail": {
+          "followup": 40,
+          "hp": 160
+        }
+      },
+      {
+        "id": "tornado_dodge_PLAYER_3",
+        "pass": true,
+        "detail": {
+          "followup": 40,
+          "hp": 160
+        }
+      },
+      {
+        "id": "tornado_rank1_no_extra_PLAYER",
+        "pass": true,
+        "detail": {
+          "followup": 0
+        }
+      },
+      {
+        "id": "S0-MAG-011_PLAYER",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [
+            {
+              "name": "Freeze",
+              "duration": 2
+            }
+          ],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-011"
+          ],
+          "spent": 3,
+          "pending": null,
+          "inv": true
+        }
+      },
+      {
+        "id": "S0-MAG-012_PLAYER",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 190,
+          "statuses": [],
+          "attackerStatuses": [
+            {
+              "name": "Burn",
+              "duration": 3
+            }
+          ],
+          "attachmentIds": [],
+          "spent": 3,
+          "pending": null,
+          "inv": true
+        }
+      },
+      {
+        "id": "stance_PLAYER_2",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-030"
+          ],
+          "spent": 5,
+          "pending": null,
+          "inv": true,
+          "cost": 5
+        }
+      },
+      {
+        "id": "stance_PLAYER_3",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-030"
+          ],
+          "spent": 4,
+          "pending": null,
+          "inv": true,
+          "cost": 4
+        }
+      },
+      {
+        "id": "mana_void_PLAYER_2",
+        "pass": true,
+        "detail": {
+          "cannotDodge": false,
+          "rank": 2
+        }
+      },
+      {
+        "id": "mana_void_PLAYER_3",
+        "pass": true,
+        "detail": {
+          "cannotDodge": true,
+          "rank": 3
+        }
+      },
+      {
+        "id": "meditation_AI",
+        "pass": true,
+        "detail": {
+          "before": 2,
+          "after": 4,
+          "manaDeck": 8,
+          "discard": true
+        }
+      },
+      {
+        "id": "tornado_dodge_AI_2",
+        "pass": true,
+        "detail": {
+          "followup": 40,
+          "hp": 160
+        }
+      },
+      {
+        "id": "tornado_dodge_AI_3",
+        "pass": true,
+        "detail": {
+          "followup": 40,
+          "hp": 160
+        }
+      },
+      {
+        "id": "tornado_rank1_no_extra_AI",
+        "pass": true,
+        "detail": {
+          "followup": 0
+        }
+      },
+      {
+        "id": "S0-MAG-011_AI",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [
+            {
+              "name": "Freeze",
+              "duration": 2
+            }
+          ],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-011"
+          ],
+          "spent": 2,
+          "pending": null,
+          "inv": true
+        }
+      },
+      {
+        "id": "S0-MAG-012_AI",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 190,
+          "statuses": [],
+          "attackerStatuses": [
+            {
+              "name": "Burn",
+              "duration": 3
+            }
+          ],
+          "attachmentIds": [],
+          "spent": 2,
+          "pending": null,
+          "inv": true
+        }
+      },
+      {
+        "id": "stance_AI_2",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-030"
+          ],
+          "spent": 4,
+          "pending": null,
+          "inv": true,
+          "cost": 5
+        }
+      },
+      {
+        "id": "stance_AI_3",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-030"
+          ],
+          "spent": 3,
+          "pending": null,
+          "inv": true,
+          "cost": 4
+        }
+      },
+      {
+        "id": "mana_void_AI_2",
+        "pass": true,
+        "detail": {
+          "cannotDodge": false,
+          "rank": 2
+        }
+      },
+      {
+        "id": "mana_void_AI_3",
+        "pass": true,
+        "detail": {
+          "cannotDodge": true,
+          "rank": 3
+        }
+      }
+    ],
+    "notes": [],
+    "total": 20,
+    "passed": 20
+  },
+  "GL_MAG_STAGE5_EXPIRY": [
+    {
+      "id": "S0-MAG-011",
+      "offer": true,
+      "active": true,
+      "noPoisonDamage": true,
+      "poisonCountAfterTick": 2,
+      "expired": true,
+      "discard": 1,
+      "pass": true
+    },
+    {
+      "id": "S0-MAG-030",
+      "offer": true,
+      "active": true,
+      "noPoisonDamage": true,
+      "poisonCountAfterTick": 2,
+      "expired": true,
+      "discard": 1,
+      "pass": true
+    }
+  ],
+  "page_errors": []
+}

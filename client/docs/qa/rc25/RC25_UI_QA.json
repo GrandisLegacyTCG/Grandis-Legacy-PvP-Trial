@@ -1,0 +1,742 @@
+{
+  "engine": {
+    "cases": [
+      {
+        "name": "AI Item opens cancellable Response",
+        "pass": true,
+        "detail": {
+          "kind": "incoming_card"
+        }
+      },
+      {
+        "name": "PLAYER Flashpowder offered for Item",
+        "pass": true,
+        "detail": null
+      },
+      {
+        "name": "Reactive cancel resolved and cleared window",
+        "pass": true,
+        "detail": {
+          "reacted": true,
+          "pending": null
+        }
+      },
+      {
+        "name": "Correct Item root grouped with Flashpowder",
+        "pass": true,
+        "detail": {
+          "groups": [
+            [
+              "S0-ITM-020",
+              "NEGATED",
+              [
+                "S0-ITM-017"
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "name": "Canceled Item marked NEGATED",
+        "pass": true,
+        "detail": null
+      },
+      {
+        "name": "Committed counter banner event emitted",
+        "pass": true,
+        "detail": null
+      },
+      {
+        "name": "Synthetic Flashpowder grouped with Health Potion only",
+        "pass": true,
+        "detail": {
+          "groups": [
+            [
+              "potion",
+              [
+                "counter"
+              ]
+            ],
+            [
+              "skill",
+              []
+            ]
+          ]
+        }
+      },
+      {
+        "name": "Unlinked legacy counter never falsely grouped with Skill",
+        "pass": true,
+        "detail": null
+      },
+      {
+        "name": "MANA STEAL designer ruling opponent-only cap",
+        "pass": true,
+        "detail": null
+      }
+    ],
+    "summary": {
+      "passed": 9,
+      "total": 9
+    }
+  },
+  "geometry": [
+    {
+      "viewport": "1600x900",
+      "zoom": 1,
+      "n": 1,
+      "player": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 469.65625,
+        "positions": [
+          2
+        ]
+      },
+      "ai": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 469.65625,
+        "positions": [
+          383.812
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1600x900",
+      "zoom": 1,
+      "n": 3,
+      "player": {
+        "n": 3,
+        "visible": 2,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 469.65625,
+        "positions": [
+          2,
+          77.1875
+        ]
+      },
+      "ai": {
+        "n": 3,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 469.65625,
+        "positions": [
+          383.812
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1600x900",
+      "zoom": 1,
+      "n": 9,
+      "player": {
+        "n": 9,
+        "visible": 4,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 469.65625,
+        "positions": [
+          2,
+          49.4766,
+          96.9531,
+          144.43
+        ]
+      },
+      "ai": {
+        "n": 9,
+        "visible": 3,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 469.65625,
+        "positions": [
+          383.812,
+          336.336,
+          288.859
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1600x900",
+      "zoom": 1,
+      "n": 12,
+      "player": {
+        "n": 12,
+        "visible": 10,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 469.65625,
+        "positions": [
+          2,
+          36.5284,
+          71.0568,
+          105.585,
+          140.114,
+          174.642,
+          209.17,
+          243.699,
+          278.227,
+          312.756
+        ]
+      },
+      "ai": {
+        "n": 12,
+        "visible": 9,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 469.65625,
+        "positions": [
+          383.812,
+          349.284,
+          314.756,
+          280.227,
+          245.699,
+          211.17,
+          176.642,
+          142.114,
+          107.585
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1250x740",
+      "zoom": 1,
+      "n": 1,
+      "player": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 366.25701904296875,
+        "positions": [
+          2
+        ]
+      },
+      "ai": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 366.257080078125,
+        "positions": [
+          350.5
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1250x740",
+      "zoom": 1,
+      "n": 3,
+      "player": {
+        "n": 3,
+        "visible": 2,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 366.25701904296875,
+        "positions": [
+          2,
+          71.5
+        ]
+      },
+      "ai": {
+        "n": 3,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 366.257080078125,
+        "positions": [
+          350.5
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1250x740",
+      "zoom": 1,
+      "n": 9,
+      "player": {
+        "n": 9,
+        "visible": 4,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 366.25701904296875,
+        "positions": [
+          2,
+          45.3125,
+          88.625,
+          131.938
+        ]
+      },
+      "ai": {
+        "n": 9,
+        "visible": 3,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 366.257080078125,
+        "positions": [
+          350.5,
+          307.188,
+          263.875
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1250x740",
+      "zoom": 1,
+      "n": 12,
+      "player": {
+        "n": 12,
+        "visible": 10,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 366.25701904296875,
+        "positions": [
+          2,
+          33.5,
+          65,
+          96.5,
+          128,
+          159.5,
+          191,
+          222.5,
+          254,
+          285.5
+        ]
+      },
+      "ai": {
+        "n": 12,
+        "visible": 9,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 366.257080078125,
+        "positions": [
+          350.5,
+          319,
+          287.5,
+          256,
+          224.5,
+          193,
+          161.5,
+          130,
+          98.5
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1024x680",
+      "zoom": 0.85,
+      "n": 1,
+      "player": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 215.23594665527344,
+        "positions": [
+          2
+        ]
+      },
+      "ai": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 215.2359619140625,
+        "positions": [
+          229.151
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1024x680",
+      "zoom": 0.85,
+      "n": 3,
+      "player": {
+        "n": 3,
+        "visible": 2,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 215.23594665527344,
+        "positions": [
+          2,
+          59.8493
+        ]
+      },
+      "ai": {
+        "n": 3,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 215.2359619140625,
+        "positions": [
+          229.151
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1024x680",
+      "zoom": 0.85,
+      "n": 9,
+      "player": {
+        "n": 9,
+        "visible": 4,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 215.23594665527344,
+        "positions": [
+          2,
+          30.1438,
+          58.2877,
+          86.4315
+        ]
+      },
+      "ai": {
+        "n": 9,
+        "visible": 3,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 215.2359619140625,
+        "positions": [
+          229.151,
+          201.007,
+          172.863
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1024x680",
+      "zoom": 0.85,
+      "n": 12,
+      "player": {
+        "n": 12,
+        "visible": 10,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 215.23594665527344,
+        "positions": [
+          2,
+          22.4682,
+          42.9365,
+          63.4047,
+          83.873,
+          104.341,
+          124.809,
+          145.278,
+          165.746,
+          186.214
+        ]
+      },
+      "ai": {
+        "n": 12,
+        "visible": 9,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 215.2359619140625,
+        "positions": [
+          229.151,
+          208.682,
+          188.214,
+          167.746,
+          147.278,
+          126.809,
+          106.341,
+          85.873,
+          65.4047
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "850x580",
+      "zoom": 1,
+      "n": 1,
+      "player": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 247.39453125,
+        "positions": [
+          2
+        ]
+      },
+      "ai": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 247.39453125,
+        "positions": [
+          264.281
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "850x580",
+      "zoom": 1,
+      "n": 3,
+      "player": {
+        "n": 3,
+        "visible": 2,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 247.39453125,
+        "positions": [
+          2,
+          56.7188
+        ]
+      },
+      "ai": {
+        "n": 3,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 247.39453125,
+        "positions": [
+          264.281
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "850x580",
+      "zoom": 1,
+      "n": 9,
+      "player": {
+        "n": 9,
+        "visible": 4,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 247.39453125,
+        "positions": [
+          2,
+          34.5352,
+          67.0703,
+          99.6055
+        ]
+      },
+      "ai": {
+        "n": 9,
+        "visible": 3,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 247.39453125,
+        "positions": [
+          264.281,
+          231.746,
+          199.211
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "850x580",
+      "zoom": 1,
+      "n": 12,
+      "player": {
+        "n": 12,
+        "visible": 10,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 247.39453125,
+        "positions": [
+          2,
+          25.6619,
+          49.3239,
+          72.9858,
+          96.6477,
+          120.31,
+          143.972,
+          167.633,
+          191.295,
+          214.957
+        ]
+      },
+      "ai": {
+        "n": 12,
+        "visible": 9,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 247.39453125,
+        "positions": [
+          264.281,
+          240.619,
+          216.957,
+          193.295,
+          169.633,
+          145.972,
+          122.31,
+          98.6477,
+          74.9858
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1100x650",
+      "zoom": 1.25,
+      "n": 1,
+      "player": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 503.20001220703125,
+        "positions": [
+          2
+        ]
+      },
+      "ai": {
+        "n": 1,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 503.20001220703125,
+        "positions": [
+          401.225
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1100x650",
+      "zoom": 1.25,
+      "n": 3,
+      "player": {
+        "n": 3,
+        "visible": 2,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 503.20001220703125,
+        "positions": [
+          2,
+          63.775
+        ]
+      },
+      "ai": {
+        "n": 3,
+        "visible": 1,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 503.20001220703125,
+        "positions": [
+          401.225
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1100x650",
+      "zoom": 1.25,
+      "n": 9,
+      "player": {
+        "n": 9,
+        "visible": 4,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 503.20001220703125,
+        "positions": [
+          2,
+          51.6531,
+          101.306,
+          150.959
+        ]
+      },
+      "ai": {
+        "n": 9,
+        "visible": 3,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 503.20001220703125,
+        "positions": [
+          401.225,
+          351.572,
+          301.919
+        ]
+      },
+      "pass": true
+    },
+    {
+      "viewport": "1100x650",
+      "zoom": 1.25,
+      "n": 12,
+      "player": {
+        "n": 12,
+        "visible": 10,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 503.20001220703125,
+        "positions": [
+          2,
+          38.1114,
+          74.2227,
+          110.334,
+          146.445,
+          182.557,
+          218.668,
+          254.78,
+          290.891,
+          327.002
+        ]
+      },
+      "ai": {
+        "n": 12,
+        "visible": 9,
+        "overflow": 0,
+        "underflow": 0,
+        "width": 503.20001220703125,
+        "positions": [
+          401.225,
+          365.114,
+          329.002,
+          292.891,
+          256.78,
+          220.668,
+          184.557,
+          148.445,
+          112.334
+        ]
+      },
+      "pass": true
+    }
+  ],
+  "hover": {
+    "open": true,
+    "src": "card-art/S0-CLE-031.webp",
+    "rect": {
+      "left": 1422,
+      "right": 1590,
+      "top": 364,
+      "bottom": 599
+    },
+    "grid": {
+      "left": 190,
+      "right": 1410,
+      "top": 379.171875,
+      "bottom": 564.265625
+    },
+    "active": "gl-center-choice-stage open gl-center-mode-bard"
+  },
+  "banner": {
+    "visible": true,
+    "text": "COUNTERED!\nAI used Flashpowder Bomb to negate your Health Potion."
+  },
+  "errors": []
+}

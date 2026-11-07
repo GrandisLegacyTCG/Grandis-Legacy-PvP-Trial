@@ -1,0 +1,7 @@
+/* Deck Builder v1.58 corrective patch — printed RULES footer container presentation.
+   Remove only the Ultimate RULES stroke; preserve backgrounds, fonts, spacing and effects. */
+#cardReviewDialog[data-review-kind="skill"] .review-ultimate-rules{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}

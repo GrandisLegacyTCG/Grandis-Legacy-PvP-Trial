@@ -1,0 +1,125 @@
+/* Grandis Legacy Deck Builder v1.41.0 — Card/Hero Review only.
+   Approved by designer: labels 12px, white text 14px, keyword images 18px,
+   auto-height and top-aligned artwork, no bottom gap, no boxed keyword/status glossary.
+   Does NOT modify the Deck Builder workspace, deck data, rules, or other modals. */
+#cardReviewDialog{--gl-review-heading-size:12px;--gl-review-body-size:14px;--gl-review-keyword-height:18px}
+#cardReviewDialog .review-card{
+ width:min(1160px,calc(100vw - 28px))!important;
+ height:auto!important;min-height:0!important;
+ max-height:calc(100dvh - 24px)!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ display:block!important;padding:0!important;
+ box-sizing:border-box!important;
+}
+#cardReviewDialog .review-header{position:relative!important;flex:none!important}
+#cardReviewDialog .review-layout{
+ display:grid!important;flex:none!important;height:auto!important;
+ min-height:0!important;max-height:none!important;
+ grid-template-columns:minmax(0,35%) minmax(0,1fr)!important;
+ align-items:start!important;gap:24px!important;
+ padding:18px 22px 22px!important;overflow:visible!important;
+ box-sizing:border-box!important;
+}
+#cardReviewDialog .review-art-column{
+ align-self:start!important;min-height:0!important;height:auto!important;
+ display:block!important;overflow:visible!important;
+ background:transparent!important;
+}
+#cardReviewDialog .review-art{
+ display:block!important;position:static!important;
+ width:100%!important;height:auto!important;max-width:100%!important;
+ max-height:none!important;aspect-ratio:5/7!important;
+ object-fit:contain!important;margin:0!important;background:transparent!important;
+}
+#cardReviewDialog .review-detail-column{
+ align-self:start!important;min-width:0!important;height:auto!important;
+ min-height:0!important;max-height:none!important;
+ overflow:visible!important;padding:0!important;
+ scrollbar-gutter:auto!important;
+}
+#cardReviewDialog .review-rows{padding:0!important;gap:12px!important;min-width:0!important}
+#cardReviewDialog .review-stats{margin:0 0 14px!important}
+#cardReviewDialog .review-effect-row.has-metric,
+#cardReviewDialog[data-review-kind="skill"] .review-effect-row.has-metric{
+ display:grid!important;grid-template-columns:minmax(0,150px) minmax(0,120px) minmax(0,1fr)!important;
+ gap:12px 20px!important;
+ padding:14px 18px!important;
+}
+#cardReviewDialog .review-effect-row.no-metric,
+#cardReviewDialog[data-review-kind="skill"] .review-effect-row.no-metric{
+ display:grid!important;grid-template-columns:minmax(0,150px) minmax(0,1fr)!important;
+ gap:12px 20px!important;
+ padding:14px 18px!important;
+}
+#cardReviewDialog .review-effect-row .review-effect-info,
+#cardReviewDialog .review-effect-row .review-effect-info.full-span{grid-column:1/-1!important;min-width:0!important}
+#cardReviewDialog .review-effect-row .review-effect-metric>span{
+ white-space:normal!important;overflow-wrap:normal!important;
+}
+#cardReviewDialog .review-condition-panel{margin:0!important}
+#cardReviewDialog .review-condition-line{flex-direction:row!important;align-items:flex-start!important;gap:8px!important}
+#cardReviewDialog .review-condition-text{font-size:14px!important;line-height:1.45!important}
+#cardReviewDialog .review-summary-item>strong,
+#cardReviewDialog .review-effect-class>strong,
+#cardReviewDialog .review-effect-rank>strong,
+#cardReviewDialog .review-effect-metric>strong,
+#cardReviewDialog .review-hero-block>strong{font-size:14px!important;line-height:1.4!important;font-weight:700!important}
+#cardReviewDialog .review-effect-info p,
+#cardReviewDialog .review-hero-block p,
+#cardReviewDialog .review-generic-row p,
+#cardReviewDialog .review-ultimate-rules p,
+#cardReviewDialog .review-keyword-description,
+#cardReviewDialog .review-condition-text,
+#cardReviewDialog .review-status-line{font-size:14px!important;line-height:1.5!important;font-weight:400!important}
+#cardReviewDialog .review-effect-row span,
+#cardReviewDialog .review-hero-block>span,
+#cardReviewDialog .review-generic-row>span,
+#cardReviewDialog .review-summary-item>span,
+#cardReviewDialog .review-ultimate-rules>span,
+#cardReviewDialog .review-header .dialog-eyebrow,
+#cardReviewDialog .review-progression>span{font-size:12px!important;line-height:1.35!important;font-weight:900!important}
+#cardReviewDialog .review-keyword-image,
+#cardReviewDialog .review-keyword-line .review-keyword-image,
+#cardReviewDialog .review-effect-info .review-keyword-image,
+#cardReviewDialog .review-condition-label .review-keyword-image{
+ height:18px!important;max-height:18px!important;width:auto!important;
+ margin:0 3px!important;vertical-align:middle!important;
+}
+#cardReviewDialog .review-keyword-explanation,
+#cardReviewDialog .review-status-explanations{
+ display:grid!important;grid-column:1/-1!important;gap:6px!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+ border-radius:0!important;margin:0!important;padding:2px 0!important;
+}
+#cardReviewDialog .review-keyword-explanation .review-keyword-heading{display:none!important}
+#cardReviewDialog .review-keyword-line{
+ display:flex!important;align-items:flex-start!important;flex-wrap:nowrap!important;
+ margin:0!important;gap:8px!important;padding:0!important;
+ font-size:14px!important;line-height:1.5!important;
+}
+#cardReviewDialog .review-keyword-line .review-keyword-image{flex:0 0 auto!important;margin:1px 0 0!important}
+#cardReviewDialog .review-keyword-description{flex:1 1 auto!important;min-width:0!important;overflow-wrap:anywhere!important}
+#cardReviewDialog .review-status-line{margin:0!important;padding:0!important;color:#d2d5de!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#cardReviewDialog .review-status-name,
+#cardReviewDialog .review-status-highlight{font-weight:800!important;font-size:inherit!important;display:inline!important}
+#cardReviewDialog .review-progression{
+ height:auto!important;min-height:0!important;position:static!important;
+ margin:0!important;padding:12px 22px 16px!important;
+ border-top:1px solid #484a56!important;
+ display:grid!important;grid-template-columns:140px minmax(0,1fr)!important;
+ align-items:center!important;gap:12px!important;
+}
+#cardReviewDialog .review-progression[hidden]{display:none!important}
+#cardReviewDialog .review-progression-card{width:52px!important}
+@media(max-width:760px){
+ #cardReviewDialog .review-card{width:calc(100vw - 12px)!important;max-height:calc(100dvh - 12px)!important}
+ #cardReviewDialog .review-layout{grid-template-columns:minmax(0,1fr)!important;gap:14px!important;padding:12px 14px 18px!important}
+ #cardReviewDialog .review-art-column{display:flex!important;justify-content:center!important}
+ #cardReviewDialog .review-art{width:min(100%,250px)!important;height:auto!important}
+ #cardReviewDialog .review-effect-row.has-metric,
+#cardReviewDialog[data-review-kind="skill"] .review-effect-row.has-metric{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+ #cardReviewDialog .review-effect-row.has-metric .review-effect-metric{grid-column:1/-1!important}
+ #cardReviewDialog .review-effect-row.no-metric,
+#cardReviewDialog[data-review-kind="skill"] .review-effect-row.no-metric{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+ #cardReviewDialog .review-progression{grid-template-columns:1fr!important;padding:10px 14px 14px!important}
+}

@@ -1,0 +1,82 @@
+{
+  "ok": true,
+  "passed": 13,
+  "total": 13,
+  "results": [
+    {
+      "name": "Relentless: choose source Hero -> hand EXP -> resolves",
+      "ok": true,
+      "info": {
+        "exp": 100
+      }
+    },
+    {
+      "name": "Relentless: immediately rank up Hero at EXP 300",
+      "ok": true,
+      "info": {
+        "rank": 2
+      }
+    },
+    {
+      "name": "Normal Event: refuse to play when no legal source",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "Scouting: two Hero selections plus EXP target",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "Dazed: Event source + opponent target -> Stun",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "Health Potion: choose allied Hero -> +30",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "Greater Health Potion: target already exhausted -> +50",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "Elixir: choose allied status target -> cleanses",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "Phoenix Feather: choose defeated Hero -> revive at 10 HP",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "Freeze Bomb: choose opponent Hero -> Freeze",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "No heal without damaged Hero; no Freeze target without opponent",
+      "ok": true,
+      "info": null
+    },
+    {
+      "name": "AI Item Heal: never missing target; no Hero source for Item",
+      "ok": true,
+      "info": {
+        "actions": 1
+      }
+    },
+    {
+      "name": "AI Event action needs a source Hero and opponent target",
+      "ok": true,
+      "info": {
+        "actions": 9
+      }
+    }
+  ],
+  "jsErrors": [],
+  "missingAssets": []
+}

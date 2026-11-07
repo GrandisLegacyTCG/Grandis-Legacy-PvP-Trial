@@ -1,0 +1,246 @@
+{
+  "checks": [
+    {
+      "name": "Magical attack opens payment instead of old optional popup",
+      "passed": true,
+      "details": {
+        "pending": {
+          "type": "mana_shard_payment_choice",
+          "card": "S0-MAG-001",
+          "surge": false,
+          "shards": [
+            "MANA:PLAYER:QUA0",
+            "MANA:PLAYER:QUA1"
+          ]
+        },
+        "hp": 100,
+        "aiHp": 120,
+        "racial": 2,
+        "pool": 4,
+        "hand": [
+          "S0-MAG-001"
+        ],
+        "rw": null,
+        "log": [
+          "Choose your Mana payment for Arcane Bolt. The recommended payment is preselected; the selected Mana may be changed before PAY.",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "name": "Arcane Surge button visible and enabled",
+      "passed": true,
+      "details": 1
+    },
+    {
+      "name": "Surge hover tooltip includes +20 and cost",
+      "passed": true,
+      "details": "ARCANE SURGE (+20). Spend 1 additional Mana for +20 Magical damage."
+    },
+    {
+      "name": "Surge toggles on with stable rerender",
+      "passed": true,
+      "details": {
+        "pending": {
+          "type": "mana_shard_payment_choice",
+          "card": "S0-MAG-001",
+          "surge": true,
+          "shards": [
+            "MANA:PLAYER:QUA0",
+            "MANA:PLAYER:QUA1"
+          ]
+        },
+        "hp": 100,
+        "aiHp": 120,
+        "racial": 2,
+        "pool": 4,
+        "hand": [
+          "S0-MAG-001"
+        ],
+        "rw": null,
+        "log": [
+          "Choose your Mana payment for Arcane Bolt. The recommended payment is preselected; the selected Mana may be changed before PAY.",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "name": "Surge choice persists repeated UI renders",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Arcane Surge actual Mana spent + bonus log",
+      "passed": true,
+      "details": {
+        "pending": null,
+        "hp": 100,
+        "aiHp": 80,
+        "racial": 2,
+        "pool": 1,
+        "hand": [],
+        "rw": null,
+        "log": [
+          "Response Window opens for Arcane Bolt targeting Bromir Oathforge.",
+          "Arcane Surge spends 1 additional Mana. Lucien Voss selected Magical Attack gains +20 damage.",
+          "PLAYER spends 1 additional Mana for Arcane Surge.",
+          "PLAYER plays Arcane Bolt and pays 2 Mana. Lucien Voss Exhausts.",
+          "Choose your Mana payment for Arcane Bolt. The recommended payment is preselected; the selected Mana may be changed before PAY.",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "name": "Nonmagical attack shows disabled Surge with explanation",
+      "passed": true,
+      "details": "ARCANE SURGE (+20). This card is not a Magical Attack."
+    },
+    {
+      "name": "Insufficient spare physical shard disables Surge",
+      "passed": true,
+      "details": "MANA SURGE (+10). Not enough additional Mana after paying the card cost."
+    },
+    {
+      "name": "Spell Blade uses Mana Surge +10 not Arcane +20",
+      "passed": true,
+      "details": "MANA SURGE (+10)"
+    },
+    {
+      "name": "Mage without optional Surge has no extra payment button",
+      "passed": true,
+      "details": {
+        "played": true,
+        "diagnosis": {
+          "legal": {
+            "can": false,
+            "reasons": [
+              "another action pending"
+            ],
+            "cost": 2
+          },
+          "gate": {
+            "ok": true,
+            "reasons": [],
+            "cost": 2
+          },
+          "cost": 2,
+          "source": null,
+          "hero": "Mage"
+        },
+        "info": {
+          "pending": {
+            "type": "mana_shard_payment_choice",
+            "card": "S0-MAG-001",
+            "surge": false,
+            "shards": [
+              "MANA:PLAYER:QUA0",
+              "MANA:PLAYER:QUA1"
+            ]
+          },
+          "hp": 100,
+          "aiHp": 120,
+          "racial": 2,
+          "pool": 4,
+          "hand": [
+            "S0-MAG-001"
+          ],
+          "rw": null,
+          "log": [
+            "Choose your Mana payment for Arcane Bolt. The recommended payment is preselected; the selected Mana may be changed before PAY.",
+            "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+            "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stoneblood center stage shows defeated Hero card",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Stoneblood does not show Hero-side SKIP",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Stoneblood has exactly two decisions",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "Stoneblood spends token and restores 30 HP",
+      "passed": true,
+      "details": {
+        "pending": null,
+        "hp": 30,
+        "aiHp": 120,
+        "racial": 0,
+        "pool": 4,
+        "hand": [
+          "S0-MAG-001"
+        ],
+        "rw": null,
+        "log": [
+          "Thrain Sunborn uses Stoneblood, spends 1 Racial Token, prevents defeat, and remains at 30 HP.",
+          "Choose your Mana payment for Arcane Bolt. The recommended payment is preselected; the selected Mana may be changed before PAY.",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "name": "Declining Stoneblood preserves token, no 30 HP reset",
+      "passed": true,
+      "details": {
+        "pending": {
+          "type": "legacy_defeat_choice",
+          "card": null,
+          "surge": null,
+          "shards": null
+        },
+        "hp": 0,
+        "aiHp": 120,
+        "racial": 1,
+        "pool": 4,
+        "hand": [
+          "S0-MAG-001"
+        ],
+        "rw": null,
+        "log": [
+          "PLAYER must choose Legacy card for defeated Thrain Sunborn in CENTER.",
+          "Stoneblood declined. Defeat flow continues.",
+          "Thrain Sunborn uses Stoneblood, spends 1 Racial Token, prevents defeat, and remains at 30 HP.",
+          "Choose your Mana payment for Arcane Bolt. The recommended payment is preselected; the selected Mana may be changed before PAY.",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "name": "CANCEL after selecting Surge spends no Mana / card",
+      "passed": true,
+      "details": {
+        "pending": null,
+        "hp": 100,
+        "aiHp": 120,
+        "racial": 2,
+        "pool": 4,
+        "hand": [
+          "S0-MAG-001"
+        ],
+        "rw": null,
+        "log": [
+          "Cancelled pending action for Arcane Bolt. No cost, Played marker, Exhaust, discard, or attachment staging occurred.",
+          "Choose your Mana payment for Arcane Bolt. The recommended payment is preselected; the selected Mana may be changed before PAY.",
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    }
+  ],
+  "errors": []
+}

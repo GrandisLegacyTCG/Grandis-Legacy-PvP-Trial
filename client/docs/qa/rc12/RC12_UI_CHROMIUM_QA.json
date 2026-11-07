@@ -1,0 +1,192 @@
+{
+  "startupErrors": [],
+  "maestroSetup": {
+    "type": "s0_bard_draw_choice",
+    "ability": "Orchestral Crescendo",
+    "max": 2,
+    "active": false
+  },
+  "maestroInitialButtons": [
+    "Orchestral Crescendo",
+    "SKIP"
+  ],
+  "initialModal": 0,
+  "afterSkillClick": {
+    "buttons": [
+      "CONFIRM",
+      "CANCEL"
+    ],
+    "disabled": true,
+    "discardButtons": 3,
+    "spotlight": 1,
+    "dimmer": 1,
+    "modal": 0,
+    "state": {
+      "type": "s0_bard_draw_choice",
+      "side": "PLAYER",
+      "decision_side": "PLAYER",
+      "source_lane": "CENTER",
+      "ability_name": "Orchestral Crescendo",
+      "max_count": 2,
+      "selected_indices": [],
+      "selection_active": true
+    }
+  },
+  "afterOneSelected": {
+    "enabled": true,
+    "handSelected": 1
+  },
+  "afterCancel": {
+    "buttons": [
+      "Orchestral Crescendo",
+      "SKIP"
+    ],
+    "hand": [
+      "S0-ARC-026",
+      "S0-CLE-026",
+      "S0-WAR-001"
+    ],
+    "active": false,
+    "spotlight": 0
+  },
+  "afterConfirmOne": {
+    "phase": "Deploy",
+    "hand": [
+      "S0-CLE-026",
+      "S0-WAR-001",
+      "S0-WAR-002"
+    ],
+    "discard": [
+      "S0-ARC-026"
+    ],
+    "deck": [
+      "S0-WAR-003",
+      "S0-CLE-001",
+      "S0-CLE-002"
+    ],
+    "pending": null
+  },
+  "maestroTwoSetup": {
+    "type": "s0_bard_draw_choice",
+    "ability": "Orchestral Crescendo",
+    "max": 2,
+    "active": false
+  },
+  "maestroTwoSelection": [
+    0,
+    1
+  ],
+  "maestroTwoCommit": {
+    "handCount": 3,
+    "discard": [
+      "S0-CLE-026",
+      "S0-ARC-026"
+    ],
+    "deckCount": 2
+  },
+  "bardSetup": {
+    "type": "s0_bard_draw_choice",
+    "ability": "Prolonged Symphony",
+    "max": 1,
+    "active": false
+  },
+  "bardButtons": [
+    "Prolonged Symphony",
+    "SKIP"
+  ],
+  "bardMaxOne": [
+    0
+  ],
+  "bardSkip": {
+    "pending": null,
+    "discard": []
+  },
+  "pageErrors": [],
+  "GL_S0_RC6_LINEAGE_EFFECT_REGRESSION_QA_SELF_TEST": {
+    "ok": true,
+    "skill_hero_lineage_cases": 6975,
+    "off_lineage_response_blocked": true,
+    "rank_lineage_fallback": true,
+    "market_bargain_draw_2": true
+  },
+  "GL_S0_TARGET_SELECTION_QA_SELF_TEST": {
+    "ok": true,
+    "passed": 13,
+    "total": 13,
+    "results": [
+      {
+        "name": "Relentless: choose source Hero -> hand EXP -> resolves",
+        "ok": true,
+        "info": {
+          "exp": 100
+        }
+      },
+      {
+        "name": "Relentless: immediately rank up Hero at EXP 300",
+        "ok": true,
+        "info": {
+          "rank": 2
+        }
+      },
+      {
+        "name": "Normal Event: refuse to play when no legal source",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Scouting: two Hero selections plus EXP target",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Dazed: Event source + opponent target -> Stun",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Health Potion: choose allied Hero -> +30",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Greater Health Potion: target already exhausted -> +50",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Elixir: choose allied status target -> cleanses",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Phoenix Feather: choose defeated Hero -> revive at 10 HP",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Freeze Bomb: choose opponent Hero -> Freeze",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "No heal without damaged Hero; no Freeze target without opponent",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "AI Item Heal: never missing target; no Hero source for Item",
+        "ok": true,
+        "info": {
+          "actions": 1
+        }
+      },
+      {
+        "name": "AI Event action needs a source Hero and opponent target",
+        "ok": true,
+        "info": {
+          "actions": 9
+        }
+      }
+    ]
+  }
+}

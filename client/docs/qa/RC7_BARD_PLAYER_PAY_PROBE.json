@@ -1,0 +1,74 @@
+{
+  "open": true,
+  "step1": {
+    "pending": "card_search_choice",
+    "resolve_to": "s0_condition_precommit",
+    "deck": [
+      "S0-MAG-001",
+      "S0-MAG-002",
+      "S0-WAR-002",
+      "S0-ARC-001"
+    ],
+    "discard": [
+      "S0-CLE-027",
+      "S0-WAR-001"
+    ],
+    "mana": 4
+  },
+  "selected": true,
+  "step2": {
+    "pending": "mana_shard_payment_choice",
+    "deck": [
+      "S0-MAG-001",
+      "S0-MAG-002",
+      "S0-WAR-002",
+      "S0-ARC-001"
+    ],
+    "discard": [
+      "S0-CLE-027",
+      "S0-WAR-001"
+    ],
+    "mana": 4
+  },
+  "paid": true,
+  "before": {
+    "hand": [
+      "S0-CLE-028"
+    ],
+    "discard": [
+      "S0-CLE-027",
+      "S0-WAR-001"
+    ],
+    "deck": [
+      "S0-MAG-001",
+      "S0-MAG-002",
+      "S0-WAR-002",
+      "S0-ARC-001"
+    ],
+    "pool": 4
+  },
+  "after": {
+    "pending": null,
+    "deck": [
+      "S0-ARC-001",
+      "S0-MAG-001",
+      "S0-MAG-002"
+    ],
+    "discard": [
+      "S0-WAR-001"
+    ],
+    "hand": [
+      "S0-WAR-002",
+      "S0-CLE-027"
+    ],
+    "mana": 3,
+    "logs": [
+      "PLAYER plays Blessing of Accuracy and pays 1 Mana. Melody Silverstring does not Exhaust.",
+      "Blessing of Accuracy returns Vae from Discard Pile to Main Deck as CONDITION, then shuffles.",
+      "Choose your Shard payment for Blessing of Accuracy. The recommended payment is preselected; any Shard may be changed before PAY.",
+      "PLAYER draws 4 Shards from Shard Deck (QA_SETUP).",
+      "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+      "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    ]
+  }
+}

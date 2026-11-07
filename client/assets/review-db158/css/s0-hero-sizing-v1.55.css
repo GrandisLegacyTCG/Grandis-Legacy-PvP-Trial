@@ -1,0 +1,38 @@
+/* Grandis Legacy Deck Builder v1.55 — Hero Review visual sizing.
+   Retains v1.53-style modal/content flow and the approved 96% popup width.
+   Hotfix: shrink the *artwork itself*, including for short CSS viewports
+   (for example when desktop browser zoom reduces available CSS height).
+   Leave typography, information blocks, header/footer and Dual Class alone. */
+@media (min-width:1101px){
+  #cardReviewDialog[data-review-kind="hero"] .review-card{
+    width:min(1132.8px,calc(100vw - 48px))!important;
+  }
+}
+@media (min-width:761px) and (max-width:1100px){
+  #cardReviewDialog[data-review-kind="hero"] .review-card{
+    width:min(979.2px,calc((100vw - 32px) * 0.96))!important;
+  }
+}
+@media (min-width:761px){
+  #cardReviewDialog[data-review-kind="hero"] .review-art-column{
+    display:block!important;
+  }
+  #cardReviewDialog[data-review-kind="hero"] .review-art{
+    display:block!important;
+    /* No vertical scroll from artwork alone on ordinary short-height screens.
+       96% is the normal card width; on short viewports, the second term
+       reserves room for header, footer, scroll padding and outer margins. */
+    width:min(96%, calc((100dvh - 262px) * 0.7142857))!important;
+    height:auto!important;
+    max-height:none!important;
+    aspect-ratio:5 / 7!important;
+    object-fit:contain!important;
+    object-position:top left!important;
+  }
+}
+/* Preserve enough breathing room before the Hero Lineages separator even
+   when the Bonus block is the last piece of scrollable information. */
+#cardReviewDialog[data-review-kind="hero"] .review-layout{
+  padding-bottom:16px!important;
+}
+

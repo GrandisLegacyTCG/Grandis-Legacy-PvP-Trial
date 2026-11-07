@@ -1,0 +1,209 @@
+{
+  "schema": "GL-SEASON0-DECK-DRAFT-1",
+  "schema_version": "GL-SEASON0-DECK-DRAFT-1",
+  "season": "S0",
+  "builder_version": "1.58",
+  "style": "style2",
+  "source": "Deck Builder v1.58 / style-2/js/s0-starters-v1.46.js",
+  "name": "Green-Yellow Deck",
+  "deck_name": "Green-Yellow Deck",
+  "deck": {
+    "main_deck": [
+      {
+        "card_id": "S0-ARC-003",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-005",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-010",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-012",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-014",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-015",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-016",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-021",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-022",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-025",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-THF-010",
+        "quantity": 3
+      },
+      {
+        "card_id": "S0-THF-011",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-THF-012",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-THF-014",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-THF-015",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-THF-016",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-THF-018",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-THF-027",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-THF-028",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-THF-030",
+        "quantity": 3
+      },
+      {
+        "card_id": "S0-EVT-001",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-002",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-003",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-004",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-007",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-002",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-008",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-012",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-016",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-018",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-011",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-023",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ITM-017",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-019",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-001",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-009",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-010",
+        "quantity": 1
+      }
+    ],
+    "shard_deck": [
+      {
+        "kind": "MANA",
+        "quantity": 10
+      },
+      {
+        "kind": "CLASS",
+        "class_name": "Archer",
+        "quantity": 1
+      },
+      {
+        "kind": "CLASS",
+        "class_name": "Thief",
+        "quantity": 1
+      }
+    ],
+    "legacy_packages": [
+      {
+        "hero_rank_ids": [
+          "S0-ARC-H004",
+          "S0-ARC-H005",
+          "S0-ARC-H006"
+        ],
+        "legacy_card_id": "S0-ARC-L002"
+      },
+      {
+        "hero_rank_ids": [
+          "S0-ARC-H007",
+          "S0-ARC-H008",
+          "S0-ARC-H009"
+        ],
+        "legacy_card_id": "S0-ARC-L001"
+      },
+      {
+        "hero_rank_ids": [
+          "S0-THF-H001",
+          "S0-THF-H002",
+          "S0-THF-H003"
+        ],
+        "legacy_card_id": "S0-THF-L001"
+      }
+    ]
+  },
+  "default_formation": {
+    "LEFT": "S0-ARC-H004",
+    "CENTER": "S0-ARC-H007",
+    "RIGHT": "S0-THF-H001"
+  }
+}

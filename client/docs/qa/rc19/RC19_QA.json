@@ -1,0 +1,145 @@
+{
+  "version": "v1.0 RC19",
+  "date": "2026-11-05",
+  "source_zip": "Grandis_Legacy_VS_AI_Season0_v1.0_RC18_2026-11-05.zip",
+  "changes": {
+    "magic_compass": "7 columns unchanged; 3 rows capacity, scrolling for overflow; viewport-aware height",
+    "card_review": "1120px max (versus 1280px), adaptive actual card content height, transparent outer wrapper; header and Deck Builder v1.58 renderer unchanged",
+    "ai_mana_stack": "right-to-left placement remains; frontmost card is leftmost; no Mana state/order change",
+    "hp_overlay": "Rank-up transition no longer hides active Hero HP; stale transition class cleared during rendering if no active Rank Up presentation",
+    "poison_vial": "only Skill Card subtype Physical Attack; Area Attack dealing Physical does not qualify; previous HP damage gate unchanged",
+    "defense_arrow": "Defense Skill/Protection Item arrow -> protected Hero, one context during Response PAY/commit; stale attacker-directed Protection Item history arrow suppressed"
+  },
+  "checks": {
+    "poison_subtype_cases": {
+      "S0-ITM-011": false,
+      "S0-ARC-017": true,
+      "S0-WAR-008": false,
+      "S0-WAR-016": false,
+      "S0-THF-031": false,
+      "S0-ARC-001": true,
+      "S0-MAG-002": false,
+      "S0-CLE-002": false
+    },
+    "defense_arrows": {
+      "S0-ITM-016": [
+        {
+          "source_kind": "active-card",
+          "target_kind": "hero",
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "card_id": "S0-ITM-016"
+        }
+      ],
+      "S0-CLE-002": [
+        {
+          "source_kind": "active-card",
+          "target_kind": "hero",
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "card_id": "S0-CLE-002"
+        }
+      ],
+      "history": []
+    },
+    "swap_qa": {
+      "ok": true,
+      "checks": 40
+    },
+    "target_selection": {
+      "ok": true,
+      "passed": 13,
+      "total": 13
+    },
+    "ultimate_tribute": {
+      "ok": true,
+      "ultimateCards": 15,
+      "successfulCases": 30
+    },
+    "lineage": {
+      "ok": true,
+      "skill_hero_lineage_cases": 6975
+    },
+    "review_layout": {
+      "desktop": {
+        "width": 1120,
+        "height": 469,
+        "card_scroll_height": 465
+      },
+      "short": {
+        "width": 962.5,
+        "height": 413,
+        "card_scroll_height": 409
+      },
+      "portrait": {
+        "width": 356.2,
+        "height": 473,
+        "card_scroll_height": 469
+      }
+    },
+    "magic_compass_21_cards": {
+      "desktop": {
+        "width": 788,
+        "panelH": 745.390625,
+        "bodyHeight": 641.390625,
+        "scroll": 641,
+        "rows": 3,
+        "cols": 7,
+        "scrollable": false
+      },
+      "short": {
+        "width": 788,
+        "panelH": 540,
+        "bodyHeight": 436,
+        "scroll": 641,
+        "rows": 3,
+        "cols": 7,
+        "scrollable": true
+      },
+      "portrait": {
+        "width": 358.796875,
+        "panelH": 534,
+        "bodyHeight": 430,
+        "scroll": 430,
+        "rows": 3,
+        "cols": 7,
+        "scrollable": false
+      }
+    },
+    "mana_layers": {
+      "desktop": true,
+      "compact": true,
+      "touch": true,
+      "portrait": true
+    },
+    "hp_computed_opacity_rank_transition": {
+      "desktop": {
+        "before": "1",
+        "during": "1",
+        "exists": true
+      },
+      "compact": {
+        "before": "1",
+        "during": "1",
+        "exists": true
+      },
+      "touch": {
+        "before": "1",
+        "during": "1",
+        "exists": true
+      },
+      "portrait": {
+        "before": "1",
+        "during": "1",
+        "exists": true
+      }
+    },
+    "browser_errors": []
+  },
+  "not_proven": [
+    "Korvak live Firefox screenshot-specific HP disappearance not reproduced in normal complete battle: hardening tested via computed CSS, final field verification outstanding",
+    "Chain Mail complete end-to-end mouse Response and layered arrows in Firefox still requires real match",
+    "Magic Compass 21-card display tested with a synthetic UI candidate grid; card search gameplay not retested as full field match",
+    "No full normal Human-vs-AI match to terminal Win/Loss/Draw has been verified"
+  ]
+}

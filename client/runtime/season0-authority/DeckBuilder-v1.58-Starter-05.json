@@ -1,0 +1,193 @@
+{
+  "schema": "GL-SEASON0-DECK-DRAFT-1",
+  "schema_version": "GL-SEASON0-DECK-DRAFT-1",
+  "season": "S0",
+  "builder_version": "1.58",
+  "style": "style2",
+  "source": "Deck Builder v1.58 / style-2/js/s0-starters-v1.46.js",
+  "name": "White-Green Deck",
+  "deck_name": "White-Green Deck",
+  "deck": {
+    "main_deck": [
+      {
+        "card_id": "S0-ARC-026",
+        "quantity": 3
+      },
+      {
+        "card_id": "S0-CLE-026",
+        "quantity": 3
+      },
+      {
+        "card_id": "S0-CLE-027",
+        "quantity": 3
+      },
+      {
+        "card_id": "S0-CLE-031",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-030",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-030",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-029",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-031",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-003",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-005",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-008",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ARC-010",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-012",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-014",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-ARC-018",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-002",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-007",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-010",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-015",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-011",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-018",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-002",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-003",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-004",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-007",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-009",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-008",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-018",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-017",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-002",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-008",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-005",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-001",
+        "quantity": 1
+      }
+    ],
+    "shard_deck": [
+      {
+        "kind": "MANA",
+        "quantity": 10
+      },
+      {
+        "kind": "CLASS",
+        "class_name": "Archer",
+        "quantity": 1
+      },
+      {
+        "kind": "CLASS",
+        "class_name": "Cleric",
+        "quantity": 1
+      }
+    ],
+    "legacy_packages": [
+      {
+        "hero_rank_ids": [
+          "S0-CLE-H001",
+          "S0-CLE-H002",
+          "S0-CLE-H003"
+        ],
+        "legacy_card_id": "S0-CLE-L001"
+      },
+      {
+        "hero_rank_ids": [
+          "S0-CLE-H007",
+          "S0-CLE-H008",
+          "S0-CLE-H009"
+        ],
+        "legacy_card_id": "S0-CLE-L002"
+      },
+      {
+        "hero_rank_ids": [
+          "S0-ARC-H001",
+          "S0-ARC-H002",
+          "S0-ARC-H003"
+        ],
+        "legacy_card_id": "S0-ARC-L001"
+      }
+    ]
+  },
+  "default_formation": {
+    "LEFT": "S0-CLE-H001",
+    "CENTER": "S0-CLE-H007",
+    "RIGHT": "S0-ARC-H001"
+  }
+}

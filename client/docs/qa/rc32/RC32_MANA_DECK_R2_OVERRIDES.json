@@ -1,0 +1,62 @@
+{
+  "revision": "GL_S0_ManaDeck_R2",
+  "scope": "local VS AI visual override only",
+  "OSA_authority_exports_mutated": false,
+  "mana_cards": {
+    "S0-MAN-001": {
+      "archive": "GL_S0_ManaDeck_R2.rar",
+      "entry": "Mana Deck/S0-MAN-001-Regular Mana Shard.webp",
+      "local_path": "card-art/S0-MAN-001.webp",
+      "old_sha256": "199c10d5ab55a3b07a69700fd425259ae5aa0c46d1d9ebe52b5ac1cc4fffed35",
+      "new_sha256": "dbe605ae204d057eacfe0ec9c662051f9b4abf622b269e16178d091d3348b0aa",
+      "dimensions": "320x448",
+      "bytes": 37650
+    },
+    "S0-MAN-002": {
+      "archive": "GL_S0_ManaDeck_R2.rar",
+      "entry": "Mana Deck/S0-MAN-002-Red Mana Shard.webp",
+      "local_path": "card-art/S0-MAN-002.webp",
+      "old_sha256": "cd7f34d47edb64179ab64b9d5fcc370fac40c9a9522b0d488c6d6626d5e0ad49",
+      "new_sha256": "13ad7876790a931536ec5bea0220cb36d6266ebd7c36fadb652ef4bc80b00b74",
+      "dimensions": "320x448",
+      "bytes": 48256
+    },
+    "S0-MAN-003": {
+      "archive": "GL_S0_ManaDeck_R2.rar",
+      "entry": "Mana Deck/S0-MAN-003-Blue Mana Shard.webp",
+      "local_path": "card-art/S0-MAN-003.webp",
+      "old_sha256": "025bf4b6da89e71d640fc6285e2fb478efb860ba07a78f87a4fe365f4a1dbba0",
+      "new_sha256": "02b10180cc3e43b7fc61eb0ade795b6416a40bae4dca82875c5626dce5b1089f",
+      "dimensions": "320x448",
+      "bytes": 52564
+    },
+    "S0-MAN-004": {
+      "archive": "GL_S0_ManaDeck_R2.rar",
+      "entry": "Mana Deck/S0-MAN-004-White Mana Shard.webp",
+      "local_path": "card-art/S0-MAN-004.webp",
+      "old_sha256": "3b19691333e313e9e2554d887f183444d18d91c68631a9a940d8c7cb3b8913f8",
+      "new_sha256": "8d5718499f0de6fa3a449bcf6be0b37e044785cb81a8971c2321532b9ffc45e9",
+      "dimensions": "320x448",
+      "bytes": 43554
+    },
+    "S0-MAN-005": {
+      "archive": "GL_S0_ManaDeck_R2.rar",
+      "entry": "Mana Deck/S0-MAN-005-Yellow Mana Shard.webp",
+      "local_path": "card-art/S0-MAN-005.webp",
+      "old_sha256": "c2336579f2eaebd67ed4a9643d81d56552a31c6727fb24d4dfb0a62c0951bd0b",
+      "new_sha256": "b27d1a32fc036d771dac3091a2c1a726822eb4e0fbbd8e0f2731551e40b889c9",
+      "dimensions": "320x448",
+      "bytes": 59222
+    },
+    "S0-MAN-006": {
+      "archive": "GL_S0_ManaDeck_R2.rar",
+      "entry": "Mana Deck/S0-MAN-006-Green Mana Shard.webp",
+      "local_path": "card-art/S0-MAN-006.webp",
+      "old_sha256": "b6990966c0453b2a167b48bb2ae42d61303d7886bd3431b11625fe9ea87db646",
+      "new_sha256": "6707d8179cf96627f0773adf9883ef4c8d137897c4e84f5f72682069fee40fa1",
+      "dimensions": "320x448",
+      "bytes": 54026
+    }
+  },
+  "notes": "Original season0-authority and stage4 manifests still describe the older R1 OSA snapshot."
+}

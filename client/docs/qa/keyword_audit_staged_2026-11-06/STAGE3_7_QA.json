@@ -1,0 +1,2037 @@
+{
+  "ok": true,
+  "coverage": {
+    "unique_cards": 87,
+    "source_paths_checked": 87,
+    "assertions": 73,
+    "passed": 73,
+    "failed": 0,
+    "warnings": 6
+  },
+  "checks": [
+    {
+      "id": "S0-CLE-012",
+      "group": "REACTION",
+      "description": "eligible as Response-family according to source",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "tags": [
+          "SKILL",
+          "REACTION"
+        ]
+      }
+    },
+    {
+      "id": "S0-EVT-007",
+      "group": "REACTION",
+      "description": "eligible as Response-family according to source",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "tags": [
+          "EVENT",
+          "REACTION"
+        ]
+      }
+    },
+    {
+      "id": "S0-EVT-009",
+      "group": "REACTION",
+      "description": "eligible as Response-family according to source",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "tags": [
+          "EVENT",
+          "REACTION"
+        ]
+      }
+    },
+    {
+      "id": "S0-EVT-012",
+      "group": "REACTION",
+      "description": "eligible as Response-family according to source",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "tags": [
+          "EVENT",
+          "REACTION"
+        ]
+      }
+    },
+    {
+      "id": "S0-ITM-017",
+      "group": "REACTION",
+      "description": "eligible as Response-family according to source",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "tags": [
+          "ITEM",
+          "REACTION"
+        ]
+      }
+    },
+    {
+      "id": "S0-MAG-031",
+      "group": "INVINCIBLE",
+      "description": "Response kind is immunity / absolute defense",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "response_kind": "absolute_reflect"
+      }
+    },
+    {
+      "id": "S0-MAG-031",
+      "group": "REFLECT",
+      "description": "Source card has REFLECT in at least one branch",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-THF-022",
+      "group": "REFLECT",
+      "description": "Source card has REFLECT in at least one branch",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-WAR-012",
+      "group": "REFLECT",
+      "description": "Source card has REFLECT in at least one branch",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-WAR-029",
+      "group": "REFLECT",
+      "description": "Source card has REFLECT in at least one branch",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-025",
+      "group": "INVINCIBLE",
+      "description": "Response kind is immunity / absolute defense",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "response_kind": "immunity"
+      }
+    },
+    {
+      "id": "S0-CLE-031",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION rejects missing notes",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-031",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION accepts matching notes",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-MAG-011",
+      "group": "INVINCIBLE",
+      "description": "Response kind is immunity / absolute defense",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "response_kind": "immunity"
+      }
+    },
+    {
+      "id": "S0-MAG-030",
+      "group": "INVINCIBLE",
+      "description": "Response kind is immunity / absolute defense",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "more": {
+        "response_kind": "immunity"
+      }
+    },
+    {
+      "id": "S0-ARC-028",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION rejects missing notes",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "S0-ARC-028",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION accepts matching notes",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-ARC-029",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION rejects missing notes",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "S0-ARC-029",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION accepts matching notes",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-ARC-030",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION rejects missing notes",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "S0-ARC-030",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION accepts matching notes",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-ARC-031",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION rejects missing notes",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "S0-ARC-031",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION accepts matching notes",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-028",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION rejects missing notes",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-028",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION accepts matching notes",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-030",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION rejects missing notes",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-030",
+      "group": "CONDITION",
+      "description": "Bard note-return CONDITION accepts matching notes",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-030",
+      "group": "HEAL",
+      "description": "Recognized as Heal-family card",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-MAG-022",
+      "group": "MANA",
+      "description": "Mana physical conservation in baseline test fixture",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-011",
+      "group": "HEAL",
+      "description": "Recognized as Heal-family card",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-016",
+      "group": "HEAL",
+      "description": "Recognized as Heal-family card",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-017",
+      "group": "HEAL",
+      "description": "Recognized as Heal-family card",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-023",
+      "group": "HEAL",
+      "description": "Recognized as Heal-family card",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-027",
+      "group": "HEAL",
+      "description": "Recognized as Heal-family card",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-ITM-001",
+      "group": "HEAL",
+      "description": "Recognized as Heal-family card",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-ITM-002",
+      "group": "HEAL",
+      "description": "Recognized as Heal-family card",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-CLE-015",
+      "group": "REVIVE",
+      "description": "Revive-family card identified",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-ITM-008",
+      "group": "REVIVE",
+      "description": "Revive-family card identified",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-WAR-014",
+      "group": "REVIVE",
+      "description": "Final Grit handled through special Legacy recovery",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "S0-MAG-020",
+      "group": "MANA",
+      "description": "Mana physical conservation in baseline test fixture",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "S0-MAG-023",
+      "group": "MANA",
+      "description": "Mana physical conservation in baseline test fixture",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "S0-MAG-024",
+      "group": "MANA",
+      "description": "Mana physical conservation in baseline test fixture",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "S0-MAG-026",
+      "group": "MANA",
+      "description": "Mana physical conservation in baseline test fixture",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "S0-MAG-028",
+      "group": "MANA",
+      "description": "Mana physical conservation in baseline test fixture",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "S0-MAG-021",
+      "group": "MANA",
+      "description": "Mana physical conservation in baseline test fixture",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "S0-THF-005",
+      "group": "MANA",
+      "description": "Mana physical conservation in baseline test fixture",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Bleed",
+      "group": "STATUS",
+      "description": "Status cap is six after 4+4",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Bleed",
+      "group": "STATUS",
+      "description": "Opposing End does not decrement",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Bleed",
+      "group": "STATUS",
+      "description": "Owner End decrements once",
+      "expected": 5,
+      "actual": 5,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Burn",
+      "group": "STATUS",
+      "description": "Status cap is six after 4+4",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Burn",
+      "group": "STATUS",
+      "description": "Opposing End does not decrement",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Burn",
+      "group": "STATUS",
+      "description": "Owner End decrements once",
+      "expected": 5,
+      "actual": 5,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Freeze",
+      "group": "STATUS",
+      "description": "Status cap is six after 4+4",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Freeze",
+      "group": "STATUS",
+      "description": "Opposing End does not decrement",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Freeze",
+      "group": "STATUS",
+      "description": "Owner End decrements once",
+      "expected": 5,
+      "actual": 5,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Poison",
+      "group": "STATUS",
+      "description": "Status cap is six after 4+4",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Poison",
+      "group": "STATUS",
+      "description": "Opposing End does not decrement",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Poison",
+      "group": "STATUS",
+      "description": "Owner End decrements once",
+      "expected": 5,
+      "actual": 5,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Sleep",
+      "group": "STATUS",
+      "description": "Status cap is six after 4+4",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Sleep",
+      "group": "STATUS",
+      "description": "Opposing End does not decrement",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Sleep",
+      "group": "STATUS",
+      "description": "Owner End decrements once",
+      "expected": 5,
+      "actual": 5,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Stun",
+      "group": "STATUS",
+      "description": "Status cap is six after 4+4",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Stun",
+      "group": "STATUS",
+      "description": "Opposing End does not decrement",
+      "expected": 6,
+      "actual": 6,
+      "ok": true
+    },
+    {
+      "id": "STATUS-Stun",
+      "group": "STATUS",
+      "description": "Owner End decrements once",
+      "expected": 5,
+      "actual": 5,
+      "ok": true
+    },
+    {
+      "id": "SLEEP",
+      "group": "STATUS",
+      "description": "Sleep blocks normal Attack Skill",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "SLEEP",
+      "group": "STATUS",
+      "description": "Sleep allows Item by default",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "SLEEP",
+      "group": "STATUS",
+      "description": "Sleep permits DODGE Skill",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "id": "STUN",
+      "group": "STATUS",
+      "description": "Stun blocks DODGE Skill",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "id": "BURN",
+      "group": "STATUS",
+      "description": "Burn adds constant 10 if Attack does damage, regardless of 6 counters",
+      "expected": 10,
+      "actual": 10,
+      "ok": true
+    },
+    {
+      "id": "BURN",
+      "group": "STATUS",
+      "description": "Burn does not apply without damage",
+      "expected": 0,
+      "actual": 0,
+      "ok": true
+    },
+    {
+      "id": "MANA BURN",
+      "group": "MANA",
+      "description": "Remove up to five but only two exist in opponent pool",
+      "expected": 0,
+      "actual": 0,
+      "ok": true
+    },
+    {
+      "id": "MANA BURN",
+      "group": "MANA",
+      "description": "Opposing Mana Deck + Pool stays exactly 12",
+      "expected": 12,
+      "actual": 12,
+      "ok": true
+    },
+    {
+      "id": "MANA BURN",
+      "group": "MANA",
+      "description": "Burn does not affect own Pool",
+      "expected": 4,
+      "actual": 4,
+      "ok": true
+    }
+  ],
+  "failed": [],
+  "warnings": [
+    {
+      "id": "S0-MAG-022",
+      "problem": "Audit matrix incorrectly associates MANA BURN with Status Burn",
+      "proof": "BUFF Until the end of your next turn, this Hero’s Physical Attack becomes a Magical Attack. Each time that Attack hits, MANA BURN 2."
+    },
+    {
+      "id": "S0-MAG-020",
+      "problem": "Audit matrix incorrectly associates MANA BURN with Status Burn",
+      "proof": "60 Casting time 1 turn. Deal Magical damage. 70 Casting time 1 turn. Deal Magical damage. When this Attack hits, MANA BURN 1."
+    },
+    {
+      "id": "S0-MAG-023",
+      "problem": "Audit matrix incorrectly associates MANA BURN with Status Burn",
+      "proof": "60 When this Attack hits, MANA BURN 1. 60 When this Attack hits, MANA BURN 3."
+    },
+    {
+      "id": "S0-MAG-024",
+      "problem": "Audit matrix incorrectly associates MANA BURN with Status Burn",
+      "proof": "20 Deal Area Magical damage. 30 Deal Area Magical damage. Each time this Attack hits, MANA BURN 1."
+    },
+    {
+      "id": "S0-MAG-026",
+      "problem": "Audit matrix incorrectly associates MANA BURN with Status Burn",
+      "proof": "40 50 When this Attack hits, MANA BURN 1."
+    },
+    {
+      "id": "S0-MAG-028",
+      "problem": "Audit matrix incorrectly associates MANA BURN with Status Burn",
+      "proof": "Until the start of your 2nd turn, at the end of each opponent’s turn, if they played no Attack Card that turn, MANA BURN 2."
+    }
+  ],
+  "rows": [
+    {
+      "id": "S0-CLE-012",
+      "name": "Binding Light",
+      "keywords": [
+        "REACTION"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Skill",
+      "official_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-EVT-007",
+      "name": "Intercept",
+      "keywords": [
+        "REACTION"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Event",
+      "official_text": "REACTION Use this card when one of your Heroes is targeted by an opponent's Physical Attack or Magical Attack card, negate that attack and return that card to its owner's hand. (You cannot negate a Casting or Ultimate Attack.)",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-EVT-009",
+      "name": "Tactical Adaptation",
+      "keywords": [
+        "REACTION"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Event",
+      "official_text": "REACTION Use this card when your opponent plays a Tactical or Event Card. Negate that card. It has no effect and is discarded. (You cannot negate any Ultimate Skill Cards.)",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-EVT-012",
+      "name": "Defensive Formation",
+      "keywords": [
+        "REACTION"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Event",
+      "official_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ITM-017",
+      "name": "Flashpowder Bomb",
+      "keywords": [
+        "REACTION"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Item",
+      "official_text": "REACTION Use this card when your opponent plays an Item Card. Negate that card. It has no effect and is discarded.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-031",
+      "name": "Absolute Defense",
+      "keywords": [
+        "REFLECT",
+        "INVINCIBLE"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Skill",
+      "official_text": "REFLECT all incoming damage to the attacker. | Until the start of your next turn, this Hero becomes INVINCIBLE. REFLECT all incoming damage to the attacker.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-022",
+      "name": "Deflection",
+      "keywords": [
+        "REFLECT"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Skill",
+      "official_text": "-70 BLOCK incoming Physical damage. | -70 BLOCK incoming Physical damage. REFLECT 20 damage to the attacker.",
+      "raw_effects": [
+        "block_damage"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-012",
+      "name": "Deflect",
+      "keywords": [
+        "REFLECT"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Skill",
+      "official_text": "-50 BLOCK incoming Physical or Magical damage. | -50 BLOCK incoming Physical or Magical damage. REFLECT 20 damage to the attacker.",
+      "raw_effects": [
+        "block_damage"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-029",
+      "name": "Runic Guard",
+      "keywords": [
+        "REFLECT"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Skill",
+      "official_text": "-50 BLOCK incoming Physical or Magical damage. | -50 BLOCK incoming Physical or Magical damage. REFLECT 30 damage to the attacker.",
+      "raw_effects": [
+        "block_damage"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-025",
+      "name": "Blessing of Divinity",
+      "keywords": [
+        "INVINCIBLE",
+        "HEAL"
+      ],
+      "stages": [
+        "3",
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "MANA COST +2 Until the start of your next turn, all your Heroes become INVINCIBLE. | Until the start of your next turn, all your Heroes become INVINCIBLE and HEAL them by +20.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-031",
+      "name": "Grand Finale",
+      "keywords": [
+        "INVINCIBLE",
+        "CONDITION"
+      ],
+      "stages": [
+        "3",
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION: Return 1 “Zol”, 1 “Lun”, and 1 “Vae” from your discard pile to your deck. Until the start of your next turn, gain INVINCIBLE. Draw 3 cards. 80 | 120",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-011",
+      "name": "Ice Block",
+      "keywords": [
+        "INVINCIBLE",
+        "Freeze"
+      ],
+      "stages": [
+        "3",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "Until the start of your next turn, this Hero becomes INVINCIBLE. Inflict Freeze on this Hero for 2 turns.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-030",
+      "name": "Invincible Stance",
+      "keywords": [
+        "INVINCIBLE"
+      ],
+      "stages": [
+        "3"
+      ],
+      "family": "Skill",
+      "official_text": "MANA COST +1 Until the start of your next turn, this Hero becomes INVINCIBLE. | Until the start of your next turn, this Hero becomes INVINCIBLE.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ARC-003",
+      "name": "Escape Arrow",
+      "keywords": [
+        "CONDITION"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION: Discard 1 card from your hand. DODGE incoming Physical or Magical damage.",
+      "raw_effects": [
+        "dodge_incoming_damage"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED",
+      "genericCondition": true
+    },
+    {
+      "id": "S0-ARC-028",
+      "name": "Midnight Lullaby",
+      "keywords": [
+        "CONDITION",
+        "Sleep"
+      ],
+      "stages": [
+        "4",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION Return 1 “Zol” and 1 “Lun” card from your discard pile to your deck. 20 Deal Area Magical damage. Inflict Sleep for 1 turn, then draw 2 cards from your deck.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ARC-029",
+      "name": "Swift Movement",
+      "keywords": [
+        "CONDITION"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION Return 1 “Lun” card from your discard pile to your deck. DODGE incoming Physical or Magical damage, then draw 1 card from your deck.",
+      "raw_effects": [
+        "dodge_incoming_damage"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ARC-030",
+      "name": "Crimson Crescendo",
+      "keywords": [
+        "CONDITION"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION Return 1 or more “Zol” cards from your discard pile to your deck. Multiply this card’s damage by the number of “Zol” returned this way. 20 | 30",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ARC-031",
+      "name": "Resonance Burst",
+      "keywords": [
+        "CONDITION"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION: Return 1 “Zol” and 1 “Vae” cards from your discard pile to your deck. 30 SURE HIT Deal Area Magical damage. | 50 SURE HIT Deal Area Magical damage.",
+      "raw_effects": [
+        "attack_restriction"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-013",
+      "name": "God's Blessing",
+      "keywords": [
+        "CONDITION"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION: Discard 1 card from your hand. Draw 3 cards from your deck.",
+      "raw_effects": [
+        "draw_cards"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED",
+      "genericCondition": true
+    },
+    {
+      "id": "S0-CLE-028",
+      "name": "Blessing of Accuracy",
+      "keywords": [
+        "CONDITION",
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION: Return 1 “Vae” card from your discard pile to your deck. BUFF Choose one of your Heroes. This turn, that Hero’s Physical or Magical Attacks gain SURE HIT, then draw 2 cards from your deck.",
+      "raw_effects": [
+        "draw_cards",
+        "buff"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-030",
+      "name": "Blooming Harmony",
+      "keywords": [
+        "CONDITION",
+        "HEAL"
+      ],
+      "stages": [
+        "4",
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION Return 1 “Lun” and 1 “Vae” card from your discard pile to your deck. 30 HEAL all your Heroes. | 50 HEAL all your Heroes.",
+      "raw_effects": [
+        "heal_allied_heroes"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-EVT-005",
+      "name": "Last Resort",
+      "keywords": [
+        "CONDITION",
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Event",
+      "official_text": "CONDITION: This card can only be used if you only have 1 active Hero left on your field. BUFF Deal double damage for 2 turns.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED",
+      "genericCondition": true
+    },
+    {
+      "id": "S0-ITM-012",
+      "name": "Spectral Grappling Hook",
+      "keywords": [
+        "CONDITION"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Item",
+      "official_text": "CONDITION: Discard 1 card from your hand. DODGE incoming Physical or Magical damage to one of your Heroes.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED",
+      "genericCondition": true
+    },
+    {
+      "id": "S0-MAG-015",
+      "name": "Permafrost",
+      "keywords": [
+        "CONDITION",
+        "Freeze"
+      ],
+      "stages": [
+        "4",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "80 CONDITION This card can only be used on a target with Freeze status. | 100 CONDITION This card can only be used on a target with Freeze status.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED",
+      "genericCondition": true
+    },
+    {
+      "id": "S0-THF-009",
+      "name": "X Cross Slash",
+      "keywords": [
+        "CONDITION"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "CONDITION: Discard both “Vertical Slash” and “Horizontal Slash” in your hand. 90 SURE HIT Deal Physical damage.",
+      "raw_effects": [
+        "attack_restriction"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED",
+      "genericCondition": true
+    },
+    {
+      "id": "S0-ARC-013",
+      "name": "Triple Shot",
+      "keywords": [
+        "BUFF",
+        "Poison"
+      ],
+      "stages": [
+        "4",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF This turn your \"Poison Arrow\" or \"Burning Arrow\" becomes an Area Attack.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-004",
+      "name": "Blessing of Might",
+      "keywords": [
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF Choose one of your Heroes. This turn, their Physical Attack damage is increased by 20.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-005",
+      "name": "Blessing of Wisdom",
+      "keywords": [
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF Choose one of your Heroes. This turn, their Magical Attack damage is increased by 20.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-018",
+      "name": "Wings of Valor",
+      "keywords": [
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF This turn, all your Heroes gain +20 attack damage for their Physical or Magical Attack. | BUFF This turn, all your Heroes gain +40 attack damage for their Physical or Magical Attack.",
+      "raw_effects": [
+        "buff"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-EVT-011",
+      "name": "Coordination Attack",
+      "keywords": [
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Event",
+      "official_text": "BUFF This turn, all your Heroes gain +10 attack damage for their Physical Attack or Magical Attack. If your Heroes have 3 different base classes, they gain an additional +10 attack damage.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-018",
+      "name": "Double Casting",
+      "keywords": [
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF MANA COST +2 This turn, your Magical Attack counts twice on target(s) of your choice. | BUFF This turn, your Magical Attack counts twice on target(s) of your choice.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-022",
+      "name": "Aether Infusion",
+      "keywords": [
+        "BUFF",
+        "MANA BURN",
+        "Burn"
+      ],
+      "stages": [
+        "4",
+        "6",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF Until the end of your next turn, this Hero’s Physical Attack becomes a Magical Attack. Each time that Attack hits, MANA BURN 2.",
+      "raw_effects": [],
+      "status": "INVENTORY_FALSE_POSITIVE"
+    },
+    {
+      "id": "S0-THF-028",
+      "name": "Camouflage",
+      "keywords": [
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF Until the start of your next turn, your opponent cannot target this Hero. Draw 1 card from your deck to your hand. (While exhausted, you can still use this card.)",
+      "raw_effects": [
+        "draw_cards"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-005",
+      "name": "Taunt",
+      "keywords": [
+        "BUFF"
+      ],
+      "stages": [
+        "4"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF ALL OPPONENTS Until the start of your 2nd turn, all opponent Heroes can only target this Hero for attacks. (During this time, they cannot use Area Attacks.)",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-013",
+      "name": "Enrage",
+      "keywords": [
+        "BUFF",
+        "Bleed"
+      ],
+      "stages": [
+        "4",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "BUFF This turn, increase this Hero's Physical Attack damage by 20. That Hero's Physical Attack card will also inflict Bleed for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-009",
+      "name": "Holy Blast",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "30 Deal Area Magical damage and HEAL all your Heroes by +20 HP.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-011",
+      "name": "Flash Heal",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "40 HEAL one of your Heroes. | 50 HEAL one of your Heroes.",
+      "raw_effects": [
+        "heal_target_hero"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-016",
+      "name": "Sanctuary",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "30 HEAL all your Heroes. | 50 HEAL all your Heroes.",
+      "raw_effects": [
+        "heal_allied_heroes"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-017",
+      "name": "Lay on Hands",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "60 HEAL one of your Heroes. | 80 HEAL one of your Heroes.",
+      "raw_effects": [
+        "heal_target_hero"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-020",
+      "name": "Holy Slash",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "40 When this attack deals damage, HEAL this Hero by +20 HP.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-023",
+      "name": "Holy Light",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "50 HEAL one of your Heroes. | 60 HEAL one of your Heroes.",
+      "raw_effects": [
+        "heal_target_hero"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-027",
+      "name": "Vae",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "20 HEAL one of your Heroes. | 30 HEAL one of your Heroes.",
+      "raw_effects": [
+        "heal_target_hero"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ITM-001",
+      "name": "Health Potion",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Item",
+      "official_text": "HEAL one of your Heroes.",
+      "raw_effects": [
+        "heal_target_hero"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ITM-002",
+      "name": "Greater Health Potion",
+      "keywords": [
+        "HEAL"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Item",
+      "official_text": "HEAL one of your Heroes. If used, that Hero becomes exhausted.",
+      "raw_effects": [
+        "heal_target_hero"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-015",
+      "name": "Resurrection",
+      "keywords": [
+        "REVIVE"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "REVIVE 1 defeated Hero. They return with 50 HP. (That Hero becomes exhausted the turn they were revived.) | REVIVE 1 defeated Hero. They return with 50 HP.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ITM-008",
+      "name": "Phoenix Feather",
+      "keywords": [
+        "REVIVE"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Item",
+      "official_text": "REVIVE 1 defeated Hero. They return with 10 HP. (That Hero becomes exhausted the turn they were revived.)",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-014",
+      "name": "Final Grit",
+      "keywords": [
+        "REVIVE"
+      ],
+      "stages": [
+        "5"
+      ],
+      "family": "Skill",
+      "official_text": "REVIVE defeated Gladiator or Conqueror Hero. They return with 30 HP. (That Hero becomes Exhausted the turn they were revived.)",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-020",
+      "name": "Aether Ball",
+      "keywords": [
+        "MANA BURN",
+        "Burn"
+      ],
+      "stages": [
+        "6",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "60 Casting time 1 turn. Deal Magical damage. 70 Casting time 1 turn. Deal Magical damage. When this Attack hits, MANA BURN 1.",
+      "raw_effects": [],
+      "status": "INVENTORY_FALSE_POSITIVE"
+    },
+    {
+      "id": "S0-MAG-023",
+      "name": "Aether Slash",
+      "keywords": [
+        "MANA BURN",
+        "Burn"
+      ],
+      "stages": [
+        "6",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "60 When this Attack hits, MANA BURN 1. 60 When this Attack hits, MANA BURN 3.",
+      "raw_effects": [],
+      "status": "INVENTORY_FALSE_POSITIVE"
+    },
+    {
+      "id": "S0-MAG-024",
+      "name": "Aether Sweep",
+      "keywords": [
+        "MANA BURN",
+        "Burn"
+      ],
+      "stages": [
+        "6",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "20 Deal Area Magical damage. 30 Deal Area Magical damage. Each time this Attack hits, MANA BURN 1.",
+      "raw_effects": [],
+      "status": "INVENTORY_FALSE_POSITIVE"
+    },
+    {
+      "id": "S0-MAG-026",
+      "name": "Arcane Disruption",
+      "keywords": [
+        "MANA BURN",
+        "Burn"
+      ],
+      "stages": [
+        "6",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "40 50 When this Attack hits, MANA BURN 1.",
+      "raw_effects": [],
+      "status": "INVENTORY_FALSE_POSITIVE"
+    },
+    {
+      "id": "S0-MAG-028",
+      "name": "Provoke",
+      "keywords": [
+        "MANA BURN",
+        "Burn"
+      ],
+      "stages": [
+        "6",
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "Until the start of your 2nd turn, at the end of each opponent’s turn, if they played no Attack Card that turn, MANA BURN 2.",
+      "raw_effects": [],
+      "status": "INVENTORY_FALSE_POSITIVE"
+    },
+    {
+      "id": "S0-MAG-021",
+      "name": "Mana Absorption",
+      "keywords": [
+        "MANA STEAL"
+      ],
+      "stages": [
+        "6"
+      ],
+      "family": "Skill",
+      "official_text": "40 40 When this Attack hits, MANA STEAL 2.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-005",
+      "name": "Steal",
+      "keywords": [
+        "MANA STEAL"
+      ],
+      "stages": [
+        "6"
+      ],
+      "family": "Skill",
+      "official_text": "MANA STEAL 1",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-002",
+      "name": "Power Slash",
+      "keywords": [
+        "Bleed"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "20 Inflict Bleed for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-009",
+      "name": "Rage Swing",
+      "keywords": [
+        "Bleed"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "40 PIERCING Inflict Bleed for 1 turn. | 50 PIERCING Inflict Bleed for 2 turns.",
+      "raw_effects": [
+        "attack_restriction",
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-010",
+      "name": "Rage Blast",
+      "keywords": [
+        "Bleed"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "60 If your opponent's Hero has Bleed status, this attack will deal extra 20 damage.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-017",
+      "name": "Fiery Thrust",
+      "keywords": [
+        "Bleed"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "60 Inflict Bleed for 2 turns. | 80 Inflict Bleed for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-019",
+      "name": "Wild Assault",
+      "keywords": [
+        "Bleed"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "30 Deal Area Physical damage. Inflict Bleed on them for 2 turns. | 50 Deal Area Physical damage. Inflict Bleed on them for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ARC-007",
+      "name": "Burning Arrow",
+      "keywords": [
+        "Burn"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "30 Inflict Burn for 1 turn. | 40 Inflict Burn for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-003",
+      "name": "Fireball",
+      "keywords": [
+        "Burn"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "30 Inflict Burn for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-009",
+      "name": "Fire Blast",
+      "keywords": [
+        "Burn"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "40 Inflict Burn for 1 turn. | 50 Inflict Burn for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-012",
+      "name": "Fire Wall",
+      "keywords": [
+        "Burn"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "-70 BLOCK incoming Physical damage and inflict Burn on the attacking Hero for 2 turns.",
+      "raw_effects": [
+        "block_damage"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-013",
+      "name": "Wildfire",
+      "keywords": [
+        "Burn"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "ALL OPPONENTS Inflict Burn for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-017",
+      "name": "Frostfire Nova",
+      "keywords": [
+        "Burn",
+        "Freeze"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "50 Inflict Burn and Freeze for 1 turn. | 70 Inflict Burn and Freeze for 1 turn.",
+      "raw_effects": [
+        "inflict_status",
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-019",
+      "name": "Flame Dragon's Wrath",
+      "keywords": [
+        "Burn"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "30 ALL OPPONENTS Deal Magical damage. Inflict Burn on them for 1 turn. | 40 ALL OPPONENTS Deal Magical damage. Inflict Burn on them for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ITM-020",
+      "name": "Freeze Bomb",
+      "keywords": [
+        "Freeze"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Item",
+      "official_text": "Inflict Freeze on one of your opponent's Heroes for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-002",
+      "name": "Ice Lance",
+      "keywords": [
+        "Freeze"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "20 Inflict Freeze for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-007",
+      "name": "Frostbite",
+      "keywords": [
+        "Freeze"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "30 Inflict Freeze for 1 turn. | 40 Inflict Freeze for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-MAG-014",
+      "name": "Glacial Spike",
+      "keywords": [
+        "Freeze"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "20 Deal Area Magical damage. Inflict Freeze on them for 1 turn. | 40 Deal Area Magical damage. Inflict Freeze on them for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ARC-002",
+      "name": "Poison Arrow",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "10 Inflict Poison for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ITM-011",
+      "name": "Poison Vial",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Item",
+      "official_text": "This turn, attach this card to the Hero that used it. That Hero's Physical Attack card will inflict Poison for 2 turns.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-011",
+      "name": "Poison Mist",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "10 Deal Area Magical damage. Inflict Poison on them for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-013",
+      "name": "Venom Strike",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "20 Inflict Poison for 1 turn. | 30 Inflict Poison for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-014",
+      "name": "Viper's Fang",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "30 RANGE Inflict Poison for 1 turn. | 40 RANGE Inflict Poison for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-015",
+      "name": "Venom Sovereign",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "20 If your opponent's Hero has Poison status, this attack will deal extra 40 damage. | 40 If your opponent's Hero has Poison status, this attack will deal extra 40 damage.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-017",
+      "name": "Venom Binding",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "60 Inflict Poison for 1 turn. | 70 Inflict Poison for 2 turns.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-018",
+      "name": "Venom Detonation",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "10 Remove Poison from ALL OPPONENTS. Deal damage multiplied by Poison duration. | 20 Remove Poison from ALL OPPONENTS. Deal damage multiplied by Poison duration.",
+      "raw_effects": [],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-THF-019",
+      "name": "Lethal Venom",
+      "keywords": [
+        "Poison"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "60 Inflict Poison for 1 turn. | 60 Inflict Poison for 1 turn. If this Attack hits and the target has at least 5 Poison counters, defeat them instantly.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ARC-027",
+      "name": "Sleeping Dart",
+      "keywords": [
+        "Sleep"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "20 Inflict Sleep for 1 turn. | 30 Inflict Sleep for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-ARC-001",
+      "name": "Bow Bash",
+      "keywords": [
+        "Stun"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "20 MELEE Inflict Stun for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-019",
+      "name": "Divine Punishment",
+      "keywords": [
+        "Stun"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "30 Deal Area Magical damage. Inflict Stun on them for 1 turn. | 50 Deal Area Magical damage. Inflict Stun on them for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-021",
+      "name": "Hammer of Justice",
+      "keywords": [
+        "Stun"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "40 Inflict Stun for 1 turn. | 60 Inflict Stun for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-CLE-024",
+      "name": "Divine Judgement",
+      "keywords": [
+        "Stun"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "80 Inflict Stun for 1 turn. | 100 Inflict Stun for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-EVT-006",
+      "name": "Dazed",
+      "keywords": [
+        "Stun"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Event",
+      "official_text": "Inflict Stun on one of your opponent's Heroes for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-007",
+      "name": "Upward Thrust",
+      "keywords": [
+        "Stun"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "50 MELEE PIERCING Inflict Stun for 1 turn.",
+      "raw_effects": [
+        "attack_restriction",
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    },
+    {
+      "id": "S0-WAR-027",
+      "name": "Colossal Bash",
+      "keywords": [
+        "Stun"
+      ],
+      "stages": [
+        "7"
+      ],
+      "family": "Skill",
+      "official_text": "40 Inflict Stun for 1 turn. | 60 Inflict Stun for 1 turn.",
+      "raw_effects": [
+        "inflict_status"
+      ],
+      "status": "SOURCE_AND_PATHS_INSPECTED"
+    }
+  ],
+  "browser_errors": []
+}

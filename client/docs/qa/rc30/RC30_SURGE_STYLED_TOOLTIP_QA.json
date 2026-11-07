@@ -1,0 +1,111 @@
+{
+  "baseline": "RC29",
+  "purpose": "Surge payment count + selected physical Mana regression",
+  "checks": [
+    {
+      "name": "Surge button appears and remains enabled",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "No native browser title tooltip",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Hover opens same shared Hero tooltip component",
+      "passed": true,
+      "detail": "ARCANE SURGE (+20)\nSpend 1 additional Mana for +20 Magical damage."
+    },
+    {
+      "name": "Surge tooltip uses existing dark/gold palette and pointer-transparent portal",
+      "passed": true,
+      "detail": {
+        "background": "rgba(11, 20, 34, 0.97)",
+        "color": "rgb(239, 227, 201)",
+        "border": "rgb(198, 166, 81)",
+        "heading": "rgb(241, 211, 123)",
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "Tooltip stable through 16 unchanged UI render passes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Tooltip remains visible with stationary pointer",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Mouse exits surge wrapper and tooltip disappears",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Enabled Surge keyboard focus shows styled tooltip",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Enabled Surge blur closes tooltip",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Tooltip visible before Surge toggle",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Surge toggle still produces 5/5 selection",
+      "passed": true,
+      "detail": "MANA 5 / 5 (+1 Arcane Surge)"
+    },
+    {
+      "name": "Surge toggle safely refreshes hovered tooltip on rebuilt button",
+      "passed": true,
+      "detail": "ARCANE SURGE (+20)\nSpend 1 additional Mana for +20 Magical damage."
+    },
+    {
+      "name": "820px tooltip remains inside viewport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Physical Attack disables Surge",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Disabled wrapper is accessible via keyboard and exposes no native title",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Disabled hover explains non-Magical Attack using styled tooltip",
+      "passed": true,
+      "detail": "ARCANE SURGE (+20)\nThis card is not a Magical Attack."
+    },
+    {
+      "name": "Disabled keyboard focus explains why",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Disabled hover/focus cleared on exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Insufficient Mana disabled reason is visible in styled tooltip",
+      "passed": true,
+      "detail": "ARCANE SURGE (+20)\nNot enough additional Mana after paying the card cost."
+    }
+  ],
+  "errors": [],
+  "total": 19,
+  "passed": 19,
+  "failed": 0
+}

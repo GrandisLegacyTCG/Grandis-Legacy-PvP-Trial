@@ -1,0 +1,231 @@
+{
+  "stats": {
+    "assertions": 22,
+    "passed": 22,
+    "failed": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "card_id": "ALL_ULTIMATE",
+      "test": "15 official Ultimate identities loaded",
+      "expected": 15,
+      "actual": 15,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "ALL_ULTIMATE",
+      "test": "Every Ultimate card has unique identity",
+      "expected": 15,
+      "actual": 15,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-018",
+      "test": "Double Casting Elementalist Ultimate committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": {
+        "pending": null
+      }
+    },
+    {
+      "card_id": "S0-MAG-018",
+      "test": "Tactical Adaptation cannot trigger against Ultimate Tactical",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "detail": {
+        "window": null
+      }
+    },
+    {
+      "card_id": "S0-MAG-018",
+      "test": "No Ultimate Tactical card-cancel window opened",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-018",
+      "test": "Tactical Adaptation remains in enemy Hand",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-EVT-009",
+      "test": "Normal VS AI: incoming legal player Tactical processed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": {
+        "window": null,
+        "pending": null,
+        "aiCancelObserved": true
+      }
+    },
+    {
+      "card_id": "S0-EVT-009",
+      "test": "Normal VS AI: AI Tactical Adaptation actually cancels Tactical",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": {
+        "playerDiscard": [
+          "S0-CLE-004"
+        ],
+        "aiDiscard": [
+          "S0-EVT-009"
+        ],
+        "aiHand": [],
+        "logs": [
+          "AI confirms Tactical Adaptation and pays all mandatory costs before counter-response priority.",
+          "AI commits Tactical Adaptation as a reactive cancel Response.",
+          "AI may respond to Blessing of Might before it resolves.",
+          "PLAYER commits 1 Mana for Blessing of Might before reactive Response priority.",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Warrior ordinary physical Attack committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Warrior defensive Ultimate offered",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": {
+        "response": "incoming_attack",
+        "options": [
+          "S0-MAG-031"
+        ]
+      }
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Warrior 5 Mana Response PAY opens",
+      "expected": 5,
+      "actual": 5,
+      "pass": true,
+      "detail": {
+        "begin": true,
+        "pending": "response_payment_choice"
+      }
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Warrior paid Defense commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": {
+        "window": null
+      }
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Warrior opponent Binding Light not spent",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Warrior cost deducted exactly once",
+      "expected": 7,
+      "actual": 7,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Warrior no Ultimate counter-response gate",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Vanguard ordinary physical Attack committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Vanguard defensive Ultimate offered",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": {
+        "response": "incoming_attack",
+        "options": [
+          "S0-MAG-031"
+        ]
+      }
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Vanguard 5 Mana Response PAY opens",
+      "expected": 5,
+      "actual": 5,
+      "pass": true,
+      "detail": {
+        "begin": true,
+        "pending": "response_payment_choice"
+      }
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Vanguard paid Defense commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": {
+        "window": null
+      }
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Vanguard opponent Binding Light not spent",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Vanguard cost deducted exactly once",
+      "expected": 7,
+      "actual": 7,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "test": "Arcane Vanguard no Ultimate counter-response gate",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "browser_errors": []
+}

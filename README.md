@@ -1,179 +1,67 @@
-# Grandis Legacy PvP v3.80.17
+# Grandis Legacy — PvP Season 0 | RC32 | GitHub-Ready Staging
 
-Grandis Legacy PvP v3.80.17 uses **v3.80.12 as the gameplay/input baseline** and reapplies the intended tablet/presentation fixes with corrected Response hit-testing and the server-owned build handshake. The multiplayer layer preserves VS AI v6.91.6 gameplay/presentation behavior and only adds the remote-player, authority, privacy, reconnect, and synchronization seams required by PvP.
+**Baseline gameplay and battlefield:** supplied **VS AI Season 0 v1.0 RC32 (2026-11-07)**. **Multiplayer baseline:** previous PvP S0 RC31 Playtest Staging. **Architecture reference:** Season 1 PvP v3.51, whose server runs the shared game runtime and sends recipient-scoped views. This package is an independent staging checkout; it does not modify or replace VS AI RC32 or PvP Season 1.
 
-## Locked bases
+**State:** complete source repository prepared for GitHub upload and an isolated Northflank staging deployment. Automated local WebSocket matches and limited two-Chromium renderer integration have passed. **NOT CERTIFIED AS FINAL:** direct hosted browser HTTP/WebSocket navigation, mobile/Firefox, comprehensive card-by-card parity, complete ordinary 3-Hero victory through two human UIs, Docker build and Northflank staging deployment remain unverified. Do not treat this as a production release.
 
-- **Presentation/gameplay base:** VS AI v6.91.6
-- **Lobby base:** PvP v3.76.6
-- **Architecture reference:** handshake lessons from VS AI Tutorial v6.48 and PvP v3.51
-- **Server gameplay authority:** VS AI v6.91.6 shared gameplay engine executed headlessly in Node, with narrow PvP-only input guards and battle-presentation bridge hooks
-- **PvP Mana seam:** center-only ephemeral UI Shard selection; one final selected-Shard-UID commit on PAY
+## Upload this repository to GitHub (not a production release)
 
-PvP v3.51 is **not** shipped as an authority/runtime dependency. It remains useful as an older networking reference, but v3.80.17 Mana interaction follows the current VS AI v6.91.6 donor behavior rather than the older Class-only/FIFO experiment.
+1. **Extract** the `Grandis_Legacy_PvP_S0_RC32_GitHub_Ready_2026-11-07.zip` archive. Do **not** upload the ZIP itself as a single file to the GitHub repository: GitHub does not automatically unpack it.
+2. Create a **new isolated repository** for Season 0 PvP (prefer **Private** while testing). With GitHub Desktop or Git, copy the **contents** of the extracted folder into the repository root (not an extra nested folder). The root must contain `package.json`, `Dockerfile`, `server.js`, `client/`, `server/`, `tests/`, `docs/`, and `.github/`.
+3. Commit and push. Open **Actions → PvP Season 0 staging QA**. Both `rc32-and-network` (including Docker/HTTP/native WSS) and `browser-native` (two native Chromium instances) must turn green. **Their GitHub results are NOT VERIFIED prior to this upload.**
+4. Create a **separate Northflank Combined Service** from this new repository, set **Dockerfile** build at repository root, **one replica**, public HTTP port `3000`, environment `PORT=3000` (and `HOST=0.0.0.0`). Use the generated HTTPS URL; the client connects to the same host's WSS `/ws` automatically. Do not replace the existing Season 1 service.
+5. Once deployed, visit `/health`, play from two separate browsers or devices, and check the scenarios in [`docs/NORTHFLANK_STAGING_GATE.md`](docs/NORTHFLANK_STAGING_GATE.md). A remote Node acceptance script is included (`PVP_PUBLIC_URL=https://<staging-host> npm run test:hosted`). Real Northflank acceptance remains **NOT VERIFIED** until performed.
 
-## v3.80.17 stabilization scope
+For test scope, file inventory and outstanding gates see [`docs/GITHUB_READY_HANDOFF_2026-11-07.md`](docs/GITHUB_READY_HANDOFF_2026-11-07.md). All art and gameplay still originate from VS AI RC32; **Grand Finale and Poison Vial use RC32, not stale OSA DEV45 values**. The repo has no Node dependencies (`npm install` is optional). Node 22 is required.
 
-This is a narrow **tablet/mobile presentation-only hotfix** on top of v3.80.16. It does not change desktop behavior, gameplay rules, network transport, Mana Payment, seat authority, or response commitment.
+## Play locally
 
-- P.Atk / M.Atk / Defense / Dodge / Heal VFX target geometry now converts viewport-space Hero rects back into the logical 1600×747 adaptive-stage coordinate space before placing VFX.
-- The conversion is gated behind `html.gl-adaptive-stage`; desktop continues to use the existing `getBoundingClientRect()` result unchanged.
-- Low-latency SFX and the v3.80.16 post-authoritative-render VFX timing remain unchanged.
-- All v3.80.16 gameplay-critical Mana/Response fixes remain intact.
+Requires **Node.js 22 or newer**. Extract the ZIP and open a terminal inside the directory containing `server.js`.
 
-## Current handshake
-
-```text
-v6.91.6 desktop / tablet / mobile UI
-                |
-                | normal committed gameplay intent
-                v
-        thin PvP client adapter
-                |
-                | one gameplay intent + base revision
-                v
-  exact v6.91.6 gameplay engine in headless Node
-                |
-                | one atomic intent-result
-                | + viewer-safe localized snapshot
-                v
-        thin PvP client adapter
-                |
-                v
-       v6.91.6 presentation runtime
-```
-
-The active remote human is always executed as v6.91.6's local `PLAYER` in actor-local seat orientation. This prevents the multiplayer server from invoking v6 Local AI for Player 2.
-
-The donor's internal side names (`PLAYER` / `AI`) remain an engine implementation detail. In PvP mode the presentation translates the remote side to **Opponent**; it does not expose Local-AI identity copy as player-facing PvP UI.
-
-See `ARCHITECTURE_V380.md` for the full contract.
-
-## Mana payment boundary
-
-v3.80.17 uses VS AI v6.91.6 as the active donor. The gameplay bundle carries one explicit PvP-only DOM guard so delegated donor clicks cannot mutate gameplay locally while the external PvP UI owns input; gameplay rules remain donor-driven.
-
-The browser interaction is now:
-
-```text
-authoritative payment pending arrives
-        |
-        v
-center payment clones use canonical Shard UIDs
-        |
-        | click any normal Mana or Class Shard
-        | (ephemeral UI draft only; donor state does not move)
-        v
-final selected_shard_uids draft
-        |
-        | PAY: one network intent
-        v
-server validates every UID against the actor's authoritative Shard Pool
-        |
-        | inject validated final selection
-        v
-v6.91.6 donor commit once
-        |
-        v
-Response / resolution authoritative snapshot
-```
-
-Normal Mana and Class Shards are both selectable exactly as in VS AI v6.91.6. The donor remains responsible for exact Mana value, matching Class value, and legal payment calculation. The PvP server does not invent a second payment formula; it only verifies final identity/ownership and submits the validated draft to the donor commit routine.
-
-The real battlefield Shard Pool is **hover/presentation only** during payment. Only the centered cloned Shards can be selected. The old battlefield payment click path and separate battlefield PAY button are removed.
-
-For Response payments that also require a Hand discard, the browser keeps both the Shard choice and required discard choice only in the same ephemeral UI draft and sends the final Shard UIDs plus final discard-choice indices on PAY.
-
-## Gameplay transport boundary
-
-v3.80.x uses one atomic `intent-result` for each committed network action. Exactly one network gameplay action may be in flight. A second committed action while one is still in flight is rejected locally rather than silently queued. If the result times out, the client releases the gate and requests a fresh authoritative snapshot.
-
-Mana **selection clicks are intentionally not network actions** in v3.80.17; they only change the centered UI draft. They do not call the donor bridge. PAY is the single committed network action for that payment.
-
-The opening battlefield is non-interactive until the server reaches `started`. A client may finish its opening animation a few seconds before the other device, but it cannot send gameplay actions during that gap.
-
-## Asset policy
-
-This standalone trial package carries the local Season 1 WebP/media set. Visible card and Shard URLs resolve to packaged assets:
-
-- `card-art/<CARD_ID>.webp`
-- `assets/shards/*.webp`
-- `assets/ui/*`
-- `engine/assets/audio/*`
-
-To avoid a card name/text flashing before its artwork is ready:
-
-- the selected player's deck art is preloaded as an **unordered asset set** in the lobby;
-- visible opening-board assets are decoded before opening presentation starts;
-- dynamic card/Shard images use a decode guard and hide alt-text fallback while pending;
-- the previous full-game `warmAllCardArt()` background preload is removed.
-
-The browser is never given a “top 5 deck order” preload hint. That would leak future draw order through cache/network inspection. Preloading an unordered set of cards the player already knows are in their own deck avoids that privacy leak.
-
-## Coin Flip and opening boundary
-
-Coin Flip follows the VS AI v6.91.6 lifecycle: the battlefield keeps `gl-lobby-hidden` through Coin Flip choice/result, the donor Coin Flip overlay owns the visible screen, and the PvP integration does not override its backdrop. The Coin Flip gate also keeps the battlefield `inert` and blocks pointer/focus interaction.
-
-The opening board is imported **without rendering** and then presented exactly once per client by the v6.91.6 opening presenter. A stable server-owned opening presentation ID makes presentation idempotent. Clients may start a few seconds apart, but the same opening cannot replay on one device.
-
-## Seat orientation and mirroring
-
-Seat mirroring remains part of the PvP authority boundary. It is required so either physical player can be presented to the donor runtime as local `PLAYER` while the server retains one canonical two-seat board. v3.80.17 does not redesign this mechanism while Mana Payment is the blocking gameplay issue.
-
-## Deck summary
-
-The lobby summary keeps the two physical deck groups separate:
-
-```text
-Heroes + Legacies -> Legacy Deck
-Skills + Items + Events -> Main Deck
-```
-
-Imported Custom Decks intentionally retain the existing **50–60 Main Deck** acceptance for this PvP line.
-
-## Local run
-
-```bash
-npm ci --omit=dev --ignore-scripts
+```sh
+npm run check
 npm start
 ```
 
-Default endpoint: `http://127.0.0.1:3000/` when `HOST=127.0.0.1`, or production bind `0.0.0.0` when no HOST is supplied.
+Open `http://localhost:3000` in **two separate browser profiles** (or one normal and one private browser). Both players enter the same Room Code, select a deck or upload a valid Season 0 Deck Builder JSON, click SELECT DECK and READY. Seat 1 starts; seat 2 calls the opening coin. The match loads the actual **RC32 battlefield**, with the server executing all gameplay intents. Use **PvP Room** to view room status again and **RECONNECT** after a temporary disconnect.
 
-Health endpoint: `/health`.
+For an additional **controlled renderer QA**, with Python Playwright and websocket-client installed, run `python tests/browser-bridge-smoke.py` while the server is active. It uses a **test-only WebSocket relay**, not browser-native WebSocket; its success is not proof of live hosting. The server is independently exercised through real Node WebSocket connections by `npm run check`.
 
-## Validation
+## Northflank staging deployment — one service, one origin
 
-```bash
-npm test
-npm run frontend-manifest
-npm run manifest
-npm run verify:manifest
-npm run check:deployment
-npm run test:startup
-```
+This ZIP includes a `Dockerfile` based on Node 22 Alpine. Create a **separate Season 0 service/repository**, not the existing Season 1 production service. Use the repository root as Docker build context; deploy a single service and one running instance (rooms live in process memory). Expose **public HTTP port 3000**, configure service environment `PORT=3000`, and use the generated HTTPS service URL to open the app. The page constructs `wss://<same-host>/ws` automatically; no separate static frontend is necessary. Verify `/health`, then perform the first 2-browser cross-device match before enabling public access. Do **not** claim resilience across restarts: active rooms are lost on process restart.
 
-`npm run release:seal` runs source/static tests plus final manifest generation. `npm run test:startup` is a separate real-process startup check and requires production dependencies to be installed.
+For a separately hosted GitHub Pages frontend, supply a `?ws=wss://<northflank-host>/ws` query on the frontend URL and set `PVP_ALLOWED_ORIGINS=https://<exact-frontend-origin>` in Northflank. Do not use the default same-origin policy for a distinct-origin website and do not expose the reconnect seat token publicly. This split deployment has **not** been tested end-to-end in this build.
 
-## Mandatory deployment guardrails
+Optional server settings: `HOST` (default `0.0.0.0`), `PORT` (default `3000`), `PVP_MAX_ROOMS` (default `32`), `PVP_RECONNECT_MS` (default 300000), `PVP_LOBBY_IDLE_MS` (default 300000), `PVP_ALLOWED_ORIGINS` (explicit comma-separated HTTP(S) origins). Do not run multiple replicas without first adding shared durable room/session authority.
 
-Before a release is treated as deployable:
+## Why RC32 parity is maintained
 
-1. Make all source changes first.
-2. Run `npm run release:seal` **after the last edit**.
-3. Run `npm ci --omit=dev --ignore-scripts` in the environment that will execute the package.
-4. Run `npm run test:startup` and require a real HTTP 200 `{ "ok": true }` from `/health`.
-5. After the final ZIP is created, clean-extract it and repeat source/manifest checks.
+- The authoritative per-room Node VM loads **the same RC32 card rules and JS game engine** that the browser uses, with two human seats and no local-AI action scheduler.
+- Room management, WebSocket transport, reconnect, tokenized seats and recipient-private projections are separate from card effects.
+- RC32 assets (including the six Mana Deck R2 fronts, revised Poison Vial, EXP artwork and new presentation assets) were merged from the RC32 archive. **All 689 latest RC32 upstream files are present** in `client/`; **686 are byte-identical** and only the 3 PvP-owned runtime/UI files intentionally differ (see the latest source parity manifest). `client/runtime/pvp-network.js` is additional.
+- Four narrowly scoped engine adaptations are retained from PvP RC31: round advancement after a forced Hand Limit discard; no result modal invocation in suppressed headless mode; physical Mana zone seat mirroring; prevention of double-swapping private presentation event sides and the result reason. The RC32 logic for Poison Vial, Deflect, Greater Health Potion, rendering and notification updates is otherwise retained.
+- Card authority exceptions: **Grand Finale `S0-CLE-031`: Bard 60, Maestro 90**, from VS AI RC32's inherited approved local override. **Poison Vial `S0-ITM-011`** uses RC32's designer-approved updated text/art/Skill-Physical-damage behavior and current-turn Attachment expiry, even though upstream OSA DEV45 is behind. No import of Season 1 card effects.
 
-See `DEPLOYMENT_GUARDRAILS.md`.
+## Source layout / QA
 
-## Project workflow rules
+- `client/` — latest RC32 UI, card assets, scripts, overlay and PvP client adapter.
+- `server/headless-rc32.mjs` — isolated authoritative RC32 engine VM.
+- `server/viewer-safe.mjs` — per-player hidden-card/mana masking and opaque blind choice handles.
+- `server/ws-lite.mjs`, `server.js` — WebSocket, lobby, rooms, reconnect, HTTP and origin checks.
+- `tests/` — executable source/authority/privacy/response/complete-match/WebSocket regressions, optional Chromium UI bridge test.
+- `docs/TAKEOVER_RC32.md` — complete RC32 migration and QA checkpoint, evidence and outstanding acceptance gates.
 
-`PROJECT_WORKFLOW_RULES.md` remains mandatory project policy:
+`npm run check` checks syntax, actual RC32 engine boot, local card overrides, 2-seat Attack/Response, client-private projection, fully authoritative deck-out matches, and true WebSocket lobby/hand-discard/terminal flow. **Passing those tests is not the same as verifying every card interaction through two native browsers.**
 
-- a single bug report does **not** automatically authorize another ZIP;
-- investigate the actual source/logic first and consolidate related fixes where practical;
-- package only after the user explicitly asks for the candidate build;
-- every future Takeover Note should carry the same workflow rule.
+## Northflank preflight continuation (2026-11-07; NOT DEPLOYED)
 
-v3.80.17 is being packaged because this update was explicitly requested after the real-browser payment and Meditation rollback report.
+This **separate** `pvp_s0_rc32_northflank_preflight` worktree extends RC32 staging. It adds correctly labeled **custom Deck Builder imports**, stricter Season 0-only envelope checks, an export-**shaped** Deck Builder v1.62 regression, and a disposable-room live-host smoke test. These are **not** new gameplay effects. RC32 Grand Finale and Poison Vial remain unchanged. The original RC32 playtest ZIP and VS AI archive were not replaced.
+
+Run `npm run check` for predeployment automated regressions. After creating an isolated Northflank staging service, an operator can run `PVP_PUBLIC_URL=https://<host> npm run test:hosted`. For click-by-click staging setup, see [`docs/NORTHFLANK_STAGING_GATE.md`](docs/NORTHFLANK_STAGING_GATE.md). For verified vs pending work and code-diff scope, see [`docs/TAKEOVER_PREFLIGHT_2026-11-07.md`](docs/TAKEOVER_PREFLIGHT_2026-11-07.md). The GitHub Actions `.github/workflows/staging-qa.yml` has **not** run yet; Docker image build and direct hosted playability are **NOT VERIFIED**.
+
+## Latest RC32 source update — 2026-11-07 (same RC number)
+
+This working tree integrates the newest uploaded RC32 maintenance snapshot: **Primal Strike/Burn, Stun gating of activated Hero/Class/Racial actions, and the new 2-Mana matching Color Shard selection priority**. No restart from RC31 or rebuild of the Season 1 multiplayer architecture was needed. All previous PvP WebSocket/network/UI integrations and RC32 Grand Finale/Poison Vial authority are retained.
+
+See [`docs/TAKEOVER_RC32_LATEST_MAINTENANCE_2026-11-07.md`](docs/TAKEOVER_RC32_LATEST_MAINTENANCE_2026-11-07.md) and [`docs/RC32_LATEST_SOURCE_PARITY.json`](docs/RC32_LATEST_SOURCE_PARITY.json) for exact source parity, tests and outstanding Northflank acceptance. **Latest RC32 staging is NOT deployed and NOT final**.

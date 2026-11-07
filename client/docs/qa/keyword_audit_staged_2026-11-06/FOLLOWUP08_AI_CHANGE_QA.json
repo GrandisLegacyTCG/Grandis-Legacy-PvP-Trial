@@ -1,0 +1,179 @@
+{
+  "stats": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "case": "Planned target defeated before Battle",
+      "label": "Chosen action remains among legal candidates",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "extra": {
+        "a": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-WAR-001",
+          "hand_index": 0,
+          "source_side": "AI",
+          "source_lane": "RIGHT",
+          "source_card_id": "S0-WAR-H001",
+          "target_side": "PLAYER",
+          "target_lane": "RIGHT",
+          "cost": 2
+        }
+      }
+    },
+    {
+      "case": "Planned target defeated before Battle",
+      "label": "Does not attack defeated Legacy LEFT",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "extra": {
+        "a": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-WAR-001",
+          "hand_index": 0,
+          "source_side": "AI",
+          "source_lane": "RIGHT",
+          "source_card_id": "S0-WAR-H001",
+          "target_side": "PLAYER",
+          "target_lane": "RIGHT",
+          "cost": 2
+        }
+      }
+    },
+    {
+      "case": "Planned target defeated before Battle",
+      "label": "Stale due plan removed",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "extra": null
+    },
+    {
+      "case": "Planned target defeated before Battle",
+      "label": "Mana invariant",
+      "expected": 12,
+      "actual": 12,
+      "pass": true,
+      "extra": null
+    },
+    {
+      "case": "Planned attacker incapacitated",
+      "label": "Plan cannot make Stunned Hero attack",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "extra": {
+        "a": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-WAR-001",
+          "hand_index": 0,
+          "source_side": "AI",
+          "source_lane": "RIGHT",
+          "source_card_id": "S0-WAR-H001",
+          "target_side": "PLAYER",
+          "target_lane": "RIGHT",
+          "cost": 2
+        }
+      }
+    },
+    {
+      "case": "Planned attacker incapacitated",
+      "label": "Fallback action legal",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "extra": {
+        "a": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-WAR-001",
+          "hand_index": 0,
+          "source_side": "AI",
+          "source_lane": "RIGHT",
+          "source_card_id": "S0-WAR-H001",
+          "target_side": "PLAYER",
+          "target_lane": "RIGHT",
+          "cost": 2
+        }
+      }
+    },
+    {
+      "case": "Planned attacker incapacitated",
+      "label": "Discard stale plan",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "extra": null
+    },
+    {
+      "case": "Planned Attack no longer affordable",
+      "label": "No unaffordable PLAY_CARD executed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "extra": {
+        "a": {
+          "type": "SKIP",
+          "side": "AI",
+          "label": "Skip Battle",
+          "reason": "No legal non-skip action is available."
+        }
+      }
+    },
+    {
+      "case": "Planned Attack no longer affordable",
+      "label": "Stale due plan cleared",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "extra": null
+    },
+    {
+      "case": "Planned Attack no longer affordable",
+      "label": "Physical Mana stays 12",
+      "expected": 12,
+      "actual": 12,
+      "pass": true,
+      "extra": null
+    },
+    {
+      "case": "BUFF source defeated and plan canceled",
+      "label": "Defeated planned attacker not selected",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "extra": {
+        "a": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-WAR-001",
+          "hand_index": 0,
+          "source_side": "AI",
+          "source_lane": "RIGHT",
+          "source_card_id": "S0-WAR-H001",
+          "target_side": "PLAYER",
+          "target_lane": "RIGHT",
+          "cost": 2
+        }
+      }
+    },
+    {
+      "case": "BUFF source defeated and plan canceled",
+      "label": "No stale plan retained",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "extra": null
+    }
+  ],
+  "browser_errors": []
+}

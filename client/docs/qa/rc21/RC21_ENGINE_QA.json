@@ -1,0 +1,303 @@
+{
+  "GL_LAB_V010_DRAW_SEQUENCE_QA_SELF_TEST": {
+    "ok": true,
+    "mainReserveBeforeCommit": true,
+    "manaReserveBeforeCommit": true,
+    "mainThenManaAuthority": true,
+    "drawReviewBeforeMana": true
+  },
+  "GL_S0_TARGET_SELECTION_QA_SELF_TEST": {
+    "ok": true,
+    "passed": 13,
+    "total": 13,
+    "results": [
+      {
+        "name": "Relentless: choose source Hero -> hand EXP -> resolves",
+        "ok": true,
+        "info": {
+          "exp": 100
+        }
+      },
+      {
+        "name": "Relentless: immediately rank up Hero at EXP 300",
+        "ok": true,
+        "info": {
+          "rank": 2
+        }
+      },
+      {
+        "name": "Normal Event: refuse to play when no legal source",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Scouting: two Hero selections plus EXP target",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Dazed: Event source + opponent target -> Stun",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Health Potion: choose allied Hero -> +30",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Greater Health Potion: target already exhausted -> +50",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Elixir: choose allied status target -> cleanses",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Phoenix Feather: choose defeated Hero -> revive at 10 HP",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "Freeze Bomb: choose opponent Hero -> Freeze",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "No heal without damaged Hero; no Freeze target without opponent",
+        "ok": true,
+        "info": null
+      },
+      {
+        "name": "AI Item Heal: never missing target; no Hero source for Item",
+        "ok": true,
+        "info": {
+          "actions": 1
+        }
+      },
+      {
+        "name": "AI Event action needs a source Hero and opponent target",
+        "ok": true,
+        "info": {
+          "actions": 9
+        }
+      }
+    ]
+  },
+  "GL_S0_ULTIMATE_TRIBUTE_QA_SELF_TEST": {
+    "ok": true,
+    "ultimateCards": 15,
+    "successfulCases": 30,
+    "results": [
+      {
+        "card": "S0-ARC-018",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-ARC-018",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-ARC-019",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-ARC-019",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-ARC-025",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-ARC-025",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-CLE-018",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-CLE-018",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-CLE-019",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-CLE-019",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-CLE-025",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-CLE-025",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-CLE-031",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-CLE-031",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-MAG-018",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-MAG-018",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-MAG-019",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-MAG-019",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-MAG-025",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-MAG-025",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-MAG-031",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-MAG-031",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-THF-018",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-THF-018",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-THF-019",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-THF-019",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-WAR-018",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-WAR-018",
+        "side": "AI",
+        "exp": 200
+      },
+      {
+        "card": "S0-WAR-019",
+        "side": "PLAYER",
+        "exp": 200
+      },
+      {
+        "card": "S0-WAR-019",
+        "side": "AI",
+        "exp": 200
+      }
+    ]
+  },
+  "GL_RC17_ALL_SWAP_QA_SELF_TEST": {
+    "ok": true,
+    "checks": 40,
+    "details": [
+      "S0-WAR-015 registered",
+      "S0-WAR-015 PLAYER auto-swaps after connected zero-damage Hit",
+      "S0-WAR-015 PLAYER does not swap on DODGE",
+      "S0-WAR-015 PLAYER respects Freeze",
+      "S0-WAR-015 AI auto-swaps after connected zero-damage Hit",
+      "S0-WAR-015 AI does not swap on DODGE",
+      "S0-WAR-015 AI respects Freeze",
+      "S0-WAR-025 registered",
+      "S0-WAR-025 PLAYER auto-swaps after connected zero-damage Hit",
+      "S0-WAR-025 PLAYER does not swap on DODGE",
+      "S0-WAR-025 PLAYER respects Freeze",
+      "S0-WAR-025 AI auto-swaps after connected zero-damage Hit",
+      "S0-WAR-025 AI does not swap on DODGE",
+      "S0-WAR-025 AI respects Freeze",
+      "S0-WAR-030 registered",
+      "S0-WAR-030 PLAYER auto-swaps after connected zero-damage Hit",
+      "S0-WAR-030 PLAYER does not swap on DODGE",
+      "S0-WAR-030 PLAYER respects Freeze",
+      "S0-WAR-030 AI auto-swaps after connected zero-damage Hit",
+      "S0-WAR-030 AI does not swap on DODGE",
+      "S0-WAR-030 AI respects Freeze",
+      "S0-THF-002 remains optional",
+      "S0-THF-002 opens optional choice",
+      "S0-THF-002 can decline without Swap",
+      "S0-THF-020 remains optional",
+      "S0-THF-020 opens optional choice",
+      "S0-THF-020 can decline without Swap",
+      "S0-THF-024 remains optional",
+      "S0-THF-024 opens optional choice",
+      "S0-THF-024 can decline without Swap",
+      "S0-THF-026 remains optional",
+      "S0-THF-026 opens optional choice",
+      "S0-THF-026 can decline without Swap",
+      "Soul Blast Shot forces choice of adjacent position",
+      "Soul Blast Shot cannot skip legal forced swap",
+      "Soul Blast Shot target moved to selected adjacent lane",
+      "Shadow Switch registered as forced post-DODGE swap",
+      "Cover Up remains Response redirect swap",
+      "Warp Scroll separate Item path registered",
+      "Shield Charge actual PLAY → Response → mandatory Swap {\"played\":true,\"pending\":null,\"response\":null,\"owner\":\"S0-MAG-H008\",\"hand\":[],\"mana\":6,\"log\":[\"PLAYER plays Shield Charge and pays 6 Mana. Bromir Oathforge Exhausts.\",\"Choose your Shard payment for Shield Charge. The recommended payment is preselected; any Shard may be changed before PAY.\",\"Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.\",\"Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn.\"]}"
+    ]
+  },
+  "GL_S0_RC6_LINEAGE_EFFECT_REGRESSION_QA_SELF_TEST": {
+    "ok": true,
+    "skill_hero_lineage_cases": 6975,
+    "off_lineage_response_blocked": true,
+    "rank_lineage_fallback": true,
+    "market_bargain_draw_2": true
+  },
+  "GL_PLAYTEST_MANA_QA_SELF_TEST": {
+    "not_available": true
+  },
+  "page_errors": []
+}

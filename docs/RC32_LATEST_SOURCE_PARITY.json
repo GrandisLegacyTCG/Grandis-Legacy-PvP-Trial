@@ -1,0 +1,21 @@
+{
+  "source_archive": "Grandis_Legacy_VS_AI_Season0_v1.0_RC32_2026-11-07.zip",
+  "source_archive_sha256": "1376ef63d4531d46210f82d78b4f3ce908b2fd13c159915d078ac370a0c43e89",
+  "baseline_pvp": "pvp_s0_rc32_northflank_preflight (unchanged)",
+  "mode": "working tree only, not deployed, not final, not release",
+  "upstream_files_total": 689,
+  "upstream_files_identical_to_pvp": 686,
+  "intentional_pvp_differences": [
+    "engine/shared-app/app.bundle.js",
+    "index.html",
+    "shared-app/app-runtime.js"
+  ],
+  "source_file_missing_from_pvp": [],
+  "new_upstream_gameplay": [
+    "Burn bonus on successful Primal Strike with positive post-Defense Physical damage",
+    "Stun gating activated Class/Racial abilities and reactive traits",
+    "matching 2-Mana Color Shard prioritizes replacement of already selected Color Shards"
+  ],
+  "source_authority_note": "Grand Finale and Poison Vial still follow VS AI RC32, not stale OSA",
+  "deployment": "NOT VERIFIED: no Northflank credentials/repository/URL supplied"
+}

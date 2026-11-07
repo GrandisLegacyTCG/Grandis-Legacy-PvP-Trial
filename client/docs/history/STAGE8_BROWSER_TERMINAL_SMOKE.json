@@ -1,0 +1,25 @@
+{
+  "test": "browser-terminal-UI-surrender-smoke-only",
+  "before": {
+    "phase": "Opening Match",
+    "turn": null,
+    "gameOver": false,
+    "winner": null
+  },
+  "after": {
+    "phase": "Opening Match",
+    "turn": null,
+    "gameOver": true,
+    "winner": "AI",
+    "log": [
+      "PLAYER draws opening card 1 of 6.",
+      "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+      "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    ]
+  },
+  "dialog": [
+    "Surrender this match?"
+  ],
+  "pageErrors": [],
+  "does_not_prove_normal_human_vs_AI_full_match": true
+}

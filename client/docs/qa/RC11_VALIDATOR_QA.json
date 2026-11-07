@@ -1,0 +1,237 @@
+{
+  "result": {
+    "ok": true,
+    "passed": 9,
+    "total": 9,
+    "results": [
+      {
+        "name": "S0 printed Double Casting rows vs S1 legacy",
+        "ok": true,
+        "data": {
+          "rank2": "BUFF MANA COST +2 This turn, your Magical Attack counts twice on target(s) of your choice.",
+          "rank3": "BUFF This turn, your Magical Attack counts twice on target(s) of your choice."
+        }
+      },
+      {
+        "name": "All-HP-full healing requires damaged recipient for both sides",
+        "ok": true,
+        "data": {
+          "PLAYER": {
+            "S0-ITM-001": {
+              "valid": false,
+              "reasons": [
+                "No legal Hero target for Health Potion",
+                "Health Potion requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-ITM-002": {
+              "valid": false,
+              "reasons": [
+                "No legal Hero target for Greater Health Potion",
+                "Greater Health Potion requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-011": {
+              "valid": false,
+              "reasons": [
+                "Flash Heal requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-016": {
+              "valid": false,
+              "reasons": [
+                "Sanctuary requires at least one damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": true
+            },
+            "S0-CLE-017": {
+              "valid": false,
+              "reasons": [
+                "Lay on Hands requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-023": {
+              "valid": false,
+              "reasons": [
+                "Holy Light requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-027": {
+              "valid": false,
+              "reasons": [
+                "Vae requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-030": {
+              "valid": false,
+              "reasons": [
+                "no legal source hero",
+                "CONDITION requires specified note cards in Discard Pile",
+                "Blooming Harmony requires at least one damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": true
+            }
+          },
+          "AI": {
+            "S0-ITM-001": {
+              "valid": false,
+              "reasons": [
+                "No legal Hero target for Health Potion",
+                "Health Potion requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-ITM-002": {
+              "valid": false,
+              "reasons": [
+                "No legal Hero target for Greater Health Potion",
+                "Greater Health Potion requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-011": {
+              "valid": false,
+              "reasons": [
+                "Flash Heal requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-016": {
+              "valid": false,
+              "reasons": [
+                "Sanctuary requires at least one damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": true
+            },
+            "S0-CLE-017": {
+              "valid": false,
+              "reasons": [
+                "Lay on Hands requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-023": {
+              "valid": false,
+              "reasons": [
+                "Holy Light requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-027": {
+              "valid": false,
+              "reasons": [
+                "Vae requires a damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": false
+            },
+            "S0-CLE-030": {
+              "valid": false,
+              "reasons": [
+                "no legal source hero",
+                "CONDITION requires specified note cards in Discard Pile",
+                "Blooming Harmony requires at least one damaged allied Hero without Bleed."
+              ],
+              "heal": true,
+              "all": true
+            }
+          }
+        }
+      },
+      {
+        "name": "Damaged target legal, full HP and Bleed excluded",
+        "ok": true,
+        "data": {
+          "lanes": [
+            "RIGHT"
+          ]
+        }
+      },
+      {
+        "name": "Area Heal needs damaged ally, no mandatory per-hero picker",
+        "ok": true,
+        "data": {
+          "kind": true,
+          "phase": "Deploy Phase; Reform Phase"
+        }
+      },
+      {
+        "name": "Hybrid Attack+Heal remains legal at full allied HP",
+        "ok": true,
+        "data": {
+          "isAttack": true,
+          "isHeal": false
+        }
+      },
+      {
+        "name": "Double Casting cost, exhaust, expiry and turn timing",
+        "ok": true,
+        "data": {
+          "cost2": 3,
+          "cost3": 1,
+          "remaining2": 1,
+          "remaining3": 1
+        }
+      },
+      {
+        "name": "Real rank2 PLAY creates active same-turn buff at cost 3",
+        "ok": true,
+        "data": {
+          "cost": 3,
+          "attachmentThisTurn": true,
+          "expired": true
+        }
+      },
+      {
+        "name": "Rank2 same-turn Magical Attack triggers two independent Responses",
+        "ok": true,
+        "data": {
+          "firstAndSecondDamage": 70,
+          "secondHitBurnBonus": 10,
+          "activeSameTurn": true
+        }
+      },
+      {
+        "name": "AI planning of rank2 Double Casting is same-turn",
+        "ok": true,
+        "data": {
+          "plan": {
+            "kind": "ATTACK_FOLLOWUP",
+            "followup_phase": "Battle",
+            "not_before_round": 5,
+            "preferred_card_id": "S0-MAG-003",
+            "preferred_source_lane": "CENTER",
+            "preferred_target_lane": "LEFT",
+            "preferred_attack_source_lane": "CENTER",
+            "preferred_attack_card_id": "S0-MAG-003",
+            "setup_card_id": "S0-MAG-018",
+            "setup_target_lane": null,
+            "remaining_mana": 7,
+            "double_casting": true
+          }
+        }
+      }
+    ]
+  },
+  "pageErrors": []
+}

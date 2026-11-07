@@ -1,0 +1,61 @@
+/* Grandis Legacy Deck Builder v1.38: identical review keyword image height and label/body scale.
+   Gold headings = 14px; white body text = 12px. Scope overrides to Card Review only.
+   Prevents Style 1 vs Style 2 historical CSS from reintroducing inconsistent sizes. */
+#cardReviewDialog{--gl-review-heading-size:14px;--gl-review-body-size:12px;--gl-review-keyword-height:20px}
+#cardReviewDialog[data-review-kind] .review-header .dialog-eyebrow,
+#cardReviewDialog[data-review-kind] .review-summary-item>span,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-class>span,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-rank>span,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-metric>span,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-info>span,
+#cardReviewDialog[data-review-kind] .review-hero-block>span,
+#cardReviewDialog[data-review-kind] .review-generic-row>span,
+#cardReviewDialog[data-review-kind] .review-condition-section>span,
+#cardReviewDialog[data-review-kind] .review-keyword-heading,
+#cardReviewDialog[data-review-kind] .review-ultimate-rules>span{
+  font-size:var(--gl-review-heading-size)!important;
+  font-weight:900!important;
+  line-height:1.3!important;
+  color:#f1ce6c!important;
+}
+#cardReviewDialog[data-review-kind] .review-summary-item>strong,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-class>strong,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-rank>strong,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-metric>strong,
+#cardReviewDialog[data-review-kind] .review-hero-block>strong,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-info>p,
+#cardReviewDialog[data-review-kind] .review-hero-block>p,
+#cardReviewDialog[data-review-kind] .review-generic-row>p,
+#cardReviewDialog[data-review-kind] .review-ultimate-rules>p,
+#cardReviewDialog[data-review-kind] .review-keyword-description,
+#cardReviewDialog[data-review-kind] .review-condition-section>p,
+#cardReviewDialog[data-review-kind] .review-keyword-explanation>p,
+#cardReviewDialog[data-review-kind] .review-keyword-line{
+  font-size:var(--gl-review-body-size)!important;
+  font-weight:400!important;
+  line-height:1.5!important;
+}
+#cardReviewDialog[data-review-kind] .review-summary-item>strong,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-class>strong,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-rank>strong,
+#cardReviewDialog[data-review-kind] .review-effect-row .review-effect-metric>strong,
+#cardReviewDialog[data-review-kind] .review-hero-block>strong{font-weight:700!important}
+#cardReviewDialog[data-review-kind] .review-keyword-image,
+#cardReviewDialog[data-review-kind] .review-keyword-line .review-keyword-image,
+#cardReviewDialog[data-review-kind] .review-condition-heading .review-keyword-image,
+#cardReviewDialog[data-review-kind] .review-effect-info .review-keyword-image{
+  display:inline-block!important;
+  box-sizing:content-box!important;
+  height:var(--gl-review-keyword-height)!important;
+  width:auto!important;
+  max-height:var(--gl-review-keyword-height)!important;
+  max-width:none!important;
+  vertical-align:middle!important;
+  object-fit:contain!important;
+  flex:0 0 auto!important;
+  margin:0 3px!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#cardReviewDialog[data-review-kind] .review-keyword-line{align-items:center!important;gap:8px!important}
+#cardReviewDialog[data-review-kind] .review-keyword-description{flex:1 1 200px!important;min-width:0!important}

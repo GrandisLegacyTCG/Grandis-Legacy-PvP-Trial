@@ -1,0 +1,203 @@
+{
+  "cases": [
+    {
+      "id": "S0-MAG-H007",
+      "viewport": "1452x702",
+      "text": "HERO NAME\nBromir Oathforge\n\u00d7\nCARD TYPE\nHERO\nHP\n80\nREQUIRED EXP\n\u2014\nRACE\nDwarf\nRACIAL TRAITS\nStoneblood\n\nWhen this Hero would be defeated, you may spend ",
+      "width": 1428,
+      "height": 674,
+      "scrollWidth": 1426,
+      "scrollHeight": 672,
+      "visible": true,
+      "kind": "hero"
+    },
+    {
+      "id": "S0-MAG-H008",
+      "viewport": "1452x702",
+      "text": "HERO NAME\nBromir Oathforge\n\u00d7\nCARD TYPE\nHERO\nHP\n110\nREQUIRED EXP\n300\nRACE\nDwarf\nRACIAL TRAITS\nStoneblood\n\nWhen this Hero would be defeated, you may spe",
+      "width": 1428,
+      "height": 674,
+      "scrollWidth": 1426,
+      "scrollHeight": 672,
+      "visible": true,
+      "kind": "hero"
+    },
+    {
+      "id": "S0-MAG-H009",
+      "viewport": "1452x702",
+      "text": "HERO NAME\nBromir Oathforge\n\u00d7\nCARD TYPE\nHERO\nHP\n140\nREQUIRED EXP\n700\nRACE\nDwarf\nRACIAL TRAITS\nStoneblood\n\nWhen this Hero would be defeated, you may spe",
+      "width": 1428,
+      "height": 674,
+      "scrollWidth": 1426,
+      "scrollHeight": 672,
+      "visible": true,
+      "kind": "hero"
+    },
+    {
+      "id": "S0-WAR-031",
+      "viewport": "1452x702",
+      "text": "SKILL NAME\nShield Blast\n\u00d7\nCARD TYPE\nSKILL\nSUBTYPE\nPhysical Attack\nMANA COST\n7\nEXP TRIBUTE\n100 EXP\nCLASS\nArcane Warrior\nRANK\nRank II\nPHYSICAL DAMAGE\n60",
+      "width": 1428,
+      "height": 629,
+      "scrollWidth": 1426,
+      "scrollHeight": 627,
+      "visible": true,
+      "kind": "skill"
+    },
+    {
+      "id": "S0-ARC-005",
+      "viewport": "1452x702",
+      "text": "SKILL NAME\nReload\n\u00d7\nCARD TYPE\nSKILL\nSUBTYPE\nTactical\nMANA COST\n2\nEXP TRIBUTE\n100 EXP\nCLASS\nArcher\nRANK\nRank I\nSKILL EFFECT\n\nDraw 2 cards from your dec",
+      "width": 1428,
+      "height": 629,
+      "scrollWidth": 1426,
+      "scrollHeight": 627,
+      "visible": true,
+      "kind": "skill"
+    },
+    {
+      "id": "S0-CLE-031",
+      "viewport": "1452x702",
+      "text": "SKILL NAME\nGrand Finale\n\u00d7\nCARD TYPE\nULTIMATE\nSUBTYPE\nMagical Attack\nMANA COST\n6\nEXP TRIBUTE\n200 EXP\n\nReturn 1 \u201cZol\u201d, 1 \u201cLun\u201d, and 1 \u201cVae\u201d from your di",
+      "width": 1428,
+      "height": 656,
+      "scrollWidth": 1426,
+      "scrollHeight": 654,
+      "visible": true,
+      "kind": "skill"
+    },
+    {
+      "id": "S0-ITM-016",
+      "viewport": "1452x702",
+      "text": "ITEM NAME\nChain Mail\n\u00d7\nCARD TYPE\nITEM\nSUBTYPE\nProtection\nMANA COST\n\u2014\nCLASS\nAll Classes\nRANK\nAll Ranks\nITEM EFFECT\n\n incoming Physical damage to one of",
+      "width": 1428,
+      "height": 629,
+      "scrollWidth": 1426,
+      "scrollHeight": 627,
+      "visible": true,
+      "kind": "item"
+    },
+    {
+      "id": "S0-EVT-001",
+      "viewport": "1452x702",
+      "text": "EVENT NAME\nBegin Anew\n\u00d7\nCARD TYPE\nEVENT\nSUBTYPE\nSpecial Event\nMANA COST\n3 Mana\nEVENT EFFECT\n\nShuffle all cards from your hand into your deck, then dra",
+      "width": 1428,
+      "height": 629,
+      "scrollWidth": 1426,
+      "scrollHeight": 627,
+      "visible": true,
+      "kind": "event"
+    },
+    {
+      "id": "S0-WAR-L001",
+      "viewport": "1452x702",
+      "text": "LEGACY NAME\nWarrior's Relic\n\u00d7\nCARD TYPE\nLEGACY\nCLASS\nWarrior\nLEGACY ABILITY\n\nOnce per turn, you may discard 1 Warrior Skill Card from your hand to dra",
+      "width": 1428,
+      "height": 629,
+      "scrollWidth": 1426,
+      "scrollHeight": 627,
+      "visible": true,
+      "kind": "legacy"
+    },
+    {
+      "id": "S0-MAG-H007",
+      "viewport": "390x844",
+      "text": "HERO NAME\nBromir Oathforge\n\u00d7\nCARD TYPE\nHERO\nHP\n80\nREQUIRED EXP\n\u2014\nRACE\nDwarf\nRACIAL TRAITS\nStoneblood\n\nWhen this Hero would be defeated, you may spend ",
+      "width": 378,
+      "height": 832,
+      "scrollWidth": 376,
+      "scrollHeight": 830,
+      "visible": true,
+      "kind": "hero"
+    },
+    {
+      "id": "S0-MAG-H008",
+      "viewport": "390x844",
+      "text": "HERO NAME\nBromir Oathforge\n\u00d7\nCARD TYPE\nHERO\nHP\n110\nREQUIRED EXP\n300\nRACE\nDwarf\nRACIAL TRAITS\nStoneblood\n\nWhen this Hero would be defeated, you may spe",
+      "width": 378,
+      "height": 832,
+      "scrollWidth": 376,
+      "scrollHeight": 830,
+      "visible": true,
+      "kind": "hero"
+    },
+    {
+      "id": "S0-MAG-H009",
+      "viewport": "390x844",
+      "text": "HERO NAME\nBromir Oathforge\n\u00d7\nCARD TYPE\nHERO\nHP\n140\nREQUIRED EXP\n700\nRACE\nDwarf\nRACIAL TRAITS\nStoneblood\n\nWhen this Hero would be defeated, you may spe",
+      "width": 378,
+      "height": 832,
+      "scrollWidth": 376,
+      "scrollHeight": 830,
+      "visible": true,
+      "kind": "hero"
+    },
+    {
+      "id": "S0-WAR-031",
+      "viewport": "390x844",
+      "text": "SKILL NAME\nShield Blast\n\u00d7\nCARD TYPE\nSKILL\nSUBTYPE\nPhysical Attack\nMANA COST\n7\nEXP TRIBUTE\n100 EXP\nCLASS\nArcane Warrior\nRANK\nRank II\nPHYSICAL DAMAGE\n60",
+      "width": 378,
+      "height": 832,
+      "scrollWidth": 376,
+      "scrollHeight": 925,
+      "visible": true,
+      "kind": "skill"
+    },
+    {
+      "id": "S0-ARC-005",
+      "viewport": "390x844",
+      "text": "SKILL NAME\nReload\n\u00d7\nCARD TYPE\nSKILL\nSUBTYPE\nTactical\nMANA COST\n2\nEXP TRIBUTE\n100 EXP\nCLASS\nArcher\nRANK\nRank I\nSKILL EFFECT\n\nDraw 2 cards from your dec",
+      "width": 378,
+      "height": 639,
+      "scrollWidth": 376,
+      "scrollHeight": 637,
+      "visible": true,
+      "kind": "skill"
+    },
+    {
+      "id": "S0-CLE-031",
+      "viewport": "390x844",
+      "text": "SKILL NAME\nGrand Finale\n\u00d7\nCARD TYPE\nULTIMATE\nSUBTYPE\nMagical Attack\nMANA COST\n6\nEXP TRIBUTE\n200 EXP\n\nReturn 1 \u201cZol\u201d, 1 \u201cLun\u201d, and 1 \u201cVae\u201d from your di",
+      "width": 378,
+      "height": 832,
+      "scrollWidth": 376,
+      "scrollHeight": 1179,
+      "visible": true,
+      "kind": "skill"
+    },
+    {
+      "id": "S0-ITM-016",
+      "viewport": "390x844",
+      "text": "ITEM NAME\nChain Mail\n\u00d7\nCARD TYPE\nITEM\nSUBTYPE\nProtection\nMANA COST\n\u2014\nCLASS\nAll Classes\nRANK\nAll Ranks\nITEM EFFECT\n\n incoming Physical damage to one of",
+      "width": 378,
+      "height": 642,
+      "scrollWidth": 376,
+      "scrollHeight": 640,
+      "visible": true,
+      "kind": "item"
+    },
+    {
+      "id": "S0-EVT-001",
+      "viewport": "390x844",
+      "text": "EVENT NAME\nBegin Anew\n\u00d7\nCARD TYPE\nEVENT\nSUBTYPE\nSpecial Event\nMANA COST\n3 Mana\nEVENT EFFECT\n\nShuffle all cards from your hand into your deck, then dra",
+      "width": 378,
+      "height": 665,
+      "scrollWidth": 376,
+      "scrollHeight": 663,
+      "visible": true,
+      "kind": "event"
+    },
+    {
+      "id": "S0-WAR-L001",
+      "viewport": "390x844",
+      "text": "LEGACY NAME\nWarrior's Relic\n\u00d7\nCARD TYPE\nLEGACY\nCLASS\nWarrior\nLEGACY ABILITY\n\nOnce per turn, you may discard 1 Warrior Skill Card from your hand to dra",
+      "width": 378,
+      "height": 686,
+      "scrollWidth": 376,
+      "scrollHeight": 684,
+      "visible": true,
+      "kind": "legacy"
+    }
+  ],
+  "errors": []
+}

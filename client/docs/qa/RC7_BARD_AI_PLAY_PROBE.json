@@ -1,0 +1,473 @@
+[
+  {
+    "id": "S0-ARC-028",
+    "name": "Midnight Lullaby",
+    "phase": "Battle",
+    "sourceClass": "Bard",
+    "legal": {
+      "ok": true,
+      "reasons": [],
+      "cost": 4
+    },
+    "attempted": true,
+    "picked": [
+      {
+        "card_id": "S0-ARC-026",
+        "discard_index": 0
+      },
+      {
+        "card_id": "S0-CLE-026",
+        "discard_index": 1
+      }
+    ],
+    "returned": 2,
+    "committed": true,
+    "pre": {
+      "discard": [
+        "S0-ARC-026",
+        "S0-CLE-026",
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-001",
+        "S0-MAG-002",
+        "S0-MAG-003",
+        "S0-MAG-004",
+        "S0-MAG-005",
+        "S0-WAR-001"
+      ],
+      "hand": [
+        "S0-ARC-028"
+      ],
+      "hp": 100,
+      "mana": 9
+    },
+    "post": {
+      "discard": [
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-CLE-026",
+        "S0-MAG-005",
+        "S0-MAG-001",
+        "S0-MAG-003",
+        "S0-WAR-001",
+        "S0-MAG-002",
+        "S0-MAG-004",
+        "S0-ARC-026"
+      ],
+      "hand": [],
+      "mana": 5,
+      "pending": "response_window",
+      "rw": true
+    },
+    "effects": [
+      {
+        "kind": "inflict_status",
+        "status": "Sleep",
+        "duration_by_class": {
+          "Bard": 1
+        },
+        "source_s0_printed_row": true
+      }
+    ],
+    "log": [
+      "Response Window opens for Midnight Lullaby target 1/2 — PLAYER LEFT.",
+      "Midnight Lullaby multi-target sequence: LEFT → CENTER.",
+      "AI plays Midnight Lullaby and pays 4 Mana. Melody Silverstring Exhausts.",
+      "Midnight Lullaby returns Lun, Zol from Discard Pile to Main Deck as CONDITION, then shuffles.",
+      "AI draws 9 Shards from Shard Deck (QA_SETUP).",
+      "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+      "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    ]
+  },
+  {
+    "id": "S0-ARC-030",
+    "name": "Crimson Crescendo",
+    "phase": "Battle",
+    "sourceClass": "Bard",
+    "legal": {
+      "ok": true,
+      "reasons": [],
+      "cost": 5
+    },
+    "attempted": true,
+    "picked": [
+      {
+        "card_id": "S0-ARC-026",
+        "discard_index": 0
+      }
+    ],
+    "returned": 1,
+    "committed": true,
+    "pre": {
+      "discard": [
+        "S0-ARC-026",
+        "S0-ARC-026",
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-001",
+        "S0-MAG-002",
+        "S0-MAG-003",
+        "S0-MAG-004",
+        "S0-MAG-005",
+        "S0-WAR-001"
+      ],
+      "hand": [
+        "S0-ARC-030"
+      ],
+      "hp": 100,
+      "mana": 9
+    },
+    "post": {
+      "discard": [
+        "S0-ARC-026",
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-003",
+        "S0-MAG-005",
+        "S0-WAR-001",
+        "S0-MAG-001",
+        "S0-ARC-026",
+        "S0-MAG-002",
+        "S0-MAG-004"
+      ],
+      "hand": [],
+      "mana": 4,
+      "pending": "response_window",
+      "rw": true
+    },
+    "effects": [],
+    "log": [
+      "Response Window opens for Crimson Crescendo targeting Garrick Beastfang.",
+      "AI plays Crimson Crescendo and pays 5 Mana. Melody Silverstring Exhausts.",
+      "Crimson Crescendo returns Zol from Discard Pile to Main Deck as CONDITION, then shuffles.",
+      "AI draws 9 Shards from Shard Deck (QA_SETUP).",
+      "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+      "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    ]
+  },
+  {
+    "id": "S0-ARC-031",
+    "name": "Resonance Burst",
+    "phase": "Battle",
+    "sourceClass": "Bard",
+    "legal": {
+      "ok": true,
+      "reasons": [],
+      "cost": 7
+    },
+    "attempted": true,
+    "picked": [
+      {
+        "card_id": "S0-ARC-026",
+        "discard_index": 0
+      },
+      {
+        "card_id": "S0-CLE-027",
+        "discard_index": 1
+      }
+    ],
+    "returned": 2,
+    "committed": true,
+    "pre": {
+      "discard": [
+        "S0-ARC-026",
+        "S0-CLE-027",
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-001",
+        "S0-MAG-002",
+        "S0-MAG-003",
+        "S0-MAG-004",
+        "S0-MAG-005",
+        "S0-WAR-001"
+      ],
+      "hand": [
+        "S0-ARC-031"
+      ],
+      "hp": 100,
+      "mana": 9
+    },
+    "post": {
+      "discard": [
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-WAR-001",
+        "S0-ARC-026",
+        "S0-MAG-001",
+        "S0-MAG-002",
+        "S0-MAG-005",
+        "S0-MAG-004",
+        "S0-CLE-027",
+        "S0-MAG-003"
+      ],
+      "hand": [],
+      "mana": 2,
+      "pending": "response_window",
+      "rw": true
+    },
+    "effects": [
+      {
+        "kind": "attack_restriction",
+        "restriction": "cannot_be_dodged",
+        "raw_value": "SURE HIT — This Attack cannot be Dodged.",
+        "source_keyword": "SURE HIT"
+      }
+    ],
+    "log": [
+      "Response Window opens for Resonance Burst target 1/2 — PLAYER LEFT.",
+      "Resonance Burst multi-target sequence: LEFT → CENTER.",
+      "AI plays Resonance Burst and pays 7 Mana. Melody Silverstring Exhausts.",
+      "Resonance Burst returns Vae, Zol from Discard Pile to Main Deck as CONDITION, then shuffles.",
+      "AI draws 9 Shards from Shard Deck (QA_SETUP).",
+      "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+      "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    ]
+  },
+  {
+    "id": "S0-CLE-028",
+    "name": "Blessing of Accuracy",
+    "phase": "Deploy",
+    "sourceClass": "Bard",
+    "legal": {
+      "ok": true,
+      "reasons": [],
+      "cost": 1
+    },
+    "attempted": true,
+    "picked": [
+      {
+        "card_id": "S0-CLE-027",
+        "discard_index": 0
+      }
+    ],
+    "returned": 1,
+    "committed": true,
+    "pre": {
+      "discard": [
+        "S0-CLE-027",
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-001",
+        "S0-MAG-002",
+        "S0-MAG-003",
+        "S0-MAG-004",
+        "S0-MAG-005",
+        "S0-WAR-001"
+      ],
+      "hand": [
+        "S0-CLE-028"
+      ],
+      "hp": 100,
+      "mana": 9
+    },
+    "post": {
+      "discard": [
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-001",
+        "S0-MAG-004",
+        "S0-CLE-027",
+        "S0-MAG-002",
+        "S0-WAR-001"
+      ],
+      "hand": [
+        "S0-MAG-003",
+        "S0-MAG-005"
+      ],
+      "mana": 8,
+      "pending": null,
+      "rw": false
+    },
+    "effects": [
+      {
+        "kind": "draw_cards",
+        "count": 2,
+        "source_s0_printed_row": true
+      },
+      {
+        "kind": "buff",
+        "source_s0_printed_row": true,
+        "scope": "chosen_hero",
+        "key": "SURE_HIT_ATTACKS"
+      }
+    ],
+    "log": [
+      "AI draws 1 card.",
+      "AI draws 1 card.",
+      "AI plays Blessing of Accuracy and pays 1 Mana. Melody Silverstring does not Exhaust.",
+      "Blessing of Accuracy returns Vae from Discard Pile to Main Deck as CONDITION, then shuffles.",
+      "AI draws 9 Shards from Shard Deck (QA_SETUP).",
+      "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+      "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    ]
+  },
+  {
+    "id": "S0-CLE-030",
+    "name": "Blooming Harmony",
+    "phase": "Reform",
+    "sourceClass": "Bard",
+    "legal": {
+      "ok": true,
+      "reasons": [],
+      "cost": 6
+    },
+    "attempted": true,
+    "picked": [
+      {
+        "card_id": "S0-CLE-026",
+        "discard_index": 0
+      },
+      {
+        "card_id": "S0-CLE-027",
+        "discard_index": 1
+      }
+    ],
+    "returned": 2,
+    "committed": true,
+    "pre": {
+      "discard": [
+        "S0-CLE-026",
+        "S0-CLE-027",
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-001",
+        "S0-MAG-002",
+        "S0-MAG-003",
+        "S0-MAG-004",
+        "S0-MAG-005",
+        "S0-WAR-001"
+      ],
+      "hand": [
+        "S0-CLE-030"
+      ],
+      "hp": 100,
+      "mana": 9
+    },
+    "post": {
+      "discard": [
+        "S0-WAR-001",
+        "S0-CLE-030"
+      ],
+      "deck": [
+        "S0-MAG-005",
+        "S0-MAG-003",
+        "S0-MAG-002",
+        "S0-WAR-001",
+        "S0-MAG-004",
+        "S0-CLE-027",
+        "S0-MAG-001",
+        "S0-CLE-026"
+      ],
+      "hand": [],
+      "mana": 3,
+      "pending": null,
+      "rw": false
+    },
+    "effects": [
+      {
+        "kind": "heal_allied_heroes",
+        "amount_by_class": {
+          "Bard": 30,
+          "Maestro": 50
+        },
+        "source_s0_printed_row": true
+      }
+    ],
+    "log": [
+      "Blooming Harmony heals Melody Silverstring for 10 (all allied Heroes).",
+      "Blooming Harmony heals Melody Silverstring for 20 (all allied Heroes).",
+      "AI plays Blooming Harmony and pays 6 Mana. Melody Silverstring Exhausts.",
+      "Blooming Harmony returns Vae, Lun from Discard Pile to Main Deck as CONDITION, then shuffles.",
+      "AI draws 9 Shards from Shard Deck (QA_SETUP).",
+      "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+      "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    ]
+  },
+  {
+    "id": "S0-CLE-031",
+    "name": "Grand Finale",
+    "phase": "Battle",
+    "sourceClass": "Maestro",
+    "legal": {
+      "ok": true,
+      "reasons": [],
+      "cost": 6
+    },
+    "attempted": true,
+    "picked": [
+      {
+        "card_id": "S0-ARC-026",
+        "discard_index": 0
+      },
+      {
+        "card_id": "S0-CLE-026",
+        "discard_index": 1
+      },
+      {
+        "card_id": "S0-CLE-027",
+        "discard_index": 2
+      }
+    ],
+    "returned": 3,
+    "committed": true,
+    "pre": {
+      "discard": [
+        "S0-ARC-026",
+        "S0-CLE-026",
+        "S0-CLE-027",
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-001",
+        "S0-MAG-002",
+        "S0-MAG-003",
+        "S0-MAG-004",
+        "S0-MAG-005",
+        "S0-WAR-001"
+      ],
+      "hand": [
+        "S0-CLE-031"
+      ],
+      "hp": 100,
+      "mana": 9
+    },
+    "post": {
+      "discard": [
+        "S0-WAR-001"
+      ],
+      "deck": [
+        "S0-MAG-002",
+        "S0-MAG-001",
+        "S0-CLE-026",
+        "S0-WAR-001",
+        "S0-CLE-027",
+        "S0-MAG-005",
+        "S0-MAG-004",
+        "S0-MAG-003",
+        "S0-ARC-026"
+      ],
+      "hand": [],
+      "mana": 3,
+      "pending": "response_window",
+      "rw": true
+    },
+    "effects": [],
+    "log": [
+      "Response Window opens for Grand Finale targeting Garrick Beastfang.",
+      "AI plays Grand Finale and pays 6 Mana. Melody Silverstring Exhausts.",
+      "Grand Finale returns Vae, Lun, Zol from Discard Pile to Main Deck as CONDITION, then shuffles.",
+      "AI draws 9 Shards from Shard Deck (QA_SETUP).",
+      "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+      "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    ]
+  }
+]

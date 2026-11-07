@@ -1,0 +1,1129 @@
+{
+  "schema_version": "S0-DEV45-DERIVED-UNEXECUTED-HERO-COMPONENTS",
+  "generated_from": "CURRENT_SEASON0_CONSUMERS.dev44.json + DEV40 current print",
+  "racial_traits": [
+    {
+      "racial_trait_id": "RACIAL-BEASTMAN-PRIMAL-STRIKE-0e952ed5c4",
+      "race": "Beastman",
+      "name": "Primal Strike",
+      "definition": {
+        "name": "Primal Strike",
+        "text": "During your Battle Phase, you may spend 1 Racial Token to deal 20 Physical damage to an injured opponent's Hero.",
+        "printedBlockBadge": null
+      },
+      "used_by_card_ids": [
+        "S0-ARC-H001",
+        "S0-ARC-H002",
+        "S0-ARC-H003",
+        "S0-WAR-H004",
+        "S0-WAR-H005",
+        "S0-WAR-H006"
+      ]
+    },
+    {
+      "racial_trait_id": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "race": "Elf",
+      "name": "Ancestral Focus",
+      "definition": {
+        "name": "Ancestral Focus",
+        "text": "During Deploy Phase, you may spend 1 Racial Token to gain 2 Mana cards to your Mana Pool.",
+        "printedBlockBadge": null
+      },
+      "used_by_card_ids": [
+        "S0-ARC-H004",
+        "S0-ARC-H005",
+        "S0-ARC-H006",
+        "S0-CLE-H001",
+        "S0-CLE-H002",
+        "S0-CLE-H003",
+        "S0-THF-H007",
+        "S0-THF-H008",
+        "S0-THF-H009"
+      ]
+    },
+    {
+      "racial_trait_id": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "race": "Human",
+      "name": "Human Ambition",
+      "definition": {
+        "name": "Human Ambition",
+        "text": "During Deploy Phase, you may spend 1 Racial Token to draw 2 cards.",
+        "printedBlockBadge": null
+      },
+      "used_by_card_ids": [
+        "S0-ARC-H007",
+        "S0-ARC-H008",
+        "S0-ARC-H009",
+        "S0-MAG-H004",
+        "S0-MAG-H005",
+        "S0-MAG-H006",
+        "S0-WAR-H001",
+        "S0-WAR-H002",
+        "S0-WAR-H003"
+      ]
+    },
+    {
+      "racial_trait_id": "RACIAL-DWARF-STONEBLOOD-92fcbb9f81",
+      "race": "Dwarf",
+      "name": "Stoneblood",
+      "definition": {
+        "name": "Stoneblood",
+        "text": "When this Hero would be defeated, you may spend 1 Racial Token. If you do, this Hero remains on the field with 30 HP.",
+        "printedBlockBadge": null
+      },
+      "used_by_card_ids": [
+        "S0-CLE-H004",
+        "S0-CLE-H005",
+        "S0-CLE-H006",
+        "S0-MAG-H007",
+        "S0-MAG-H008",
+        "S0-MAG-H009"
+      ]
+    },
+    {
+      "racial_trait_id": "RACIAL-HALFLING-SECOND-CHANCE-edef137b6a",
+      "race": "Halfling",
+      "name": "Second Chance",
+      "definition": {
+        "name": "Second Chance",
+        "text": "Spend 1 Racial Token to dodge incoming Physical or Magical damage.",
+        "printedBlockBadge": null
+      },
+      "used_by_card_ids": [
+        "S0-CLE-H007",
+        "S0-CLE-H008",
+        "S0-CLE-H009",
+        "S0-THF-H001",
+        "S0-THF-H002",
+        "S0-THF-H003"
+      ]
+    },
+    {
+      "racial_trait_id": "RACIAL-ELF-ANCESTRAL-FOCUS-c87444c230",
+      "race": "Elf",
+      "name": "Ancestral Focus",
+      "definition": {
+        "name": "Ancestral Focus",
+        "text": "During Deploy Phase, you may spend 1 Racial Token to draw 2 Mana cards to your Mana Pool.",
+        "printedBlockBadge": null
+      },
+      "used_by_card_ids": [
+        "S0-MAG-H001",
+        "S0-MAG-H002",
+        "S0-MAG-H003"
+      ]
+    },
+    {
+      "racial_trait_id": "RACIAL-DRAGONBORN-DRAGON-SCALE-9f0ffb5d15",
+      "race": "Dragonborn",
+      "name": "Dragon Scale",
+      "definition": {
+        "name": "Dragon Scale",
+        "text": "You may spend 1 Racial Token to Block incoming Physical or Magical damage.",
+        "printedBlockBadge": -50
+      },
+      "used_by_card_ids": [
+        "S0-THF-H004",
+        "S0-THF-H005",
+        "S0-THF-H006",
+        "S0-WAR-H007",
+        "S0-WAR-H008",
+        "S0-WAR-H009"
+      ]
+    }
+  ],
+  "class_abilities": [
+    {
+      "class_ability_id": "CLASS-MARKSMAN-SHARPSHOOTER-c469eb0f68",
+      "class": "Marksman",
+      "name": "Sharpshooter",
+      "definition": {
+        "name": "Sharpshooter",
+        "text": "Your Physical Attack card gains RANGE."
+      },
+      "used_by_card_ids": [
+        "S0-ARC-H002",
+        "S0-ARC-H005"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-GRAND-RANGER-DEAD-EYE-fa5f1edde4",
+      "class": "Grand Ranger",
+      "name": "Dead Eye",
+      "definition": {
+        "name": "Dead Eye",
+        "text": "Your Physical Attack card gains RANGE. Increase this Hero's Physical Attack damage by 10."
+      },
+      "used_by_card_ids": [
+        "S0-ARC-H003",
+        "S0-ARC-H006"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-ARBALEST-QUICK-RELOAD-e8b41c5005",
+      "class": "Arbalest",
+      "name": "Quick Reload",
+      "definition": {
+        "name": "Quick Reload",
+        "text": "During your Draw Phase, you may shuffle the card you just drew into your deck and draw a new card."
+      },
+      "used_by_card_ids": [
+        "S0-ARC-H008"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-GRAND-ARBALEST-RAPID-CHAMBER-c4eb76bdf5",
+      "class": "Grand Arbalest",
+      "name": "Rapid Chamber",
+      "definition": {
+        "name": "Rapid Chamber",
+        "text": "During your Draw Phase, you may shuffle the card you just drew into your deck and draw a new card. Increase this Hero's Physical Attack damage by 10."
+      },
+      "used_by_card_ids": [
+        "S0-ARC-H009"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-PRIEST-HOLY-GRACE-7ce63d9a11",
+      "class": "Priest",
+      "name": "Holy Grace",
+      "definition": {
+        "name": "Holy Grace",
+        "text": "Increase this Hero's Healing done by +20."
+      },
+      "used_by_card_ids": [
+        "S0-CLE-H002",
+        "S0-CLE-H005"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-SAINT-HOLY-REJUVENATION-b9a6e998c8",
+      "class": "Saint",
+      "name": "Holy Rejuvenation",
+      "definition": {
+        "name": "Holy Rejuvenation",
+        "text": "Increase this Hero's Healing done by +20 and remove 1 negative status from the healed ally."
+      },
+      "used_by_card_ids": [
+        "S0-CLE-H003",
+        "S0-CLE-H006"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-BARD-PROLONGED-SYMPHONY-80c9fa0719",
+      "class": "Bard",
+      "name": "Prolonged Symphony",
+      "definition": {
+        "name": "Prolonged Symphony",
+        "text": "During your Draw Phase, you may discard 1 card from your hand and draw a new card."
+      },
+      "used_by_card_ids": [
+        "S0-CLE-H008"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-MAESTRO-ORCHESTRAL-CRESCENDO-7709967c21",
+      "class": "Maestro",
+      "name": "Orchestral Crescendo",
+      "definition": {
+        "name": "Orchestral Crescendo",
+        "text": "During your Draw Phase, you may discard up to 2 cards from your hand, then draw 1 card for each card discarded this way."
+      },
+      "used_by_card_ids": [
+        "S0-CLE-H009"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-ELEMENTALIST-ELEMENTAL-MASTERY-ee3f8cad88",
+      "class": "Elementalist",
+      "name": "Elemental Mastery",
+      "definition": {
+        "name": "Elemental Mastery",
+        "text": "Increase the duration of Burn and Freeze you inflict on opponent's Heroes by 1 turn."
+      },
+      "used_by_card_ids": [
+        "S0-MAG-H002",
+        "S0-MAG-H005"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-ELEMENTAL-LORD-ELEMENTAL-SOVEREIGNTY-e4d0b515f0",
+      "class": "Elemental Lord",
+      "name": "Elemental Sovereignty",
+      "definition": {
+        "name": "Elemental Sovereignty",
+        "text": "Increase the duration of Burn and Freeze you inflict on opponent's Heroes by 1 turn. Increase this Hero's Magical Attack damage by 10."
+      },
+      "used_by_card_ids": [
+        "S0-MAG-H003",
+        "S0-MAG-H006"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-ARCANE-WARRIOR-CRYSTALHIDE-80c4e040df",
+      "class": "Arcane Warrior",
+      "name": "Crystalhide",
+      "definition": {
+        "name": "Crystalhide",
+        "text": "Reduce incoming Magical damage by -10."
+      },
+      "used_by_card_ids": [
+        "S0-MAG-H008"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-ARCANE-VANGUARD-RAINBOW-CRYSTALHIDE-a87115c11c",
+      "class": "Arcane Vanguard",
+      "name": "Rainbow Crystalhide",
+      "definition": {
+        "name": "Rainbow Crystalhide",
+        "text": "Reduce incoming Physical or Magical damage by -10"
+      },
+      "used_by_card_ids": [
+        "S0-MAG-H009"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-ROGUE-VENOM-MASTERY-b5d83f01de",
+      "class": "Rogue",
+      "name": "Venom Mastery",
+      "definition": {
+        "name": "Venom Mastery",
+        "text": "Increase the duration of Poison you inflict on opponent's Heroes by 1 turn."
+      },
+      "used_by_card_ids": [
+        "S0-THF-H002",
+        "S0-THF-H005"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-RENEGADE-NIGHTSHADE-VENOM-2833f98461",
+      "class": "Renegade",
+      "name": "Nightshade Venom",
+      "definition": {
+        "name": "Nightshade Venom",
+        "text": "Increase the duration of Poison you inflict on opponent's Heroes by 1 turn. Increase this Hero's Physical Attack damage by 10."
+      },
+      "used_by_card_ids": [
+        "S0-THF-H003",
+        "S0-THF-H006"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-SPELL-BLADE-MANA-SURGE-d92e359ae8",
+      "class": "Spell Blade",
+      "name": "Mana Surge",
+      "definition": {
+        "name": "Mana Surge",
+        "text": "When this Hero uses a Magical Attack, you may spend 1 additional Mana Shard to increase the Magical damage by 10."
+      },
+      "used_by_card_ids": [
+        "S0-THF-H008"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-ARCANE-DUELIST-ARCANE-SURGE-3edfb7958b",
+      "class": "Arcane Duelist",
+      "name": "Arcane Surge",
+      "definition": {
+        "name": "Arcane Surge",
+        "text": "When this Hero uses a Magical Attack, you may spend 1 additional Mana Shard to increase the Magical damage by 20."
+      },
+      "used_by_card_ids": [
+        "S0-THF-H009"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-GLADIATOR-VANQUISHER-S-RESOLVE-2e2f98e856",
+      "class": "Gladiator",
+      "name": "Vanquisher's Resolve",
+      "definition": {
+        "name": "Vanquisher's Resolve",
+        "text": "Reduce incoming Physical damage by -10."
+      },
+      "used_by_card_ids": [
+        "S0-WAR-H002",
+        "S0-WAR-H005"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-CONQUEROR-ARENA-DOMINATOR-f21ec11f20",
+      "class": "Conqueror",
+      "name": "Arena Dominator",
+      "definition": {
+        "name": "Arena Dominator",
+        "text": "Reduce incoming Physical damage by -10 and increase this Hero's Physical Attack damage by 10."
+      },
+      "used_by_card_ids": [
+        "S0-WAR-H003",
+        "S0-WAR-H006"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-PALADIN-HOLY-RESURGENCE-7239ea0d10",
+      "class": "Paladin",
+      "name": "Holy Resurgence",
+      "definition": {
+        "name": "Holy Resurgence",
+        "text": "Once per turn during your Deploy Phase, you may spend 1 Mana Shard to heal one of your Heroes for +10 HP. Exhaust this Hero afterward."
+      },
+      "used_by_card_ids": [
+        "S0-WAR-H008"
+      ]
+    },
+    {
+      "class_ability_id": "CLASS-CRUSADER-RADIANT-OBLIVION-476bc1bf19",
+      "class": "Crusader",
+      "name": "Radiant Oblivion",
+      "definition": {
+        "name": "Radiant Oblivion",
+        "text": "Once per turn during your Deploy Phase, you may spend 1 Mana Shard to heal one of your Heroes for +20 HP. Exhaust this Hero afterward."
+      },
+      "used_by_card_ids": [
+        "S0-WAR-H009"
+      ]
+    }
+  ],
+  "hero_compositions": [
+    {
+      "card_id": "S0-ARC-H001",
+      "hero_name": "Korvak Ironfang",
+      "race": "Beastman",
+      "class": "Archer",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-BEASTMAN-PRIMAL-STRIKE-0e952ed5c4",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-ARC-H002",
+      "hero_name": "Korvak Ironfang",
+      "race": "Beastman",
+      "class": "Marksman",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-BEASTMAN-PRIMAL-STRIKE-0e952ed5c4",
+      "class_ability_ref": "CLASS-MARKSMAN-SHARPSHOOTER-c469eb0f68"
+    },
+    {
+      "card_id": "S0-ARC-H003",
+      "hero_name": "Korvak Ironfang",
+      "race": "Beastman",
+      "class": "Grand Ranger",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-BEASTMAN-PRIMAL-STRIKE-0e952ed5c4",
+      "class_ability_ref": "CLASS-GRAND-RANGER-DEAD-EYE-fa5f1edde4"
+    },
+    {
+      "card_id": "S0-ARC-H004",
+      "hero_name": "Sylvan Galesong",
+      "race": "Elf",
+      "class": "Archer",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-ARC-H005",
+      "hero_name": "Sylvan Galesong",
+      "race": "Elf",
+      "class": "Marksman",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": "CLASS-MARKSMAN-SHARPSHOOTER-c469eb0f68"
+    },
+    {
+      "card_id": "S0-ARC-H006",
+      "hero_name": "Sylvan Galesong",
+      "race": "Elf",
+      "class": "Grand Ranger",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": "CLASS-GRAND-RANGER-DEAD-EYE-fa5f1edde4"
+    },
+    {
+      "card_id": "S0-ARC-H007",
+      "hero_name": "Alden Sterling",
+      "race": "Human",
+      "class": "Archer",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-ARC-H008",
+      "hero_name": "Alden Sterling",
+      "race": "Human",
+      "class": "Arbalest",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": "CLASS-ARBALEST-QUICK-RELOAD-e8b41c5005"
+    },
+    {
+      "card_id": "S0-ARC-H009",
+      "hero_name": "Alden Sterling",
+      "race": "Human",
+      "class": "Grand Arbalest",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": "CLASS-GRAND-ARBALEST-RAPID-CHAMBER-c4eb76bdf5"
+    },
+    {
+      "card_id": "S0-CLE-H001",
+      "hero_name": "Elara Heavens",
+      "race": "Elf",
+      "class": "Cleric",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-CLE-H002",
+      "hero_name": "Elara Heavens",
+      "race": "Elf",
+      "class": "Priest",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": "CLASS-PRIEST-HOLY-GRACE-7ce63d9a11"
+    },
+    {
+      "card_id": "S0-CLE-H003",
+      "hero_name": "Elara Heavens",
+      "race": "Elf",
+      "class": "Saint",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": "CLASS-SAINT-HOLY-REJUVENATION-b9a6e998c8"
+    },
+    {
+      "card_id": "S0-CLE-H004",
+      "hero_name": "Thrain Sunborn",
+      "race": "Dwarf",
+      "class": "Cleric",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-DWARF-STONEBLOOD-92fcbb9f81",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-CLE-H005",
+      "hero_name": "Thrain Sunborn",
+      "race": "Dwarf",
+      "class": "Priest",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-DWARF-STONEBLOOD-92fcbb9f81",
+      "class_ability_ref": "CLASS-PRIEST-HOLY-GRACE-7ce63d9a11"
+    },
+    {
+      "card_id": "S0-CLE-H006",
+      "hero_name": "Thrain Sunborn",
+      "race": "Dwarf",
+      "class": "Saint",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-DWARF-STONEBLOOD-92fcbb9f81",
+      "class_ability_ref": "CLASS-SAINT-HOLY-REJUVENATION-b9a6e998c8"
+    },
+    {
+      "card_id": "S0-CLE-H007",
+      "hero_name": "Melody Silverstring",
+      "race": "Halfling",
+      "class": "Cleric",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-HALFLING-SECOND-CHANCE-edef137b6a",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-CLE-H008",
+      "hero_name": "Melody Silverstring",
+      "race": "Halfling",
+      "class": "Bard",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-HALFLING-SECOND-CHANCE-edef137b6a",
+      "class_ability_ref": "CLASS-BARD-PROLONGED-SYMPHONY-80c9fa0719"
+    },
+    {
+      "card_id": "S0-CLE-H009",
+      "hero_name": "Melody Silverstring",
+      "race": "Halfling",
+      "class": "Maestro",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-HALFLING-SECOND-CHANCE-edef137b6a",
+      "class_ability_ref": "CLASS-MAESTRO-ORCHESTRAL-CRESCENDO-7709967c21"
+    },
+    {
+      "card_id": "S0-MAG-H001",
+      "hero_name": "Vaelis Stormweave",
+      "race": "Elf",
+      "class": "Mage",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-c87444c230",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-MAG-H002",
+      "hero_name": "Vaelis Stormweave",
+      "race": "Elf",
+      "class": "Elementalist",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-c87444c230",
+      "class_ability_ref": "CLASS-ELEMENTALIST-ELEMENTAL-MASTERY-ee3f8cad88"
+    },
+    {
+      "card_id": "S0-MAG-H003",
+      "hero_name": "Vaelis Stormweave",
+      "race": "Elf",
+      "class": "Elemental Lord",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-c87444c230",
+      "class_ability_ref": "CLASS-ELEMENTAL-LORD-ELEMENTAL-SOVEREIGNTY-e4d0b515f0"
+    },
+    {
+      "card_id": "S0-MAG-H004",
+      "hero_name": "Aldric Ashford",
+      "race": "Human",
+      "class": "Mage",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-MAG-H005",
+      "hero_name": "Aldric Ashford",
+      "race": "Human",
+      "class": "Elementalist",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": "CLASS-ELEMENTALIST-ELEMENTAL-MASTERY-ee3f8cad88"
+    },
+    {
+      "card_id": "S0-MAG-H006",
+      "hero_name": "Aldric Ashford",
+      "race": "Human",
+      "class": "Elemental Lord",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": "CLASS-ELEMENTAL-LORD-ELEMENTAL-SOVEREIGNTY-e4d0b515f0"
+    },
+    {
+      "card_id": "S0-MAG-H007",
+      "hero_name": "Bromir Oathforge",
+      "race": "Dwarf",
+      "class": "Mage",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-DWARF-STONEBLOOD-92fcbb9f81",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-MAG-H008",
+      "hero_name": "Bromir Oathforge",
+      "race": "Dwarf",
+      "class": "Arcane Warrior",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-DWARF-STONEBLOOD-92fcbb9f81",
+      "class_ability_ref": "CLASS-ARCANE-WARRIOR-CRYSTALHIDE-80c4e040df"
+    },
+    {
+      "card_id": "S0-MAG-H009",
+      "hero_name": "Bromir Oathforge",
+      "race": "Dwarf",
+      "class": "Arcane Vanguard",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-DWARF-STONEBLOOD-92fcbb9f81",
+      "class_ability_ref": "CLASS-ARCANE-VANGUARD-RAINBOW-CRYSTALHIDE-a87115c11c"
+    },
+    {
+      "card_id": "S0-THF-H001",
+      "hero_name": "Finnian Copperpot",
+      "race": "Halfling",
+      "class": "Thief",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-HALFLING-SECOND-CHANCE-edef137b6a",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-THF-H002",
+      "hero_name": "Finnian Copperpot",
+      "race": "Halfling",
+      "class": "Rogue",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-HALFLING-SECOND-CHANCE-edef137b6a",
+      "class_ability_ref": "CLASS-ROGUE-VENOM-MASTERY-b5d83f01de"
+    },
+    {
+      "card_id": "S0-THF-H003",
+      "hero_name": "Finnian Copperpot",
+      "race": "Halfling",
+      "class": "Renegade",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-HALFLING-SECOND-CHANCE-edef137b6a",
+      "class_ability_ref": "CLASS-RENEGADE-NIGHTSHADE-VENOM-2833f98461"
+    },
+    {
+      "card_id": "S0-THF-H004",
+      "hero_name": "Akra Norixius",
+      "race": "Dragonborn",
+      "class": "Thief",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-DRAGONBORN-DRAGON-SCALE-9f0ffb5d15",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-THF-H005",
+      "hero_name": "Akra Norixius",
+      "race": "Dragonborn",
+      "class": "Rogue",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-DRAGONBORN-DRAGON-SCALE-9f0ffb5d15",
+      "class_ability_ref": "CLASS-ROGUE-VENOM-MASTERY-b5d83f01de"
+    },
+    {
+      "card_id": "S0-THF-H006",
+      "hero_name": "Akra Norixius",
+      "race": "Dragonborn",
+      "class": "Renegade",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-DRAGONBORN-DRAGON-SCALE-9f0ffb5d15",
+      "class_ability_ref": "CLASS-RENEGADE-NIGHTSHADE-VENOM-2833f98461"
+    },
+    {
+      "card_id": "S0-THF-H007",
+      "hero_name": "Lucien Voss",
+      "race": "Elf",
+      "class": "Thief",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-THF-H008",
+      "hero_name": "Lucien Voss",
+      "race": "Elf",
+      "class": "Spell Blade",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": "CLASS-SPELL-BLADE-MANA-SURGE-d92e359ae8"
+    },
+    {
+      "card_id": "S0-THF-H009",
+      "hero_name": "Lucien Voss",
+      "race": "Elf",
+      "class": "Arcane Duelist",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-ELF-ANCESTRAL-FOCUS-2137c097c6",
+      "class_ability_ref": "CLASS-ARCANE-DUELIST-ARCANE-SURGE-3edfb7958b"
+    },
+    {
+      "card_id": "S0-WAR-H001",
+      "hero_name": "Draxen Blacksand",
+      "race": "Human",
+      "class": "Warrior",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-WAR-H002",
+      "hero_name": "Draxen Blacksand",
+      "race": "Human",
+      "class": "Gladiator",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": "CLASS-GLADIATOR-VANQUISHER-S-RESOLVE-2e2f98e856"
+    },
+    {
+      "card_id": "S0-WAR-H003",
+      "hero_name": "Draxen Blacksand",
+      "race": "Human",
+      "class": "Conqueror",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-HUMAN-HUMAN-AMBITION-f74565c8ed",
+      "class_ability_ref": "CLASS-CONQUEROR-ARENA-DOMINATOR-f21ec11f20"
+    },
+    {
+      "card_id": "S0-WAR-H004",
+      "hero_name": "Garrick Beastfang",
+      "race": "Beastman",
+      "class": "Warrior",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-BEASTMAN-PRIMAL-STRIKE-0e952ed5c4",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-WAR-H005",
+      "hero_name": "Garrick Beastfang",
+      "race": "Beastman",
+      "class": "Gladiator",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-BEASTMAN-PRIMAL-STRIKE-0e952ed5c4",
+      "class_ability_ref": "CLASS-GLADIATOR-VANQUISHER-S-RESOLVE-2e2f98e856"
+    },
+    {
+      "card_id": "S0-WAR-H006",
+      "hero_name": "Garrick Beastfang",
+      "race": "Beastman",
+      "class": "Conqueror",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-BEASTMAN-PRIMAL-STRIKE-0e952ed5c4",
+      "class_ability_ref": "CLASS-CONQUEROR-ARENA-DOMINATOR-f21ec11f20"
+    },
+    {
+      "card_id": "S0-WAR-H007",
+      "hero_name": "Aurex Sunsworn",
+      "race": "Dragonborn",
+      "class": "Warrior",
+      "rank": "Rank I",
+      "racial_trait_ref": "RACIAL-DRAGONBORN-DRAGON-SCALE-9f0ffb5d15",
+      "class_ability_ref": null
+    },
+    {
+      "card_id": "S0-WAR-H008",
+      "hero_name": "Aurex Sunsworn",
+      "race": "Dragonborn",
+      "class": "Paladin",
+      "rank": "Rank II",
+      "racial_trait_ref": "RACIAL-DRAGONBORN-DRAGON-SCALE-9f0ffb5d15",
+      "class_ability_ref": "CLASS-PALADIN-HOLY-RESURGENCE-7239ea0d10"
+    },
+    {
+      "card_id": "S0-WAR-H009",
+      "hero_name": "Aurex Sunsworn",
+      "race": "Dragonborn",
+      "class": "Crusader",
+      "rank": "Rank III",
+      "racial_trait_ref": "RACIAL-DRAGONBORN-DRAGON-SCALE-9f0ffb5d15",
+      "class_ability_ref": "CLASS-CRUSADER-RADIANT-OBLIVION-476bc1bf19"
+    }
+  ],
+  "hero_profiles": [
+    {
+      "hero_id": "S0-KORVAK-IRONFANG",
+      "name": "Korvak Ironfang",
+      "race": "Beastman",
+      "rank_cards": [
+        {
+          "card_id": "S0-ARC-H001",
+          "rank": 1,
+          "class": "Archer"
+        },
+        {
+          "card_id": "S0-ARC-H002",
+          "rank": 2,
+          "class": "Marksman"
+        },
+        {
+          "card_id": "S0-ARC-H003",
+          "rank": 3,
+          "class": "Grand Ranger"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-SYLVAN-GALESONG",
+      "name": "Sylvan Galesong",
+      "race": "Elf",
+      "rank_cards": [
+        {
+          "card_id": "S0-ARC-H004",
+          "rank": 1,
+          "class": "Archer"
+        },
+        {
+          "card_id": "S0-ARC-H005",
+          "rank": 2,
+          "class": "Marksman"
+        },
+        {
+          "card_id": "S0-ARC-H006",
+          "rank": 3,
+          "class": "Grand Ranger"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-ALDEN-STERLING",
+      "name": "Alden Sterling",
+      "race": "Human",
+      "rank_cards": [
+        {
+          "card_id": "S0-ARC-H007",
+          "rank": 1,
+          "class": "Archer"
+        },
+        {
+          "card_id": "S0-ARC-H008",
+          "rank": 2,
+          "class": "Arbalest"
+        },
+        {
+          "card_id": "S0-ARC-H009",
+          "rank": 3,
+          "class": "Grand Arbalest"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-ELARA-HEAVENS",
+      "name": "Elara Heavens",
+      "race": "Elf",
+      "rank_cards": [
+        {
+          "card_id": "S0-CLE-H001",
+          "rank": 1,
+          "class": "Cleric"
+        },
+        {
+          "card_id": "S0-CLE-H002",
+          "rank": 2,
+          "class": "Priest"
+        },
+        {
+          "card_id": "S0-CLE-H003",
+          "rank": 3,
+          "class": "Saint"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-THRAIN-SUNBORN",
+      "name": "Thrain Sunborn",
+      "race": "Dwarf",
+      "rank_cards": [
+        {
+          "card_id": "S0-CLE-H004",
+          "rank": 1,
+          "class": "Cleric"
+        },
+        {
+          "card_id": "S0-CLE-H005",
+          "rank": 2,
+          "class": "Priest"
+        },
+        {
+          "card_id": "S0-CLE-H006",
+          "rank": 3,
+          "class": "Saint"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-MELODY-SILVERSTRING",
+      "name": "Melody Silverstring",
+      "race": "Halfling",
+      "rank_cards": [
+        {
+          "card_id": "S0-CLE-H007",
+          "rank": 1,
+          "class": "Cleric"
+        },
+        {
+          "card_id": "S0-CLE-H008",
+          "rank": 2,
+          "class": "Bard"
+        },
+        {
+          "card_id": "S0-CLE-H009",
+          "rank": 3,
+          "class": "Maestro"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-VAELIS-STORMWEAVE",
+      "name": "Vaelis Stormweave",
+      "race": "Elf",
+      "rank_cards": [
+        {
+          "card_id": "S0-MAG-H001",
+          "rank": 1,
+          "class": "Mage"
+        },
+        {
+          "card_id": "S0-MAG-H002",
+          "rank": 2,
+          "class": "Elementalist"
+        },
+        {
+          "card_id": "S0-MAG-H003",
+          "rank": 3,
+          "class": "Elemental Lord"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-ALDRIC-ASHFORD",
+      "name": "Aldric Ashford",
+      "race": "Human",
+      "rank_cards": [
+        {
+          "card_id": "S0-MAG-H004",
+          "rank": 1,
+          "class": "Mage"
+        },
+        {
+          "card_id": "S0-MAG-H005",
+          "rank": 2,
+          "class": "Elementalist"
+        },
+        {
+          "card_id": "S0-MAG-H006",
+          "rank": 3,
+          "class": "Elemental Lord"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-BROMIR-OATHFORGE",
+      "name": "Bromir Oathforge",
+      "race": "Dwarf",
+      "rank_cards": [
+        {
+          "card_id": "S0-MAG-H007",
+          "rank": 1,
+          "class": "Mage"
+        },
+        {
+          "card_id": "S0-MAG-H008",
+          "rank": 2,
+          "class": "Arcane Warrior"
+        },
+        {
+          "card_id": "S0-MAG-H009",
+          "rank": 3,
+          "class": "Arcane Vanguard"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-FINNIAN-COPPERPOT",
+      "name": "Finnian Copperpot",
+      "race": "Halfling",
+      "rank_cards": [
+        {
+          "card_id": "S0-THF-H001",
+          "rank": 1,
+          "class": "Thief"
+        },
+        {
+          "card_id": "S0-THF-H002",
+          "rank": 2,
+          "class": "Rogue"
+        },
+        {
+          "card_id": "S0-THF-H003",
+          "rank": 3,
+          "class": "Renegade"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-AKRA-NORIXIUS",
+      "name": "Akra Norixius",
+      "race": "Dragonborn",
+      "rank_cards": [
+        {
+          "card_id": "S0-THF-H004",
+          "rank": 1,
+          "class": "Thief"
+        },
+        {
+          "card_id": "S0-THF-H005",
+          "rank": 2,
+          "class": "Rogue"
+        },
+        {
+          "card_id": "S0-THF-H006",
+          "rank": 3,
+          "class": "Renegade"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-LUCIEN-VOSS",
+      "name": "Lucien Voss",
+      "race": "Elf",
+      "rank_cards": [
+        {
+          "card_id": "S0-THF-H007",
+          "rank": 1,
+          "class": "Thief"
+        },
+        {
+          "card_id": "S0-THF-H008",
+          "rank": 2,
+          "class": "Spell Blade"
+        },
+        {
+          "card_id": "S0-THF-H009",
+          "rank": 3,
+          "class": "Arcane Duelist"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-DRAXEN-BLACKSAND",
+      "name": "Draxen Blacksand",
+      "race": "Human",
+      "rank_cards": [
+        {
+          "card_id": "S0-WAR-H001",
+          "rank": 1,
+          "class": "Warrior"
+        },
+        {
+          "card_id": "S0-WAR-H002",
+          "rank": 2,
+          "class": "Gladiator"
+        },
+        {
+          "card_id": "S0-WAR-H003",
+          "rank": 3,
+          "class": "Conqueror"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-GARRICK-BEASTFANG",
+      "name": "Garrick Beastfang",
+      "race": "Beastman",
+      "rank_cards": [
+        {
+          "card_id": "S0-WAR-H004",
+          "rank": 1,
+          "class": "Warrior"
+        },
+        {
+          "card_id": "S0-WAR-H005",
+          "rank": 2,
+          "class": "Gladiator"
+        },
+        {
+          "card_id": "S0-WAR-H006",
+          "rank": 3,
+          "class": "Conqueror"
+        }
+      ]
+    },
+    {
+      "hero_id": "S0-AUREX-SUNSWORN",
+      "name": "Aurex Sunsworn",
+      "race": "Dragonborn",
+      "rank_cards": [
+        {
+          "card_id": "S0-WAR-H007",
+          "rank": 1,
+          "class": "Warrior"
+        },
+        {
+          "card_id": "S0-WAR-H008",
+          "rank": 2,
+          "class": "Paladin"
+        },
+        {
+          "card_id": "S0-WAR-H009",
+          "rank": 3,
+          "class": "Crusader"
+        }
+      ]
+    }
+  ],
+  "data_type": "s0_source_materialized_hero_components",
+  "generated_only": true,
+  "registry_hash": "f61ffa4578dc26193370773b72e78341a9ae1439521c6ce2cadf473ceb45ad7f"
+}

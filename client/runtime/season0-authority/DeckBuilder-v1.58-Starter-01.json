@@ -1,0 +1,213 @@
+{
+  "schema": "GL-SEASON0-DECK-DRAFT-1",
+  "schema_version": "GL-SEASON0-DECK-DRAFT-1",
+  "season": "S0",
+  "builder_version": "1.58",
+  "style": "style2",
+  "source": "Deck Builder v1.58 / style-2/js/s0-starters-v1.46.js",
+  "name": "Red-White Deck",
+  "deck_name": "Red-White Deck",
+  "deck": {
+    "main_deck": [
+      {
+        "card_id": "S0-CLE-002",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-007",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-011",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-EVT-002",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-003",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-004",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-007",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-009",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-008",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-018",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-017",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-002",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-EVT-008",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-019",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-ITM-001",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-010",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-015",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-017",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-019",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-020",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-021",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-022",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-024",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-CLE-023",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-CLE-025",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-007",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-009",
+        "quantity": 3
+      },
+      {
+        "card_id": "S0-WAR-010",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-011",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-012",
+        "quantity": 3
+      },
+      {
+        "card_id": "S0-WAR-014",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-015",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-017",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-019",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-021",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-WAR-022",
+        "quantity": 2
+      },
+      {
+        "card_id": "S0-WAR-025",
+        "quantity": 1
+      },
+      {
+        "card_id": "S0-WAR-023",
+        "quantity": 1
+      }
+    ],
+    "shard_deck": [
+      {
+        "kind": "MANA",
+        "quantity": 10
+      },
+      {
+        "kind": "CLASS",
+        "class_name": "Cleric",
+        "quantity": 1
+      },
+      {
+        "kind": "CLASS",
+        "class_name": "Warrior",
+        "quantity": 1
+      }
+    ],
+    "legacy_packages": [
+      {
+        "hero_rank_ids": [
+          "S0-WAR-H004",
+          "S0-WAR-H005",
+          "S0-WAR-H006"
+        ],
+        "legacy_card_id": "S0-WAR-L001"
+      },
+      {
+        "hero_rank_ids": [
+          "S0-WAR-H007",
+          "S0-WAR-H008",
+          "S0-WAR-H009"
+        ],
+        "legacy_card_id": "S0-WAR-L002"
+      },
+      {
+        "hero_rank_ids": [
+          "S0-CLE-H004",
+          "S0-CLE-H005",
+          "S0-CLE-H006"
+        ],
+        "legacy_card_id": "S0-CLE-L001"
+      }
+    ]
+  },
+  "default_formation": {
+    "LEFT": "S0-WAR-H004",
+    "CENTER": "S0-WAR-H007",
+    "RIGHT": "S0-CLE-H004"
+  }
+}

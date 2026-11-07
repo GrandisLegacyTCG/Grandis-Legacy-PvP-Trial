@@ -1,0 +1,253 @@
+{
+  "results": {
+    "S0-CLE-010": {
+      "options": [
+        {
+          "card": "S0-CLE-010",
+          "source": "CENTER",
+          "protected": "LEFT"
+        },
+        {
+          "card": "S0-WAR-H009",
+          "source": "LEFT",
+          "protected": null
+        }
+      ],
+      "initial": {
+        "choice": {
+          "handIndex": 0,
+          "optionIndices": [
+            0
+          ],
+          "stage": "source",
+          "selectedOptionIndex": null
+        },
+        "pending": "response_window",
+        "window": true,
+        "guide": "SELECT HERO TO USE HOLY BARRIER",
+        "src": [
+          {
+            "lane": "CENTER",
+            "card": "S0-CLE-010"
+          },
+          {
+            "lane": "LEFT",
+            "card": "S0-WAR-H009"
+          }
+        ]
+      },
+      "afterSource": {
+        "choice": {
+          "handIndex": 0,
+          "optionIndices": [
+            0
+          ],
+          "stage": "protected",
+          "selectedOptionIndex": 0
+        },
+        "pending": "response_window",
+        "window": true,
+        "guide": "Elara Heavens \u2192 SELECT ATTACKED HERO TO PROTECT",
+        "src": [
+          {
+            "lane": "CENTER",
+            "card": "S0-CLE-010"
+          },
+          {
+            "lane": "LEFT",
+            "card": "S0-WAR-H009"
+          }
+        ]
+      },
+      "afterRecipient": {
+        "choice": null,
+        "pending": "response_payment_choice",
+        "window": false,
+        "guide": "Elara Heavens \u2192 SELECT ATTACKED HERO TO PROTECT",
+        "src": null
+      },
+      "pass": true
+    },
+    "S0-CLE-022": {
+      "options": [
+        {
+          "card": "S0-CLE-022",
+          "source": "LEFT",
+          "protected": "LEFT"
+        },
+        {
+          "card": "S0-CLE-022",
+          "source": "CENTER",
+          "protected": "LEFT"
+        },
+        {
+          "card": "S0-WAR-H009",
+          "source": "LEFT",
+          "protected": null
+        }
+      ],
+      "initial": {
+        "choice": {
+          "handIndex": 0,
+          "optionIndices": [
+            0,
+            1
+          ],
+          "stage": "source",
+          "selectedOptionIndex": null
+        },
+        "pending": "response_window",
+        "window": true,
+        "guide": "SELECT HERO TO USE SACRED BULWARK \u2014 PROTECTS ALL ALLIES",
+        "src": [
+          {
+            "lane": "LEFT",
+            "card": "S0-CLE-022"
+          },
+          {
+            "lane": "CENTER",
+            "card": "S0-CLE-022"
+          },
+          {
+            "lane": "LEFT",
+            "card": "S0-WAR-H009"
+          }
+        ]
+      },
+      "afterSource": {
+        "choice": null,
+        "pending": "response_payment_choice",
+        "window": false,
+        "guide": "SELECT HERO TO USE SACRED BULWARK \u2014 PROTECTS ALL ALLIES",
+        "src": null
+      },
+      "afterRecipient": {
+        "choice": null,
+        "pending": "response_payment_choice",
+        "window": false,
+        "guide": "SELECT HERO TO USE SACRED BULWARK \u2014 PROTECTS ALL ALLIES",
+        "src": null
+      },
+      "pass": true
+    },
+    "S0-CLE-025": {
+      "options": [
+        {
+          "card": "S0-CLE-025",
+          "source": "LEFT",
+          "protected": "LEFT"
+        },
+        {
+          "card": "S0-CLE-025",
+          "source": "CENTER",
+          "protected": "LEFT"
+        },
+        {
+          "card": "S0-WAR-H009",
+          "source": "LEFT",
+          "protected": null
+        }
+      ],
+      "initial": {
+        "choice": {
+          "handIndex": 0,
+          "optionIndices": [
+            0,
+            1
+          ],
+          "stage": "source",
+          "selectedOptionIndex": null
+        },
+        "pending": "response_window",
+        "window": true,
+        "guide": "SELECT HERO TO USE BLESSING OF DIVINITY \u2014 PROTECTS ALL ALLIES",
+        "src": [
+          {
+            "lane": "LEFT",
+            "card": "S0-CLE-025"
+          },
+          {
+            "lane": "CENTER",
+            "card": "S0-CLE-025"
+          },
+          {
+            "lane": "LEFT",
+            "card": "S0-WAR-H009"
+          }
+        ]
+      },
+      "afterSource": {
+        "choice": null,
+        "pending": "response_payment_choice",
+        "window": false,
+        "guide": "SELECT HERO TO USE BLESSING OF DIVINITY \u2014 PROTECTS ALL ALLIES",
+        "src": null
+      },
+      "afterRecipient": {
+        "choice": null,
+        "pending": "response_payment_choice",
+        "window": false,
+        "guide": "SELECT HERO TO USE BLESSING OF DIVINITY \u2014 PROTECTS ALL ALLIES",
+        "src": null
+      },
+      "pass": true
+    },
+    "mouseClickFlow": {
+      "afterPlay": {
+        "choice": {
+          "handIndex": 0,
+          "optionIndices": [
+            0
+          ],
+          "stage": "source",
+          "selectedOptionIndex": null
+        },
+        "pending": "response_window",
+        "window": true,
+        "guide": "SELECT HERO TO USE HOLY BARRIER",
+        "src": [
+          {
+            "lane": "CENTER",
+            "card": "S0-CLE-010"
+          },
+          {
+            "lane": "LEFT",
+            "card": "S0-WAR-H009"
+          }
+        ]
+      },
+      "afterSource": {
+        "choice": {
+          "handIndex": 0,
+          "optionIndices": [
+            0
+          ],
+          "stage": "protected",
+          "selectedOptionIndex": 0
+        },
+        "pending": "response_window",
+        "window": true,
+        "guide": "Elara Heavens \u2192 SELECT ATTACKED HERO TO PROTECT",
+        "src": [
+          {
+            "lane": "CENTER",
+            "card": "S0-CLE-010"
+          },
+          {
+            "lane": "LEFT",
+            "card": "S0-WAR-H009"
+          }
+        ]
+      },
+      "afterRecipient": {
+        "choice": null,
+        "pending": "response_payment_choice",
+        "window": false,
+        "guide": "Elara Heavens \u2192 SELECT ATTACKED HERO TO PROTECT",
+        "src": null
+      },
+      "pass": true
+    }
+  },
+  "page_errors": []
+}

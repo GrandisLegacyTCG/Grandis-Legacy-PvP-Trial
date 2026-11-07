@@ -1,0 +1,96 @@
+{
+  "OSA_archive": "Grandis_Legacy_OSA_Season0_DEV45_Final_Audited_2026-11-04.zip",
+  "binding_count": 15,
+  "bindings": [
+    {
+      "card_id": "S0-ARC-018",
+      "owner": "Korvak Ironfang",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Korvak can use this card or tribute it with a Archer Shard for EXP."
+    },
+    {
+      "card_id": "S0-ARC-019",
+      "owner": "Sylvan Galesong",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Sylvan can use this card or tribute it with a Archer Shard for EXP."
+    },
+    {
+      "card_id": "S0-ARC-025",
+      "owner": "Alden Sterling",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Alden can use this card or tribute it with a Archer Shard for EXP."
+    },
+    {
+      "card_id": "S0-CLE-018",
+      "owner": "Elara Heavens",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Elara can use this card or tribute it with a Cleric Shard for EXP."
+    },
+    {
+      "card_id": "S0-CLE-019",
+      "owner": "Thrain Sunborn",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Thrain can use this card or tribute it with a Cleric Shard for EXP."
+    },
+    {
+      "card_id": "S0-CLE-025",
+      "owner": "Aurex Sunsworn",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Aurex can use this card or tribute it with a Cleric Shard for EXP."
+    },
+    {
+      "card_id": "S0-CLE-031",
+      "owner": "Melody Silverstring",
+      "evidence": "S0 unique Rank II class progression (current Hero catalog)",
+      "printed_restriction": null
+    },
+    {
+      "card_id": "S0-MAG-018",
+      "owner": "Vaelis Stormweave",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Vaelis can use this card or tribute it with a Mage Shard for EXP."
+    },
+    {
+      "card_id": "S0-MAG-019",
+      "owner": "Aldric Ashford",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Aldric can use this card or tribute it with a Mage Shard for EXP."
+    },
+    {
+      "card_id": "S0-MAG-025",
+      "owner": "Lucien Voss",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Lucien can use this card or tribute it with a Mage Shard for EXP."
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "owner": "Bromir Oathforge",
+      "evidence": "S0 unique Rank II class progression (current Hero catalog)",
+      "printed_restriction": null
+    },
+    {
+      "card_id": "S0-THF-018",
+      "owner": "Finnian Copperpot",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Finnian can use this card or tribute it with a Thief Shard for EXP."
+    },
+    {
+      "card_id": "S0-THF-019",
+      "owner": "Akra Norixius",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Akra can use this card or tribute it with a Thief Shard for EXP."
+    },
+    {
+      "card_id": "S0-WAR-018",
+      "owner": "Draxen Blacksand",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Draxen can use this card or tribute it with a Warrior Shard for EXP."
+    },
+    {
+      "card_id": "S0-WAR-019",
+      "owner": "Garrick Beastfang",
+      "evidence": "S0 printedUltimateRestriction",
+      "printed_restriction": "Only Garrick can use this card or tribute it with a Warrior Shard for EXP."
+    }
+  ]
+}

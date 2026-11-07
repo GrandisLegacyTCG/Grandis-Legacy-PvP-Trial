@@ -1,0 +1,285 @@
+{
+  "total": 26,
+  "pass": 26,
+  "fail": [],
+  "results": [
+    {
+      "name": "Browser injected app JS no page exceptions",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "Stoneblood AI Physical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "kind": "Physical",
+        "side": "AI",
+        "pending_before": null,
+        "defense_kind_before": null,
+        "feedback": [
+          {
+            "kind": "defense",
+            "defense_kind": "P",
+            "side": "AI",
+            "lane": "LEFT"
+          }
+        ],
+        "sound": [
+          "engine/assets/audio/battle/P.Def.mp3"
+        ],
+        "hp": 30
+      }
+    },
+    {
+      "name": "Stoneblood AI Magical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "kind": "Magical",
+        "side": "AI",
+        "pending_before": null,
+        "defense_kind_before": null,
+        "feedback": [
+          {
+            "kind": "defense",
+            "defense_kind": "M",
+            "side": "AI",
+            "lane": "LEFT"
+          }
+        ],
+        "sound": [
+          "engine/assets/audio/battle/M.Def.mp3"
+        ],
+        "hp": 30
+      }
+    },
+    {
+      "name": "Stoneblood AI None",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "kind": null,
+        "side": "AI",
+        "pending_before": null,
+        "defense_kind_before": null,
+        "feedback": [],
+        "sound": [],
+        "hp": 30
+      }
+    },
+    {
+      "name": "Stoneblood PLAYER Physical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "kind": "Physical",
+        "side": "PLAYER",
+        "pending_before": "racial_stoneblood",
+        "defense_kind_before": "P",
+        "feedback": [
+          {
+            "kind": "defense",
+            "defense_kind": "P",
+            "side": "PLAYER",
+            "lane": "LEFT"
+          }
+        ],
+        "sound": [
+          "engine/assets/audio/battle/P.Def.mp3"
+        ],
+        "hp": 30
+      }
+    },
+    {
+      "name": "Stoneblood PLAYER Magical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "kind": "Magical",
+        "side": "PLAYER",
+        "pending_before": "racial_stoneblood",
+        "defense_kind_before": "M",
+        "feedback": [
+          {
+            "kind": "defense",
+            "defense_kind": "M",
+            "side": "PLAYER",
+            "lane": "LEFT"
+          }
+        ],
+        "sound": [
+          "engine/assets/audio/battle/M.Def.mp3"
+        ],
+        "hp": 30
+      }
+    },
+    {
+      "name": "Stoneblood PLAYER None",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "kind": null,
+        "side": "PLAYER",
+        "pending_before": "racial_stoneblood",
+        "defense_kind_before": null,
+        "feedback": [],
+        "sound": [],
+        "hp": 30
+      }
+    },
+    {
+      "name": "Stoneblood decline never plays defense SFX/VFX",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "kind": "Physical",
+        "side": "PLAYER",
+        "pending_before": "racial_stoneblood",
+        "defense_kind_before": "P",
+        "feedback": [],
+        "sound": [],
+        "hp": 0
+      }
+    },
+    {
+      "name": "RUNE zero INVINCIBLE",
+      "pass": true,
+      "detail": "Target was INVINCIBLE; the Attack dealt no HP damage."
+    },
+    {
+      "name": "RUNE zero DODGE",
+      "pass": true,
+      "detail": "Opponent DODGED the Attack."
+    },
+    {
+      "name": "RUNE zero NEGATE",
+      "pass": true,
+      "detail": "Attack was NEGATED by the opponent Response."
+    },
+    {
+      "name": "RUNE zero BLOCK",
+      "pass": true,
+      "detail": "All 80 damage was prevented by Response BLOCK 80."
+    },
+    {
+      "name": "RUNE zero passive/active",
+      "pass": true,
+      "detail": "All 80 damage was prevented by passive reduction 30, active reduction 50."
+    },
+    {
+      "name": "RUNE landed positive no reason",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Stoneblood P visual uses real P.Defense.png",
+      "pass": true,
+      "detail": {
+        "good": true,
+        "matches": [
+          {
+            "className": "gl-battle-vfx gl-battle-pdef gl-decode-pending",
+            "src": "engine/assets/battle/P.Defense.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Stoneblood M visual uses real M.Defense.png",
+      "pass": true,
+      "detail": {
+        "good": true,
+        "matches": [
+          {
+            "className": "gl-battle-vfx gl-battle-mdef gl-decode-pending",
+            "src": "engine/assets/battle/M.Defense.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Physical and Magical Defense use respective audio assets",
+      "pass": true,
+      "detail": [
+        "engine/assets/audio/battle/P.Def.mp3",
+        "engine/assets/audio/battle/M.Def.mp3"
+      ]
+    },
+    {
+      "name": "PASS starts without blinking",
+      "pass": true,
+      "detail": {
+        "className": "phase-action gl-pass",
+        "text": "PASS",
+        "passStarted": 1500000,
+        "passKey": "TEST_W1"
+      }
+    },
+    {
+      "name": "PASS blink @29.9 seconds",
+      "pass": true,
+      "detail": {
+        "className": "phase-action gl-pass",
+        "text": "PASS",
+        "passStarted": 1500000,
+        "passKey": "TEST_W1"
+      }
+    },
+    {
+      "name": "PASS blink @30 seconds",
+      "pass": true,
+      "detail": {
+        "className": "phase-action gl-pass gl-response-pass-attention",
+        "text": "PASS",
+        "passStarted": 1500000,
+        "passKey": "TEST_W1"
+      }
+    },
+    {
+      "name": "PASS blink @37 seconds",
+      "pass": true,
+      "detail": {
+        "className": "phase-action gl-pass gl-response-pass-attention",
+        "text": "PASS",
+        "passStarted": 1500000,
+        "passKey": "TEST_W1"
+      }
+    },
+    {
+      "name": "New Response restarts blink timer",
+      "pass": true,
+      "detail": {
+        "className": "phase-action gl-pass",
+        "text": "PASS",
+        "passStarted": 1537000,
+        "passKey": "TEST_W2"
+      }
+    },
+    {
+      "name": "No Response removes attention",
+      "pass": true,
+      "detail": {
+        "className": "phase-action gl-hidden",
+        "text": "REPOSITION",
+        "passStarted": 0,
+        "passKey": ""
+      }
+    },
+    {
+      "name": "No Chromium runtime errors after probes",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "Exact P.Atk.mp3 user-audio replacement",
+      "pass": true,
+      "detail": 54334
+    },
+    {
+      "name": "Exact P.Def.mp3 user-audio replacement",
+      "pass": true,
+      "detail": 54334
+    }
+  ]
+}

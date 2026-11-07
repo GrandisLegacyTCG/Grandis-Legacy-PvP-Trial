@@ -1,0 +1,417 @@
+{
+  "ok": true,
+  "passed": 68,
+  "total": 68,
+  "checks": [
+    {
+      "check": "PLAYER own11 opp5 STEAL2 standalone Steal card legality",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own11 opp5 STEAL2 selection based ONLY on opposing Pool",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own11 opp5 STEAL2 choice committed",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own11 opp5 STEAL2 removes physical opposing Mana",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own11 opp5 STEAL2 gains only available own physical Mana",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own11 opp5 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own11 opp5 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp1 STEAL2 standalone Steal card legality",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp1 STEAL2 selection based ONLY on opposing Pool",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp1 STEAL2 choice committed",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp1 STEAL2 removes physical opposing Mana",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp1 STEAL2 gains only available own physical Mana",
+      "expected": 5,
+      "actual": 5,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp1 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp1 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own12 opp5 STEAL2 standalone Steal card legality",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own12 opp5 STEAL2 selection based ONLY on opposing Pool",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own12 opp5 STEAL2 choice committed",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own12 opp5 STEAL2 removes physical opposing Mana",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own12 opp5 STEAL2 gains only available own physical Mana",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own12 opp5 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own12 opp5 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own10 opp5 STEAL2 standalone Steal card legality",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own10 opp5 STEAL2 selection based ONLY on opposing Pool",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own10 opp5 STEAL2 choice committed",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own10 opp5 STEAL2 removes physical opposing Mana",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own10 opp5 STEAL2 gains only available own physical Mana",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own10 opp5 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own10 opp5 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp0 STEAL2 standalone Steal card legality",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp0 STEAL2 zero opposing Mana does not open pending selection",
+      "expected": null,
+      "actual": null,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp0 STEAL2 removes physical opposing Mana",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp0 STEAL2 gains only available own physical Mana",
+      "expected": 4,
+      "actual": 4,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp0 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "PLAYER own4 opp0 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own11 opp5 STEAL2 standalone Steal card legality",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "AI own11 opp5 STEAL2 selection based ONLY on opposing Pool",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    },
+    {
+      "check": "AI own11 opp5 STEAL2 choice committed",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "AI own11 opp5 STEAL2 removes physical opposing Mana",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "check": "AI own11 opp5 STEAL2 gains only available own physical Mana",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own11 opp5 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own11 opp5 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp1 STEAL2 standalone Steal card legality",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp1 STEAL2 selection based ONLY on opposing Pool",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp1 STEAL2 choice committed",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp1 STEAL2 removes physical opposing Mana",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp1 STEAL2 gains only available own physical Mana",
+      "expected": 5,
+      "actual": 5,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp1 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp1 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own12 opp5 STEAL2 standalone Steal card legality",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "AI own12 opp5 STEAL2 selection based ONLY on opposing Pool",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    },
+    {
+      "check": "AI own12 opp5 STEAL2 choice committed",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "AI own12 opp5 STEAL2 removes physical opposing Mana",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "check": "AI own12 opp5 STEAL2 gains only available own physical Mana",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own12 opp5 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own12 opp5 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own10 opp5 STEAL2 standalone Steal card legality",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "AI own10 opp5 STEAL2 selection based ONLY on opposing Pool",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    },
+    {
+      "check": "AI own10 opp5 STEAL2 choice committed",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "check": "AI own10 opp5 STEAL2 removes physical opposing Mana",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "check": "AI own10 opp5 STEAL2 gains only available own physical Mana",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own10 opp5 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own10 opp5 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp0 STEAL2 standalone Steal card legality",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp0 STEAL2 zero opposing Mana does not open pending selection",
+      "expected": null,
+      "actual": null,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp0 STEAL2 removes physical opposing Mana",
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp0 STEAL2 gains only available own physical Mana",
+      "expected": 4,
+      "actual": 4,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp0 STEAL2 own 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "check": "AI own4 opp0 STEAL2 opponent 12 Mana conserved",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    }
+  ],
+  "failures": [],
+  "browser_errors": []
+}

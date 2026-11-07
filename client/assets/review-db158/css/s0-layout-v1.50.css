@@ -1,0 +1,112 @@
+/* Grandis Legacy Deck Builder v1.50 — three scoped UI corrections.
+ * No font face, size, weight, card, or gameplay changes.
+ * Style 1 Mana Cost uses the same inline-endpoint slider geometry as Style 2.
+ */
+.gl-filter-grid-style1>.mana-filter-field{
+  display:grid!important;
+  grid-column:span 2!important;
+  grid-template-rows:17px 29px!important;
+  gap:4px!important;
+  align-self:start!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+.gl-filter-grid-style1>.mana-filter-field>.field-label-row{
+  height:17px!important;
+  min-height:0!important;
+  display:flex!important;
+  align-items:start!important;
+  justify-content:space-between!important;
+  margin:0!important;
+}
+.gl-filter-grid-style1>.mana-filter-field>.mana-range-wrap{
+  display:grid!important;
+  grid-template-columns:12px minmax(0,1fr) 12px!important;
+  align-items:center!important;
+  gap:4px!important;
+  width:100%!important;
+  height:29px!important;
+  min-width:0!important;
+}
+.gl-filter-grid-style1 .mana-range-wrap>.range-end{
+  display:block!important;
+  color:#fff!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  text-align:center!important;
+}
+.gl-filter-grid-style1 .mana-range-wrap>.dual-range{
+  width:100%!important;
+  min-width:0!important;
+  height:29px!important;
+}
+.gl-filter-grid-style1 .mana-range-wrap .range-track{
+  left:8px!important;
+  right:8px!important;
+  top:calc(50% - 2px)!important;
+  height:4px!important;
+}
+.gl-filter-grid-style1 .mana-range-wrap input[type="range"]{
+  top:0!important;
+  height:29px!important;
+}
+/* Keep the Reset button on the same control baseline as the Effect select. */
+@media(min-width:761px){
+  .gl-filter-grid-style1{align-items:start!important}
+  .gl-filter-grid-style1>.reset-filter{
+    align-self:start!important;
+    margin-top:21px!important;
+  }
+}
+/* The two-column desktop has a real width floor (~1124px). At widths
+ * below it, use the established single-column workspace rather than
+ * forcing the page wider than the viewport. This affects structure only;
+ * existing typography and Hero artwork sizing are unchanged. */
+@media(min-width:761px) and (max-width:1124px){
+  body:not(:has(.deck-tools-bar)) .app-shell{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+  }
+  body:not(:has(.deck-tools-bar)) .topbar{
+    height:auto!important;
+    min-height:68px!important;
+    flex-wrap:wrap!important;
+    padding-inline:16px!important;
+  }
+  body:not(:has(.deck-tools-bar)) .builder-layout{
+    display:flex!important;
+    flex-direction:column!important;
+    min-width:0!important;
+    width:100%!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    padding-inline:16px!important;
+  }
+  body:not(:has(.deck-tools-bar)) .builder-layout>.library-shell,
+  body:not(:has(.deck-tools-bar)) .builder-layout>.deck-shell{
+    flex:0 0 auto!important;
+    width:100%!important;
+    min-width:0!important;
+    height:max(620px,calc(100dvh - 130px))!important;
+    max-width:100%!important;
+  }
+  body:not(:has(.deck-tools-bar)) .filter-panel{max-width:100%!important;overflow-x:hidden!important}
+}
+/* Style 2: The buttons used to be vertically centred against a deck-name
+ * field which includes its label. Align against the input's bottom instead;
+ * match the input height, preserving existing fonts and button appearance. */
+@media(min-width:761px){
+  body:has(.deck-tools-bar) .deck-tools{
+    align-items:flex-end!important;
+  }
+  body:has(.deck-tools-bar) .deck-tools>button{
+    height:27px!important;
+    min-height:27px!important;
+    flex:0 0 auto;
+  }
+}

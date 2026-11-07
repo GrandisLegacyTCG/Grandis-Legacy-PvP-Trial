@@ -1,0 +1,239 @@
+/**
+ * Grandis Legacy PvP Season 0 — staged server-side runtime bootstrap.
+ *
+ * Boots the ACTUAL RC32 application engine in an isolated VM, using the same
+ * server-headless runtime strategy as Season 1 PvP. It DOES NOT run Local AI.
+ * This is a private, canonical engine only. Do not send snapshots from here
+ * over the network until a separate viewer-safe serializer is proven.
+ */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { webcrypto } from 'node:crypto';
+import vm from 'node:vm';
+
+const RUNTIME_SOURCES = Object.freeze([
+  'engine/js/static-data.js',
+  'runtime/overrides/grand-finale-designer-nerf.js',
+  'engine/js/runtime-authority.js',
+  'engine/shared-app/active-starters.js',
+  'engine/shared-app/app.bundle.js'
+]);
+const STARTERS = new Set([
+  's0_starter_01_red_white',
+  's0_starter_02_blue_red',
+  's0_starter_03_yellow_blue',
+  's0_starter_04_green_yellow',
+  's0_starter_05_white_green'
+]);
+const clone = value => structuredClone(value);
+/** Transport envelope hygiene only. RC32 engine remains the deck-legality authority.
+ * Builder v1.62 exports both nested and flattened deck fields. Reject a
+ * contradictory document instead of silently validating the wrong copy. */
+function validateSeason0DeckEnvelope(deck) {
+  if (!deck || typeof deck !== 'object' || Array.isArray(deck)) throw new Error('Invalid Season 0 deck.');
+  if (deck.season && deck.season !== 'S0') throw new Error('Only Season 0 decks are supported.');
+  const nested = deck.deck;
+  if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+    for (const field of ['main_deck','legacy_packages','shard_deck']) {
+      if (Array.isArray(nested[field]) && Array.isArray(deck[field]) &&
+          JSON.stringify(nested[field]) !== JSON.stringify(deck[field])) {
+        throw new Error(`Conflicting ${field} values in imported deck.`);
+      }
+    }
+  }
+}
+
+
+function headlessDocument() {
+  // RC32 gameplay paths sometimes invoke UI-only feedback even in headless mode.
+  // Supply inert DOM nodes for informational overlays; authoritative state is
+  // still generated solely by the RC32 gameplay engine, with painting suppressed.
+  const dummy = {
+    style:{}, dataset:{}, value:'', disabled:false,
+    classList:{add(){},remove(){},toggle(){return false},contains(){return false}},
+    addEventListener(){}, removeEventListener(){}, appendChild(){}, removeChild(){},
+    setAttribute(){},removeAttribute(){},querySelector(){return null},querySelectorAll(){return []},
+    focus(){},closest(){return null}, scrollIntoView(){},getBoundingClientRect(){return {x:0,y:0,width:0,height:0}},
+    get textContent(){return this._text||''},set textContent(v){this._text=String(v||'')},
+    get innerHTML(){return this._html||''},set innerHTML(v){this._html=String(v||'')}
+  };
+  return {
+    readyState:'loading', body:null, documentElement:null,
+    addEventListener(){}, removeEventListener(){},
+    getElementById(){ return dummy; },
+    querySelector(){ return null; }, querySelectorAll(){return []}
+  };
+}
+
+export class Season0HeadlessAuthority {
+  #context;
+  #bridge;
+  #revision = 0;
+  #started = false;
+  #bridgeSeat = 1;
+  #bridgeRevision = -1;
+  #canonical = null;
+  constructor(clientRoot) {
+    if (!clientRoot || typeof clientRoot !== 'string') throw new Error('clientRoot is required.');
+    const doc = headlessDocument();
+    // No browser AI orchestration or UI. Rendering is suppressed below.
+    const ctx = {
+      console, URL, Date, Math, TextEncoder, TextDecoder, Uint8Array,
+      setTimeout() { return 0; }, clearTimeout() {},
+      setInterval() { return 0; }, clearInterval() {},
+      requestAnimationFrame() { return 0; }, cancelAnimationFrame() {},
+      performance: { now: () => 0 }, crypto: webcrypto,
+      location: { href: 'https://pvp-season0.invalid/', origin: 'https://pvp-season0.invalid' },
+      navigator: { userAgent: 'Node PvP Season 0 authority' },
+      document: doc, GL_APP_MODE: 'PVP', GL_PVP_SHARED_BOARD_ACTIVE: true
+    };
+    ctx.window = ctx; ctx.globalThis = ctx;
+    vm.createContext(ctx, { name: 'gl-s0-headless-authority' });
+    for (const source of RUNTIME_SOURCES) {
+      const code = readFileSync(join(clientRoot, source), 'utf8');
+      new vm.Script(code, { filename: source }).runInContext(ctx, { timeout: 60000 });
+    }
+    const bridge = ctx.GL_LOCAL_AI_BRIDGE;
+    if (!bridge || typeof bridge.startSharedMatch !== 'function' ||
+        typeof bridge.completeOpeningFlow !== 'function' ||
+        typeof bridge.importCanonicalSnapshot !== 'function' ||
+        typeof bridge.applyServerIntent !== 'function') {
+      throw new Error('RC32 canonical PvP bridge contract is incomplete.');
+    }
+    const meta = ctx.GL_ACTIVE_STARTER_SET_META;
+    if (meta?.schema_version !== 'GL-ACTIVE-STARTERS-S0-DEV45-STAGE4' ||
+        meta.active_starter_count !== 5 || !Array.isArray(meta.ids) ||
+        !meta.ids.every(id => STARTERS.has(id))) {
+      throw new Error('Season 0 starter authority mismatch.');
+    }
+    // RC32 override is a deliberately authorized APP patch, not an OSA edit.
+    const finale = ctx.GL_CARD_DEFINITIONS?.cards?.find(c => c.card_id === 'S0-CLE-031');
+    if (!finale || Number(finale.attack?.damage_by_class?.Bard) !== 60 ||
+                   Number(finale.attack?.damage_by_class?.Maestro) !== 90) {
+      throw new Error('RC32 Grand Finale approved local override is missing.');
+    }
+    bridge.setSharedBoardMode(true);
+    bridge.setRenderSuppressed(true);
+    this.#context = ctx;
+    this.#bridge = bridge;
+  }
+  get revision() { return this.#revision; }
+  get started() { return this.#started; }
+  get sourceMode() { return this.#context.GL_APP_MODE; }
+  get starterIds() { return [...STARTERS]; }
+  // Read-only server-side QA accessor. Not exposed by any WebSocket route.
+  getCardForQA(cardId) { return clone(this.#context.GL_TUTORIAL_BRIDGE.getCard(cardId)); }
+  /** Accept ONLY validated Season 0 starter IDs at this stage. Custom import comes later. */
+  start({ player1DeckKey, player2DeckKey, player1Deck, player2Deck, player1Name = 'Player 1', player2Name = 'Player 2' } = {}) {
+    if (this.#started) throw new Error('This match has already started.');
+    if (player1Deck) validateSeason0DeckEnvelope(player1Deck);
+    if (player2Deck) validateSeason0DeckEnvelope(player2Deck);
+    if ((!player1Deck && !STARTERS.has(player1DeckKey)) || (!player2Deck && !STARTERS.has(player2DeckKey))) {
+      throw new Error('Both players must choose known Season 0 starter decks.');
+    }
+    const canonical = this.#bridge.startSharedMatch({
+      playerDeckKey: player1DeckKey,
+      player2DeckKey: player2DeckKey,
+      playerDeck: player1Deck ? clone(player1Deck) : undefined,
+      player2Deck: player2Deck ? clone(player2Deck) : undefined,
+      player1Name: String(player1Name).slice(0, 60),
+      player2Name: String(player2Name).slice(0, 60)
+    });
+    if (!canonical?.appState?.pvpHumanVsHuman) throw new Error('RC32 did not enter human-vs-human mode.');
+    this.#started = true;
+    this.#revision = 1;
+    this.#canonical = clone(canonical);
+    this.#bridgeSeat = 1; this.#bridgeRevision = 1;
+    return { ok: true, revision: this.#revision, phase: canonical.appState.phase };
+  }
+  /** Opening outcome is chosen by the server controller, not by a remote client. */
+  completeOpening(firstSeat, face = 'HEADS') {
+    if (!this.#started || this.#revision !== 1) throw new Error('Opening is unavailable.');
+    if (![1, 2].includes(firstSeat)) throw new Error('Invalid first seat.');
+    if (!['HEADS', 'TAILS'].includes(face)) throw new Error('Invalid coin face.');
+    const firstSide = firstSeat === 1 ? 'PLAYER' : 'AI';
+    const result = this.#bridge.completeOpeningFlow(firstSide, {
+      choice: face, outcome: face, firstPlayer: firstSide, completed: true
+    });
+    if (result?.ok === false) throw new Error(result.error || 'Opening flow rejected.');
+    this.#revision++;
+    this.#canonical = clone(this.#bridge.getCanonicalSnapshot(1));
+    this.#bridgeSeat = 1; this.#bridgeRevision = this.#revision;
+    return { ok: true, revision: this.#revision, firstSeat };
+  }
+  /** A verified seat may concede without turn/response ownership. */
+  forfeit(seat) {
+    return this.applyIntent(seat, 'executeConfirmedSurrender', []);
+  }
+  /** NEVER serialize this return value to a client; it contains full hidden information. */
+  _canonicalForServerOnly() {
+    if (!this.#started) throw new Error('Match not started.');
+    return clone(this.#canonical);
+  }
+  #restore(seat) {
+    if (this.#bridgeSeat === seat && this.#bridgeRevision === this.#revision) return;
+    const ok = this.#bridge.importCanonicalSnapshot(this.#canonical, seat, { skipImportAnimations: true });
+    if (!ok) throw new Error('RC32 canonical state reimport failed.');
+    this.#bridgeSeat = seat;
+    this.#bridgeRevision = this.#revision;
+  }
+  /** The full perspective-specific board is private; NEVER network this directly. */
+  _viewForMaskingOnly(seat) {
+    if (![1,2].includes(seat)) throw new Error('Invalid viewer seat.');
+    if (!this.#started) return null;
+    this.#restore(1);
+    return clone(this.#bridge.getCanonicalSnapshot(seat));
+  }
+  canSeatAct(seat) {
+    if (![1, 2].includes(seat) || !this.#canonical?.appState) return false;
+    const s = this.#canonical.appState, side = seat === 2 ? 'AI' : 'PLAYER';
+    if (s.gameOver) return false;
+    if (s.pending) {
+      const owner = s.pending.decision_side || s.pending.response_owner || s.pending.side || s.pending.source_side;
+      if (owner) return owner === side;
+    }
+    if (s.responseWindow?.response_owner) return s.responseWindow.response_owner === side;
+    return s.turn === side;
+  }
+  /** The engine, not the client, determines action legality and authoritative revision. */
+  applyIntent(seat, name, args = []) {
+    if (!this.#started || this.#revision < 2) throw new Error('Opening is not finished.');
+    if (![1,2].includes(seat)) throw new Error('Invalid player seat.');
+    if (!this.canSeatAct(seat) && name !== 'executeConfirmedSurrender') throw new Error('Not your turn or decision window.');
+    if (!Array.isArray(args) || args.length > 8) throw new Error('Invalid intent arguments.');
+    if (typeof name !== 'string' || !/^[a-zA-Z][a-zA-Z0-9]{0,75}$/.test(name)) throw new Error('Invalid intent.');
+    // These RC32 bridge callbacks accept an explicit actor side. An untrusted
+    // player must never trigger the opponent's otherwise-legal active ability.
+    if (['beginActivatedHeroAbility','beginActivatedLegacyAbility','beginActivatedRacialAbility'].includes(name) && args[0] !== 'PLAYER') {
+      throw new Error('Cannot activate an opponent Hero, Legacy or Racial Trait.');
+    }
+    this.#restore(seat);
+    // Import normalizes a small number of render-only fields (e.g.
+    // gameResultShown). Compare action against the RESTORED baseline, not
+    // against the pre-import serialized state, or seat 2 invalid actions
+    // may falsely appear to mutate the board and increment revision.
+    const before = JSON.stringify(this.#bridge.getCanonicalSnapshot(seat).appState);
+    const result = this.#bridge.applyServerIntent(name, clone(args));
+    if (!result?.ok) {
+      // An attempted intent may have mutated transient state before its rejection.
+      this.#bridgeSeat = null;
+      throw new Error(String(result?.error || 'Runtime rejected action.').slice(0,220));
+    }
+    // RC32 executes seat 2 actions in a mirrored local PLAYER perspective.
+    // getCanonicalSnapshot(seat) flips that perspective BACK into the fixed
+    // server seat-1 canonical coordinate system; getCanonicalSnapshot(1) here
+    // would persist a swapped board and falsely mark seat-2 no-ops as actions.
+    const next = clone(this.#bridge.getCanonicalSnapshot(seat));
+    if (JSON.stringify(next.appState) === before) {
+      this.#bridgeSeat = null;
+      throw new Error('No authoritative state change for action.');
+    }
+    this.#canonical = next;
+    this.#revision += 1;
+    this.#bridgeSeat = seat;
+    this.#bridgeRevision = this.#revision;
+    return {ok: true, revision: this.#revision};
+  }
+}
+
+export const RC32_RUNTIME_SOURCES = RUNTIME_SOURCES;

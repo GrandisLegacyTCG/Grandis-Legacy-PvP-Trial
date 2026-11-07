@@ -1,0 +1,112 @@
+{
+  "status": "PASS",
+  "passed": 26,
+  "total": 26,
+  "method": "Node VM: actual production AI healing-utilization and chooseAIAction functions with controlled helper/engine stubs. Does not verify live match or UI.",
+  "cases": [
+    {
+      "test": "Health Potion +30: missing 10/30 is below 60%",
+      "status": "PASS"
+    },
+    {
+      "test": "Health Potion +30: missing 20/30 passes",
+      "status": "PASS"
+    },
+    {
+      "test": "Health Potion +30: exactly 18/30 passes",
+      "status": "PASS"
+    },
+    {
+      "test": "Health Potion +30: missing 17/30 fails",
+      "status": "PASS"
+    },
+    {
+      "test": "Greater Health Potion +50: missing 20/50 fails",
+      "status": "PASS"
+    },
+    {
+      "test": "Greater Health Potion +50: exactly 30/50 passes",
+      "status": "PASS"
+    },
+    {
+      "test": "Greater Health Potion +50: missing 29/50 fails",
+      "status": "PASS"
+    },
+    {
+      "test": "Full HP Hero not healed",
+      "status": "PASS"
+    },
+    {
+      "test": "Bleed Hero not eligible",
+      "status": "PASS"
+    },
+    {
+      "test": "Cleric 40 HEAL: missing 24 qualifies",
+      "status": "PASS"
+    },
+    {
+      "test": "Priest 50 HEAL: missing 25 not enough",
+      "status": "PASS"
+    },
+    {
+      "test": "Priest 50 HEAL: missing 30 qualifies",
+      "status": "PASS"
+    },
+    {
+      "test": "Healing Done +10: need 30 of effective 50",
+      "status": "PASS"
+    },
+    {
+      "test": "Healing Done +10: missing 30 qualifies",
+      "status": "PASS"
+    },
+    {
+      "test": "Attached Ring of Grace +20: 30/50 exactly qualifies",
+      "status": "PASS"
+    },
+    {
+      "test": "Attached Ring of Grace +20: 25/50 fails",
+      "status": "PASS"
+    },
+    {
+      "test": "Planned Ring setup threshold: 30/50 qualifies",
+      "status": "PASS"
+    },
+    {
+      "test": "Planned Ring setup threshold: 25/50 fails",
+      "status": "PASS"
+    },
+    {
+      "test": "Area heal is allowed when at least one eligible recipient reaches threshold",
+      "status": "PASS"
+    },
+    {
+      "test": "Area heal rejected when no recipient reaches 60%",
+      "status": "PASS"
+    },
+    {
+      "test": "Area heal skips Bleed recipient; other qualifying eligible Hero works",
+      "status": "PASS"
+    },
+    {
+      "test": "Non-healing Attack unaffected by heal threshold",
+      "status": "PASS"
+    },
+    {
+      "test": "AI skips undersized heal even if card is game-legal",
+      "status": "PASS"
+    },
+    {
+      "test": "AI selects Health Potion once >=60% missing",
+      "status": "PASS"
+    },
+    {
+      "test": "AI rejects inefficient heal but can select non-heal card",
+      "status": "PASS"
+    },
+    {
+      "test": "Player-facing legal action list unaffected (AI filter only)",
+      "status": "PASS"
+    }
+  ]
+}

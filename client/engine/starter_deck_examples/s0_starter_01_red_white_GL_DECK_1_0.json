@@ -1,0 +1,344 @@
+{
+  "schema_version": "GL-DECK-1.0",
+  "season": "S0",
+  "deck_name": "Red-White Deck",
+  "format": "Grandis Legacy Season 0 / Rulebook v2.9 / exactly 50-card Main Deck",
+  "main_deck_count": 50,
+  "main_deck": [
+    {
+      "card_id": "S0-CLE-002",
+      "card_name": "Brilliant Radiance",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-CLE-007",
+      "card_name": "Holy Ring",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-CLE-011",
+      "card_name": "Flash Heal",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-EVT-002",
+      "card_name": "Market Bargain",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-003",
+      "card_name": "Scouting",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-004",
+      "card_name": "Relentless Leveling",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-007",
+      "card_name": "Intercept",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-009",
+      "card_name": "Tactical Adaptation",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-008",
+      "card_name": "Phoenix Feather",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-018",
+      "card_name": "Magic Compass",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-017",
+      "card_name": "Flashpowder Bomb",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-002",
+      "card_name": "Greater Health Potion",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-008",
+      "card_name": "Forged Alliance",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-019",
+      "card_name": "Warp Scroll",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-001",
+      "card_name": "Health Potion",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-010",
+      "card_name": "Holy Barrier",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-CLE-015",
+      "card_name": "Resurrection",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-017",
+      "card_name": "Lay on Hands",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-019",
+      "card_name": "Divine Punishment",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-020",
+      "card_name": "Holy Slash",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-CLE-021",
+      "card_name": "Hammer of Justice",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-022",
+      "card_name": "Sacred Bulwark",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-024",
+      "card_name": "Divine Judgement",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-023",
+      "card_name": "Holy Light",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-CLE-025",
+      "card_name": "Blessing of Divinity",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-007",
+      "card_name": "Upward Thrust",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-009",
+      "card_name": "Rage Swing",
+      "quantity": 3
+    },
+    {
+      "card_id": "S0-WAR-010",
+      "card_name": "Rage Blast",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-011",
+      "card_name": "Side Step",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-012",
+      "card_name": "Deflect",
+      "quantity": 3
+    },
+    {
+      "card_id": "S0-WAR-014",
+      "card_name": "Final Grit",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-015",
+      "card_name": "Charge Attack",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-017",
+      "card_name": "Fiery Thrust",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-019",
+      "card_name": "Wild Assault",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-021",
+      "card_name": "Shield Bash",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-WAR-022",
+      "card_name": "Sacred Stormblade",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-WAR-025",
+      "card_name": "Heroic Charge",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-023",
+      "card_name": "Unbroken Stand",
+      "quantity": 1
+    }
+  ],
+  "mana_deck": [
+    {
+      "kind": "MANA",
+      "quantity": 10
+    },
+    {
+      "class_name": "Cleric",
+      "kind": "CLASS",
+      "quantity": 1
+    },
+    {
+      "class_name": "Warrior",
+      "kind": "CLASS",
+      "quantity": 1
+    }
+  ],
+  "mana_deck_count": 12,
+  "legacy_package_count": 3,
+  "legacy_deck_count": 12,
+  "legacy_deck_label": "Legacy Deck",
+  "legacy_deck_package_slots": [
+    {
+      "slot": "LEFT",
+      "progression": "S0-WAR-H004",
+      "legacy": "S0-WAR-L001",
+      "package_id": "S0-STARTER-01-PACKAGE-1",
+      "package_name": "Garrick Beastfang + Warrior's Relic"
+    },
+    {
+      "slot": "CENTER",
+      "progression": "S0-WAR-H007",
+      "legacy": "S0-WAR-L002",
+      "package_id": "S0-STARTER-01-PACKAGE-2",
+      "package_name": "Aurex Sunsworn + Statue of the Lightbringer"
+    },
+    {
+      "slot": "RIGHT",
+      "progression": "S0-CLE-H004",
+      "legacy": "S0-CLE-L001",
+      "package_id": "S0-STARTER-01-PACKAGE-3",
+      "package_name": "Thrain Sunborn + Sun God Church"
+    }
+  ],
+  "legacy_deck_expanded": [
+    {
+      "card_id": "S0-WAR-H004",
+      "card_name": "Garrick Beastfang",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-1",
+      "package_name": "Garrick Beastfang + Warrior's Relic"
+    },
+    {
+      "card_id": "S0-WAR-H005",
+      "card_name": "Garrick Beastfang",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-1",
+      "package_name": "Garrick Beastfang + Warrior's Relic"
+    },
+    {
+      "card_id": "S0-WAR-H006",
+      "card_name": "Garrick Beastfang",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-1",
+      "package_name": "Garrick Beastfang + Warrior's Relic"
+    },
+    {
+      "card_id": "S0-WAR-L001",
+      "card_name": "Warrior's Relic",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-01-PACKAGE-1",
+      "package_name": "Garrick Beastfang + Warrior's Relic"
+    },
+    {
+      "card_id": "S0-WAR-H007",
+      "card_name": "Aurex Sunsworn",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-2",
+      "package_name": "Aurex Sunsworn + Statue of the Lightbringer"
+    },
+    {
+      "card_id": "S0-WAR-H008",
+      "card_name": "Aurex Sunsworn",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-2",
+      "package_name": "Aurex Sunsworn + Statue of the Lightbringer"
+    },
+    {
+      "card_id": "S0-WAR-H009",
+      "card_name": "Aurex Sunsworn",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-2",
+      "package_name": "Aurex Sunsworn + Statue of the Lightbringer"
+    },
+    {
+      "card_id": "S0-WAR-L002",
+      "card_name": "Statue of the Lightbringer",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-01-PACKAGE-2",
+      "package_name": "Aurex Sunsworn + Statue of the Lightbringer"
+    },
+    {
+      "card_id": "S0-CLE-H004",
+      "card_name": "Thrain Sunborn",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-3",
+      "package_name": "Thrain Sunborn + Sun God Church"
+    },
+    {
+      "card_id": "S0-CLE-H005",
+      "card_name": "Thrain Sunborn",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-3",
+      "package_name": "Thrain Sunborn + Sun God Church"
+    },
+    {
+      "card_id": "S0-CLE-H006",
+      "card_name": "Thrain Sunborn",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-01-PACKAGE-3",
+      "package_name": "Thrain Sunborn + Sun God Church"
+    },
+    {
+      "card_id": "S0-CLE-L001",
+      "card_name": "Sun God Church",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-01-PACKAGE-3",
+      "package_name": "Thrain Sunborn + Sun God Church"
+    }
+  ],
+  "default_formation": {
+    "CENTER": "S0-WAR-H007",
+    "LEFT": "S0-WAR-H004",
+    "RIGHT": "S0-CLE-H004"
+  },
+  "is_valid": true,
+  "validation_issues": [],
+  "validation_warnings": [],
+  "source_database_version": "OSA Season 0 DEV45 / current Starter Deck Authority DEV34 / Deck Builder v1.58",
+  "source_file": "engine/starter_deck_examples/s0_starter_01_red_white_GL_DECK_1_0.json",
+  "source_authority": "Generated/Season0-Current/season0-current-starters.dev34.json",
+  "source_export_sha256": "3a5bb07aa4b38794cb8069d3bdfd372d6c09b9c8c8ac907b1ef5c8a7a2d650e0",
+  "source_approval_basis": "Deck Builder v1.58 script header states Approved Season 0 starter decks 1-5; user directed using latest Deck Builder starters as reference",
+  "active_starter_id": "s0_starter_01_red_white",
+  "active_starter_slot": 1,
+  "generated_only": true
+}

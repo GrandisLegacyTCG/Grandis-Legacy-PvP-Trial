@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "passed": 9,
+  "total": 9,
+  "method": "Production index.html and scripts in real Chromium browser with injected legal fixture states via snapshot import. Not natural full match.",
+  "tests": [
+    {
+      "name": "Production local application scripts load without fatal runtime errors",
+      "status": "PASS"
+    },
+    {
+      "name": "Production Poison Vial multi-target embedded QA follows End Phase lifetime",
+      "status": "PASS"
+    },
+    {
+      "name": "QA mixed Player+AI Taunt state imported into production renderer",
+      "status": "PASS"
+    },
+    {
+      "name": "Player self Taunt glow applies while AI also Taunts",
+      "status": "PASS"
+    },
+    {
+      "name": "AI self Taunt glow applies simultaneously",
+      "status": "PASS"
+    },
+    {
+      "name": "Independent Casting glow remains available on separate lane",
+      "status": "PASS"
+    },
+    {
+      "name": "Taunt glows despite stale attachment slot metadata",
+      "status": "PASS"
+    },
+    {
+      "name": "Physical orphaned Taunt card alone cannot create false active glow",
+      "status": "PASS"
+    },
+    {
+      "name": "Taunt+Casting same lane keeps both orange/violet computed glow",
+      "status": "PASS"
+    }
+  ]
+}

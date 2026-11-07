@@ -1,0 +1,222 @@
+{
+  "pass": 12,
+  "total": 12,
+  "failed": [],
+  "tests": [
+    {
+      "name": "FORMATION: Area allowed, Dual/Single denied",
+      "pass": true,
+      "detail": [
+        {
+          "type": "Area Attack",
+          "kind": "area_reduce",
+          "offered": true
+        },
+        {
+          "type": "Dual Target",
+          "kind": null,
+          "offered": false
+        },
+        {
+          "type": "Single Target",
+          "kind": null,
+          "offered": false
+        }
+      ]
+    },
+    {
+      "name": "CHAIN MAIL: Physical blocked all, Magical/PIERCING rejected",
+      "pass": true,
+      "detail": {
+        "p": "block",
+        "m": null,
+        "pi": null
+      }
+    },
+    {
+      "name": "RING: Magical blocked all, Physical/PIERCING rejected",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "STANDARD ATTACK: Chain Mail and Ring finish a normal paid Response",
+      "pass": true,
+      "detail": [
+        {
+          "id": "S0-ITM-016",
+          "offered": true,
+          "success": true,
+          "hp": 100,
+          "hand": [],
+          "discard": [
+            "S0-ITM-016"
+          ],
+          "pending": null,
+          "window": false
+        },
+        {
+          "id": "S0-ITM-007",
+          "offered": true,
+          "success": true,
+          "hp": 100,
+          "hand": [],
+          "discard": [
+            "S0-ITM-007"
+          ],
+          "pending": null,
+          "window": false
+        }
+      ]
+    },
+    {
+      "name": "AI picks full Chain Mail block over smaller paid Warrior block",
+      "pass": true,
+      "detail": {
+        "options": [
+          "S0-ITM-016",
+          "S0-WAR-003"
+        ],
+        "chosen": "S0-ITM-016"
+      }
+    },
+    {
+      "name": "PRIMAL STRIKE: Chain Mail response open, paid and absorbs damage",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "hp": 100,
+        "discard": [
+          "S0-ITM-016"
+        ]
+      }
+    },
+    {
+      "name": "HOOK: 1-card Hand denied, 2-card Hand offered; discard=1",
+      "pass": true,
+      "detail": {
+        "one": 1,
+        "two": 2,
+        "spec": {
+          "discard_from_hand": 1
+        }
+      }
+    },
+    {
+      "name": "HOOK: PAY chooses physical discard, cancel changes no zones",
+      "pass": true,
+      "detail": {
+        "cancelPending": "response_payment_choice",
+        "cancelOK": true,
+        "unchanged": true,
+        "chooseStep": true,
+        "paid": true,
+        "hand": [],
+        "discard": [
+          "S0-WAR-001",
+          "S0-ITM-012"
+        ],
+        "hp": 100,
+        "pending": null,
+        "response": null
+      }
+    },
+    {
+      "name": "HOOK: AI auto-pays extra discard",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "hand": [],
+        "discard": [
+          "S0-WAR-001",
+          "S0-ITM-012"
+        ],
+        "hp": 100
+      }
+    },
+    {
+      "name": "WARP: Stunned/Frozen filtered, two free Hero swap allowed",
+      "pass": true,
+      "detail": {
+        "legal1": [
+          "LEFT",
+          "RIGHT"
+        ],
+        "bad": false,
+        "noSpend": true,
+        "none": {
+          "can": false,
+          "reasons": [
+            "Warp Scroll requires at least 2 active allied Heroes"
+          ],
+          "cost": 0
+        },
+        "good": true,
+        "discard": [
+          "S0-ITM-019"
+        ]
+      }
+    },
+    {
+      "name": "POISON VIAL: Warrior legal target and attached, not source-restricted",
+      "pass": true,
+      "detail": {
+        "pre": [
+          "LEFT",
+          "CENTER",
+          "RIGHT"
+        ],
+        "act": true,
+        "attachment": [
+          {
+            "side": "PLAYER",
+            "lane": "CENTER",
+            "slot": 0,
+            "card_id": "S0-ITM-011",
+            "commit_token": "card:PLAYER:S0-ITM-011:1793817984009:0.5695809260900125",
+            "tick_phase": "END_PHASE",
+            "remaining_count": 1,
+            "counter_mode": "countdown",
+            "role": "ongoing",
+            "lifecycle_mode": null,
+            "zone_after_leave": null,
+            "effect_cleanup": null,
+            "expires": "end_phase",
+            "created_phase": "Deploy",
+            "created_turn": "PLAYER",
+            "created_round": 3,
+            "modifier_type": "POISON_VIAL",
+            "poison_duration": 2,
+            "requires_hp_damage": true,
+            "attachment_id": "ATT:card:PLAYER:S0-ITM-011:1793817984009:0.5695809260900125:PLAYER:CENTER:0"
+          }
+        ],
+        "hand": []
+      }
+    },
+    {
+      "name": "STAMINA: denies no Exhaust, allows one, prepay target check",
+      "pass": true,
+      "detail": {
+        "before": {
+          "can": false,
+          "reasons": [
+            "Stamina Potion requires an Exhausted allied Hero."
+          ],
+          "cost": 0
+        },
+        "invalid": false,
+        "noSpend": true,
+        "after": {
+          "can": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "targets": [
+          "CENTER"
+        ]
+      }
+    }
+  ],
+  "page_errors": [],
+  "app_bundle_sha256": "6df78a3b9ed3082b15dd739c135ebad121098166a3af654e3769fd4b18d3ece1"
+}

@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "passed": 13,
+  "total": 13,
+  "method": "Node VM with actual extracted production decision/scoring functions; dependencies stubbed; not full application match",
+  "cases": [
+    {
+      "test": "Rage without Bleed loses priority to normal Attack",
+      "result": "PASS"
+    },
+    {
+      "test": "Rage without Bleed can still play when sole attack",
+      "result": "PASS"
+    },
+    {
+      "test": "Rage with Bleed on selected target becomes preferred",
+      "result": "PASS"
+    },
+    {
+      "test": "Rage bonus adds exactly 20 to tactical score",
+      "result": "PASS",
+      "details": {
+        "before": 48,
+        "after": 68
+      }
+    },
+    {
+      "test": "Rage condition must match chosen target, not unrelated enemy",
+      "result": "PASS"
+    },
+    {
+      "test": "Rage without Bleed remains lethal exception",
+      "result": "PASS"
+    },
+    {
+      "test": "Venom without Poison loses priority to normal Attack",
+      "result": "PASS"
+    },
+    {
+      "test": "Venom without Poison can still play if sole attack",
+      "result": "PASS"
+    },
+    {
+      "test": "Venom with Poison on selected target preferred",
+      "result": "PASS"
+    },
+    {
+      "test": "Venom conditional bonus adds exactly 40 to tactical score",
+      "result": "PASS",
+      "details": {
+        "before": 12,
+        "after": 52
+      }
+    },
+    {
+      "test": "Venom checks chosen target not unrelated enemy",
+      "result": "PASS"
+    },
+    {
+      "test": "Venom without Poison can be lethal finisher",
+      "result": "PASS"
+    },
+    {
+      "test": "Ordinary attacks not subject to conditional status gating",
+      "result": "PASS"
+    }
+  ]
+}

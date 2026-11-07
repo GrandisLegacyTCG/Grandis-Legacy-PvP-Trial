@@ -1,0 +1,96 @@
+/* Grandis Legacy Deck Builder v1.56 — approved review-only fixes.
+   Keep the v1.53 Hero popup WIDTH; scale the card artwork independently to 96%.
+   No font, data or gameplay changes. Shared by Style 1 and Style 2. */
+#cardReviewDialog[data-review-kind="hero"] .review-card{
+  width:min(1160px,calc(100vw - 32px))!important;
+  /* v1.53 Rank-I modal height: keep the popup from collapsing when the
+     artwork is scaled to 96%; Rank II/III may still grow up to viewport cap. */
+  min-height:min(663px,calc(100dvh - 28px))!important;
+}
+/* Strip the shadow/plate surrounding the image (not the image itself). */
+#cardReviewDialog[data-review-kind="hero"] .review-art-column{
+  background:transparent!important; border:0!important; border-radius:0!important;
+  padding:0!important; box-shadow:none!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-art{
+  background:transparent!important; border:0!important; box-shadow:none!important;
+  object-fit:contain!important; object-position:top left!important;
+}
+@media(min-width:761px){
+  #cardReviewDialog[data-review-kind="hero"] .review-art{
+    /* 96% of v1.53's art-column width. On short viewports only,
+       fit within the available central region without distorting 5:7. */
+    width:min(96%,max(172px,calc((100dvh - 280px) * 5 / 7)))!important;
+    height:auto!important; max-width:100%!important; max-height:none!important;
+    aspect-ratio:5/7!important;
+  }
+}
+@media(max-width:760px){
+  #cardReviewDialog[data-review-kind="hero"] .review-card{
+    width:calc(100vw - 12px)!important;
+    min-height:0!important;
+  }
+}
+/* Card Review values are one unbroken line. Column widths are calculated
+   from the actual longest rendered text in each column by s0-ui-v1.49.js;
+   keep 38px on EACH side of the divider on desktop. */
+#cardReviewDialog .review-effect-row .review-effect-class>strong,
+#cardReviewDialog .review-effect-row .review-effect-rank>strong,
+#cardReviewDialog .review-effect-row .review-effect-metric>strong{
+  white-space:nowrap!important; overflow-wrap:normal!important; word-break:normal!important;
+}
+@media(min-width:761px){
+  #cardReviewDialog .review-effect-row .review-effect-class{padding-right:38px!important;}
+  #cardReviewDialog .review-effect-row .review-effect-rank{padding-left:38px!important;padding-right:38px!important;}
+  #cardReviewDialog .review-effect-row .review-effect-metric{padding-left:38px!important;}
+}
+/* Retain the approved 16px breathing room at the bottom of Hero Review. */
+#cardReviewDialog[data-review-kind="hero"] .review-layout{padding-bottom:16px!important;}
+
+/* v1.56 review correction (pending approval):
+   One fixed Hero modal/header/footer geometry for Rank I, II and III.
+   The middle section alone can scroll for text-heavy Rank II/III.
+   Its artwork scales independently; the popup itself is never reduced to
+   fit the card art. Apply to both Style 1 and Style 2. */
+#cardReviewDialog[data-review-kind="hero"] .review-card{
+  display:flex!important;
+  flex-direction:column!important;
+  box-sizing:border-box!important;
+  height:min(790px, calc(100dvh - 28px))!important;
+  min-height:0!important;
+  max-height:calc(100dvh - 28px)!important;
+  overflow:hidden!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-header{
+  flex:0 0 84px!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-layout{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-gutter:auto!important; /* no scrollbar gutter on Rank I when it fits */
+  padding-bottom:16px!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-progression{
+  flex:0 0 auto!important;
+  margin-top:0!important;
+}
+@media (min-width:761px){
+  #cardReviewDialog[data-review-kind="hero"] .review-art{
+    /* Reserves space for the header, footer and content padding on short
+       screens. Image only shrinks; never distorts and never sizes the popup. */
+    width:min(96%, max(145px, calc((100dvh - 290px) * 5 / 7)))!important;
+    height:auto!important;
+    max-height:none!important;
+    aspect-ratio:5 / 7!important;
+    object-fit:contain!important;
+  }
+}
+@media (max-width:760px){
+  #cardReviewDialog[data-review-kind="hero"] .review-card{
+    height:calc(100dvh - 12px)!important;
+    max-height:calc(100dvh - 12px)!important;
+  }
+}

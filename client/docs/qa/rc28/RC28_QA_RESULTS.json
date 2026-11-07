@@ -1,0 +1,205 @@
+{
+  "release": "RC28",
+  "date": "2026-11-06",
+  "base": "RC27",
+  "source_authority": "OSA Season0 DEV45 (read-only)",
+  "static_full_lineage": {
+    "total_combinations": 6975,
+    "legal_bindings": 1059,
+    "legality_mismatches": 0,
+    "effect_row_mismatches": 0
+  },
+  "browser_effect_row_checks": [
+    {
+      "card_id": "S0-ARC-026",
+      "hero": "Maestro",
+      "expected_effect_row": "Bard",
+      "actual_effect_row": "Bard",
+      "printed_text": "20",
+      "attack_damage": 20,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-ARC-027",
+      "hero": "Maestro",
+      "expected_effect_row": "Bard",
+      "actual_effect_row": "Bard",
+      "printed_text": "30 Inflict Sleep for 1 turn.",
+      "attack_damage": 30,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-CLE-021",
+      "hero": "Crusader",
+      "expected_effect_row": "Paladin",
+      "actual_effect_row": "Paladin",
+      "printed_text": "60 Inflict Stun for 1 turn.",
+      "attack_damage": 60,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-CLE-023",
+      "hero": "Crusader",
+      "expected_effect_row": "Paladin",
+      "actual_effect_row": "Paladin",
+      "printed_text": "60 HEAL one of your Heroes.",
+      "attack_damage": 0,
+      "heal_amount": 60,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-MAG-020",
+      "hero": "Arcane Duelist",
+      "expected_effect_row": "Spell Blade",
+      "actual_effect_row": "Spell Blade",
+      "printed_text": "70 Casting time 1 turn. Deal Magical damage. When this Attack hits, MANA BURN 1.",
+      "attack_damage": 70,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": true,
+      "pass": true
+    },
+    {
+      "card_id": "S0-MAG-021",
+      "hero": "Arcane Duelist",
+      "expected_effect_row": "Spell Blade",
+      "actual_effect_row": "Spell Blade",
+      "printed_text": "40 When this Attack hits, MANA STEAL 2.",
+      "attack_damage": 40,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": true,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-THF-026",
+      "hero": "Grand Arbalest",
+      "expected_effect_row": "Arbalest",
+      "actual_effect_row": "Arbalest",
+      "printed_text": "30 You may swap this Hero's position with the allied Hero in front of the attacked Hero.",
+      "attack_damage": 30,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-WAR-026",
+      "hero": "Arcane Vanguard",
+      "expected_effect_row": "Arcane Warrior",
+      "actual_effect_row": "Arcane Warrior",
+      "printed_text": "50 PIERCING Deal Physical damage.",
+      "attack_damage": 50,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-WAR-027",
+      "hero": "Arcane Vanguard",
+      "expected_effect_row": "Arcane Warrior",
+      "actual_effect_row": "Arcane Warrior",
+      "printed_text": "60 Inflict Stun for 1 turn.",
+      "attack_damage": 60,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-WAR-028",
+      "hero": "Arcane Vanguard",
+      "expected_effect_row": "Arcane Warrior",
+      "actual_effect_row": "Arcane Warrior",
+      "printed_text": "60 RANGE Deal Physical damage.",
+      "attack_damage": 60,
+      "heal_amount": 0,
+      "has_reflect_30": null,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    },
+    {
+      "card_id": "S0-WAR-029",
+      "hero": "Arcane Vanguard",
+      "expected_effect_row": "Arcane Warrior",
+      "actual_effect_row": "Arcane Warrior",
+      "printed_text": "-50 BLOCK incoming Physical or Magical damage. REFLECT 30 damage to the attacker.",
+      "attack_damage": 0,
+      "heal_amount": 0,
+      "has_reflect_30": true,
+      "has_mana_steal_2": null,
+      "has_mana_burn_1": null,
+      "pass": true
+    }
+  ],
+  "browser_modal_hover": {
+    "generic_modal_types": [
+      {
+        "type": "card_search_choice",
+        "zone": "discard",
+        "before": true,
+        "after": true,
+        "afterLeave": false,
+        "hadImg": true
+      },
+      {
+        "type": "legacy_defeat_choice",
+        "zone": "legacy",
+        "before": true,
+        "after": true,
+        "afterLeave": false,
+        "hadImg": true
+      },
+      {
+        "type": "legacy_card_choice",
+        "zone": "legacy",
+        "before": true,
+        "after": true,
+        "afterLeave": false,
+        "hadImg": true
+      },
+      {
+        "type": "card_search_choice",
+        "zone": "hand",
+        "before": true,
+        "after": true,
+        "afterLeave": false,
+        "hadImg": true
+      }
+    ],
+    "bard_modal": {
+      "before": true,
+      "after": true,
+      "closedOnTransition": true,
+      "hadCard": true
+    },
+    "errors": []
+  },
+  "limitations": [
+    "Tests used actual app JavaScript in controlled in-memory Chromium DOM, not a full natural game.",
+    "Actual HP, Mana, Response chains and all secondary effects of the 11 cards were not exhaustively resolved in live matches.",
+    "Firefox field verification and complete Human vs AI terminal match remain NOT VERIFIED per prior waiver."
+  ]
+}

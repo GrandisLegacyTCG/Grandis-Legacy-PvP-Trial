@@ -1,0 +1,497 @@
+{
+  "checkpoint": "DEV44",
+  "result": "36 source capability pairs mapped; current S0 behavior authoritative; no S1 recipe copy, no app acceptance claim.",
+  "reviewedCapabilities": [
+    {
+      "capability": "PHASE_AND_DRAW",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-unified-router-v6.01.cjs",
+        "sha256": "13568220e97953083733870834bc5999b4df2252dd1a764ea68f4c052fabb96d"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/reducer.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "68732c3ef75c13f32c3c89feab4d735ec0afddbf75b18662712a8641cdc93875"
+    },
+    {
+      "capability": "DRAW_HAND_SEARCH",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-tactical-search-v3.3.cjs",
+        "sha256": "9512b44afd4d5b735ae6de2f1bc53be2d715d67c15f0d2ee18a4e8fbc15bba15"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/draw-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "0334cf7f5eb02e3a9fea504e91e8e75823d283e53887b3eaf9dd67c81990af8e"
+    },
+    {
+      "capability": "MANA_PAYMENT",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-mana-payment-v5.91.cjs",
+        "sha256": "c2b8e52c219a5dabf8a69026e9d969c5736c842ff5b56f86a7cab8596056987d"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/mana-deck-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "b7049c3e6a5e096e8ead8f3e7637a77b17a324f4c30941b72e9a50a0f788bab6"
+    },
+    {
+      "capability": "CLASS_MANA",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-mana-payment-r33-v5.81.cjs",
+        "sha256": "6bd131e8a4646cce83a46b9c73152270f7378da583b4237c8791ac45d89d63b2"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/mana-deck-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "S0_NEW_OR_CHANGED",
+      "s1SourceSHA256": "b7049c3e6a5e096e8ead8f3e7637a77b17a324f4c30941b72e9a50a0f788bab6"
+    },
+    {
+      "capability": "HERO_RANK",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-r34-ultimate-progression-v5.94.cjs",
+        "sha256": "746e59dc9c4b9d9cabb719f6c98ee9e61b217cc1b7bf5d424827000635bb2d6f"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/rankup/rankup-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "1a5b36523ade616e09015f5409003130db52335b93b249d195444e2e0296c923"
+    },
+    {
+      "capability": "TRIBUTE_EXP",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-r34-ultimate-progression-v5.94.cjs",
+        "sha256": "746e59dc9c4b9d9cabb719f6c98ee9e61b217cc1b7bf5d424827000635bb2d6f"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/tribute-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "bae32ff5cb0a05fb28b9010031ec6a473efef1c1cc7504063fcb831eeedb66aa"
+    },
+    {
+      "capability": "ATTACK_TARGET_AOA",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-unified-router-v6.01.cjs",
+        "sha256": "13568220e97953083733870834bc5999b4df2252dd1a764ea68f4c052fabb96d"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/attack-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "b23a6404fad3f8187e1e89e2235f2b5c0c843c11f17c4f54465adc2a9557d3f1"
+    },
+    {
+      "capability": "PHYSICAL_MAGICAL_DAMAGE",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-defense-family-v5.31.cjs",
+        "sha256": "d8598765cbf35ba424e22c477e94291fc21b5816d16351714c33b7311d679511"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/damage-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "208678ea4f006bdf5e3517735e35ec4015287f705f8afcc870d1c3eb296a0f17"
+    },
+    {
+      "capability": "BLOCK_DODGE",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-defense-family-v5.31.cjs",
+        "sha256": "d8598765cbf35ba424e22c477e94291fc21b5816d16351714c33b7311d679511"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/def-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "d2595c4d71ae5b67f965e0f2d2b591d49e1ce453597c423203fc918780fdfd66"
+    },
+    {
+      "capability": "RESPONSE_SETTLEMENT",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-nested-response-v2.7.cjs",
+        "sha256": "2a91f84432582988f2d42480409cc111bb8204c1cee9ae1c4ed8ff55f48ac579"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/response-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "62e3ac8569218332a423c5cb13a4a299c2901b978b56504ec8d17c0538f9b369"
+    },
+    {
+      "capability": "AREA_MULTI_TARGET",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-area-mechanic-batch-v5.76.cjs",
+        "sha256": "70c8382cdd0143f4ce225fa5b50abcd99b12e6c841a7b9ebde2469fc0e4434af"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/attack-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "b23a6404fad3f8187e1e89e2235f2b5c0c843c11f17c4f54465adc2a9557d3f1"
+    },
+    {
+      "capability": "CASTING_INTERRUPT",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-casting-v5.36.cjs",
+        "sha256": "8ef1ee7bdfd7cce30c16542f8b09a62feb2ae79c5a39a04487b70da530695ba2"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/casting-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "1274e4a4343c3252f6ec253cc074576dc6d4604fbd1b06bce84d1f744c0560ba"
+    },
+    {
+      "capability": "STUN",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-tactical-status-family-v5.39.cjs",
+        "sha256": "26565017593675b2b9a90b093ed67278f9b1ac23267f99125d4ca080e2d5dc09"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/status-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "ab76ec163fcc42f32ec5f4836d65b046cae0a5f1eb67b9252529417ebd428f2d"
+    },
+    {
+      "capability": "FREEZE",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-tactical-status-family-v5.39.cjs",
+        "sha256": "26565017593675b2b9a90b093ed67278f9b1ac23267f99125d4ca080e2d5dc09"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/status-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "ab76ec163fcc42f32ec5f4836d65b046cae0a5f1eb67b9252529417ebd428f2d"
+    },
+    {
+      "capability": "BURN",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-tactical-status-family-v5.39.cjs",
+        "sha256": "26565017593675b2b9a90b093ed67278f9b1ac23267f99125d4ca080e2d5dc09"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/status-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "ab76ec163fcc42f32ec5f4836d65b046cae0a5f1eb67b9252529417ebd428f2d"
+    },
+    {
+      "capability": "POISON",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-tactical-status-family-v5.39.cjs",
+        "sha256": "26565017593675b2b9a90b093ed67278f9b1ac23267f99125d4ca080e2d5dc09"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/status-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "ab76ec163fcc42f32ec5f4836d65b046cae0a5f1eb67b9252529417ebd428f2d"
+    },
+    {
+      "capability": "BLEED",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-tactical-status-family-v5.39.cjs",
+        "sha256": "26565017593675b2b9a90b093ed67278f9b1ac23267f99125d4ca080e2d5dc09"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/status-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "ab76ec163fcc42f32ec5f4836d65b046cae0a5f1eb67b9252529417ebd428f2d"
+    },
+    {
+      "capability": "SLEEP",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-rulebook282-sleep-card-eligibility-v6.01.cjs",
+        "sha256": "90f870599a0084599e54ae7e9bfe851a7eba122403bcaeac6542e755f6f23aad"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/status-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "S0_NEW",
+      "s1SourceSHA256": "ab76ec163fcc42f32ec5f4836d65b046cae0a5f1eb67b9252529417ebd428f2d"
+    },
+    {
+      "capability": "STATUS_CLEANSE",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-item-elixir-six-status-v5.50.cjs",
+        "sha256": "f851fe99f2fcd42e921859b14ca1451f54fd39b022cd02b4c7e2ba42eb3396f5"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/status-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "ab76ec163fcc42f32ec5f4836d65b046cae0a5f1eb67b9252529417ebd428f2d"
+    },
+    {
+      "capability": "BUFF_MODIFIERS",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-persistent-buffs-v4.0.cjs",
+        "sha256": "9b4ac9f6b5faf086663c143f0e3f7ccc61b380a673177f6f102cb939319381c1"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/effects/recipe-bucket-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "20c40b5ee41cab55ae73ae201fbdcde51a7c87fb6570f3eaff556bd76567fe72"
+    },
+    {
+      "capability": "INVINCIBLE_DAMAGE_REDUCTION",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-hybrid-defense-v5.83.cjs",
+        "sha256": "887989f13642a508f310d517a9595faceb5e05785c2aeae4875cfa2b29ca65aa"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/def-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "d2595c4d71ae5b67f965e0f2d2b591d49e1ce453597c423203fc918780fdfd66"
+    },
+    {
+      "capability": "PIERCING_HIT",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-advanced-attack-family-v5.27.cjs",
+        "sha256": "4e36dd9ad080228f7638ebe1e673fa4f1035d56d9769e3f39fa34976cb89910e"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/attack-damage-classification-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "0454ee0d6c772f9b58843330b1a43ac1bfb686ba8746c1cd37aa5fa1e6bc444e"
+    },
+    {
+      "capability": "REPOSITION",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-response-swap-casting-v5.52.cjs",
+        "sha256": "2744e0491ed415b85891e2bf002b51ac7ee5fa094d879013b7e66a32b0e48851"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/swap-reposition-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "0596b9bcde3899f74d82080cfc8e2df47cdd56db07e9f86e4b98630912411f0a"
+    },
+    {
+      "capability": "DEFEAT_LEGACY",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-defeat-revive-v0.6.cjs",
+        "sha256": "38e9829e9afab00b43c5b8031024995a4230ea7c0d89735facb92775c72d77f8"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/legacy-defeat-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "c2ed3920e750c487dfeee44a82358a3a40ccab1d7db62cd98ad493c94f9e9334"
+    },
+    {
+      "capability": "REVIVE",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-revive-family-v5.40.cjs",
+        "sha256": "29e711cd1fa793685fbb1f8591df2cdedf2fbc44b69995b7862b8373545554bd"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/legacy-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "7fffc69d78c20c0bf63b7dd6498a6df512318a7b8df3ce57b40c1c70495fee05"
+    },
+    {
+      "capability": "ATTACHMENT",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-item-stack-v1.8.1.cjs",
+        "sha256": "680caeb28a97d6c6663d22a9d8640a7097866881462f004c122b2240947029da"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/attachment-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "115a32c957fdba85360c7b0b1f486e2a9b376e3710e7491f68699b2e2169976e"
+    },
+    {
+      "capability": "ITEM_EVENT",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-item-event-attack-subtypes-v5.45.cjs",
+        "sha256": "3cf891d2f076576e16edc6bef1ec7ef2ce002b167b2e5f3500f180a540d30c2d"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/effects/recipe-dispatcher.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "b375ef4db791eb6a4f2dfac0f3adba3803bcdc66e40a19df425a2d5b1e9db105"
+    },
+    {
+      "capability": "BLIND_RANDOM_CHOICE",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-scouting-opaque-exp-v5.78.cjs",
+        "sha256": "4a117cd720dcd4bcb38b412cdc9b1b3b6501f853e89e224c93a2f36032e7c778"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/engines/fixture-rules-engine.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "7984ee1c14453b0dd8c07bd23665093eb2807d266d1482d76609a55eef5cf540"
+    },
+    {
+      "capability": "MANA_BURN",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-mana-shortage-ruling-v6.51.cjs",
+        "sha256": "80ac9d647fa1a0b1f75eb9b1b84623e06e83aaa636812e6736bf33ae8b37008b"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/mana-deck-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "S0_NEW_OR_CHANGED",
+      "s1SourceSHA256": "b7049c3e6a5e096e8ead8f3e7637a77b17a324f4c30941b72e9a50a0f788bab6"
+    },
+    {
+      "capability": "MANA_STEAL",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-mana-steal-up-to-v6.52.cjs",
+        "sha256": "7108e9850bfa12580e784340a3bb61b172fb701298c347fb401861a75fd94c15"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/mana-deck-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "S0_NEW_OR_CHANGED",
+      "s1SourceSHA256": "b7049c3e6a5e096e8ead8f3e7637a77b17a324f4c30941b72e9a50a0f788bab6"
+    },
+    {
+      "capability": "BARD_ZOL_LUN_VAE",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-r34-ultimate-progression-v5.94.cjs",
+        "sha256": "746e59dc9c4b9d9cabb719f6c98ee9e61b217cc1b7bf5d424827000635bb2d6f"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/effects/recipe-dispatcher.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "S0_NEW",
+      "s1SourceSHA256": "b375ef4db791eb6a4f2dfac0f3adba3803bcdc66e40a19df425a2d5b1e9db105"
+    },
+    {
+      "capability": "MULTICLASS_RANK_VARIANTS",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-multiclass-headless-v4.6.cjs",
+        "sha256": "d08107a4fbab7307b71b7611bbd69c4a868d01b3c209b0458dae75fbfd3be96f"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/rankup/rankup-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "1a5b36523ade616e09015f5409003130db52335b93b249d195444e2e0296c923"
+    },
+    {
+      "capability": "HIDDEN_INFORMATION",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-viewer-projection-v5.59.cjs",
+        "sha256": "14f295f0a40efe3784551bd47285ca239a14cda618cb8ce2c4c08d13a27a5aa0"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/adapters/pvp-adapter.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "f5775dbbd2c4cc53b8bfab954bcaa1c15f0c6963880bb79f0e959dd3b0384fed"
+    },
+    {
+      "capability": "CONDITIONAL_FOLLOWUP",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-unified-router-v6.01.cjs",
+        "sha256": "13568220e97953083733870834bc5999b4df2252dd1a764ea68f4c052fabb96d"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/effects/conditional-follow-up.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "ae8d38442a3d11f2791e63bd318285011a995043b499f04715f53f79ed90f0a9"
+    },
+    {
+      "capability": "ULTIMATE_ACCESS",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-r34-ultimate-progression-v5.94.cjs",
+        "sha256": "746e59dc9c4b9d9cabb719f6c98ee9e61b217cc1b7bf5d424827000635bb2d6f"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/rankup/rankup-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "1a5b36523ade616e09015f5409003130db52335b93b249d195444e2e0296c923"
+    },
+    {
+      "capability": "GAME_OVER",
+      "currentS0Module": {
+        "path": "Authority/Runtime/Season0/core/season0-defeat-revive-v0.6.cjs",
+        "sha256": "38e9829e9afab00b43c5b8031024995a4230ea7c0d89735facb92775c72d77f8"
+      },
+      "disposition": "RETAIN_CURRENT_S0_RULES_AND_IMPLEMENTATION__DO_NOT_COPY_S1_RECIPE",
+      "originalS1Module": "Authority/Runtime/Shared/core/deckout-policy.js",
+      "reviewScope": "Applicable structural/feature correspondence; no blind S1 behavioral-equivalence certification",
+      "s0Classification": "SHARED_CHANGED",
+      "s1SourceSHA256": "e4232f6a00decb0af264a61325f850a6a46130cd433c95941b6cfbf3f3d1d71d"
+    }
+  ],
+  "reviewedCount": 36,
+  "s0CurrentExecution": {
+    "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json",
+    "sha256": "519023690a7420cf195e52f7db1d6985ccb5047215ade6d807dba39ab5ccc52c"
+  },
+  "s1Reference": {
+    "archive": "Grandis_Legacy_Source_Authority_v1.9.5_2026-09-22.zip",
+    "checkpoint": "DEV39 original S1 v1.9.5",
+    "sha256": "9b6a12c7ae5ec4b981c9628bb5883b211c042fb165dc15fb89830501f0d3891d"
+  },
+  "schema": "GL-S0-APPLICABLE-S1-PARITY-DEV44-1",
+  "season": 0,
+  "sourceAuthority": {
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json",
+      "sha256": "519023690a7420cf195e52f7db1d6985ccb5047215ade6d807dba39ab5ccc52c"
+    },
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RECIPES.dev41.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RECIPES.dev41.json",
+      "sha256": "10dd33b791d73ad37b6c1b83b335e23f2e2ca9cf24f1ac125f8bec06472f16f9"
+    },
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RULES.dev35.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RULES.dev35.json",
+      "sha256": "0bafadcf06955305beef481bae051068096944865b61f06b85febdfd3349c9ab"
+    },
+    "Authority/Game/Season0-Recipes/DEV43/DEV43_RELEASE_READINESS.json": {
+      "path": "Authority/Game/Season0-Recipes/DEV43/DEV43_RELEASE_READINESS.json",
+      "sha256": "ddf1397dade3fd4311f06d2298d980dc23b32df2d7789cea4484b19be749ab88"
+    },
+    "Authority/Game/Season0-Visual/current-season0-visual-authority.json": {
+      "path": "Authority/Game/Season0-Visual/current-season0-visual-authority.json",
+      "sha256": "5a29531ca5eb6cf6e0a1661f6a7e031db82e8c2e61a491775625260edfd9291b"
+    },
+    "Generated/Season0-Audit/season0-dev39-capability-matrix.csv": {
+      "path": "Generated/Season0-Audit/season0-dev39-capability-matrix.csv",
+      "sha256": "015c3299a371c225a71033eee7d06ceedd769a59a6f193c3cd74cee3829e9661"
+    },
+    "Generated/Season0-Consumers/season0-consumer-conformance.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-conformance.dev37.json",
+      "sha256": "3be68f6db8957b33443328ece836963b964fe46419e05dbb7b2cfba84d222d94"
+    },
+    "Generated/Season0-Consumers/season0-consumer-contracts.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-contracts.dev37.json",
+      "sha256": "55881e38e5b5f27bb9b63cafa2c894e83fff0b423b873d80e6da77df91ecf827"
+    },
+    "Generated/Season0-Consumers/season0-consumer-data.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-data.dev37.json",
+      "sha256": "9da577f70a8b94f70ceb091eadffbdcf41138537e2a94fcca3f3daf635b48996"
+    },
+    "Generated/Season0-Consumers/season0-consumer-rules.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-rules.dev37.json",
+      "sha256": "118a06289e0210280e653e224d5bba8cc7cc9a63b2c52582d010fcb13575e5cf"
+    },
+    "Generated/Season0-Current/season0-dev40-hero-legacy-printed-catalog.json": {
+      "path": "Generated/Season0-Current/season0-dev40-hero-legacy-printed-catalog.json",
+      "sha256": "bd1df44a35e25d2c1445bcda13d84f6bbfba6e8310aa3c43c0aadb5f5b1042c5"
+    }
+  },
+  "warning": "Module availability and bounded DEV43 tests are not proof of universal S1 behavioral parity; changed S0 rules govern."
+}

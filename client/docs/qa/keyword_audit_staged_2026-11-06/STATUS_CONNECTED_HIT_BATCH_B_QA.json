@@ -1,0 +1,1661 @@
+{
+  "ok": true,
+  "stats": {
+    "identities": 19,
+    "checked": 92,
+    "passed": 92,
+    "failed": 0,
+    "skipped_branch_count": 7
+  },
+  "failures": [],
+  "skips": [
+    {
+      "id": "S0-ARC-013",
+      "cls": "Marksman",
+      "reason": "nonattack (separate test route)"
+    },
+    {
+      "id": "S0-ITM-011",
+      "cls": "",
+      "reason": "nonattack (separate test route)"
+    },
+    {
+      "id": "S0-THF-015",
+      "cls": "Rogue",
+      "reason": "no printed Inflict; conditional/reference only"
+    },
+    {
+      "id": "S0-THF-015",
+      "cls": "Renegade",
+      "reason": "no printed Inflict; conditional/reference only"
+    },
+    {
+      "id": "S0-THF-018",
+      "cls": "Rogue",
+      "reason": "no printed Inflict; conditional/reference only"
+    },
+    {
+      "id": "S0-THF-018",
+      "cls": "Renegade",
+      "reason": "no printed Inflict; conditional/reference only"
+    },
+    {
+      "id": "S0-EVT-006",
+      "cls": "",
+      "reason": "nonattack (separate test route)"
+    }
+  ],
+  "checks": [
+    {
+      "id": "S0-ARC-002",
+      "cls": "Archer",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 10,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-002",
+                "source_name": "Poison Arrow",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-002",
+      "cls": "Archer",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-002",
+      "cls": "Archer",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 10,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-002",
+                "source_name": "Poison Arrow",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-002",
+      "cls": "Archer",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-011",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 10,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 3,
+            "text": "Poison · 3 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-011",
+                "source_name": "Poison Mist",
+                "amount": 3,
+                "note": "Poison 3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-011",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-011",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 10,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 3,
+            "text": "Poison · 3 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-011",
+                "source_name": "Poison Mist",
+                "amount": 3,
+                "note": "Poison 3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-011",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-013",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 20,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-013",
+                "source_name": "Venom Strike",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-013",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-013",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 20,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-013",
+                "source_name": "Venom Strike",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-013",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-013",
+      "cls": "Renegade",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 30,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 3,
+            "text": "Poison · 3 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-013",
+                "source_name": "Venom Strike",
+                "amount": 3,
+                "note": "Poison 3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-013",
+      "cls": "Renegade",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-013",
+      "cls": "Renegade",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 30,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 3,
+            "text": "Poison · 3 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-013",
+                "source_name": "Venom Strike",
+                "amount": 3,
+                "note": "Poison 3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-013",
+      "cls": "Renegade",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-014",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 30,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-014",
+                "source_name": "Viper's Fang",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-014",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-014",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 30,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-014",
+                "source_name": "Viper's Fang",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-014",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-014",
+      "cls": "Renegade",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 40,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 3,
+            "text": "Poison · 3 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-014",
+                "source_name": "Viper's Fang",
+                "amount": 3,
+                "note": "Poison 3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-014",
+      "cls": "Renegade",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-014",
+      "cls": "Renegade",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 40,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 3,
+            "text": "Poison · 3 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-014",
+                "source_name": "Viper's Fang",
+                "amount": 3,
+                "note": "Poison 3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-014",
+      "cls": "Renegade",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-017",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-017",
+                "source_name": "Venom Binding",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-017",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-017",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-017",
+                "source_name": "Venom Binding",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-017",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-017",
+      "cls": "Renegade",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 70,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 3,
+            "text": "Poison · 3 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-017",
+                "source_name": "Venom Binding",
+                "amount": 3,
+                "note": "Poison 3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-017",
+      "cls": "Renegade",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-017",
+      "cls": "Renegade",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 70,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 3,
+            "text": "Poison · 3 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-017",
+                "source_name": "Venom Binding",
+                "amount": 3,
+                "note": "Poison 3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-017",
+      "cls": "Renegade",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-019",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-019",
+                "source_name": "Lethal Venom",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-019",
+      "cls": "Rogue",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-019",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-019",
+                "source_name": "Lethal Venom",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-019",
+      "cls": "Rogue",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-019",
+      "cls": "Renegade",
+      "side": "PLAYER",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-019",
+                "source_name": "Lethal Venom",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-019",
+      "cls": "Renegade",
+      "side": "PLAYER",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-THF-019",
+      "cls": "Renegade",
+      "side": "AI",
+      "what": "connected applies Poison",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Poison",
+            "duration": 2,
+            "text": "Poison · 2 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-THF-019",
+                "source_name": "Lethal Venom",
+                "amount": 2,
+                "note": "Poison 2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-THF-019",
+      "cls": "Renegade",
+      "side": "AI",
+      "what": "dodged does not apply Poison",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-027",
+      "cls": "Archer",
+      "side": "PLAYER",
+      "what": "connected applies Sleep",
+      "ok": true,
+      "details": {
+        "damage": 20,
+        "statuses": [
+          {
+            "name": "Sleep",
+            "duration": 1,
+            "text": "Sleep · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-027",
+                "source_name": "Sleeping Dart",
+                "amount": 1,
+                "note": "Sleep 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-027",
+      "cls": "Archer",
+      "side": "PLAYER",
+      "what": "dodged does not apply Sleep",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-027",
+      "cls": "Archer",
+      "side": "AI",
+      "what": "connected applies Sleep",
+      "ok": true,
+      "details": {
+        "damage": 20,
+        "statuses": [
+          {
+            "name": "Sleep",
+            "duration": 1,
+            "text": "Sleep · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-027",
+                "source_name": "Sleeping Dart",
+                "amount": 1,
+                "note": "Sleep 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-027",
+      "cls": "Archer",
+      "side": "AI",
+      "what": "dodged does not apply Sleep",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-027",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "what": "connected applies Sleep",
+      "ok": true,
+      "details": {
+        "damage": 30,
+        "statuses": [
+          {
+            "name": "Sleep",
+            "duration": 1,
+            "text": "Sleep · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-027",
+                "source_name": "Sleeping Dart",
+                "amount": 1,
+                "note": "Sleep 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-027",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "what": "dodged does not apply Sleep",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-027",
+      "cls": "Bard",
+      "side": "AI",
+      "what": "connected applies Sleep",
+      "ok": true,
+      "details": {
+        "damage": 30,
+        "statuses": [
+          {
+            "name": "Sleep",
+            "duration": 1,
+            "text": "Sleep · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-027",
+                "source_name": "Sleeping Dart",
+                "amount": 1,
+                "note": "Sleep 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-027",
+      "cls": "Bard",
+      "side": "AI",
+      "what": "dodged does not apply Sleep",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-028",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "what": "connected applies Sleep",
+      "ok": true,
+      "details": {
+        "damage": 20,
+        "statuses": [
+          {
+            "name": "Sleep",
+            "duration": 1,
+            "text": "Sleep · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-028",
+                "source_name": "Midnight Lullaby",
+                "amount": 1,
+                "note": "Sleep 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-028",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "what": "dodged does not apply Sleep",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-028",
+      "cls": "Bard",
+      "side": "AI",
+      "what": "connected applies Sleep",
+      "ok": true,
+      "details": {
+        "damage": 20,
+        "statuses": [
+          {
+            "name": "Sleep",
+            "duration": 1,
+            "text": "Sleep · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-028",
+                "source_name": "Midnight Lullaby",
+                "amount": 1,
+                "note": "Sleep 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-028",
+      "cls": "Bard",
+      "side": "AI",
+      "what": "dodged does not apply Sleep",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-001",
+      "cls": "Archer",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 20,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-001",
+                "source_name": "Bow Bash",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-001",
+      "cls": "Archer",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-ARC-001",
+      "cls": "Archer",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 20,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-ARC-001",
+                "source_name": "Bow Bash",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-ARC-001",
+      "cls": "Archer",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-019",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 30,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-019",
+                "source_name": "Divine Punishment",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-019",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-019",
+      "cls": "Priest",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 30,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-019",
+                "source_name": "Divine Punishment",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-019",
+      "cls": "Priest",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-019",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 50,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-019",
+                "source_name": "Divine Punishment",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-019",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-019",
+      "cls": "Saint",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 50,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-019",
+                "source_name": "Divine Punishment",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-019",
+      "cls": "Saint",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-021",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 40,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-021",
+                "source_name": "Hammer of Justice",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-021",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-021",
+      "cls": "Cleric",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 40,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-021",
+                "source_name": "Hammer of Justice",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-021",
+      "cls": "Cleric",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-021",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-021",
+                "source_name": "Hammer of Justice",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-021",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-021",
+      "cls": "Paladin",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-021",
+                "source_name": "Hammer of Justice",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-021",
+      "cls": "Paladin",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-024",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 80,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-024",
+                "source_name": "Divine Judgement",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-024",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-024",
+      "cls": "Paladin",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 80,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-024",
+                "source_name": "Divine Judgement",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-024",
+      "cls": "Paladin",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-024",
+      "cls": "Crusader",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 100,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-024",
+                "source_name": "Divine Judgement",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-024",
+      "cls": "Crusader",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-CLE-024",
+      "cls": "Crusader",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 100,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-CLE-024",
+                "source_name": "Divine Judgement",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-024",
+      "cls": "Crusader",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-WAR-007",
+      "cls": "Gladiator",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 50,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-WAR-007",
+                "source_name": "Upward Thrust",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-WAR-007",
+      "cls": "Gladiator",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-WAR-007",
+      "cls": "Gladiator",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 50,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-WAR-007",
+                "source_name": "Upward Thrust",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-WAR-007",
+      "cls": "Gladiator",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-WAR-027",
+      "cls": "Warrior",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 40,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-WAR-027",
+                "source_name": "Colossal Bash",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-WAR-027",
+      "cls": "Warrior",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-WAR-027",
+      "cls": "Warrior",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 40,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-WAR-027",
+                "source_name": "Colossal Bash",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-WAR-027",
+      "cls": "Warrior",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-WAR-027",
+      "cls": "Arcane Warrior",
+      "side": "PLAYER",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-WAR-027",
+                "source_name": "Colossal Bash",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-WAR-027",
+      "cls": "Arcane Warrior",
+      "side": "PLAYER",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    },
+    {
+      "id": "S0-WAR-027",
+      "cls": "Arcane Warrior",
+      "side": "AI",
+      "what": "connected applies Stun",
+      "ok": true,
+      "details": {
+        "damage": 60,
+        "statuses": [
+          {
+            "name": "Stun",
+            "duration": 1,
+            "text": "Stun · 1 turn(s) · attack-connected",
+            "sources": [
+              {
+                "source_card_id": "S0-WAR-027",
+                "source_name": "Colossal Bash",
+                "amount": 1,
+                "note": "Stun 1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S0-WAR-027",
+      "cls": "Arcane Warrior",
+      "side": "AI",
+      "what": "dodged does not apply Stun",
+      "ok": true,
+      "details": {
+        "statuses": []
+      }
+    }
+  ],
+  "browser_errors": []
+}

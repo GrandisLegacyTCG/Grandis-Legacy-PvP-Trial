@@ -1,0 +1,28 @@
+/* Grandis Legacy Deck Builder v1.39.0 — Card Review visual and printed-condition parity. */
+/* Artwork backdrop must merge with the Card Review outer surface. */
+#cardReviewDialog .review-art-column,
+#cardReviewDialog .review-art,
+#cardReviewDialog .review-layout{background-color:transparent!important;}
+#cardReviewDialog .review-art-column{border-color:transparent!important;box-shadow:none!important;}
+/* Separate card-wide Condition panel, placed once before the Rank / Skill Effect blocks.
+   Multiple printed Condition instances remain multiple lines within this sole panel. */
+#cardReviewDialog .review-rows>.review-condition-panel{
+  display:grid!important;gap:9px!important;
+  background:rgba(12,24,42,.56)!important;
+  border:1px solid rgba(113,163,210,.27)!important;
+  border-radius:9px!important;
+  padding:11px 14px!important;
+  min-width:0!important;
+}
+#cardReviewDialog .review-condition-line{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important;min-width:0!important;}
+#cardReviewDialog .review-condition-label{display:block!important;margin:0!important;line-height:1!important;}
+#cardReviewDialog .review-condition-text{
+  margin:0!important;color:#f3f3f5!important;
+  font-size:var(--gl-review-body-size,12px)!important;
+  font-weight:400!important;line-height:1.5!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;
+}
+#cardReviewDialog .review-condition-label .review-keyword-image{
+  height:var(--gl-review-keyword-height,20px)!important;
+  width:auto!important;max-width:none!important;margin:0!important;
+}

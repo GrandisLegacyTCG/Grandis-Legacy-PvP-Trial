@@ -1,0 +1,139 @@
+/* Grandis Legacy Deck Builder v1.49.1 — scoped QA fixes on top of v1.49.0.
+   No card database, rules, validation, export or gameplay changes. */
+
+/* QA 1: v1.49.0 forced a grid layout with auto-sized rows; in some browsers
+   card images appeared over subsequent rows. Restore the 1.48.x fixed-size
+   flex-wrap card layout and distribute unused horizontal space to the gaps,
+   so the final card sits close to the scrollbar. Both styles use the same rules. */
+#mainDeckViewDialog #mainDeckViewGrid{
+  display:flex!important;
+  flex-flow:row wrap!important;
+  align-content:flex-start!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:14px 10px!important;
+  padding:4px 0 14px 0!important;
+  width:100%!important;
+  min-width:0!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  scrollbar-gutter:stable!important;
+}
+/* Flex filler keeps an incomplete last row left-aligned rather than
+   spreading two leftover cards to opposite sides of the modal. */
+#mainDeckViewDialog #mainDeckViewGrid::after{
+  content:"";
+  flex:1 0 142px!important;
+  height:0!important;
+  min-width:0!important;
+  pointer-events:none!important;
+}
+#mainDeckViewDialog #mainDeckViewGrid>.legacy-reference-card-tile{
+  flex:0 0 142px!important;
+  width:142px!important;
+  max-width:142px!important;
+  min-width:0!important;
+  height:198.8px!important;
+  aspect-ratio:5/7!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+#mainDeckViewDialog #mainDeckViewGrid>.legacy-reference-card-tile>img{
+  width:100%!important;height:100%!important;
+  object-fit:contain!important;
+}
+@media (min-width:1500px){
+  #mainDeckViewDialog #mainDeckViewGrid::after{flex-basis:160px!important}
+  #mainDeckViewDialog #mainDeckViewGrid>.legacy-reference-card-tile{
+    flex-basis:160px!important;width:160px!important;max-width:160px!important;
+    height:224px!important;
+  }
+}
+@media (max-width:1180px){
+  #mainDeckViewDialog #mainDeckViewGrid{gap:10px!important}
+  #mainDeckViewDialog #mainDeckViewGrid::after{flex-basis:126px!important}
+  #mainDeckViewDialog #mainDeckViewGrid>.legacy-reference-card-tile{
+    flex-basis:126px!important;width:126px!important;max-width:126px!important;
+    height:176.4px!important;
+  }
+}
+@media (max-width:520px){
+  #mainDeckViewDialog #mainDeckViewGrid{justify-content:space-between!important;gap:9px!important}
+  #mainDeckViewDialog #mainDeckViewGrid::after{flex-basis:calc((100% - 9px)/2)!important}
+  #mainDeckViewDialog #mainDeckViewGrid>.legacy-reference-card-tile{
+    flex:0 0 calc((100% - 9px)/2)!important;
+    width:calc((100% - 9px)/2)!important;
+    max-width:calc((100% - 9px)/2)!important;
+    height:auto!important;aspect-ratio:5/7!important;
+  }
+}
+
+/* QA 2: Style 1 uses a two-column Mana Cost filter but should have the slim
+   unboxed treatment of Style 2, not a tall dark tile. */
+.gl-filter-grid-style1 .mana-filter-field{
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  align-self:end!important;
+}
+.gl-filter-grid-style1 .mana-filter-field .field-label-row{margin-bottom:0!important}
+.gl-filter-grid-style1 .mana-filter-field .dual-range{height:20px!important}
+.gl-filter-grid-style1 .mana-filter-field .dual-range input{height:20px!important}
+.gl-filter-grid-style1 .mana-filter-field .range-track{top:8px!important}
+.gl-filter-grid-style1 .mana-filter-field .range-labels{line-height:1.1!important}
+
+/* v1.49.2 Bug 1: precisely 38px per side of each divider, not a 38px
+   total. Grid widths are measured in JS from the longest rendered text. */
+@media (min-width:761px){
+  #cardReviewDialog .review-effect-class{padding:0 38px 0 0!important}
+  #cardReviewDialog .review-effect-rank{padding:0 38px!important}
+  #cardReviewDialog .review-effect-metric{padding:0 0 0 38px!important}
+}
+
+/* QA 4: only the CONDITION banner was outlined, unlike surrounding blocks. */
+#cardReviewDialog .review-rows>.review-condition-panel,
+#cardReviewDialog .review-condition-section{
+  border:0!important;
+}
+
+/* v1.49.2 Bug 2: restore the proven v1.48.0 Style 1 Hero-package
+   horizontal 3-artworks + side-panel layout. The container-query stack
+   introduced in v1.49.1 is deliberately removed. Retain all Noto Sans
+   typography, font loading, and the original viewport mobile breakpoint.
+   Content spacing (not font scaling or new layout columns) gives the
+   Lineages-to-SELECT HERO button a stable minimum 16px breathing room. */
+#heroLibrary .hero-package-info dl{margin-bottom:16px!important}
+
+/* Style 2's Hero-picker tiles already use their own component: avoid
+   crowding cards and text when the picker viewport becomes narrow. */
+@media (min-width:761px) and (max-width:1020px){
+  #heroPickerDialog .hero-picker-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;overflow-y:auto!important;max-height:calc(100dvh - 120px)!important}
+  #heroPickerDialog .hero-choice{grid-template-columns:175px minmax(0,1fr)!important}
+}
+@media (max-width:760px){
+  #heroPickerDialog .hero-picker-grid{grid-template-columns:1fr!important;grid-template-rows:none!important;overflow-y:auto!important}
+  #heroPickerDialog .hero-choice{min-width:0!important}
+}
+
+/* v1.49.2 Bug 3: Style 1 second row aligned to the Style 2 pattern.
+   Top-align the labels; put the Effect dropdown center at the same vertical
+   coordinate as the Mana Cost slider track and the Reset button center.
+   Preserve the already agreed two-column Mana Cost width. */
+@media (min-width:761px){
+  .gl-filter-grid-style1{align-items:start!important}
+  .gl-filter-grid-style1>.filter-field{align-self:start!important}
+  .gl-filter-grid-style1>.mana-filter-field{
+    display:grid!important;
+    grid-template-rows:17px 29px 11px!important;
+    gap:6px!important;
+  }
+  .gl-filter-grid-style1>.mana-filter-field .field-label-row{height:17px!important}
+  .gl-filter-grid-style1>.mana-filter-field .dual-range{height:29px!important}
+  .gl-filter-grid-style1>.mana-filter-field .dual-range input{height:26px!important}
+  .gl-filter-grid-style1>.mana-filter-field .range-track{top:11px!important}
+  .gl-filter-grid-style1>.reset-filter{align-self:start!important;margin-top:21px!important}
+}

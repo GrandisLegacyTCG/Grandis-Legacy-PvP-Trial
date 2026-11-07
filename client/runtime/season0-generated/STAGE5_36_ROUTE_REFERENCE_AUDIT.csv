@@ -1,0 +1,37 @@
+s0_card_id,s0_card_name,source_effect_route,actual_app_source_references,qualification
+S0-ARC-010,Arrow Barrage,MANA_POOL_EXHAUST_DAMAGE_MULTIPLIER,6,Reference exists; NOT proof of complete end-to-end resolution
+S0-ARC-013,Triple Shot,TEMPORARY_ATTACK_AOE_CONVERSION,23,Reference exists; NOT proof of complete end-to-end resolution
+S0-ARC-018,Soul Charged Shot,RANGE_DAMAGE_DUPLICATION,9,Reference exists; NOT proof of complete end-to-end resolution
+S0-ARC-021,Aura Infusion Bolt,DRAW_TRIGGERED_CAST_COUNTER_RELEASE,29,Reference exists; NOT proof of complete end-to-end resolution
+S0-ARC-025,Colossal Dreadbolt,CARDS_DRAWN_THIS_TURN_DAMAGE_SCALING,6,Reference exists; NOT proof of complete end-to-end resolution
+S0-ARC-028,Midnight Lullaby,ZOL_LUN_RETURN_SLEEP_AREA_DRAW,2,Reference exists; NOT proof of complete end-to-end resolution
+S0-ARC-029,Swift Movement,LUN_RETURN_DODGE_DRAW,2,Reference exists; NOT proof of complete end-to-end resolution
+S0-ARC-030,Crimson Crescendo,ZOL_RETURN_DAMAGE_MULTIPLIER,2,Reference exists; NOT proof of complete end-to-end resolution
+S0-ARC-031,Resonance Burst,ZOL_VAE_RETURN_AREA_ATTACK,1,Reference exists; NOT proof of complete end-to-end resolution
+S0-CLE-025,Blessing of Divinity,RANK_CONDITIONAL_MANA_SURCHARGE_INVINCIBILITY,22,Reference exists; NOT proof of complete end-to-end resolution
+S0-CLE-028,Blessing of Accuracy,VAE_RETURN_SURE_HIT_BUFF_AND_DRAW,6,Reference exists; NOT proof of complete end-to-end resolution
+S0-CLE-029,Tune Up,BARD_TUNE_SEARCH_ANY_COMBINATION,1,Reference exists; NOT proof of complete end-to-end resolution
+S0-CLE-031,Grand Finale,ZOL_LUN_VAE_RETURN_INVINCIBLE_DRAW_ATTACK,5,Reference exists; NOT proof of complete end-to-end resolution
+S0-EVT-004,Relentless Leveling,IMMEDIATE_EXP_TRIBUTE_AND_RANK_UP,9,Reference exists; NOT proof of complete end-to-end resolution
+S0-EVT-005,Last Resort,ONLY_ONE_ACTIVE_HERO_DOUBLE_DAMAGE_DURATION,12,Reference exists; NOT proof of complete end-to-end resolution
+S0-EVT-008,Forged Alliance,RACIAL_TOKEN_CAP,4,Reference exists; NOT proof of complete end-to-end resolution
+S0-EVT-012,Defensive Formation,REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY,5,Reference exists; NOT proof of complete end-to-end resolution
+S0-ITM-002,Greater Health Potion,HEAL_EXHAUSTION_ON_USE,4,Reference exists; NOT proof of complete end-to-end resolution
+S0-ITM-009,Crystal Ball,TOP_DECK_PEEK_REORDER,4,Reference exists; NOT proof of complete end-to-end resolution
+S0-ITM-011,Poison Vial,ATTACHED_ON_ATTACK_POISON,42,Reference exists; NOT proof of complete end-to-end resolution
+S0-ITM-013,Ring of Grace,ATTACHED_RECEIVED_HEAL_BUFF,19,Reference exists; NOT proof of complete end-to-end resolution
+S0-ITM-015,Invisibility Cloak,ATTACHED_TARGET_LOCK_DURATION,15,Reference exists; NOT proof of complete end-to-end resolution
+S0-ITM-018,Magic Compass,DECK_SEARCH_SKILL_TO_HAND,3,Reference exists; NOT proof of complete end-to-end resolution
+S0-ITM-019,Warp Scroll,TWO_ALLIED_HERO_POSITION_SWAP,7,Reference exists; NOT proof of complete end-to-end resolution
+S0-MAG-008,Tornado,CASTING_DAMAGE_DODGED_SPILLOVER,19,Reference exists; NOT proof of complete end-to-end resolution
+S0-MAG-018,Double Casting,DOUBLE_CASTING_WITH_RANK_DEPENDENT_SURCHARGE,27,Reference exists; NOT proof of complete end-to-end resolution
+S0-MAG-021,Mana Absorption,ON_HIT_MANA_STEAL,9,Reference exists; NOT proof of complete end-to-end resolution
+S0-MAG-022,Aether Infusion,TEMPORARY_ATTACK_TYPE_CONVERSION_ON_HIT_MANA_BURN,13,Reference exists; NOT proof of complete end-to-end resolution
+S0-MAG-025,Mana Void,MANA_REGEN_SCALED_DAMAGE_AND_MANA_COST,5,Reference exists; NOT proof of complete end-to-end resolution
+S0-MAG-027,Runeforged Burst,INTERRUPTIBLE_CASTING_VARIABLE_DAMAGE,2,Reference exists; NOT proof of complete end-to-end resolution
+S0-MAG-028,Provoke,END_TURN_NO_ATTACK_MANA_BURN_CONDITION,3,Reference exists; NOT proof of complete end-to-end resolution
+S0-THF-018,Venom Detonation,POISON_DURATION_CONSUMPTION_AREA_DAMAGE,4,Reference exists; NOT proof of complete end-to-end resolution
+S0-THF-019,Lethal Venom,POISON_THRESHOLD_INSTANT_DEFEAT,2,Reference exists; NOT proof of complete end-to-end resolution
+S0-THF-023,Shadow Switch,DODGE_THEN_CONDITIONAL_POSITION_SWAP,11,Reference exists; NOT proof of complete end-to-end resolution
+S0-WAR-004,Cover Up,SINGLE_TARGET_REACTION_REDIRECT,19,Reference exists; NOT proof of complete end-to-end resolution
+S0-WAR-018,Execute,HP_THRESHOLD_DEFEAT,8,Reference exists; NOT proof of complete end-to-end resolution

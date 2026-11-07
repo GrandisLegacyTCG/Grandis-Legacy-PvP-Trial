@@ -1,0 +1,581 @@
+{
+  "results": [
+    {
+      "test": "S0 printed MANA COST + matrix",
+      "pass": true,
+      "actual": [
+        {
+          "id": "S0-MAG-030",
+          "hero": "Arcane Warrior",
+          "expected": 5,
+          "actual": 5
+        },
+        {
+          "id": "S0-MAG-030",
+          "hero": "Arcane Vanguard",
+          "expected": 4,
+          "actual": 4
+        },
+        {
+          "id": "S0-MAG-018",
+          "hero": "Elementalist",
+          "expected": 3,
+          "actual": 3
+        },
+        {
+          "id": "S0-MAG-018",
+          "hero": "Elemental Lord",
+          "expected": 1,
+          "actual": 1
+        },
+        {
+          "id": "S0-WAR-018",
+          "hero": "Gladiator",
+          "expected": 7,
+          "actual": 7
+        },
+        {
+          "id": "S0-WAR-018",
+          "hero": "Conqueror",
+          "expected": 5,
+          "actual": 5
+        },
+        {
+          "id": "S0-CLE-025",
+          "hero": "Paladin",
+          "expected": 6,
+          "actual": 6
+        },
+        {
+          "id": "S0-CLE-025",
+          "hero": "Crusader",
+          "expected": 4,
+          "actual": 4
+        }
+      ]
+    },
+    {
+      "test": "Blessing Response cost valid both ranks",
+      "pass": true,
+      "rows": [
+        {
+          "hero": "Paladin",
+          "cost": 6
+        },
+        {
+          "hero": "Crusader",
+          "cost": 4
+        }
+      ]
+    },
+    {
+      "test": "Arbalest true draw counter beyond six",
+      "pass": true,
+      "drawn": 7,
+      "grand7": 150,
+      "grand8": 150,
+      "arbalest14": 140,
+      "arbalest15": 140
+    },
+    {
+      "test": "Divine Edge Grand Ranger returns 2 actual random Hand cards",
+      "pass": true,
+      "hand": [
+        "S0-CLE-001",
+        "S0-WAR-001"
+      ],
+      "deckCount": 3
+    },
+    {
+      "test": "Divine Edge Rank II does not return opponent Hand",
+      "pass": true,
+      "hand": 2,
+      "deck": 1
+    },
+    {
+      "test": "Flame Dragon Wrath 3 target Response and correct passive Burn",
+      "pass": true,
+      "rows": [
+        {
+          "hero": "Elementalist",
+          "windows": 3,
+          "hp": [
+            220,
+            220,
+            220
+          ],
+          "burn": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "hero": "Elemental Lord",
+          "windows": 3,
+          "hp": [
+            200,
+            200,
+            200
+          ],
+          "burn": [
+            3,
+            3,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "test": "Venom Detonation poisoned-only multi target and remove Poison",
+      "pass": true,
+      "rows": [
+        {
+          "hero": "Rogue",
+          "windows": 2,
+          "hp": [
+            230,
+            250,
+            240
+          ],
+          "poison": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "hero": "Renegade",
+          "windows": 2,
+          "hp": [
+            210,
+            250,
+            230
+          ],
+          "poison": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "test": "Poison Vial AI plans same Hero Physical Attack and follows it",
+      "pass": true,
+      "setup": "S0-ITM-011",
+      "planned": {
+        "kind": "ATTACK_FOLLOWUP",
+        "followup_phase": "Battle",
+        "preferred_card_id": "S0-THF-001",
+        "preferred_source_lane": "LEFT",
+        "preferred_target_lane": "LEFT",
+        "preferred_attack_source_lane": "LEFT",
+        "preferred_attack_card_id": "S0-THF-001",
+        "setup_card_id": "S0-ITM-011",
+        "setup_target_lane": "LEFT",
+        "remaining_mana": 10
+      },
+      "inflight": "S0-THF-001",
+      "hitTarget": "LEFT",
+      "poisonNow": 2,
+      "log": [
+        "PLAYER Draw Phase cleanup clears Exhaust after Draw Phase.",
+        "AI ends turn. PLAYER begins Draw Phase for Round 3.",
+        "AI Reposition [RETURN_DEFENDER_CENTER_3V3]: CENTER \u2194 RIGHT. Both moved Heroes Exhaust.",
+        "AI moves to Reform Phase and checks legal Legacy/Tribute actions.",
+        "AI Battle-only Attachment modifiers are checked for expiry.",
+        "AI resumes after the PLAYER response in Battle Phase.",
+        "Status result: Poison 2 from Poison Vial on Garrick Beastfang.",
+        "Dash Stab Primary Attack Damage resolves for 20 Physical damage to Garrick Beastfang."
+      ]
+    },
+    {
+      "test": "Poison Vial AI does not play without Physical Attack followup",
+      "pass": true,
+      "action": {
+        "type": "SKIP",
+        "side": "AI",
+        "label": "Skip Deploy",
+        "reason": "Only choice-heavy or non-executable actions available to AI automation."
+      }
+    },
+    {
+      "test": "Freeze Bomb AI commits only with same turn attack followup",
+      "pass": true,
+      "action": {
+        "type": "PLAY_CARD",
+        "side": "AI",
+        "card_id": "S0-ITM-020",
+        "hand_index": 0,
+        "source_side": null,
+        "source_lane": null,
+        "target_side": "PLAYER",
+        "target_lane": "LEFT",
+        "cost": 0,
+        "ai_setup_plan": {
+          "kind": "ATTACK_FOLLOWUP",
+          "followup_phase": "Battle",
+          "not_before_round": 2,
+          "preferred_card_id": "S0-MAG-001",
+          "preferred_source_lane": "LEFT",
+          "preferred_target_lane": "LEFT",
+          "setup_card_id": "S0-ITM-020",
+          "setup_target_lane": "LEFT",
+          "freeze_bomb": true,
+          "remaining_mana": 10
+        },
+        "commit_token": "card:AI:S0-ITM-020:1793890070630:0.999490807573365",
+        "selected_mana_class_uids": [],
+        "_mana_choice_complete": true,
+        "_mana_payment_committed": true,
+        "_mana_payment_committed_cost": 0,
+        "_mana_payment_committed_value": 0,
+        "_mana_payment_committed_shard_uids": []
+      },
+      "planned": {
+        "kind": "ATTACK_FOLLOWUP",
+        "followup_phase": "Battle",
+        "not_before_round": 2,
+        "preferred_card_id": "S0-MAG-001",
+        "preferred_source_lane": "LEFT",
+        "preferred_target_lane": "LEFT",
+        "setup_card_id": "S0-ITM-020",
+        "setup_target_lane": "LEFT",
+        "freeze_bomb": true,
+        "remaining_mana": 10
+      },
+      "inflight": "S0-MAG-001",
+      "target": "LEFT",
+      "frozen": true,
+      "dodges": 0,
+      "log": [
+        "PLAYER Draw Phase cleanup clears Exhaust after Draw Phase.",
+        "AI ends turn. PLAYER begins Draw Phase for Round 3.",
+        "AI Reposition [RETURN_DEFENDER_CENTER_3V3]: CENTER \u2194 RIGHT. Both moved Heroes Exhaust.",
+        "AI moves to Reform Phase and checks legal Legacy/Tribute actions.",
+        "AI Battle-only Attachment modifiers are checked for expiry.",
+        "AI resumes after the PLAYER response in Battle Phase.",
+        "Arcane Bolt Primary Attack Damage resolves for 20 Magical damage to Garrick Beastfang.",
+        "PLAYER chose Take Hit / No Response. Attack/resolution continues."
+      ]
+    },
+    {
+      "test": "Freeze Bomb AI saves item without attack",
+      "pass": true,
+      "action": {
+        "type": "SKIP",
+        "side": "AI",
+        "label": "Skip Deploy",
+        "reason": "Only choice-heavy or non-executable actions available to AI automation."
+      }
+    },
+    {
+      "test": "Warp Scroll chooses safety-improving swap, no Exhaust",
+      "pass": true,
+      "pair": [
+        "LEFT",
+        "CENTER"
+      ],
+      "committed": true,
+      "centerAfter": "S0-MAG-H001",
+      "debug": {
+        "pending": null,
+        "response": null,
+        "hand": [],
+        "discard": [
+          "S0-ITM-019"
+        ],
+        "log": [
+          "PLAYER Draw Phase cleanup clears Exhaust after Draw Phase.",
+          "AI ends turn. PLAYER begins Draw Phase for Round 3.",
+          "AI legally skips Reform Phase. Reason: No legal non-skip action is available.",
+          "AI moves to Reform Phase and checks legal Legacy/Tribute actions.",
+          "AI Battle-only Attachment modifiers are checked for expiry.",
+          "AI legally skips Battle Phase. Reason: No legal non-skip action is available.",
+          "AI checks legal Battle actions.",
+          "AI resumes after the PLAYER response in Deploy Phase.",
+          "Warp Scroll swaps Vaelis Stormweave LEFT \u2194 Draxen Blacksand CENTER. No Exhaust or manual Reposition use is added.",
+          "AI plays Warp Scroll.",
+          "PLAYER chose No Response. Warp Scroll continues to resolve.",
+          "AI pauses for PLAYER Response Window. Resolve response to continue AI turn.",
+          "PLAYER may respond to Warp Scroll before it resolves.",
+          "AI commits 0 Mana for Warp Scroll before reactive Response priority.",
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "test": "Warp Scroll AI does not waste for equal risk",
+      "pass": true,
+      "action": {
+        "type": "SKIP",
+        "side": "AI",
+        "label": "Skip Deploy",
+        "reason": "No legal non-skip action is available."
+      }
+    },
+    {
+      "test": "Venom Detonation allows legal DODGE Response (not SURE HIT)",
+      "pass": true,
+      "offered": true,
+      "cannot_dodge": false,
+      "option_ids": [
+        "S0-MAG-005"
+      ]
+    },
+    {
+      "test": "Baseline lineage + target + tribute focused hooks",
+      "pass": true,
+      "results": {
+        "GL_S0_TARGET_SELECTION_QA_SELF_TEST": {
+          "ok": true,
+          "passed": 13,
+          "total": 13,
+          "results": [
+            {
+              "name": "Relentless: choose source Hero -> hand EXP -> resolves",
+              "ok": true,
+              "info": {
+                "exp": 100
+              }
+            },
+            {
+              "name": "Relentless: immediately rank up Hero at EXP 300",
+              "ok": true,
+              "info": {
+                "rank": 2
+              }
+            },
+            {
+              "name": "Normal Event: refuse to play when no legal source",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "Scouting: two Hero selections plus EXP target",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "Dazed: Event source + opponent target -> Stun",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "Health Potion: choose allied Hero -> +30",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "Greater Health Potion: target already exhausted -> +50",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "Elixir: choose allied status target -> cleanses",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "Phoenix Feather: choose defeated Hero -> revive at 10 HP",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "Freeze Bomb: choose opponent Hero -> Freeze",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "No heal without damaged Hero; no Freeze target without opponent",
+              "ok": true,
+              "info": null
+            },
+            {
+              "name": "AI Item Heal: never missing target; no Hero source for Item",
+              "ok": true,
+              "info": {
+                "actions": 1
+              }
+            },
+            {
+              "name": "AI Event action needs a source Hero and opponent target",
+              "ok": true,
+              "info": {
+                "actions": 9
+              }
+            }
+          ]
+        },
+        "GL_S0_RC6_LINEAGE_EFFECT_REGRESSION_QA_SELF_TEST": {
+          "ok": true,
+          "skill_hero_lineage_cases": 6975,
+          "off_lineage_response_blocked": true,
+          "rank_lineage_fallback": true,
+          "market_bargain_draw_2": true
+        },
+        "GL_S0_ULTIMATE_TRIBUTE_QA_SELF_TEST": {
+          "ok": true,
+          "ultimateCards": 15,
+          "successfulCases": 30,
+          "results": [
+            {
+              "card": "S0-ARC-018",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-ARC-018",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-ARC-019",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-ARC-019",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-ARC-025",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-ARC-025",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-CLE-018",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-CLE-018",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-CLE-019",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-CLE-019",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-CLE-025",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-CLE-025",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-CLE-031",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-CLE-031",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-MAG-018",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-MAG-018",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-MAG-019",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-MAG-019",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-MAG-025",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-MAG-025",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-MAG-031",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-MAG-031",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-THF-018",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-THF-018",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-THF-019",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-THF-019",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-WAR-018",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-WAR-018",
+              "side": "AI",
+              "exp": 200
+            },
+            {
+              "card": "S0-WAR-019",
+              "side": "PLAYER",
+              "exp": 200
+            },
+            {
+              "card": "S0-WAR-019",
+              "side": "AI",
+              "exp": 200
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "page_errors": [],
+  "missing": []
+}

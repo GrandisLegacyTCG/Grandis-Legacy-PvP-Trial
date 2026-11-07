@@ -1,0 +1,42 @@
+{
+  "release": "VS AI Season 0 v1.0 RC32 (same-version QA fix)",
+  "date": "2026-11-07",
+  "diagnosis": "Previous Escape Arrow engine test failed due to illegal empty physical Mana Pool in synthetic fixture; AI attack could not commit and Response Window was never opened.",
+  "changes": "Embedded regression test fixture only; gameplay, OSA, AI decision rules and UI unchanged.",
+  "tests": {
+    "unified_discard": {
+      "pass": 27,
+      "fail": 0
+    },
+    "exp_geometry": {
+      "pass": 5,
+      "fail": 0
+    },
+    "counter_regen": {
+      "pass": 15,
+      "fail": 0
+    },
+    "review": {
+      "pass": 8,
+      "fail": 0
+    },
+    "primal_vfx_sfx_routing": {
+      "status": "PASS",
+      "count": 1
+    },
+    "engine_embedded_escape_arrow": {
+      "status": "PASS",
+      "included_in_unified_discard": true
+    },
+    "syntax": {
+      "status": "PASS"
+    }
+  },
+  "not_verified": [
+    "full natural Human-vs-AI match",
+    "native Firefox",
+    "audible physical SFX",
+    "hosted browser path"
+  ],
+  "status": "RC \u2014 NOT FINAL"
+}

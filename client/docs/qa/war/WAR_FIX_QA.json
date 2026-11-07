@@ -1,0 +1,242 @@
+{
+  "results": {
+    "pass": 36,
+    "total": 36,
+    "failed": [],
+    "checks": [
+      {
+        "id": "taunt_forces_reachable_center",
+        "pass": true,
+        "actual": [
+          "RIGHT"
+        ],
+        "expected": [
+          "RIGHT"
+        ]
+      },
+      {
+        "id": "taunt_no_target_outside_left_aoa",
+        "pass": true,
+        "actual": [],
+        "expected": []
+      },
+      {
+        "id": "taunt_melee_right_unreachable",
+        "pass": true,
+        "actual": [],
+        "expected": []
+      },
+      {
+        "id": "taunt_range_can_reach_right",
+        "pass": true,
+        "actual": [
+          "RIGHT"
+        ],
+        "expected": [
+          "RIGHT"
+        ]
+      },
+      {
+        "id": "taunt_area_card_not_playable",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "taunt_ai_has_no_area_action",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "taunt_unreachable_preplay",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "taunt_unreachable_no_ai_action",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "taunt_after_expiry_area_restored",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "id": "deflect_R1_phys",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "deflect_R2_phys",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "id": "deflect_R2_magic",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "id": "deflect_R3_magic",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "id": "deflect_R2_block_to_zero",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "id": "runic_R1",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "runic_R2_phys",
+        "pass": true,
+        "actual": 30,
+        "expected": 30
+      },
+      {
+        "id": "runic_R2_magic",
+        "pass": true,
+        "actual": 30,
+        "expected": 30
+      },
+      {
+        "id": "runic_R3_phys",
+        "pass": true,
+        "actual": 30,
+        "expected": 30
+      },
+      {
+        "id": "runic_R3_magic",
+        "pass": true,
+        "actual": 30,
+        "expected": 30
+      },
+      {
+        "id": "deflect_R2_negated_no_reflect",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "runic_R3_negated_no_reflect",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "enrage_physical_bonus",
+        "pass": true,
+        "actual": 50,
+        "expected": 50
+      },
+      {
+        "id": "enrage_magical_no_bonus",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "id": "enrage_inflicts_bleed_one",
+        "pass": true,
+        "actual": [
+          1
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "id": "enrage_no_bleed_when_dodged",
+        "pass": true,
+        "actual": [],
+        "expected": []
+      },
+      {
+        "id": "enrage_bleed_when_hit_zero_damage",
+        "pass": true,
+        "actual": [
+          1
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "id": "enrage_no_bleed_magical",
+        "pass": true,
+        "actual": [],
+        "expected": []
+      },
+      {
+        "id": "execute_R2_cost",
+        "pass": true,
+        "actual": 7,
+        "expected": 7
+      },
+      {
+        "id": "execute_R2_paid",
+        "pass": true,
+        "actual": 7,
+        "expected": 7
+      },
+      {
+        "id": "execute_R2_dodge_available",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "id": "execute_R2_cannot_block",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "id": "execute_R2_dodge_prevents_defeat",
+        "pass": true,
+        "actual": 40,
+        "expected": 40
+      },
+      {
+        "id": "execute_R3_cost",
+        "pass": true,
+        "actual": 5,
+        "expected": 5
+      },
+      {
+        "id": "execute_R3_paid",
+        "pass": true,
+        "actual": 5,
+        "expected": 5
+      },
+      {
+        "id": "execute_R3_dodge_available",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "id": "execute_R3_cannot_block",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      }
+    ]
+  },
+  "page_errors": []
+}

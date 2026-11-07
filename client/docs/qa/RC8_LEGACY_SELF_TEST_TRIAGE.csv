@@ -1,0 +1,205 @@
+﻿Original v6.91.9 / RC7 test,VM Result,Preliminary category,Observed failure or note,Interpretation
+GL_AI_RANKUP_RELOAD_FIX_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Begin Anew EVENT tile missing,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_CONDITIONAL_FOLLOW_UP_V611_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,Canonical follow-up contracts missing,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_HERO_RACIAL_EFFECT_FIX_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_LEGACY_RACIAL_TAUNT_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Latest Legacy resolver data mismatch,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_LOCAL_AI_V523_CASTING_CARD_PLAYED_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at commitPlayedCard (engine/shared-app/app.bundle.js:6718:196)
+    at simulateV523CastingCardPlayedAudit (engine/shared-app/app.bundle.js:13245:11)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_LOCAL_AI_V534_TACTICAL_AI_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Arcane Scroll did not bind a Magical Attack by its host,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_LOCAL_AI_V634_ACTIVE_STRATEGY_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Mana Surge spent on unnecessary overkill,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_OPPONENT_ARCHIVE_STATUS_TARGET_FIX_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Potion Exhausted rendered as redundant visible state badge before cleanup,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_OPPONENT_PLAYED_RESPONSE_FIX_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Begin Anew separate EVENT missing,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_PHASE10_LEGACY_TARGET_PURIFY_RESULT_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Purify not legal with Bleed target,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_PHASE11_BURN_OPPONENT_PLAYED_ARROW_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at beginPlayFromHand (engine/shared-app/app.bundle.js:3406:18)
+    at simulatePhase11BurnOpponentPlayedArrowPatch (engine/shared-app/app.bundle.js:10395:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE12_CASTING_DEFEAT_CANCEL_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_PHASE13_AREA_REPOSITION_RESULT_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at beginPlayFromHand (engine/shared-app/app.bundle.js:3406:18)
+    at simulatePhase13AreaRepositionResultPatch (engine/shared-app/app.bundle.js:10440:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:12",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE14_REPOSITION_RESULT_WORDING_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at beginPlayFromHand (engine/shared-app/app.bundle.js:3406:18)
+    at simulatePhase13AreaRepositionResultPatch (engine/shared-app/app.bundle.js:10440:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:12",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE15_ATTACHMENT_DRAW_EXHAUST_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at beginPlayFromHand (engine/shared-app/app.bundle.js:3406:18)
+    at simulatePhase15AttachmentDrawExhaustPatch (engine/shared-app/app.bundle.js:10490:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE16_ELIXIR_LEGACY_IDENTITY_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Legacy overlay info missing from panel,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_PHASE17_HERO_SLOT_IDENTITY_LOCK_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Legacy panel missing strict identity info,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_PHASE18_RESPONSE_CONFIRM_EXP_CAP_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at commitPlayedCard (engine/shared-app/app.bundle.js:6718:196)
+    at simulatePhase18ResponseConfirmExpCapPatch (engine/shared-app/app.bundle.js:10545:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE19_VALIDATOR_OPPLAYED_SOULBLAST_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at commitPlayedCard (engine/shared-app/app.bundle.js:6718:196)
+    at simulatePhase19ValidatorOppPlayedSoulBlastPatch (engine/shared-app/app.bundle.js:10565:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/lo",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE20_POISON_VIAL_MULTIHIT_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_PHASE2_RESPONSE_PACKAGE_PATCH_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at commitPlayedCard (engine/shared-app/app.bundle.js:6718:196)
+    at simulatePhase2ResponsePackagePatch (engine/shared-app/app.bundle.js:10052:40)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE3_ARCHER_COMPLEX_PATCH_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,Cannot set properties of null (setting 'textContent'),Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE5_LEGACY_ABILITIES_PATCH_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Warrior legacy ability unavailable,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_PHASE8_TEXT_EFFECT_BUGFIX_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at beginPlayFromHand (engine/shared-app/app.bundle.js:3406:18)
+    at simulatePhase8TextEffectBugfixPatch (engine/shared-app/app.bundle.js:10251:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_PHASE9_AI_STATUS_RESULT_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,AI cannot find valid Poison Vial into same-lane attack when available,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_RUNTIME_FLOW_SYNC_MINOR_BUG_CLEANUP_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Opening hand/deck count failed,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_RUNTIME_FLOW_SYNC_TIMING_UX_AI_CLEANUP_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,opening hand/deck count mismatch,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_RUNTIME_MISMATCH_FIX_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,Cannot set properties of null (setting 'textContent'),Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_S0_RC6_LINEAGE_EFFECT_REGRESSION_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_S0_TARGET_SELECTION_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_STEP11_PLAYABLE_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Step 10 prerequisite failed,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V1410_EXP_CLEAR_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_V365_REGRESSION_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Attachment counter did not restore from pending casting authority,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V365_RUNTIME_SYNC_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,Source stack metadata mismatch,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V366_RUNTIME_UPDATE_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,Active source stack mismatch,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V367_RUNTIME_UPDATE_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Mana Absorption block-to-zero connected hit failed,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V368_LEGACY_STEPIN_HISTORY_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,0 HP HERO still renders Ready instead of Defeated,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V369_SWAP_REPOSITION_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Step In missing from legal Dodge response options,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V370_CHARGE_ATTACK_CHOICE_ZONE_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at beginPlayFromHand (engine/shared-app/app.bundle.js:3406:18)
+    at simulateV370ChargeAttackChoiceZoneAudit (engine/shared-app/app.bundle.js:12159:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:128",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_V370_SOURCE_PARITY_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,v3.70 source stack mismatch,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V380_CARD_CUSTODY_STARTER_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,Starter deck is not 60 cards,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V381_POPUP_ATTACHMENT_POLICY_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_V384_RUNTIME_RULE_WAVE_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at beginPlayFromHand (engine/shared-app/app.bundle.js:3406:18)
+    at simulateV384RuntimeRuleWaveAudit (engine/shared-app/app.bundle.js:12271:263)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_V388_COMBAT_RESPONSE_LINEAGE_LOG_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Rage Swing 50 minus Parry 30 did not deal 20,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V388_MIXED_RECORD_RUNTIME_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,source stack mismatch,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V388_SEMANTIC_TRIGGER_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot read properties of undefined (reading 'trigger_mode')
+    at simulateV388SemanticTriggerAudit (engine/shared-app/app.bundle.js:12431:46)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/load",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_V393_ATTACHMENT_SCOUTING_LEGACY_IDEMPOTENCY_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Persistent attachment data does not require slot,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V394_EVENT_ATTACHMENT_INSTANCE_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,source stack mismatch,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V400_ATTACHMENT_AUTHORITY_HOTFIX_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Shield Bash incorrectly reduced Magical damage or Dragon Scale math changed,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V400_RUNTIME_AUTHORITY_INTEGRATION_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at commitPlayedCard (engine/shared-app/app.bundle.js:6718:196)
+    at simulateV400RuntimeAuthorityIntegrationAudit (engine/shared-app/app.bundle.js:12553:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loade",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_V400_SWAP_REPOSITION_HOTFIX_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_V510_DOUBLE_CASTING_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at commitPlayedCard (engine/shared-app/app.bundle.js:6718:196)
+    at simulateV510DoubleCastingRegression (engine/shared-app/app.bundle.js:12934:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_V511_ESCAPE_ARROW_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at commitPlayedCard (engine/shared-app/app.bundle.js:6718:196)
+    at simulateV511EscapeArrowNoStuckAudit (engine/shared-app/app.bundle.js:13011:7)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_V512_RUNTIME_REGRESSION_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,Lightning Strike retained stale Casting metadata,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V513_ATTACHMENT_INTEGRATION_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_V536_FALLBACK_SNAPSHOT_DRAW_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Fallback audit did not discover printed-row fallback pairs,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V539_RESPONSE_DIAGNOSTICS_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Back Step fallback missing from legal response options,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V546_FIX_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V570_PENDING_FIX_QA_SELF_TEST,FAIL in old fixture,VM DOM fixture missing,"TypeError: Cannot set properties of null (setting 'textContent')
+    at showInfo (engine/shared-app/app.bundle.js:8824:108)
+    at commitPlayedCard (engine/shared-app/app.bundle.js:6718:196)
+    at simulateV570PendingFixAudit (engine/shared-app/app.bundle.js:12877:11)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    a",Node VM has no full DOM; cannot conclude gameplay failure; needs browser retest.
+GL_V613_POISON_GAMEOVER_QA_SELF_TEST,PASS,PASS in Node VM,,Observed PASS with current RC8 app bundle when re-run.
+GL_V615_CANONICAL_DEFENSE_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,Canonical Defense authority mismatch,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V617_COVER_UP_REDIRECT_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Exhausted adjacent Crusader did not receive Cover Up response option,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V642_FINAL_STABILITY_HERO_COMPONENT_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,Generated Hero Component cache counts invalid,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V642_RELEASE_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,Canonical card registry is not 200 unique cards,"Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V647_CORRECTION_QA_SELF_TEST,FAIL in old fixture,Older S1 fixture/source expectation,"Error: Custom 55 opening/runtime initialization mismatch {""playerHand"":7,""aiHand"":6,""playerDeck"":43,""aiDeck"":44,""started"":true}
+    at engine/shared-app/app.bundle.js:13670:603
+    at Array.forEach (<anonymous>)
+    at window.GL_V647_CORRECTION_QA_SELF_TEST (engine/shared-app/app.bundle.js:13670:36)
+    at Object.<anonymous> (/mnt/data/_rc8_work/run_single_vm.cjs:2:661)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/m","Assertion targets changed S1 registry, deck sizing or canonical metadata; must port fixture to S0."
+GL_V648_AI_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,Rank II Heaven Fury did not target the stronger planned attacker,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."
+GL_V6919_MANA_COMMIT_RESPONSE_CANCEL_QA_SELF_TEST,FAIL in old fixture,Unresolved: needs S0 retest,PLAYER Intercept option missing from original Response Window,"Do not call safe, broken, or obsolete until compared against S0 data and player flow."

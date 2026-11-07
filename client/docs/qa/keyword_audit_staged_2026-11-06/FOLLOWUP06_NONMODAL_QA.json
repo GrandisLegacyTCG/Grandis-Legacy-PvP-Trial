@@ -1,0 +1,109 @@
+{
+  "stats": {
+    "checks": 14,
+    "pass": 14,
+    "fail": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "id": "S0-THF-009",
+      "case": "cannot play without Vertical + Horizontal Slash",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "id": "S0-THF-009",
+      "case": "invalid attempt does not spend Mana",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "id": "S0-THF-009",
+      "case": "with mandatory hand cards can commit",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "S0-THF-009",
+      "case": "exact Mana spent",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "id": "S0-THF-009",
+      "case": "Vertical Slash moved to Discard",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "S0-THF-009",
+      "case": "Horizontal Slash moved to Discard",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "S0-MAG-015",
+      "case": "without Freeze blocked",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "id": "S0-MAG-015",
+      "case": "invalid cost zero",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "id": "S0-MAG-015",
+      "case": "with Freeze accepted",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "S0-MAG-015",
+      "case": "exact Mana spent",
+      "expected": 6,
+      "actual": 6,
+      "pass": true
+    },
+    {
+      "id": "S0-EVT-005",
+      "case": "3 active heroes prohibited",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "id": "S0-EVT-005",
+      "case": "3 active no cost",
+      "expected": 12,
+      "actual": 12,
+      "pass": true
+    },
+    {
+      "id": "S0-EVT-005",
+      "case": "only 1 active hero accepted",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "S0-EVT-005",
+      "case": "exact Mana cost",
+      "expected": 2,
+      "actual": 2,
+      "pass": true
+    }
+  ],
+  "browser_errors": []
+}

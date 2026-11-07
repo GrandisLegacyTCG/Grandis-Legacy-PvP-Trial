@@ -1,0 +1,103 @@
+{
+  "tool": "Node VM executing real RC8 app.bundle.js under S0 static data",
+  "keyword_assertions": {
+    "ok": true,
+    "checks": 213,
+    "issues": [],
+    "keywords": [
+      "MELEE",
+      "RANGE",
+      "PIERCING",
+      "SURE HIT",
+      "BLOCK",
+      "DODGE",
+      "BUFF",
+      "CONDITION",
+      "REACTION",
+      "HEAL",
+      "REVIVE",
+      "INVINCIBLE",
+      "ALL OPPONENTS",
+      "REFLECT",
+      "MANA BURN",
+      "MANA STEAL"
+    ],
+    "tagCounts": [
+      {
+        "k": "MELEE",
+        "count": 11
+      },
+      {
+        "k": "RANGE",
+        "count": 7
+      },
+      {
+        "k": "PIERCING",
+        "count": 4
+      },
+      {
+        "k": "SURE HIT",
+        "count": 11
+      },
+      {
+        "k": "BLOCK",
+        "count": 13
+      },
+      {
+        "k": "DODGE",
+        "count": 10
+      },
+      {
+        "k": "BUFF",
+        "count": 12
+      },
+      {
+        "k": "CONDITION",
+        "count": 13
+      },
+      {
+        "k": "REACTION",
+        "count": 5
+      },
+      {
+        "k": "HEAL",
+        "count": 11
+      },
+      {
+        "k": "REVIVE",
+        "count": 3
+      },
+      {
+        "k": "INVINCIBLE",
+        "count": 5
+      },
+      {
+        "k": "ALL OPPONENTS",
+        "count": 4
+      },
+      {
+        "k": "REFLECT",
+        "count": 4
+      },
+      {
+        "k": "MANA BURN",
+        "count": 6
+      },
+      {
+        "k": "MANA STEAL",
+        "count": 2
+      }
+    ]
+  },
+  "runtime_card_counts": {
+    "Skill": 155,
+    "Hero": 45,
+    "Legacy": 10,
+    "Event": 12,
+    "Item": 20
+  },
+  "notes": [
+    "Not a full browser gameplay test",
+    "Special original S1 Double Casting Exhaust override explicitly retained"
+  ]
+}

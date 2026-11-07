@@ -1,0 +1,105 @@
+{
+  "hybrid_count": 10,
+  "source_authority": "OSA DEV45 individual Hero JSON",
+  "skill_lineage_cases": 1550,
+  "advanced_class_checks": [
+    {
+      "hero": "S0-WAR-H008",
+      "skill": "S0-CLE-009",
+      "illegal": true
+    },
+    {
+      "hero": "S0-WAR-H009",
+      "skill": "S0-CLE-009",
+      "illegal": true
+    },
+    {
+      "hero": "S0-MAG-H008",
+      "skill": "S0-WAR-007",
+      "illegal": true
+    },
+    {
+      "hero": "S0-MAG-H009",
+      "skill": "S0-WAR-007",
+      "illegal": true
+    },
+    {
+      "hero": "S0-CLE-H008",
+      "skill": "S0-ARC-010",
+      "illegal": true
+    },
+    {
+      "hero": "S0-CLE-H009",
+      "skill": "S0-ARC-010",
+      "illegal": true
+    },
+    {
+      "hero": "S0-THF-H008",
+      "skill": "S0-MAG-011",
+      "illegal": true
+    },
+    {
+      "hero": "S0-THF-H009",
+      "skill": "S0-MAG-011",
+      "illegal": true
+    },
+    {
+      "hero": "S0-ARC-H008",
+      "skill": "S0-THF-009",
+      "illegal": true
+    },
+    {
+      "hero": "S0-ARC-H009",
+      "skill": "S0-THF-009",
+      "illegal": true
+    }
+  ],
+  "lineage_errors": [],
+  "osa_hybrid_mismatches": [],
+  "choice_checks": {
+    "legacy single switch": true,
+    "legacy deselect": true,
+    "legacy multi replacement": true,
+    "legacy cost switch": true,
+    "search multi replacement": true,
+    "search single switch": true,
+    "Melody rank II Escape": true,
+    "Melody rank III Escape": true
+  },
+  "focus": {
+    "hand": {
+      "position": "absolute",
+      "z": "985",
+      "opacity": "1"
+    },
+    "hud": {
+      "position": "relative",
+      "z": "980",
+      "opacity": "1"
+    },
+    "card": {
+      "position": "relative",
+      "z": "990",
+      "opacity": "1"
+    },
+    "button": {
+      "position": "relative",
+      "z": "1051",
+      "opacity": "1"
+    },
+    "dimmer": {
+      "position": "fixed",
+      "z": "900",
+      "opacity": "1"
+    },
+    "topNode": "<button class=\"play\">PLAY</button>",
+    "buttonBox": {
+      "x": 644.3738403320312,
+      "y": 617.5845336914062,
+      "width": 47.0040283203125,
+      "height": 19.1697998046875
+    }
+  },
+  "page_errors": [],
+  "missing_assets": []
+}

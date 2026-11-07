@@ -1,0 +1,150 @@
+{
+  "applicationTestingPerformed": false,
+  "applicationsAreSeparate": [
+    "deck_builder",
+    "vs_ai",
+    "pvp"
+  ],
+  "approval": "CONTRACT_AND_DATA_ONLY_NOT_APP_PLAYABILITY",
+  "checkpoint": "DEV44",
+  "common": {
+    "must": [
+      "Use DEV44 current S0 source and file hashes, not obsolete DEV37 visual/pending-text metadata.",
+      "Honor approved gameplay database even if historical art print differs.",
+      "Resolve 248 S0-specific card recipes/effects using current S0 rules, including 426 printed branches.",
+      "Do not silently substitute old S1 recipes for modified or new S0 cards.",
+      "CONDITION offer is read-only and only when other legality permits; physical CONDITION + Mana payment occur atomically at PLAY before effect.",
+      "Respect private/face-down information in each application."
+    ],
+    "mustNot": [
+      "Require an OSA-hosted game, matching UI, animations or fixed turn pacing.",
+      "Expose optional raw historical v6.01 dispatcher as the safe CONDITION consumer API.",
+      "Interpret S1 name match as current effect equivalence.",
+      "Treat QA on OSA as application gameplay acceptance."
+    ]
+  },
+  "deck_builder": {
+    "consumes": [
+      "data",
+      "assets",
+      "rules",
+      "effects"
+    ],
+    "notRequired": [
+      "match turn controller",
+      "Response UI",
+      "AI director",
+      "PvP network"
+    ],
+    "owns": [
+      "editing UX",
+      "deck creation/import/export",
+      "card review"
+    ],
+    "ruleObligations": [
+      "Current 50 Main / 12 Mana / 12 Legacy deck construction",
+      "Current approved 5 starter presets, card IDs, rarity/copy limits",
+      "Read current visual IDs and official artwork SHA, not old DEV37 art references",
+      "Card text from current Season 0 recipes/approved data; no application match-engine requirement"
+    ]
+  },
+  "executionOwnership": "Consumer engines/UI owned by their applications; OSA optional reference is not bundled.",
+  "pvp": {
+    "consumes": [
+      "data",
+      "rules",
+      "assets",
+      "effects",
+      "conformance"
+    ],
+    "notRequired": [
+      "OSA VS AI host",
+      "Deck Builder app source",
+      "AI pacing"
+    ],
+    "owns": [
+      "independent PvP controller and network authority",
+      "seat authentication and replay protection",
+      "per-viewer privacy/projections",
+      "PvP UI, audio, animations"
+    ],
+    "ruleObligations": [
+      "Apply current S0 rules and card effects using trusted host action validation",
+      "Preserve hidden information, unauthorized action rejection and response legality",
+      "Own engine, network, UI, security and application acceptance"
+    ]
+  },
+  "schema": "GL-S0-CONSUMER-CONTRACTS-DEV44-1",
+  "season": 0,
+  "sourceAuthority": {
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json",
+      "sha256": "519023690a7420cf195e52f7db1d6985ccb5047215ade6d807dba39ab5ccc52c"
+    },
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RECIPES.dev41.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RECIPES.dev41.json",
+      "sha256": "10dd33b791d73ad37b6c1b83b335e23f2e2ca9cf24f1ac125f8bec06472f16f9"
+    },
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RULES.dev35.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RULES.dev35.json",
+      "sha256": "0bafadcf06955305beef481bae051068096944865b61f06b85febdfd3349c9ab"
+    },
+    "Authority/Game/Season0-Recipes/DEV43/DEV43_RELEASE_READINESS.json": {
+      "path": "Authority/Game/Season0-Recipes/DEV43/DEV43_RELEASE_READINESS.json",
+      "sha256": "ddf1397dade3fd4311f06d2298d980dc23b32df2d7789cea4484b19be749ab88"
+    },
+    "Authority/Game/Season0-Visual/current-season0-visual-authority.json": {
+      "path": "Authority/Game/Season0-Visual/current-season0-visual-authority.json",
+      "sha256": "5a29531ca5eb6cf6e0a1661f6a7e031db82e8c2e61a491775625260edfd9291b"
+    },
+    "Generated/Season0-Audit/season0-dev39-capability-matrix.csv": {
+      "path": "Generated/Season0-Audit/season0-dev39-capability-matrix.csv",
+      "sha256": "015c3299a371c225a71033eee7d06ceedd769a59a6f193c3cd74cee3829e9661"
+    },
+    "Generated/Season0-Consumers/season0-consumer-conformance.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-conformance.dev37.json",
+      "sha256": "3be68f6db8957b33443328ece836963b964fe46419e05dbb7b2cfba84d222d94"
+    },
+    "Generated/Season0-Consumers/season0-consumer-contracts.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-contracts.dev37.json",
+      "sha256": "55881e38e5b5f27bb9b63cafa2c894e83fff0b423b873d80e6da77df91ecf827"
+    },
+    "Generated/Season0-Consumers/season0-consumer-data.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-data.dev37.json",
+      "sha256": "9da577f70a8b94f70ceb091eadffbdcf41138537e2a94fcca3f3daf635b48996"
+    },
+    "Generated/Season0-Consumers/season0-consumer-rules.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-rules.dev37.json",
+      "sha256": "118a06289e0210280e653e224d5bba8cc7cc9a63b2c52582d010fcb13575e5cf"
+    },
+    "Generated/Season0-Current/season0-dev40-hero-legacy-printed-catalog.json": {
+      "path": "Generated/Season0-Current/season0-dev40-hero-legacy-printed-catalog.json",
+      "sha256": "bd1df44a35e25d2c1445bcda13d84f6bbfba6e8310aa3c43c0aadb5f5b1042c5"
+    }
+  },
+  "vs_ai": {
+    "consumes": [
+      "data",
+      "rules",
+      "assets",
+      "effects",
+      "conformance"
+    ],
+    "notRequired": [
+      "OSA host/session gateway",
+      "Deck Builder app source",
+      "PvP server"
+    ],
+    "owns": [
+      "independent game/application controller",
+      "local AI policy and pacing",
+      "UI, direct board/Hand selection, audio, animations, Battle Log",
+      "offline packaging"
+    ],
+    "ruleObligations": [
+      "Current S0 printed effects and rule timing including CONDITION availability/atomic execution",
+      "Use original v6.91.9 as later app UX baseline, not a fabricated OSA UI",
+      "Independent engine and its own app acceptance tests"
+    ]
+  }
+}

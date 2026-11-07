@@ -1,0 +1,535 @@
+{
+  "baseline": "RC13 staged working copy (ARC/WAR/THF/CLE already applied)",
+  "date": "2026-11-05",
+  "stage": "5/6 MAG",
+  "issues_approved": 7,
+  "issues_patched": 7,
+  "focused": {
+    "checks": [
+      {
+        "id": "meditation_PLAYER",
+        "pass": true,
+        "detail": {
+          "before": 2,
+          "after": 4,
+          "manaDeck": 8,
+          "discard": true
+        }
+      },
+      {
+        "id": "tornado_dodge_PLAYER_2",
+        "pass": true,
+        "detail": {
+          "followup": 40,
+          "hp": 160
+        }
+      },
+      {
+        "id": "tornado_dodge_PLAYER_3",
+        "pass": true,
+        "detail": {
+          "followup": 40,
+          "hp": 160
+        }
+      },
+      {
+        "id": "tornado_rank1_no_extra_PLAYER",
+        "pass": true,
+        "detail": {
+          "followup": 0
+        }
+      },
+      {
+        "id": "S0-MAG-011_PLAYER",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [
+            {
+              "name": "Freeze",
+              "duration": 2
+            }
+          ],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-011"
+          ],
+          "spent": 3,
+          "pending": null,
+          "inv": true
+        }
+      },
+      {
+        "id": "S0-MAG-012_PLAYER",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 190,
+          "statuses": [],
+          "attackerStatuses": [
+            {
+              "name": "Burn",
+              "duration": 3
+            }
+          ],
+          "attachmentIds": [],
+          "spent": 3,
+          "pending": null,
+          "inv": true
+        }
+      },
+      {
+        "id": "stance_PLAYER_2",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-030"
+          ],
+          "spent": 5,
+          "pending": null,
+          "inv": true,
+          "cost": 5
+        }
+      },
+      {
+        "id": "stance_PLAYER_3",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-030"
+          ],
+          "spent": 4,
+          "pending": null,
+          "inv": true,
+          "cost": 4
+        }
+      },
+      {
+        "id": "mana_void_PLAYER_2",
+        "pass": true,
+        "detail": {
+          "cannotDodge": false,
+          "rank": 2
+        }
+      },
+      {
+        "id": "mana_void_PLAYER_3",
+        "pass": true,
+        "detail": {
+          "cannotDodge": true,
+          "rank": 3
+        }
+      },
+      {
+        "id": "meditation_AI",
+        "pass": true,
+        "detail": {
+          "before": 2,
+          "after": 4,
+          "manaDeck": 8,
+          "discard": true
+        }
+      },
+      {
+        "id": "tornado_dodge_AI_2",
+        "pass": true,
+        "detail": {
+          "followup": 40,
+          "hp": 160
+        }
+      },
+      {
+        "id": "tornado_dodge_AI_3",
+        "pass": true,
+        "detail": {
+          "followup": 40,
+          "hp": 160
+        }
+      },
+      {
+        "id": "tornado_rank1_no_extra_AI",
+        "pass": true,
+        "detail": {
+          "followup": 0
+        }
+      },
+      {
+        "id": "S0-MAG-011_AI",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [
+            {
+              "name": "Freeze",
+              "duration": 2
+            }
+          ],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-011"
+          ],
+          "spent": 2,
+          "pending": null,
+          "inv": true
+        }
+      },
+      {
+        "id": "S0-MAG-012_AI",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 190,
+          "statuses": [],
+          "attackerStatuses": [
+            {
+              "name": "Burn",
+              "duration": 3
+            }
+          ],
+          "attachmentIds": [],
+          "spent": 2,
+          "pending": null,
+          "inv": true
+        }
+      },
+      {
+        "id": "stance_AI_2",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-030"
+          ],
+          "spent": 4,
+          "pending": null,
+          "inv": true,
+          "cost": 5
+        }
+      },
+      {
+        "id": "stance_AI_3",
+        "pass": true,
+        "detail": {
+          "offer": true,
+          "hp": 200,
+          "statuses": [],
+          "attackerStatuses": [],
+          "attachmentIds": [
+            "S0-MAG-030"
+          ],
+          "spent": 3,
+          "pending": null,
+          "inv": true,
+          "cost": 4
+        }
+      },
+      {
+        "id": "mana_void_AI_2",
+        "pass": true,
+        "detail": {
+          "cannotDodge": false,
+          "rank": 2
+        }
+      },
+      {
+        "id": "mana_void_AI_3",
+        "pass": true,
+        "detail": {
+          "cannotDodge": true,
+          "rank": 3
+        }
+      }
+    ],
+    "notes": [],
+    "total": 20,
+    "passed": 20,
+    "page_errors": []
+  },
+  "expiry": [
+    {
+      "id": "S0-MAG-011",
+      "offer": true,
+      "active": true,
+      "noPoisonDamage": true,
+      "poisonCountAfterTick": 2,
+      "expired": true,
+      "discard": 1,
+      "pass": true
+    },
+    {
+      "id": "S0-MAG-030",
+      "offer": true,
+      "active": true,
+      "noPoisonDamage": true,
+      "poisonCountAfterTick": 2,
+      "expired": true,
+      "discard": 1,
+      "pass": true
+    }
+  ],
+  "regressions": {
+    "GL_S0_RC6_LINEAGE_EFFECT_REGRESSION_QA_SELF_TEST": {
+      "ok": true,
+      "skill_hero_lineage_cases": 6975,
+      "off_lineage_response_blocked": true,
+      "rank_lineage_fallback": true,
+      "market_bargain_draw_2": true
+    },
+    "GL_S0_TARGET_SELECTION_QA_SELF_TEST": {
+      "ok": true,
+      "passed": 13,
+      "total": 13,
+      "results": [
+        {
+          "name": "Relentless: choose source Hero -> hand EXP -> resolves",
+          "ok": true,
+          "info": {
+            "exp": 100
+          }
+        },
+        {
+          "name": "Relentless: immediately rank up Hero at EXP 300",
+          "ok": true,
+          "info": {
+            "rank": 2
+          }
+        },
+        {
+          "name": "Normal Event: refuse to play when no legal source",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "Scouting: two Hero selections plus EXP target",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "Dazed: Event source + opponent target -> Stun",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "Health Potion: choose allied Hero -> +30",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "Greater Health Potion: target already exhausted -> +50",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "Elixir: choose allied status target -> cleanses",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "Phoenix Feather: choose defeated Hero -> revive at 10 HP",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "Freeze Bomb: choose opponent Hero -> Freeze",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "No heal without damaged Hero; no Freeze target without opponent",
+          "ok": true,
+          "info": null
+        },
+        {
+          "name": "AI Item Heal: never missing target; no Hero source for Item",
+          "ok": true,
+          "info": {
+            "actions": 1
+          }
+        },
+        {
+          "name": "AI Event action needs a source Hero and opponent target",
+          "ok": true,
+          "info": {
+            "actions": 9
+          }
+        }
+      ]
+    },
+    "GL_S0_ULTIMATE_TRIBUTE_QA_SELF_TEST": {
+      "ok": true,
+      "ultimateCards": 15,
+      "successfulCases": 30,
+      "results": [
+        {
+          "card": "S0-ARC-018",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-ARC-018",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-ARC-019",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-ARC-019",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-ARC-025",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-ARC-025",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-CLE-018",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-CLE-018",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-CLE-019",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-CLE-019",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-CLE-025",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-CLE-025",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-CLE-031",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-CLE-031",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-MAG-018",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-MAG-018",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-MAG-019",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-MAG-019",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-MAG-025",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-MAG-025",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-MAG-031",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-MAG-031",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-THF-018",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-THF-018",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-THF-019",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-THF-019",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-WAR-018",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-WAR-018",
+          "side": "AI",
+          "exp": 200
+        },
+        {
+          "card": "S0-WAR-019",
+          "side": "PLAYER",
+          "exp": 200
+        },
+        {
+          "card": "S0-WAR-019",
+          "side": "AI",
+          "exp": 200
+        }
+      ]
+    },
+    "page_errors": []
+  },
+  "limits": [
+    "Synthetic headless Chromium app engine injection, not normal mouse-driven Human vs AI to terminal Game Over.",
+    "Live UI and AI tactical decision-path performance unverified; Stage 6 EVT/ITM pending.",
+    "Runeforged counter 0 and Casting counter phase conflicting sources not changed."
+  ]
+}

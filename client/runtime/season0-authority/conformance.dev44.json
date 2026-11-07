@@ -1,0 +1,179 @@
+{
+  "boundedRulesCases": [
+    {
+      "authorityRefs": [
+        "S0-MAG-017",
+        "S0-CLE-026",
+        "COMBAT-004",
+        "COMBAT-010"
+      ],
+      "expected": {
+        "attackCardPart": 50,
+        "block": 20,
+        "finalDamage": 30,
+        "responseBeforeSettleHp": 90,
+        "targetHpAfter": 60,
+        "targetHpBefore": 90
+      },
+      "id": "FROSTFIRE_LUN_RANK_II",
+      "scope": "CURRENT_RULE_OR_PRINT_WITH_BOUNDED_REFERENCE_FIXTURE"
+    },
+    {
+      "authorityRefs": [
+        "MANA-002",
+        "MANA-003",
+        "MANA-004"
+      ],
+      "expected": {
+        "matchingColorSkill": 2,
+        "offColorSkill": 1,
+        "regular": 1
+      },
+      "id": "MANA_COLOR_VALUE",
+      "scope": "CURRENT_RULE_OR_PRINT_WITH_BOUNDED_REFERENCE_FIXTURE"
+    },
+    {
+      "authorityRefs": [
+        "STATUS-003",
+        "STATUS-007"
+      ],
+      "expected": {
+        "durationAfter": 4,
+        "durationBefore": 5,
+        "tickDamage": 10
+      },
+      "id": "POISON_OWNER_END",
+      "scope": "CURRENT_RULE_OR_PRINT_WITH_BOUNDED_REFERENCE_FIXTURE"
+    },
+    {
+      "authorityRefs": [
+        "STATUS-008",
+        "STATUS-003"
+      ],
+      "expected": {
+        "durationAfter": 2,
+        "durationBefore": 3,
+        "hpLoss": 0
+      },
+      "id": "POISON_INVINCIBLE_OWNER_END",
+      "scope": "CURRENT_RULE_OR_PRINT_WITH_BOUNDED_REFERENCE_FIXTURE"
+    },
+    {
+      "authorityRefs": [
+        "STATUS-005",
+        "STATUS-006",
+        "COMBAT-010"
+      ],
+      "expected": {
+        "connectedWhenInvincible": true,
+        "hpLossWhenInvincible": 0,
+        "statusRemovedAfterLaterHit": true
+      },
+      "id": "SLEEP_HIT_REMOVAL",
+      "scope": "CURRENT_RULE_OR_PRINT_WITH_BOUNDED_REFERENCE_FIXTURE"
+    },
+    {
+      "authorityRefs": [
+        "EXP-001",
+        "EXP-003"
+      ],
+      "expected": {
+        "expGained": 100,
+        "newRank": 2,
+        "regenGain": 1,
+        "threshold": 300
+      },
+      "id": "TRIBUTE_TO_RANK_II",
+      "scope": "CURRENT_RULE_OR_PRINT_WITH_BOUNDED_REFERENCE_FIXTURE"
+    },
+    {
+      "authorityRefs": [
+        "LEGACY-001",
+        "LEGACY-004"
+      ],
+      "expected": {
+        "installedMode": "LEGACY",
+        "pendingMode": "DEFEAT_PENDING",
+        "terminalWinner": "B"
+      },
+      "id": "QUEUED_DEFEAT_LEGACY",
+      "scope": "CURRENT_RULE_OR_PRINT_WITH_BOUNDED_REFERENCE_FIXTURE"
+    },
+    {
+      "authorityRefs": [],
+      "expected": {
+        "noLegacyPending": true,
+        "remainingHp": 30
+      },
+      "id": "STONEBLOOD_PREVENTION",
+      "scope": "HISTORICAL_REFERENCE_FIXTURE_ONLY__R3_3_ABILITY_TEXT_UNVERIFIED"
+    },
+    {
+      "authorityRefs": [],
+      "expected": {
+        "unverifiedHeroLegacyTexts": 55
+      },
+      "id": "PENDING_CARD_TEXT_GUARD",
+      "scope": "SOURCE_PROVENANCE_GUARD"
+    }
+  ],
+  "checkpoint": "DEV44",
+  "currentGate": {
+    "path": "Authority/Game/Season0-Recipes/DEV43/DEV43_RELEASE_READINESS.json",
+    "sha256": "ddf1397dade3fd4311f06d2298d980dc23b32df2d7789cea4484b19be749ab88"
+  },
+  "nonNormativeCases": [
+    "STONEBLOOD_PREVENTION",
+    "PENDING_CARD_TEXT_GUARD"
+  ],
+  "schema": "GL-S0-CONSUMER-CONFORMANCE-DEV44-1",
+  "scope": "Bounded source tests only; apps own engine and app-level tests, not deemed tested by this release.",
+  "season": 0,
+  "sourceAuthority": {
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json",
+      "sha256": "519023690a7420cf195e52f7db1d6985ccb5047215ade6d807dba39ab5ccc52c"
+    },
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RECIPES.dev41.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RECIPES.dev41.json",
+      "sha256": "10dd33b791d73ad37b6c1b83b335e23f2e2ca9cf24f1ac125f8bec06472f16f9"
+    },
+    "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RULES.dev35.json": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RULES.dev35.json",
+      "sha256": "0bafadcf06955305beef481bae051068096944865b61f06b85febdfd3349c9ab"
+    },
+    "Authority/Game/Season0-Recipes/DEV43/DEV43_RELEASE_READINESS.json": {
+      "path": "Authority/Game/Season0-Recipes/DEV43/DEV43_RELEASE_READINESS.json",
+      "sha256": "ddf1397dade3fd4311f06d2298d980dc23b32df2d7789cea4484b19be749ab88"
+    },
+    "Authority/Game/Season0-Visual/current-season0-visual-authority.json": {
+      "path": "Authority/Game/Season0-Visual/current-season0-visual-authority.json",
+      "sha256": "5a29531ca5eb6cf6e0a1661f6a7e031db82e8c2e61a491775625260edfd9291b"
+    },
+    "Generated/Season0-Audit/season0-dev39-capability-matrix.csv": {
+      "path": "Generated/Season0-Audit/season0-dev39-capability-matrix.csv",
+      "sha256": "015c3299a371c225a71033eee7d06ceedd769a59a6f193c3cd74cee3829e9661"
+    },
+    "Generated/Season0-Consumers/season0-consumer-conformance.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-conformance.dev37.json",
+      "sha256": "3be68f6db8957b33443328ece836963b964fe46419e05dbb7b2cfba84d222d94"
+    },
+    "Generated/Season0-Consumers/season0-consumer-contracts.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-contracts.dev37.json",
+      "sha256": "55881e38e5b5f27bb9b63cafa2c894e83fff0b423b873d80e6da77df91ecf827"
+    },
+    "Generated/Season0-Consumers/season0-consumer-data.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-data.dev37.json",
+      "sha256": "9da577f70a8b94f70ceb091eadffbdcf41138537e2a94fcca3f3daf635b48996"
+    },
+    "Generated/Season0-Consumers/season0-consumer-rules.dev37.json": {
+      "path": "Generated/Season0-Consumers/season0-consumer-rules.dev37.json",
+      "sha256": "118a06289e0210280e653e224d5bba8cc7cc9a63b2c52582d010fcb13575e5cf"
+    },
+    "Generated/Season0-Current/season0-dev40-hero-legacy-printed-catalog.json": {
+      "path": "Generated/Season0-Current/season0-dev40-hero-legacy-printed-catalog.json",
+      "sha256": "bd1df44a35e25d2c1445bcda13d84f6bbfba6e8310aa3c43c0aadb5f5b1042c5"
+    }
+  },
+  "sourceConditionQAPolicy": "Check read-only feasibility, atomic acceptance/rejection and payment for changed cards. No exhaustive per-card certification required."
+}

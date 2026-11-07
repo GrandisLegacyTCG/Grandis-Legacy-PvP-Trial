@@ -1,0 +1,150 @@
+{
+  "result": {
+    "cases": [
+      {
+        "id": "S0-ARC-031",
+        "steps": [
+          "start:true:card_search_choice",
+          "choose:true:mana_shard_payment_choice",
+          "PAY:true:null"
+        ],
+        "before": {
+          "discard": [
+            "S0-ARC-026",
+            "S0-CLE-026",
+            "S0-CLE-027",
+            "S0-ARC-026",
+            "S0-WAR-001"
+          ],
+          "deck": [
+            "S0-WAR-002",
+            "S0-WAR-003",
+            "S0-WAR-004",
+            "S0-WAR-005"
+          ]
+        },
+        "after": {
+          "discard": [
+            "S0-CLE-026",
+            "S0-ARC-026",
+            "S0-WAR-001",
+            "S0-ARC-031"
+          ],
+          "deck": [
+            "S0-WAR-002",
+            "S0-WAR-004",
+            "S0-ARC-026",
+            "S0-CLE-027",
+            "S0-WAR-003",
+            "S0-WAR-005"
+          ]
+        },
+        "log": [
+          "Response Window opens for Resonance Burst target 1/3 — AI LEFT.",
+          "Resonance Burst multi-target sequence: LEFT → CENTER → RIGHT.",
+          "PLAYER plays Resonance Burst and pays 7 Mana. Melody Silverstring Exhausts.",
+          "Resonance Burst returns Vae, Zol from Discard Pile to Main Deck as CONDITION, then shuffles.",
+          "Choose your Shard payment for Resonance Burst. The recommended payment is preselected; any Shard may be changed before PAY.",
+          "PLAYER draws 8 Shards from Shard Deck (QA).",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      },
+      {
+        "id": "S0-CLE-031",
+        "steps": [
+          "start:true:card_search_choice",
+          "choose:true:mana_shard_payment_choice",
+          "PAY:true:null"
+        ],
+        "before": {
+          "discard": [
+            "S0-ARC-026",
+            "S0-CLE-026",
+            "S0-CLE-027",
+            "S0-ARC-026",
+            "S0-WAR-001"
+          ],
+          "deck": [
+            "S0-WAR-002",
+            "S0-WAR-003",
+            "S0-WAR-004",
+            "S0-WAR-005"
+          ]
+        },
+        "after": {
+          "discard": [
+            "S0-ARC-026",
+            "S0-WAR-001"
+          ],
+          "deck": [
+            "S0-CLE-027",
+            "S0-WAR-003",
+            "S0-CLE-026",
+            "S0-ARC-026"
+          ]
+        },
+        "log": [
+          "AI takes the hit / uses no Defense response.",
+          "Response Window opens for Grand Finale targeting Bromir Oathforge.",
+          "PLAYER plays Grand Finale and pays 6 Mana. Melody Silverstring Exhausts.",
+          "Grand Finale returns Vae, Lun, Zol from Discard Pile to Main Deck as CONDITION, then shuffles.",
+          "Choose your Shard payment for Grand Finale. The recommended payment is preselected; any Shard may be changed before PAY.",
+          "PLAYER draws 8 Shards from Shard Deck (QA).",
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      },
+      {
+        "id": "S0-ARC-030",
+        "steps": [
+          "start:true:card_search_choice",
+          "choose:true:mana_shard_payment_choice",
+          "PAY:true:null"
+        ],
+        "before": {
+          "discard": [
+            "S0-ARC-026",
+            "S0-CLE-026",
+            "S0-CLE-027",
+            "S0-ARC-026",
+            "S0-WAR-001"
+          ],
+          "deck": [
+            "S0-WAR-002",
+            "S0-WAR-003",
+            "S0-WAR-004",
+            "S0-WAR-005"
+          ]
+        },
+        "after": {
+          "discard": [
+            "S0-CLE-026",
+            "S0-CLE-027",
+            "S0-ARC-026",
+            "S0-WAR-001",
+            "S0-ARC-030"
+          ],
+          "deck": [
+            "S0-ARC-026",
+            "S0-WAR-003",
+            "S0-WAR-002",
+            "S0-WAR-004",
+            "S0-WAR-005"
+          ]
+        },
+        "log": [
+          "AI takes the hit / uses no Defense response.",
+          "Response Window opens for Crimson Crescendo targeting Bromir Oathforge.",
+          "PLAYER plays Crimson Crescendo and pays 5 Mana. Melody Silverstring Exhausts.",
+          "Crimson Crescendo returns Zol from Discard Pile to Main Deck as CONDITION, then shuffles.",
+          "Choose your Shard payment for Crimson Crescendo. The recommended payment is preselected; any Shard may be changed before PAY.",
+          "PLAYER draws 8 Shards from Shard Deck (QA).",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    ]
+  },
+  "errors": []
+}

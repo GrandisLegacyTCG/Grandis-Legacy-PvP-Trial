@@ -1,0 +1,16 @@
+{
+  "setup": {
+    "card": true,
+    "element": "https://gl-hover-qa.test/card-art/S0-WAR-031.webp"
+  },
+  "preview": {
+    "open": true,
+    "z": "2147483000",
+    "parent": "BODY",
+    "last": true,
+    "src": "https://gl-hover-qa.test/card-art/S0-WAR-031.webp",
+    "origin": "card-art/S0-WAR-031.webp",
+    "hidden": "hidden"
+  },
+  "errors": []
+}

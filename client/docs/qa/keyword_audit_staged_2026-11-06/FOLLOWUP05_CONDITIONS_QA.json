@@ -1,0 +1,1589 @@
+{
+  "stats": {
+    "assertions": 80,
+    "passed": 80,
+    "failed": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elementalist cannot play without Freeze",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "fail": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-MAG-015:1793903045797:0.557242065218156"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elementalist invalid cost zero",
+      "want": 12,
+      "got": 12,
+      "pass": true,
+      "detail": {
+        "fail": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-MAG-015:1793903045797:0.557242065218156"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elementalist plays with Freeze",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "ok": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-MAG-015:1793903045805:0.9597735452726767",
+            "visual_hold_key": null,
+            "player_event_id": "you_1793903045807_605059"
+          },
+          "cost": 6,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elementalist spent printed six Mana",
+      "want": 6,
+      "got": 6,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elementalist frozen target cannot respond with DODGE",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elementalist correct damage",
+      "want": 80,
+      "got": 80,
+      "pass": true,
+      "detail": {
+        "after": 40
+      }
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elementalist Freeze still present after Hit",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elemental Lord cannot play without Freeze",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "fail": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H003",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-MAG-015:1793903045814:0.9076491776217149"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elemental Lord invalid cost zero",
+      "want": 12,
+      "got": 12,
+      "pass": true,
+      "detail": {
+        "fail": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H003",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-MAG-015:1793903045814:0.9076491776217149"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elemental Lord plays with Freeze",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "ok": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H003",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-MAG-015:1793903045816:0.6873469139884433",
+            "visual_hold_key": null,
+            "player_event_id": "you_1793903045817_633383"
+          },
+          "cost": 6,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elemental Lord spent printed six Mana",
+      "want": 6,
+      "got": 6,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elemental Lord frozen target cannot respond with DODGE",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elemental Lord correct damage",
+      "want": 110,
+      "got": 110,
+      "pass": true,
+      "detail": {
+        "after": 10
+      }
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-MAG-015",
+      "test": "PLAYER Elemental Lord Freeze still present after Hit",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elementalist cannot play without Freeze",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "fail": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-MAG-015:1793903045818:0.5679032629021256"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elementalist invalid cost zero",
+      "want": 12,
+      "got": 12,
+      "pass": true,
+      "detail": {
+        "fail": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-MAG-015:1793903045818:0.5679032629021256"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elementalist plays with Freeze",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "ok": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H002",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-MAG-015:1793903045819:0.3880358717086433",
+            "visual_hold_key": null
+          },
+          "cost": 6,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elementalist spent printed six Mana",
+      "want": 6,
+      "got": 6,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elementalist frozen target cannot respond with DODGE",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elementalist correct damage",
+      "want": 80,
+      "got": 80,
+      "pass": true,
+      "detail": {
+        "after": 40
+      }
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elementalist Freeze still present after Hit",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elemental Lord cannot play without Freeze",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "fail": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H003",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-MAG-015:1793903045821:0.30366311420461733"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elemental Lord invalid cost zero",
+      "want": 12,
+      "got": 12,
+      "pass": true,
+      "detail": {
+        "fail": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H003",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-MAG-015:1793903045821:0.30366311420461733"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elemental Lord plays with Freeze",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "ok": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-MAG-015",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-MAG-H003",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-MAG-015:1793903045821:0.9041875044349075",
+            "visual_hold_key": null
+          },
+          "cost": 6,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elemental Lord spent printed six Mana",
+      "want": 6,
+      "got": 6,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elemental Lord frozen target cannot respond with DODGE",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elemental Lord correct damage",
+      "want": 110,
+      "got": 110,
+      "pass": true,
+      "detail": {
+        "after": 10
+      }
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-MAG-015",
+      "test": "AI Elemental Lord Freeze still present after Hit",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "PLAYER Bard missing notes denied",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "missing": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-ARC-028",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H008",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-ARC-028:1793903045823:0.06939114390412038"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "PLAYER Bard missing notes spend zero",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "PLAYER Bard legal notes PAY",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "r": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-ARC-028",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H008",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "_s0_condition_complete": true,
+            "s0_discard_condition_picks": [
+              {
+                "card_id": "S0-ARC-026",
+                "discard_index": 0
+              },
+              {
+                "card_id": "S0-CLE-026",
+                "discard_index": 1
+              }
+            ],
+            "commit_token": "card:PLAYER:S0-ARC-028:1793903045824:0.8880030077856317",
+            "_s0_condition_committed": true,
+            "s0_condition_return_count": 2,
+            "_s0_return_ghost_count": 2,
+            "_s0_return_ghost_queued": true,
+            "visual_hold_key": null,
+            "player_event_id": "you_1793903045825_17066"
+          },
+          "cost": 4,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": [
+            "S0-ARC-026",
+            "S0-CLE-026"
+          ]
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "PLAYER Bard correct Mana spent",
+      "want": 4,
+      "got": 4,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "PLAYER Bard all required notes removed from Discard",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": {
+        "notes": [
+          "Zol",
+          "Lun"
+        ],
+        "discard": [
+          "S0-ARC-028"
+        ]
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "PLAYER Bard RESPONSE closed",
+      "want": null,
+      "got": null,
+      "pass": true,
+      "detail": {
+        "pending": null
+      }
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-ARC-028",
+      "test": "PLAYER Bard Sleep on opponent after connected Area Attack",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "PLAYER Maestro missing notes denied",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "missing": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-ARC-031",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H009",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-ARC-031:1793903045830:0.33151130764849535"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "PLAYER Maestro missing notes spend zero",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "PLAYER Maestro legal notes PAY",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "r": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-ARC-031",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H009",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "_s0_condition_complete": true,
+            "s0_discard_condition_picks": [
+              {
+                "card_id": "S0-ARC-026",
+                "discard_index": 0
+              },
+              {
+                "card_id": "S0-CLE-027",
+                "discard_index": 1
+              }
+            ],
+            "commit_token": "card:PLAYER:S0-ARC-031:1793903045831:0.012773002501414",
+            "_s0_condition_committed": true,
+            "s0_condition_return_count": 2,
+            "_s0_return_ghost_count": 2,
+            "_s0_return_ghost_queued": true,
+            "visual_hold_key": null,
+            "player_event_id": "you_1793903045831_570002"
+          },
+          "cost": 7,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": [
+            "S0-ARC-026",
+            "S0-CLE-027"
+          ]
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "PLAYER Maestro correct Mana spent",
+      "want": 7,
+      "got": 7,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "PLAYER Maestro all required notes removed from Discard",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": {
+        "notes": [
+          "Zol",
+          "Vae"
+        ],
+        "discard": [
+          "S0-ARC-031"
+        ]
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "PLAYER Maestro RESPONSE closed",
+      "want": null,
+      "got": null,
+      "pass": true,
+      "detail": {
+        "pending": null
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "PLAYER Bard missing notes denied",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "missing": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-CLE-028",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H008",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-CLE-028:1793903045833:0.7365462718570055"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "PLAYER Bard missing notes spend zero",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "PLAYER Bard legal notes PAY",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "r": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-CLE-028",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H008",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "_s0_condition_complete": true,
+            "s0_discard_condition_picks": [
+              {
+                "card_id": "S0-CLE-027",
+                "discard_index": 0
+              }
+            ],
+            "commit_token": "card:PLAYER:S0-CLE-028:1793903045834:0.9710857576252736",
+            "_s0_condition_committed": true,
+            "s0_condition_return_count": 1,
+            "_s0_return_ghost_count": 1,
+            "_s0_return_ghost_queued": true,
+            "player_event_id": "you_1793903045835_512526",
+            "source_card_finalized": true
+          },
+          "cost": 1,
+          "pending": null,
+          "window": null,
+          "discBefore": [
+            "S0-CLE-027"
+          ]
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "PLAYER Bard correct Mana spent",
+      "want": 1,
+      "got": 1,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "PLAYER Bard all required notes removed from Discard",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": {
+        "notes": [
+          "Vae"
+        ],
+        "discard": []
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "PLAYER Bard RESPONSE closed",
+      "want": null,
+      "got": null,
+      "pass": true,
+      "detail": {
+        "pending": null
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "PLAYER Maestro missing notes denied",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "missing": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-CLE-031",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H009",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-CLE-031:1793903045838:0.2775221732905341"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "PLAYER Maestro missing notes spend zero",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "PLAYER Maestro legal notes PAY",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "r": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-CLE-031",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H009",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "_s0_condition_complete": true,
+            "s0_discard_condition_picks": [
+              {
+                "card_id": "S0-ARC-026",
+                "discard_index": 0
+              },
+              {
+                "card_id": "S0-CLE-026",
+                "discard_index": 1
+              },
+              {
+                "card_id": "S0-CLE-027",
+                "discard_index": 2
+              }
+            ],
+            "commit_token": "card:PLAYER:S0-CLE-031:1793903045839:0.9326182007546776",
+            "_s0_condition_committed": true,
+            "s0_condition_return_count": 3,
+            "_s0_return_ghost_count": 3,
+            "_s0_return_ghost_queued": true,
+            "visual_hold_key": null,
+            "player_event_id": "you_1793903045840_147126"
+          },
+          "cost": 6,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": [
+            "S0-ARC-026",
+            "S0-CLE-026",
+            "S0-CLE-027"
+          ]
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "PLAYER Maestro correct Mana spent",
+      "want": 6,
+      "got": 6,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "PLAYER Maestro all required notes removed from Discard",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": {
+        "notes": [
+          "Zol",
+          "Lun",
+          "Vae"
+        ],
+        "discard": []
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "PLAYER Maestro RESPONSE closed",
+      "want": null,
+      "got": null,
+      "pass": true,
+      "detail": {
+        "pending": "racial_stoneblood"
+      }
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-CLE-031",
+      "test": "PLAYER Maestro Invincible on caster",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "AI Bard missing notes denied",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "missing": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-ARC-028",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H008",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-ARC-028:1793903045841:0.45004123041938404"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "AI Bard missing notes spend zero",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "AI Bard legal notes PAY",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "r": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-ARC-028",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H008",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "_s0_condition_complete": true,
+            "s0_discard_condition_picks": [
+              {
+                "card_id": "S0-ARC-026",
+                "discard_index": 0
+              },
+              {
+                "card_id": "S0-CLE-026",
+                "discard_index": 1
+              }
+            ],
+            "commit_token": "card:AI:S0-ARC-028:1793903045842:0.1419923347531329",
+            "_s0_condition_committed": true,
+            "s0_condition_return_count": 2,
+            "_s0_return_ghost_count": 2,
+            "_s0_return_ghost_queued": true,
+            "visual_hold_key": null
+          },
+          "cost": 4,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": [
+            "S0-ARC-026",
+            "S0-CLE-026"
+          ]
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "AI Bard correct Mana spent",
+      "want": 4,
+      "got": 4,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "AI Bard all required notes removed from Discard",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": {
+        "notes": [
+          "Zol",
+          "Lun"
+        ],
+        "discard": [
+          "S0-ARC-028"
+        ]
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-028",
+      "test": "AI Bard RESPONSE closed",
+      "want": null,
+      "got": null,
+      "pass": true,
+      "detail": {
+        "pending": null
+      }
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-ARC-028",
+      "test": "AI Bard Sleep on opponent after connected Area Attack",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "AI Maestro missing notes denied",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "missing": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-ARC-031",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H009",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-ARC-031:1793903045845:0.9229350881060087"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "AI Maestro missing notes spend zero",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "AI Maestro legal notes PAY",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "r": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-ARC-031",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H009",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "_s0_condition_complete": true,
+            "s0_discard_condition_picks": [
+              {
+                "card_id": "S0-ARC-026",
+                "discard_index": 0
+              },
+              {
+                "card_id": "S0-CLE-027",
+                "discard_index": 1
+              }
+            ],
+            "commit_token": "card:AI:S0-ARC-031:1793903045845:0.4610632875470013",
+            "_s0_condition_committed": true,
+            "s0_condition_return_count": 2,
+            "_s0_return_ghost_count": 2,
+            "_s0_return_ghost_queued": true,
+            "visual_hold_key": null
+          },
+          "cost": 7,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": [
+            "S0-ARC-026",
+            "S0-CLE-027"
+          ]
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "AI Maestro correct Mana spent",
+      "want": 7,
+      "got": 7,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "AI Maestro all required notes removed from Discard",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": {
+        "notes": [
+          "Zol",
+          "Vae"
+        ],
+        "discard": [
+          "S0-ARC-031"
+        ]
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-ARC-031",
+      "test": "AI Maestro RESPONSE closed",
+      "want": null,
+      "got": null,
+      "pass": true,
+      "detail": {
+        "pending": null
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "AI Bard missing notes denied",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "missing": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-CLE-028",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H008",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-CLE-028:1793903045847:0.48503569394986457"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "AI Bard missing notes spend zero",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "AI Bard legal notes PAY",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "r": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-CLE-028",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H008",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "_s0_condition_complete": true,
+            "s0_discard_condition_picks": [
+              {
+                "card_id": "S0-CLE-027",
+                "discard_index": 0
+              }
+            ],
+            "commit_token": "card:AI:S0-CLE-028:1793903045848:0.5532936344942124",
+            "_s0_condition_committed": true,
+            "s0_condition_return_count": 1,
+            "_s0_return_ghost_count": 1,
+            "_s0_return_ghost_queued": true,
+            "source_card_finalized": true
+          },
+          "cost": 1,
+          "pending": null,
+          "window": null,
+          "discBefore": [
+            "S0-CLE-027"
+          ]
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "AI Bard correct Mana spent",
+      "want": 1,
+      "got": 1,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "AI Bard all required notes removed from Discard",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": {
+        "notes": [
+          "Vae"
+        ],
+        "discard": []
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-028",
+      "test": "AI Bard RESPONSE closed",
+      "want": null,
+      "got": null,
+      "pass": true,
+      "detail": {
+        "pending": null
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "AI Maestro missing notes denied",
+      "want": false,
+      "got": false,
+      "pass": true,
+      "detail": {
+        "missing": {
+          "ok": false,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-CLE-031",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H009",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-CLE-031:1793903045850:0.7646384270715656"
+          },
+          "cost": 0,
+          "pending": null,
+          "window": null,
+          "discBefore": []
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "AI Maestro missing notes spend zero",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "AI Maestro legal notes PAY",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": {
+        "r": {
+          "ok": true,
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-CLE-031",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H009",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "_s0_condition_complete": true,
+            "s0_discard_condition_picks": [
+              {
+                "card_id": "S0-ARC-026",
+                "discard_index": 0
+              },
+              {
+                "card_id": "S0-CLE-026",
+                "discard_index": 1
+              },
+              {
+                "card_id": "S0-CLE-027",
+                "discard_index": 2
+              }
+            ],
+            "commit_token": "card:AI:S0-CLE-031:1793903045851:0.6998589457806353",
+            "_s0_condition_committed": true,
+            "s0_condition_return_count": 3,
+            "_s0_return_ghost_count": 3,
+            "_s0_return_ghost_queued": true,
+            "visual_hold_key": null
+          },
+          "cost": 6,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "discBefore": [
+            "S0-ARC-026",
+            "S0-CLE-026",
+            "S0-CLE-027"
+          ]
+        }
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "AI Maestro correct Mana spent",
+      "want": 6,
+      "got": 6,
+      "pass": true,
+      "detail": null
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "AI Maestro all required notes removed from Discard",
+      "want": 0,
+      "got": 0,
+      "pass": true,
+      "detail": {
+        "notes": [
+          "Zol",
+          "Lun",
+          "Vae"
+        ],
+        "discard": []
+      }
+    },
+    {
+      "group": "CONDITION",
+      "card_id": "S0-CLE-031",
+      "test": "AI Maestro RESPONSE closed",
+      "want": null,
+      "got": null,
+      "pass": true,
+      "detail": {
+        "pending": "legacy_defeat_choice"
+      }
+    },
+    {
+      "group": "STATUS",
+      "card_id": "S0-CLE-031",
+      "test": "AI Maestro Invincible on caster",
+      "want": true,
+      "got": true,
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "browser_errors": []
+}

@@ -1,0 +1,82 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "Soul Charged Shot not intrinsic RANGE",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H001 passive grants range",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H001 card eligible",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H001 LEFT->RIGHT permitted only via passive",
+      "expected": false,
+      "actual": false,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H002 passive grants range",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H002 card eligible",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H002 LEFT->RIGHT permitted only via passive",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H002 Soul Charged Shot Range outside AoA double after modifiers",
+      "expected": 80,
+      "actual": 80,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H003 passive grants range",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H003 card eligible",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H003 LEFT->RIGHT permitted only via passive",
+      "expected": true,
+      "actual": true,
+      "ok": true
+    },
+    {
+      "name": "S0-ARC-H003 Soul Charged Shot Range outside AoA double after modifiers",
+      "expected": 140,
+      "actual": 140,
+      "ok": true
+    }
+  ],
+  "stats": {
+    "passed": 12,
+    "total": 12
+  },
+  "browser_errors": []
+}

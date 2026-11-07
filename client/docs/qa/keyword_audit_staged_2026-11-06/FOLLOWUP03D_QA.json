@@ -1,0 +1,1029 @@
+{
+  "stats": {
+    "assertions": 10,
+    "pass": 10,
+    "fail": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation false is Area window",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "affected": null,
+        "kind": "incoming_attack",
+        "area": true,
+        "multi_sequence": {
+          "affected_lanes": [
+            "LEFT",
+            "CENTER",
+            "RIGHT"
+          ],
+          "index": 0,
+          "total_damage": 0,
+          "poison_vial_applied": false,
+          "connected_hits": 0
+        },
+        "attack_type": "Area Damage"
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation false offered",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation false consumes 2 Mana",
+      "expect": 10,
+      "got": 10,
+      "pass": true,
+      "details": {
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-012",
+                "internal_id": "S0-EVT-012",
+                "name": "Defensive Formation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Defensive Formation",
+                  "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "effect_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-012.webp",
+                  "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp"
+                },
+                "canonical_hash": "9f5025c73c485b82fa75d35422bdf121240741fc4017b2694821ddd931974073",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [
+                    "REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY"
+                  ],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-012.json",
+                    "sha256": "2446e3c75a1cdcb940787da2a9c3581beb70c156c86ce86b56ee236ddffd88c9"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": null,
+              "response_kind": "area_reduce",
+              "affected_lanes": [
+                "LEFT"
+              ]
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation false response card Discard",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation false each lane HP loss as printed",
+      "expect": [
+        0,
+        0,
+        0
+      ],
+      "got": [
+        0,
+        0,
+        0
+      ],
+      "pass": true,
+      "details": {
+        "damage": 20,
+        "after": [
+          200,
+          200,
+          200
+        ],
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-012",
+                "internal_id": "S0-EVT-012",
+                "name": "Defensive Formation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Defensive Formation",
+                  "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "effect_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-012.webp",
+                  "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp"
+                },
+                "canonical_hash": "9f5025c73c485b82fa75d35422bdf121240741fc4017b2694821ddd931974073",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [
+                    "REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY"
+                  ],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-012.json",
+                    "sha256": "2446e3c75a1cdcb940787da2a9c3581beb70c156c86ce86b56ee236ddffd88c9"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": null,
+              "response_kind": "area_reduce",
+              "affected_lanes": [
+                "LEFT"
+              ]
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        },
+        "affected": null
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation true is Area window",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": {
+        "affected": null,
+        "kind": "incoming_attack",
+        "area": true,
+        "multi_sequence": {
+          "affected_lanes": [
+            "LEFT",
+            "CENTER",
+            "RIGHT"
+          ],
+          "index": 0,
+          "total_damage": 0,
+          "poison_vial_applied": false,
+          "connected_hits": 0
+        },
+        "attack_type": "Area Damage"
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation true offered",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation true consumes 2 Mana",
+      "expect": 10,
+      "got": 10,
+      "pass": true,
+      "details": {
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-012",
+                "internal_id": "S0-EVT-012",
+                "name": "Defensive Formation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Defensive Formation",
+                  "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "effect_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-012.webp",
+                  "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp"
+                },
+                "canonical_hash": "9f5025c73c485b82fa75d35422bdf121240741fc4017b2694821ddd931974073",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [
+                    "REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY"
+                  ],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-012.json",
+                    "sha256": "2446e3c75a1cdcb940787da2a9c3581beb70c156c86ce86b56ee236ddffd88c9"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": null,
+              "response_kind": "area_reduce",
+              "affected_lanes": [
+                "LEFT"
+              ]
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        }
+      }
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation true response card Discard",
+      "expect": true,
+      "got": true,
+      "pass": true,
+      "details": null
+    },
+    {
+      "group": "REACTION",
+      "name": "Defensive Formation true each lane HP loss as printed",
+      "expect": [
+        0,
+        0,
+        0
+      ],
+      "got": [
+        0,
+        0,
+        0
+      ],
+      "pass": true,
+      "details": {
+        "damage": 20,
+        "after": [
+          200,
+          200,
+          200
+        ],
+        "res": {
+          "found": true,
+          "begin": true,
+          "pay": true,
+          "pending": "response_window",
+          "window": "incoming_attack",
+          "debug": {
+            "incoming": "incoming_attack",
+            "option": {
+              "card_id": "S0-EVT-012",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-EVT-012",
+                "internal_id": "S0-EVT-012",
+                "name": "Defensive Formation",
+                "family": "Event",
+                "card_type": "Event",
+                "classification": "Normal Event",
+                "action_category": "Normal Event",
+                "class_group": "Neutral",
+                "printed": {
+                  "name": "Defensive Formation",
+                  "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                  "rows": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Event Effect",
+                      "damage": null,
+                      "effect": null,
+                      "text": ""
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "effect_text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-EVT-012.webp",
+                  "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp"
+                },
+                "canonical_hash": "9f5025c73c485b82fa75d35422bdf121240741fc4017b2694821ddd931974073",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": false,
+                "target_required": false,
+                "runtime_tags": "EVENT;REACTION",
+                "cost": {
+                  "mana": 2
+                },
+                "cost_display": "2 Mana",
+                "requirement": {},
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [],
+                "s0_authority": {
+                  "family": "Event",
+                  "subtype": "Normal Event",
+                  "printed_cost": {
+                    "printed": "2 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 2
+                  },
+                  "printed_branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "opcodes": [
+                    "BUFF_MODIFIER",
+                    "CONDITION",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [
+                    "REACTION_AREA_DAMAGE_REDUCTION_CLASS_DIVERSITY"
+                  ],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-EVT-012.json",
+                    "sha256": "2446e3c75a1cdcb940787da2a9c3581beb70c156c86ce86b56ee236ddffd88c9"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "REACTION",
+                            "opcode": "REACTION_WINDOW"
+                          },
+                          {
+                            "charOffset": 23,
+                            "matchedText": "when",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 59,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          },
+                          {
+                            "charOffset": 92,
+                            "matchedText": "If",
+                            "opcode": "CONDITION"
+                          },
+                          {
+                            "charOffset": 138,
+                            "matchedText": "reduce",
+                            "opcode": "BUFF_MODIFIER"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "REACTION"
+                        ],
+                        "opcodes": [
+                          "BUFF_MODIFIER",
+                          "CONDITION",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": null,
+                      "text": "REACTION Use this card when your opponent use Area Attack, reduce the attack damage by -20. If your Heroes have 3 different base classes, reduce the attack damage by -40.",
+                      "variant": "default"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": false,
+                "cost_mana": 2,
+                "canonical_cost": {
+                  "mana": 2
+                },
+                "effect_strings_by_class": {}
+              },
+              "source_lane": null,
+              "response_kind": "area_reduce",
+              "affected_lanes": [
+                "LEFT"
+              ]
+            },
+            "pending": "response_payment_choice",
+            "options": null,
+            "legal": true
+          }
+        },
+        "affected": null
+      }
+    }
+  ],
+  "browser_errors": []
+}

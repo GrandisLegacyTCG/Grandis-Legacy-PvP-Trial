@@ -1,0 +1,23 @@
+{
+  "one_source_authority": "OSA Season 0 DEV45",
+  "source_authority_stack_bundle": "DEV45",
+  "shared_runtime": "v1.94.2",
+  "runtime_foundation": "v1.94.2",
+  "runtime_data": "s0-dev44-stage3",
+  "effect_checkpoint": "s0-dev44-stage3",
+  "effect_recipe": "s0-dev44-stage3",
+  "application_runtime_sync": "S0_STAGE4_DATA_STARTERS_ART_ONLY",
+  "canonical_registry_hash": "383d36e464a6475d5f2b1359e6d1e617766886aa154eebcedb6ff425f956363e",
+  "hero_component_registry_hash": "f61ffa4578dc26193370773b72e78341a9ae1439521c6ce2cadf473ceb45ad7f",
+  "card_count": 242,
+  "catalog_card_count": 248,
+  "mana_faces_count": 6,
+  "source_card_count": 248,
+  "source_branch_count": 426,
+  "source_compound_bindings": 36,
+  "source_pointer_sha256": "bfa05bf43c22da4bd29906a7b1948f96900f0ce9851ce74c55b4924d3830ee9d",
+  "authority_mode": "OSA_S0_DEV45_READ_ONLY_CONSUMER",
+  "development_stage": 4,
+  "gameplay_tested": false,
+  "playability": "UNVERIFIED"
+}

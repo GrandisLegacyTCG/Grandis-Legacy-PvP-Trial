@@ -1,0 +1,40 @@
+{
+  "cards": [
+    {
+      "title": "Bromir Oathforge",
+      "stats": [
+        "CARD TYPEHERO",
+        "HP80",
+        "REQUIRED EXP\u2014"
+      ],
+      "background": "rgb(36, 38, 48)",
+      "headX": true,
+      "artLoaded": true,
+      "styles": 20,
+      "enhance": "object",
+      "reviewRenderer": "function",
+      "closeWorks": true
+    },
+    {
+      "title": "Shield Blast",
+      "stats": [
+        "CARD TYPESKILL",
+        "SUBTYPEPhysical Attack",
+        "MANA COST7",
+        "EXP TRIBUTE100 EXP"
+      ],
+      "background": "rgb(36, 38, 48)",
+      "headX": true,
+      "artLoaded": true,
+      "styles": 20,
+      "enhance": "object",
+      "reviewRenderer": "function",
+      "closeWorks": true
+    }
+  ],
+  "errors": [],
+  "missing_resources": [
+    "engine/assets/audio/Card%20Sound.mp3",
+    "engine/assets/audio/Coin%20Flip.mp3"
+  ]
+}

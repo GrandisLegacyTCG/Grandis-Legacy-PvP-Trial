@@ -1,0 +1,259 @@
+/* Grandis Legacy Deck Builder v1.49.0 — targeted UI polish shared by both styles.
+   Does not alter card rules, validation, card images, export, or deck counts. */
+body, button, input, select, option, textarea, .app-dialog, .dialog-card,
+.library-shell, .deck-shell, .topbar, .review-card {
+  font-family:"Noto Sans",sans-serif!important;
+}
+/* The old header border was a stray full-width hairline over an empty gap. */
+.topbar {border-bottom:0!important; box-shadow:none!important}
+
+/* Card & Hero review: consistent alignment and size in both styles. */
+#cardReviewDialog .review-header {
+  align-items:center!important;
+}
+#cardReviewDialog .review-close {
+  align-self:center!important;
+  position:static!important;
+  margin:0!important;
+  inset:auto!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  line-height:1!important;
+}
+#cardReviewDialog .review-header h2 {
+  font-size:20px!important;
+}
+#cardReviewDialog .review-summary-item>strong,
+#cardReviewDialog[data-review-kind] .review-summary-item>strong {
+  font-size:16px!important;
+  line-height:1.4!important;
+}
+#cardReviewDialog[data-review-kind] .review-keyword-description,
+#cardReviewDialog[data-review-kind] .review-status-line,
+#cardReviewDialog .review-keyword-description,
+#cardReviewDialog .review-status-line {
+  font-size:12px!important;
+  line-height:1.5!important;
+  color:#ACACAE!important;
+}
+@media(min-width:761px){
+  #cardReviewDialog .review-effect-row.has-metric,
+  #cardReviewDialog[data-review-kind="skill"] .review-effect-row.has-metric {
+    grid-template-columns:var(--gl-review-class-width,120px) var(--gl-review-rank-width,120px) minmax(0,1fr)!important;
+    column-gap:0!important;
+  }
+  #cardReviewDialog .review-effect-row.no-metric,
+  #cardReviewDialog[data-review-kind="skill"] .review-effect-row.no-metric {
+    grid-template-columns:var(--gl-review-class-width,120px) var(--gl-review-rank-width,120px) minmax(0,1fr)!important;
+    column-gap:0!important;
+  }
+  #cardReviewDialog .review-effect-class{padding:0 14px 0 0!important;}
+  #cardReviewDialog .review-effect-rank{padding:0 14px!important;}
+  #cardReviewDialog .review-effect-metric{padding:0 0 0 14px!important;}
+}
+
+/* Style 1: keep four filters on top; allow wider Mana Cost below. */
+.gl-filter-grid-style1{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;align-items:end!important}
+.gl-filter-grid-style1 .filter-field{min-width:0}
+.gl-filter-grid-style1 select{width:100%;min-width:0}
+.gl-filter-grid-style1 .mana-filter-field{
+  grid-column:span 2!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:64px!important;
+  padding:8px 12px 6px!important;
+}
+.gl-filter-grid-style1 .reset-filter{align-self:end!important;min-width:0;width:100%;max-width:100%}
+/* Hero/Legacy tabs have no subtype/pool/keywords; the existing relevant controls remain usable. */
+@media(max-width:760px){
+ .gl-filter-grid-style1{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .gl-filter-grid-style1 .mana-filter-field{grid-column:span 2!important}
+}
+@media(max-width:420px){
+ .gl-filter-grid-style1{grid-template-columns:minmax(0,1fr)!important}
+ .gl-filter-grid-style1 .mana-filter-field{grid-column:auto!important}
+}
+
+/* Style 2: 4 + 4 filters, no redundant third row or button toggle. */
+.gl-filter-grid-style2{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px 8px!important;
+  align-items:end!important;
+  min-width:0!important;
+  margin-top:7px!important;
+}
+.gl-filter-grid-style2>label{min-width:0!important;display:grid!important;gap:4px!important}
+.gl-filter-grid-style2>label>span,
+.gl-filter-grid-style2 .mana-label>span{font-size:10px!important;font-weight:900!important;letter-spacing:.06em!important}
+.gl-filter-grid-style2 select{
+  height:32px!important;
+  width:100%!important;
+  min-width:0!important;
+  font-size:11px!important;
+  padding-inline:8px!important;
+}
+.gl-filter-grid-style2>label.disabled select{opacity:.47!important}
+.gl-filter-grid-style2>.mana-filter{
+  display:flex!important;
+  flex-direction:column!important;
+  min-width:0!important;
+  gap:4px!important;
+  margin:0!important;
+}
+.gl-filter-grid-style2 .mana-label{display:flex!important;align-items:center!important;justify-content:space-between!important}
+.gl-filter-grid-style2 .mana-range-wrap{
+  display:grid!important;
+  grid-template-columns:12px minmax(0,1fr) 12px!important;
+  height:32px!important;
+  align-items:center!important;
+  min-width:0!important;
+}
+.gl-filter-grid-style2>.reset-filter{height:32px!important;min-width:0!important;width:100%!important}
+@media(max-width:1180px){
+ .gl-filter-grid-style2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:420px){
+ .gl-filter-grid-style2{grid-template-columns:1fr!important}
+}
+
+/* Style 1: VIEW DECK is separate from the accordion controls (valid button nesting). */
+.main-deck-header-controls{display:flex;align-items:center;height:71px;min-width:0;background:#1a1b21;border-bottom:1px solid var(--line-soft,#282a34)}
+.main-deck-header-controls>.deck-section-head{
+ flex:1 1 auto!important;width:auto!important;min-width:0!important;
+ border-bottom:0!important;justify-content:flex-start!important;padding-right:6px!important;
+}
+.main-deck-header-right{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding-right:23px}
+.main-deck-header-right .deck-section-total-toggle{border:0;background:transparent;padding:0;cursor:pointer;height:auto}
+.main-deck-header-right .section-total{gap:10px}
+.main-deck-view-open{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:32px;padding:0 12px;border:1px solid #434752;border-radius:7px;
+  background:#202129;color:#f4f4f4;font:800 11px/1 "Noto Sans",sans-serif!important;
+  letter-spacing:.025em;white-space:nowrap;cursor:pointer;
+}
+.main-deck-view-open:hover{background:#2b2d37;border-color:#777b8c}
+@media(max-width:760px){
+ .main-deck-header-controls{height:62px}
+ .main-deck-header-right{gap:7px;padding-right:12px}
+ .main-deck-view-open{font-size:9px!important;padding-inline:8px;height:28px}
+ .main-deck-header-right .section-total{font-size:9px;gap:5px}
+}
+
+/* Shared Deck View modal geometry and alignment (identical for Style 1 and Style 2). */
+#mainDeckViewDialog{
+ position:fixed!important;inset:0!important;margin:auto!important;padding:0!important;
+ width:min(1540px,calc(100vw - 24px))!important;
+ max-width:calc(100vw - 24px)!important;
+ height:min(870px,calc(100dvh - 24px))!important;
+ max-height:calc(100dvh - 24px)!important;
+ border:0!important;overflow:visible!important;
+ background:transparent!important;color:#f5f3ed;
+}
+#mainDeckViewDialog .legacy-reference-card{
+ box-sizing:border-box!important;
+ position:relative!important;
+ display:flex!important;flex-direction:column!important;
+ width:100%!important;max-width:100%!important;
+ height:100%!important;max-height:100%!important;
+ padding:22px 24px 20px!important;
+ border:1px solid #484a56!important;
+ border-radius:13px!important;
+ background:#242630!important;
+ overflow:hidden!important;
+}
+#mainDeckViewDialog .legacy-reference-head{
+ display:flex!important;align-items:center!important;
+ min-height:53px!important;flex:0 0 auto!important;
+ justify-content:space-between!important;gap:16px!important;
+ padding:0!important;margin:0!important;
+}
+#mainDeckViewDialog .legacy-reference-head>div:first-child{min-width:0!important;flex:1 1 auto!important}
+#mainDeckViewDialog .dialog-eyebrow{display:block;color:#e5be73;font-size:11px;font-weight:900;letter-spacing:.06em}
+#mainDeckViewDialog .legacy-reference-head h2{margin:4px 0 0!important;line-height:1.15!important;font-size:26px!important}
+#mainDeckViewDialog .main-deck-view-status{display:flex!important;align-items:center!important;gap:16px!important;flex:0 0 auto!important}
+#mainDeckViewDialog .main-deck-view-status .large-total{display:flex!important;align-items:baseline!important;gap:6px!important}
+#mainDeckViewDialog .main-deck-view-status .large-total strong{font-size:27px!important;line-height:1.2!important}
+#mainDeckViewDialog .main-deck-view-status .large-total span{font-size:13px!important;color:#a8abb7!important}
+#mainDeckViewDialog .deck-validation{display:inline-flex;align-items:center;border:1px solid #775f31;border-radius:15px;padding:5px 12px;color:#f0d27f;background:transparent;white-space:nowrap;font-size:13px}
+#mainDeckViewDialog .deck-validation.valid{border-color:#397451;color:#9deab3}
+#mainDeckViewDialog #mainDeckViewClose{
+ flex:0 0 38px!important;align-self:center!important;
+ display:grid!important;place-items:center!important;
+ position:static!important;inset:auto!important;margin:0!important;
+ width:38px!important;height:38px!important;min-width:38px!important;
+ padding:0!important;border:1px solid #464a59!important;
+ border-radius:8px!important;background:#1c1f29!important;
+ color:#fff!important;font-size:24px!important;line-height:1!important;
+}
+#mainDeckViewDialog .legacy-reference-note{
+ margin:3px 0 18px!important;padding:0!important;
+ color:#aeb6c7!important;font-size:12px!important;flex:0 0 auto!important;
+}
+#mainDeckViewDialog #mainDeckViewGrid{
+ display:grid!important;
+ grid-template-columns:repeat(auto-fill,minmax(158px,1fr))!important;
+ grid-auto-flow:row!important;
+ align-items:start!important;align-content:start!important;justify-content:start!important;
+ flex:1 1 auto!important;min-height:0!important;min-width:0!important;
+ width:100%!important;max-width:100%!important;
+ gap:14px 12px!important;
+ padding:4px 8px 12px 0!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ scrollbar-gutter:stable!important;
+ box-sizing:border-box!important;
+}
+#mainDeckViewDialog #mainDeckViewGrid>.legacy-reference-card-tile{
+ position:relative!important;display:block!important;
+ flex:none!important;width:100%!important;max-width:none!important;min-width:0!important;
+ height:auto!important;aspect-ratio:5/7!important;margin:0!important;
+ border:1px solid #444753!important;border-radius:8px!important;
+ background:#11131a!important;overflow:hidden!important;
+ box-shadow:0 6px 14px rgba(0,0,0,.35)!important;
+}
+#mainDeckViewDialog #mainDeckViewGrid>.legacy-reference-card-tile>img{
+ display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;
+ opacity:1!important;filter:none!important;pointer-events:none!important;
+}
+#mainDeckViewDialog .main-deck-view-quantity{
+ position:absolute!important;left:7px!important;bottom:7px!important;
+ min-width:32px;height:26px;padding:0 7px;
+ display:grid;place-items:center;border:1px solid #6d707d;border-radius:6px;
+ background:rgba(16,17,22,.95);color:white;font-size:12px;font-weight:900;z-index:4;
+}
+#mainDeckViewDialog .legacy-reference-card-tile>.review-button{
+ position:absolute!important;right:6px!important;bottom:6px!important;
+ display:grid!important;place-items:center!important;
+ width:31px!important;height:31px!important;padding:0!important;
+ border:1px solid #666978!important;border-radius:6px!important;
+ background:rgba(14,15,20,.91)!important;
+ opacity:1!important;pointer-events:auto!important;cursor:pointer!important;z-index:5!important;
+}
+#mainDeckViewDialog .legacy-reference-card-tile>.review-button img{width:17px!important;height:17px!important;object-fit:contain!important}
+#mainDeckViewDialog .main-deck-view-empty{padding:28px 0;text-align:center;color:#a8abb7}
+@media(max-width:900px){
+ #mainDeckViewDialog .legacy-reference-card{padding:14px!important}
+ #mainDeckViewDialog #mainDeckViewGrid{grid-template-columns:repeat(auto-fill,minmax(125px,1fr))!important;gap:10px!important}
+ #mainDeckViewDialog .main-deck-view-status{gap:7px!important}
+ #mainDeckViewDialog .legacy-reference-head h2{font-size:20px!important}
+}
+@media(max-width:520px){
+ #mainDeckViewDialog{width:calc(100vw - 10px)!important;max-width:calc(100vw - 10px)!important;height:calc(100dvh - 10px)!important;max-height:calc(100dvh - 10px)!important}
+ #mainDeckViewDialog .legacy-reference-card{padding:12px!important}
+ #mainDeckViewDialog #mainDeckViewGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ #mainDeckViewDialog .legacy-reference-note{font-size:10px!important}
+ #mainDeckViewDialog .main-deck-view-status .large-total strong{font-size:19px!important}
+ #mainDeckViewDialog .deck-validation{font-size:10px!important;padding:4px 7px!important}
+ #mainDeckViewDialog #mainDeckViewClose{flex-basis:30px!important;width:30px!important;height:30px!important;min-width:30px!important}
+}
+/* Override older per-kind title rules with greater specificity. */
+#cardReviewDialog[data-review-kind] .review-header h2{font-size:20px!important}
+/* Restore full-width two-thumb slider after converting from the old grid to a flex column. */
+.gl-filter-grid-style2>.mana-filter{align-items:stretch!important}
+.gl-filter-grid-style2>.mana-filter>.mana-label,
+.gl-filter-grid-style2>.mana-filter>.mana-range-wrap{width:100%!important;min-width:0!important}
+.gl-filter-grid-style2 .mana-label>span{width:auto!important;text-align:left!important}
+.gl-filter-grid-style2 .mana-label>strong{width:auto!important;text-align:right!important}
+.gl-filter-grid-style2 .dual-range{width:100%!important;min-width:0!important}
+.gl-filter-grid-style2>.mana-filter>.mana-label{flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:6px!important}

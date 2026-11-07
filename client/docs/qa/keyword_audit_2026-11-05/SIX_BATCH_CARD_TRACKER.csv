@@ -1,0 +1,162 @@
+﻿batch,audit_focus,card_id,card_name,original_stages,status,code_fix,evidence_scope
+01,MELEE / RANGE / ALL OPPONENTS,S0-ARC-001,Bow Bash,"1,7",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-ARC-018,Soul Charged Shot,"1,2",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-ARC-020,Long Range Shot,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-ARC-024,Cross Bolt,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-CLE-008,Holy Fire,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-MAG-010,Lightning Strike,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-MAG-013,Wildfire,"1,7",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-MAG-019,Flame Dragon's Wrath,"1,7",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-THF-007,Horizontal Slash,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-THF-008,Vertical Slash,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-THF-010,Back Slash,"1,2",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-THF-014,Viper's Fang,"1,7",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-THF-018,Venom Detonation,"1,7",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-THF-021,Sword Slash,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-THF-030,Flash Combo,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-WAR-001,Slash,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-WAR-005,Taunt,"1,4",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-WAR-006,Savage Blow,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-WAR-007,Upward Thrust,"1,2,7",TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-WAR-020,Radiant Cleave,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-WAR-021,Shield Bash,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+01,MELEE / RANGE / ALL OPPONENTS,S0-WAR-028,Weapon Throw,1,TARGETED-QA-DONE,,source + runtime target/commit sample (not complete UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-003,Escape Arrow,"2,4",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-008,Aim Shot,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-011,Back Step,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-012,Deflect Arrow,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-018,Soul Charged Shot,"1,2",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-019,Divine Edge,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-023,Homing Shot,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-029,Swift Movement,"2,4",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ARC-031,Resonance Burst,"2,4",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-CLE-010,Holy Barrier,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-CLE-022,Sacred Bulwark,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-CLE-026,Lun,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-CLE-028,Blessing of Accuracy,"2,4",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ITM-007,Ring of Protection,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ITM-012,Spectral Grappling Hook,"2,4",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-ITM-016,Chain Mail,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-MAG-004,Mana Shield,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-MAG-005,Mirror Image,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-MAG-012,Fire Wall,"2,7",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-MAG-025,Mana Void,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-THF-003,Evasion,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-THF-009,X Cross Slash,"2,4",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-THF-010,Back Slash,"1,2",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-THF-012,Elusive Escape,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-THF-022,Deflection,"2,3",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-THF-023,Shadow Switch,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-THF-024,Flash Slash,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-THF-027,Dodge Instinct,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-003,Parry,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-007,Upward Thrust,"1,2,7",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-009,Rage Swing,"2,7",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-011,Side Step,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-012,Deflect,"2,3",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-018,Execute,2,TARGETED-QA-DONE,SURE_HIT_RANK_GUARD,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-022,Sacred Stormblade,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-023,Unbroken Stand,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-026,Skull Crush,2,TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+02,PIERCING / SURE HIT / BLOCK / DODGE,S0-WAR-029,Runic Guard,"2,3",TARGETED-QA-DONE,,class/rank + response option sample (not full UI match)
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-ARC-003,Escape Arrow,"2,4",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-ARC-013,Triple Shot,"4,7",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-ARC-028,Midnight Lullaby,"4,7",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-ARC-029,Swift Movement,"2,4",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-ARC-030,Crimson Crescendo,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-ARC-031,Resonance Burst,"2,4",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-004,Blessing of Might,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-005,Blessing of Wisdom,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-012,Binding Light,3,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-013,God's Blessing,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-018,Wings of Valor,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-025,Blessing of Divinity,"3,5",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-028,Blessing of Accuracy,"2,4",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-030,Blooming Harmony,"4,5",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-CLE-031,Grand Finale,"3,4",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-EVT-005,Last Resort,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-EVT-007,Intercept,3,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-EVT-009,Tactical Adaptation,3,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-EVT-011,Coordination Attack,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-EVT-012,Defensive Formation,3,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-ITM-012,Spectral Grappling Hook,"2,4",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-ITM-017,Flashpowder Bomb,3,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-MAG-011,Ice Block,"3,7",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-MAG-015,Permafrost,"4,7",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-MAG-018,Double Casting,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-MAG-022,Aether Infusion,"4,6,7",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-MAG-030,Invincible Stance,3,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-MAG-031,Absolute Defense,3,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-THF-009,X Cross Slash,"2,4",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-THF-022,Deflection,"2,3",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-THF-028,Camouflage,4,PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-WAR-005,Taunt,"1,4",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-WAR-012,Deflect,"2,3",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-WAR-013,Enrage,"4,7",PENDING,,not run in RC24
+03,REACTION / REFLECT / INVINCIBLE / CONDITION / BUFF,S0-WAR-029,Runic Guard,"2,3",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-009,Holy Blast,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-011,Flash Heal,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-015,Resurrection,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-016,Sanctuary,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-017,Lay on Hands,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-020,Holy Slash,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-023,Holy Light,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-025,Blessing of Divinity,"3,5",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-027,Vae,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-CLE-030,Blooming Harmony,"4,5",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-ITM-001,Health Potion,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-ITM-002,Greater Health Potion,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-ITM-008,Phoenix Feather,5,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-MAG-020,Aether Ball,"6,7",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-MAG-021,Mana Absorption,6,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-MAG-022,Aether Infusion,"4,6,7",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-MAG-023,Aether Slash,"6,7",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-MAG-024,Aether Sweep,"6,7",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-MAG-026,Arcane Disruption,"6,7",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-MAG-028,Provoke,"6,7",PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-THF-005,Steal,6,PENDING,,not run in RC24
+04,HEAL / REVIVE / MANA BURN / MANA STEAL,S0-WAR-014,Final Grit,5,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-ARC-001,Bow Bash,"1,7",PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-ARC-002,Poison Arrow,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-ARC-007,Burning Arrow,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-ARC-013,Triple Shot,"4,7",PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-ARC-027,Sleeping Dart,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-ARC-028,Midnight Lullaby,"4,7",PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-CLE-019,Divine Punishment,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-CLE-021,Hammer of Justice,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-CLE-024,Divine Judgement,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-EVT-006,Dazed,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-ITM-011,Poison Vial,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-ITM-020,Freeze Bomb,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-002,Ice Lance,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-003,Fireball,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-007,Frostbite,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-009,Fire Blast,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-011,Ice Block,"3,7",PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-012,Fire Wall,"2,7",PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-013,Wildfire,"1,7",PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-014,Glacial Spike,7,PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-015,Permafrost,"4,7",PENDING,,not run in RC24
+05,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — A,S0-MAG-017,Frostfire Nova,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-MAG-019,Flame Dragon's Wrath,"1,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-MAG-020,Aether Ball,"6,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-MAG-022,Aether Infusion,"4,6,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-MAG-023,Aether Slash,"6,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-MAG-024,Aether Sweep,"6,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-MAG-026,Arcane Disruption,"6,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-MAG-028,Provoke,"6,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-THF-011,Poison Mist,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-THF-013,Venom Strike,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-THF-014,Viper's Fang,"1,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-THF-015,Venom Sovereign,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-THF-017,Venom Binding,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-THF-018,Venom Detonation,"1,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-THF-019,Lethal Venom,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-WAR-002,Power Slash,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-WAR-007,Upward Thrust,"1,2,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-WAR-009,Rage Swing,"2,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-WAR-010,Rage Blast,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-WAR-013,Enrage,"4,7",PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-WAR-017,Fiery Thrust,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-WAR-019,Wild Assault,7,PENDING,,not run in RC24
+06,Status Bleed/Burn/Freeze/Poison/Sleep/Stun — B,S0-WAR-027,Colossal Bash,7,PENDING,,not run in RC24

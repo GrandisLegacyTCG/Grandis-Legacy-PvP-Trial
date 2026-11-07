@@ -1,0 +1,496 @@
+{
+  "bards": [
+    {
+      "id": "S0-CLE-H007",
+      "name": "Melody Silverstring",
+      "identity": "Cleric"
+    },
+    {
+      "id": "S0-CLE-H008",
+      "name": "Melody Silverstring",
+      "identity": "Bard"
+    },
+    {
+      "id": "S0-CLE-H009",
+      "name": "Melody Silverstring",
+      "identity": "Maestro"
+    }
+  ],
+  "cards": [
+    {
+      "id": "S0-ARC-028",
+      "name": "Midnight Lullaby",
+      "spec": {
+        "Zol": 1,
+        "Lun": 1
+      },
+      "before": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-WAR-002",
+          "S0-CLE-002",
+          "S0-ARC-001"
+        ],
+        "discard": [
+          "S0-ARC-026",
+          "S0-CLE-026",
+          "S0-WAR-001"
+        ]
+      },
+      "can": true,
+      "valid": true,
+      "returned": 2,
+      "second_commit": 0,
+      "after": {
+        "deck": [
+          "S0-CLE-002",
+          "S0-ARC-001",
+          "S0-CLE-026",
+          "S0-MAG-001",
+          "S0-ARC-026",
+          "S0-WAR-002"
+        ],
+        "discard": [
+          "S0-WAR-001"
+        ]
+      },
+      "tot": {
+        "Zol": {
+          "returned": 1,
+          "remains": 0
+        },
+        "Lun": {
+          "returned": 1,
+          "remains": 0
+        },
+        "Vae": {
+          "returned": 0,
+          "remains": 0
+        }
+      },
+      "log": "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    },
+    {
+      "id": "S0-ARC-029",
+      "name": "Swift Movement",
+      "spec": {
+        "Lun": 1
+      },
+      "before": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-WAR-002",
+          "S0-CLE-002",
+          "S0-ARC-001"
+        ],
+        "discard": [
+          "S0-CLE-026",
+          "S0-WAR-001"
+        ]
+      },
+      "can": true,
+      "valid": true,
+      "returned": 1,
+      "second_commit": 0,
+      "after": {
+        "deck": [
+          "S0-ARC-001",
+          "S0-MAG-001",
+          "S0-CLE-026",
+          "S0-CLE-002",
+          "S0-WAR-002"
+        ],
+        "discard": [
+          "S0-WAR-001"
+        ]
+      },
+      "tot": {
+        "Zol": {
+          "returned": 0,
+          "remains": 0
+        },
+        "Lun": {
+          "returned": 1,
+          "remains": 0
+        },
+        "Vae": {
+          "returned": 0,
+          "remains": 0
+        }
+      },
+      "log": "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    },
+    {
+      "id": "S0-ARC-030",
+      "name": "Crimson Crescendo",
+      "spec": {
+        "Zol": 1,
+        "anyZol": true
+      },
+      "before": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-WAR-002",
+          "S0-CLE-002",
+          "S0-ARC-001"
+        ],
+        "discard": [
+          "S0-ARC-026",
+          "S0-ARC-026",
+          "S0-WAR-001"
+        ]
+      },
+      "can": true,
+      "valid": true,
+      "returned": 2,
+      "second_commit": 0,
+      "after": {
+        "deck": [
+          "S0-CLE-002",
+          "S0-ARC-026",
+          "S0-ARC-001",
+          "S0-WAR-002",
+          "S0-MAG-001",
+          "S0-ARC-026"
+        ],
+        "discard": [
+          "S0-WAR-001"
+        ]
+      },
+      "tot": {
+        "Zol": {
+          "returned": 2,
+          "remains": 0
+        },
+        "Lun": {
+          "returned": 0,
+          "remains": 0
+        },
+        "Vae": {
+          "returned": 0,
+          "remains": 0
+        }
+      },
+      "log": "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    },
+    {
+      "id": "S0-ARC-031",
+      "name": "Resonance Burst",
+      "spec": {
+        "Zol": 1,
+        "Vae": 1
+      },
+      "before": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-WAR-002",
+          "S0-CLE-002",
+          "S0-ARC-001"
+        ],
+        "discard": [
+          "S0-ARC-026",
+          "S0-CLE-027",
+          "S0-WAR-001"
+        ]
+      },
+      "can": true,
+      "valid": true,
+      "returned": 2,
+      "second_commit": 0,
+      "after": {
+        "deck": [
+          "S0-CLE-027",
+          "S0-MAG-001",
+          "S0-WAR-002",
+          "S0-ARC-001",
+          "S0-CLE-002",
+          "S0-ARC-026"
+        ],
+        "discard": [
+          "S0-WAR-001"
+        ]
+      },
+      "tot": {
+        "Zol": {
+          "returned": 1,
+          "remains": 0
+        },
+        "Lun": {
+          "returned": 0,
+          "remains": 0
+        },
+        "Vae": {
+          "returned": 1,
+          "remains": 0
+        }
+      },
+      "log": "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    },
+    {
+      "id": "S0-CLE-028",
+      "name": "Blessing of Accuracy",
+      "spec": {
+        "Vae": 1
+      },
+      "before": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-WAR-002",
+          "S0-CLE-002",
+          "S0-ARC-001"
+        ],
+        "discard": [
+          "S0-CLE-027",
+          "S0-WAR-001"
+        ]
+      },
+      "can": true,
+      "valid": true,
+      "returned": 1,
+      "second_commit": 0,
+      "after": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-CLE-027",
+          "S0-ARC-001",
+          "S0-CLE-002",
+          "S0-WAR-002"
+        ],
+        "discard": [
+          "S0-WAR-001"
+        ]
+      },
+      "tot": {
+        "Zol": {
+          "returned": 0,
+          "remains": 0
+        },
+        "Lun": {
+          "returned": 0,
+          "remains": 0
+        },
+        "Vae": {
+          "returned": 1,
+          "remains": 0
+        }
+      },
+      "log": "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    },
+    {
+      "id": "S0-CLE-030",
+      "name": "Blooming Harmony",
+      "spec": {
+        "Lun": 1,
+        "Vae": 1
+      },
+      "before": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-WAR-002",
+          "S0-CLE-002",
+          "S0-ARC-001"
+        ],
+        "discard": [
+          "S0-CLE-026",
+          "S0-CLE-027",
+          "S0-WAR-001"
+        ]
+      },
+      "can": true,
+      "valid": true,
+      "returned": 2,
+      "second_commit": 0,
+      "after": {
+        "deck": [
+          "S0-CLE-002",
+          "S0-WAR-002",
+          "S0-ARC-001",
+          "S0-CLE-027",
+          "S0-MAG-001",
+          "S0-CLE-026"
+        ],
+        "discard": [
+          "S0-WAR-001"
+        ]
+      },
+      "tot": {
+        "Zol": {
+          "returned": 0,
+          "remains": 0
+        },
+        "Lun": {
+          "returned": 1,
+          "remains": 0
+        },
+        "Vae": {
+          "returned": 1,
+          "remains": 0
+        }
+      },
+      "log": "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    },
+    {
+      "id": "S0-CLE-031",
+      "name": "Grand Finale",
+      "spec": {
+        "Zol": 1,
+        "Lun": 1,
+        "Vae": 1
+      },
+      "before": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-WAR-002",
+          "S0-CLE-002",
+          "S0-ARC-001"
+        ],
+        "discard": [
+          "S0-ARC-026",
+          "S0-CLE-026",
+          "S0-CLE-027",
+          "S0-WAR-001"
+        ]
+      },
+      "can": true,
+      "valid": true,
+      "returned": 3,
+      "second_commit": 0,
+      "after": {
+        "deck": [
+          "S0-MAG-001",
+          "S0-CLE-026",
+          "S0-ARC-001",
+          "S0-CLE-027",
+          "S0-CLE-002",
+          "S0-WAR-002",
+          "S0-ARC-026"
+        ],
+        "discard": [
+          "S0-WAR-001"
+        ]
+      },
+      "tot": {
+        "Zol": {
+          "returned": 1,
+          "remains": 0
+        },
+        "Lun": {
+          "returned": 1,
+          "remains": 0
+        },
+        "Vae": {
+          "returned": 1,
+          "remains": 0
+        }
+      },
+      "log": "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+    }
+  ],
+  "reject": {
+    "before": {
+      "deck": [
+        "S0-WAR-001"
+      ],
+      "discard": [
+        "S0-ARC-026"
+      ]
+    },
+    "can": true,
+    "valid": true,
+    "badValidate": false
+  },
+  "legacy": {
+    "PLAYER": {
+      "slots": [
+        {
+          "lane": "LEFT",
+          "hero": "S0-WAR-H004",
+          "name": "Garrick Beastfang",
+          "family": "Warrior",
+          "candidates": [
+            "S0-WAR-L001",
+            "S0-WAR-L002"
+          ]
+        },
+        {
+          "lane": "CENTER",
+          "hero": "S0-WAR-H007",
+          "name": "Aurex Sunsworn",
+          "family": "Warrior",
+          "candidates": [
+            "S0-WAR-L001",
+            "S0-WAR-L002"
+          ]
+        },
+        {
+          "lane": "RIGHT",
+          "hero": "S0-CLE-H004",
+          "name": "Thrain Sunborn",
+          "family": "Cleric",
+          "candidates": [
+            "S0-CLE-L001"
+          ]
+        }
+      ],
+      "deckCount": 12,
+      "after": {
+        "applied": true,
+        "pending": "legacy_defeat_choice",
+        "card_id": "S0-WAR-H004",
+        "isLegacy": false,
+        "gameOver": false,
+        "log": [
+          "PLAYER must choose Legacy card for defeated Garrick Beastfang in LEFT.",
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    "AI": {
+      "slots": [
+        {
+          "lane": "LEFT",
+          "hero": "S0-MAG-H001",
+          "name": "Vaelis Stormweave",
+          "family": "Mage",
+          "candidates": [
+            "S0-MAG-L001",
+            "S0-MAG-L002"
+          ]
+        },
+        {
+          "lane": "CENTER",
+          "hero": "S0-MAG-H007",
+          "name": "Bromir Oathforge",
+          "family": "Mage",
+          "candidates": [
+            "S0-MAG-L001",
+            "S0-MAG-L002"
+          ]
+        },
+        {
+          "lane": "RIGHT",
+          "hero": "S0-WAR-H001",
+          "name": "Draxen Blacksand",
+          "family": "Warrior",
+          "candidates": [
+            "S0-WAR-L001"
+          ]
+        }
+      ],
+      "deckCount": 12,
+      "after": {
+        "applied": true,
+        "pending": null,
+        "card_id": "S0-MAG-L001",
+        "isLegacy": true,
+        "gameOver": false,
+        "log": [
+          "Defeat: Vaelis Stormweave is replaced by Legacy Mode Ancestral Tome in AI LEFT. Attachments discarded; EXP stack moved to discard; Legacy Deck count updated.",
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    }
+  }
+}

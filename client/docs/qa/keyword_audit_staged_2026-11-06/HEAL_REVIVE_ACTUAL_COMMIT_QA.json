@@ -1,0 +1,4062 @@
+{
+  "stats": {
+    "assertions": 128,
+    "pass": 128,
+    "fail": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "id": "S0-CLE-009",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 7
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 7
+        },
+        "source": true,
+        "phase": "Battle",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 7,
+        "cost": 7,
+        "left_before": 100,
+        "left_after": 140,
+        "center_after": 140,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-009",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": null,
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:PLAYER:S0-CLE-009:1793899892305:0.1647748702833568",
+          "visual_hold_key": null,
+          "player_event_id": "you_1793899892309_586001"
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 140,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-009",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 7,
+        "cost": 7,
+        "phase": "Battle"
+      }
+    },
+    {
+      "id": "S0-CLE-009",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "damage_and_heal_area",
+      "ok": true,
+      "details": {
+        "left_hp": 140,
+        "center_enemy_hp": 70
+      }
+    },
+    {
+      "id": "S0-CLE-009",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 7
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 7
+        },
+        "source": true,
+        "phase": "Battle",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 7,
+        "cost": 7,
+        "left_before": 100,
+        "left_after": 140,
+        "center_after": 140,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-009",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": null,
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:AI:S0-CLE-009:1793899892326:0.3327984005714397",
+          "visual_hold_key": null
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 140,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-009",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 7,
+        "cost": 7,
+        "phase": "Battle"
+      }
+    },
+    {
+      "id": "S0-CLE-009",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "damage_and_heal_area",
+      "ok": true,
+      "details": {
+        "left_hp": 140,
+        "center_enemy_hp": 70
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 3,
+        "cost": 3,
+        "left_before": 100,
+        "left_after": 140,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-011",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H001",
+          "commit_token": "card:PLAYER:S0-CLE-011:1793899892332:0.6475413752644392",
+          "player_event_id": "you_1793899892333_692280",
+          "heal_applied": 40,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 140,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 3,
+        "cost": 3,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 140
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 3,
+        "cost": 3,
+        "left_before": 100,
+        "left_after": 140,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-011",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H001",
+          "commit_token": "card:AI:S0-CLE-011:1793899892335:0.6275432030508733",
+          "heal_applied": 40,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 140,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 3,
+        "cost": 3,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 140
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 3,
+        "cost": 3,
+        "left_before": 100,
+        "left_after": 170,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-011",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:PLAYER:S0-CLE-011:1793899892337:0.6488302445795898",
+          "player_event_id": "you_1793899892337_17526",
+          "heal_applied": 70,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 170,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 3,
+        "cost": 3,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 170
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 3,
+        "cost": 3,
+        "left_before": 100,
+        "left_after": 170,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-011",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:AI:S0-CLE-011:1793899892338:0.35904491405091166",
+          "heal_applied": 70,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 170,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 3,
+        "cost": 3,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-011",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 170
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 3,
+        "cost": 3,
+        "left_before": 0,
+        "left_after": 50,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-015",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:PLAYER:S0-CLE-015:1793899892340:0.4850676519372803",
+          "player_event_id": "you_1793899892340_722240",
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 50,
+          "maxHp": 200,
+          "exhausted": true,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false,
+          "casting": false,
+          "pending_casting": false,
+          "exhaust_reason": "Revived by Resurrection.",
+          "mode": "HERO"
+        },
+        "last_revive": {
+          "id": "revive_1",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "card_id": "S0-WAR-H004",
+          "source_name": "Resurrection",
+          "legacy_card_id": "S0-WAR-L001",
+          "hp": 50,
+          "exhausted": true,
+          "from_legacy": true
+        },
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 3,
+        "cost": 3,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "revive_hp",
+      "ok": true,
+      "details": {
+        "actual": 50,
+        "expected": 50,
+        "mode": false
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "revive_exhaust",
+      "ok": true,
+      "details": {
+        "actual": true,
+        "expected": true
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 3,
+        "cost": 3,
+        "left_before": 0,
+        "left_after": 50,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-015",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:AI:S0-CLE-015:1793899892341:0.32817126950366726",
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 50,
+          "maxHp": 200,
+          "exhausted": true,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false,
+          "casting": false,
+          "pending_casting": false,
+          "exhaust_reason": "Revived by Resurrection.",
+          "mode": "HERO"
+        },
+        "last_revive": {
+          "id": "revive_1",
+          "side": "AI",
+          "lane": "LEFT",
+          "card_id": "S0-MAG-H001",
+          "source_name": "Resurrection",
+          "legacy_card_id": "S0-WAR-L001",
+          "hp": 50,
+          "exhausted": true,
+          "from_legacy": true
+        },
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 3,
+        "cost": 3,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "revive_hp",
+      "ok": true,
+      "details": {
+        "actual": 50,
+        "expected": 50,
+        "mode": false
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "revive_exhaust",
+      "ok": true,
+      "details": {
+        "actual": true,
+        "expected": true
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 3,
+        "cost": 3,
+        "left_before": 0,
+        "left_after": 50,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-015",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H003",
+          "commit_token": "card:PLAYER:S0-CLE-015:1793899892342:0.4918822166973057",
+          "player_event_id": "you_1793899892343_92297",
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 50,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false,
+          "casting": false,
+          "pending_casting": false,
+          "exhaust_reason": null,
+          "mode": "HERO"
+        },
+        "last_revive": {
+          "id": "revive_1",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "card_id": "S0-WAR-H004",
+          "source_name": "Resurrection",
+          "legacy_card_id": "S0-WAR-L001",
+          "hp": 50,
+          "exhausted": false,
+          "from_legacy": true
+        },
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 3,
+        "cost": 3,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "revive_hp",
+      "ok": true,
+      "details": {
+        "actual": 50,
+        "expected": 50,
+        "mode": false
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "revive_exhaust",
+      "ok": true,
+      "details": {
+        "actual": false,
+        "expected": false
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 3
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 3,
+        "cost": 3,
+        "left_before": 0,
+        "left_after": 50,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-015",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H003",
+          "commit_token": "card:AI:S0-CLE-015:1793899892344:0.5866440071726355",
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 50,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false,
+          "casting": false,
+          "pending_casting": false,
+          "exhaust_reason": null,
+          "mode": "HERO"
+        },
+        "last_revive": {
+          "id": "revive_1",
+          "side": "AI",
+          "lane": "LEFT",
+          "card_id": "S0-MAG-H001",
+          "source_name": "Resurrection",
+          "legacy_card_id": "S0-WAR-L001",
+          "hp": 50,
+          "exhausted": false,
+          "from_legacy": true
+        },
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 3,
+        "cost": 3,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "revive_hp",
+      "ok": true,
+      "details": {
+        "actual": 50,
+        "expected": 50,
+        "mode": false
+      }
+    },
+    {
+      "id": "S0-CLE-015",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "revive_exhaust",
+      "ok": true,
+      "details": {
+        "actual": false,
+        "expected": false
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 8
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 8
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 8,
+        "cost": 8,
+        "left_before": 100,
+        "left_after": 200,
+        "center_after": 150,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-016",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:PLAYER:S0-CLE-016:1793899892345:0.043068398839927524",
+          "player_event_id": "you_1793899892345_119800",
+          "heal_applied": 50,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 200,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 8,
+        "cost": 8,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 200
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 8
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 8
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 8,
+        "cost": 8,
+        "left_before": 100,
+        "left_after": 200,
+        "center_after": 150,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-016",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:AI:S0-CLE-016:1793899892346:0.7852646993800199",
+          "heal_applied": 50,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 200,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 8,
+        "cost": 8,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 200
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 8
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 8
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 8,
+        "cost": 8,
+        "left_before": 100,
+        "left_after": 200,
+        "center_after": 170,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-016",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H003",
+          "commit_token": "card:PLAYER:S0-CLE-016:1793899892347:0.45089898240877646",
+          "player_event_id": "you_1793899892347_393217",
+          "heal_applied": 70,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 200,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 8,
+        "cost": 8,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 200
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 8
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 8
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 8,
+        "cost": 8,
+        "left_before": 100,
+        "left_after": 200,
+        "center_after": 170,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-016",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H003",
+          "commit_token": "card:AI:S0-CLE-016:1793899892348:0.10075729761205154",
+          "heal_applied": 70,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 200,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 8,
+        "cost": 8,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-016",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 200
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 5
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 5
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 5,
+        "cost": 5,
+        "left_before": 100,
+        "left_after": 180,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-017",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:PLAYER:S0-CLE-017:1793899892349:0.17644114370096864",
+          "player_event_id": "you_1793899892349_738309",
+          "heal_applied": 80,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 180,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 5,
+        "cost": 5,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Priest",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 180
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 5
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 5
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 5,
+        "cost": 5,
+        "left_before": 100,
+        "left_after": 180,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-017",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H002",
+          "commit_token": "card:AI:S0-CLE-017:1793899892351:0.3615239779759286",
+          "heal_applied": 80,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 180,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 5,
+        "cost": 5,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Priest",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 180
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 5
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 5
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 5,
+        "cost": 5,
+        "left_before": 100,
+        "left_after": 200,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-017",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H003",
+          "commit_token": "card:PLAYER:S0-CLE-017:1793899892351:0.8942549674828263",
+          "player_event_id": "you_1793899892351_651221",
+          "heal_applied": 100,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 200,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 5,
+        "cost": 5,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Saint",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 200
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 5
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 5
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 5,
+        "cost": 5,
+        "left_before": 100,
+        "left_after": 200,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-017",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H003",
+          "commit_token": "card:AI:S0-CLE-017:1793899892352:0.7838480291029514",
+          "heal_applied": 100,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 200,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 5,
+        "cost": 5,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-017",
+      "cls": "Saint",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 200
+      }
+    },
+    {
+      "id": "S0-CLE-020",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "source": true,
+        "phase": "Battle",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 4,
+        "cost": 4,
+        "left_before": 100,
+        "left_after": 100,
+        "center_after": 120,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-020",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "CENTER",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-WAR-H008",
+          "commit_token": "card:PLAYER:S0-CLE-020:1793899892353:0.717585367964733",
+          "visual_hold_key": null,
+          "player_event_id": "you_1793899892354_814957"
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 100,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-020",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 4,
+        "cost": 4,
+        "phase": "Battle"
+      }
+    },
+    {
+      "id": "S0-CLE-020",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "type": "self_heal_after_damage",
+      "ok": true,
+      "details": {
+        "self": 120,
+        "enemy": 60
+      }
+    },
+    {
+      "id": "S0-CLE-020",
+      "cls": "Paladin",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "source": true,
+        "phase": "Battle",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 4,
+        "cost": 4,
+        "left_before": 100,
+        "left_after": 100,
+        "center_after": 120,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-020",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "CENTER",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-WAR-H008",
+          "commit_token": "card:AI:S0-CLE-020:1793899892356:0.9120091270307925",
+          "visual_hold_key": null
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 100,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-020",
+      "cls": "Paladin",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 4,
+        "cost": 4,
+        "phase": "Battle"
+      }
+    },
+    {
+      "id": "S0-CLE-020",
+      "cls": "Paladin",
+      "side": "AI",
+      "type": "self_heal_after_damage",
+      "ok": true,
+      "details": {
+        "self": 120,
+        "enemy": 60
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 4,
+        "cost": 4,
+        "left_before": 100,
+        "left_after": 150,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-023",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H001",
+          "commit_token": "card:PLAYER:S0-CLE-023:1793899892358:0.37837921943408603",
+          "player_event_id": "you_1793899892358_745118",
+          "heal_applied": 50,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 150,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 4,
+        "cost": 4,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 150
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 4,
+        "cost": 4,
+        "left_before": 100,
+        "left_after": 150,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-023",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H001",
+          "commit_token": "card:AI:S0-CLE-023:1793899892359:0.6386814412860958",
+          "heal_applied": 50,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 150,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 4,
+        "cost": 4,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 150
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 4,
+        "cost": 4,
+        "left_before": 100,
+        "left_after": 160,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-023",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-WAR-H008",
+          "commit_token": "card:PLAYER:S0-CLE-023:1793899892360:0.8416192735020175",
+          "player_event_id": "you_1793899892360_81967",
+          "heal_applied": 60,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 160,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 4,
+        "cost": 4,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Paladin",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 160
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Paladin",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 4,
+        "cost": 4,
+        "left_before": 100,
+        "left_after": 160,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-023",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-WAR-H008",
+          "commit_token": "card:AI:S0-CLE-023:1793899892362:0.641963022279866",
+          "heal_applied": 60,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 160,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Paladin",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 4,
+        "cost": 4,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-023",
+      "cls": "Paladin",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 160
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 1,
+        "cost": 1,
+        "left_before": 100,
+        "left_after": 120,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-027",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H001",
+          "commit_token": "card:PLAYER:S0-CLE-027:1793899892363:0.8303448083716293",
+          "player_event_id": "you_1793899892364_648418",
+          "heal_applied": 20,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 120,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 1,
+        "cost": 1,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Cleric",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 120
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 1,
+        "cost": 1,
+        "left_before": 100,
+        "left_after": 120,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-027",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H001",
+          "commit_token": "card:AI:S0-CLE-027:1793899892365:0.854749179710032",
+          "heal_applied": 20,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 120,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 1,
+        "cost": 1,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Cleric",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 120
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 1,
+        "cost": 1,
+        "left_before": 100,
+        "left_after": 130,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-027",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H008",
+          "commit_token": "card:PLAYER:S0-CLE-027:1793899892366:0.6649577887756252",
+          "player_event_id": "you_1793899892367_540812",
+          "heal_applied": 30,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 130,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 1,
+        "cost": 1,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 130
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Bard",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 1,
+        "cost": 1,
+        "left_before": 100,
+        "left_after": 130,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-027",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H008",
+          "commit_token": "card:AI:S0-CLE-027:1793899892367:0.8339389169085617",
+          "heal_applied": 30,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 130,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Bard",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 1,
+        "cost": 1,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-027",
+      "cls": "Bard",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 130
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 6
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 6
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 6,
+        "cost": 6,
+        "left_before": 100,
+        "left_after": 160,
+        "center_after": 130,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-030",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H008",
+          "s0_discard_condition_picks": [
+            {
+              "card_id": "S0-CLE-026",
+              "discard_index": 0
+            },
+            {
+              "card_id": "S0-CLE-027",
+              "discard_index": 1
+            }
+          ],
+          "_s0_condition_complete": true,
+          "commit_token": "card:PLAYER:S0-CLE-030:1793899892369:0.38103826381954187",
+          "_s0_condition_committed": true,
+          "s0_condition_return_count": 2,
+          "_s0_return_ghost_count": 2,
+          "_s0_return_ghost_queued": true,
+          "player_event_id": "you_1793899892370_961424",
+          "heal_applied": 30,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 160,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 6,
+        "cost": 6,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Bard",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 160
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Bard",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 6
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 6
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 6,
+        "cost": 6,
+        "left_before": 100,
+        "left_after": 160,
+        "center_after": 130,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-030",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H008",
+          "s0_discard_condition_picks": [
+            {
+              "card_id": "S0-CLE-026",
+              "discard_index": 0
+            },
+            {
+              "card_id": "S0-CLE-027",
+              "discard_index": 1
+            }
+          ],
+          "_s0_condition_complete": true,
+          "commit_token": "card:AI:S0-CLE-030:1793899892371:0.6326625966690459",
+          "_s0_condition_committed": true,
+          "s0_condition_return_count": 2,
+          "_s0_return_ghost_count": 2,
+          "_s0_return_ghost_queued": true,
+          "heal_applied": 30,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 160,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Bard",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 6,
+        "cost": 6,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Bard",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 160
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Maestro",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 6
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 6
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 6,
+        "cost": 6,
+        "left_before": 100,
+        "left_after": 200,
+        "center_after": 150,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-CLE-030",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H009",
+          "s0_discard_condition_picks": [
+            {
+              "card_id": "S0-CLE-026",
+              "discard_index": 0
+            },
+            {
+              "card_id": "S0-CLE-027",
+              "discard_index": 1
+            }
+          ],
+          "_s0_condition_complete": true,
+          "commit_token": "card:PLAYER:S0-CLE-030:1793899892372:0.9781231836365456",
+          "_s0_condition_committed": true,
+          "s0_condition_return_count": 2,
+          "_s0_return_ghost_count": 2,
+          "_s0_return_ghost_queued": true,
+          "player_event_id": "you_1793899892372_508312",
+          "heal_applied": 50,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 200,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Maestro",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 6,
+        "cost": 6,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Maestro",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 200
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Maestro",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 6
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 6
+        },
+        "source": true,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 6,
+        "cost": 6,
+        "left_before": 100,
+        "left_after": 200,
+        "center_after": 150,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-CLE-030",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "source_card_id": "S0-CLE-H009",
+          "s0_discard_condition_picks": [
+            {
+              "card_id": "S0-CLE-026",
+              "discard_index": 0
+            },
+            {
+              "card_id": "S0-CLE-027",
+              "discard_index": 1
+            }
+          ],
+          "_s0_condition_complete": true,
+          "commit_token": "card:AI:S0-CLE-030:1793899892372:0.7754196133069348",
+          "_s0_condition_committed": true,
+          "s0_condition_return_count": 2,
+          "_s0_return_ghost_count": 2,
+          "_s0_return_ghost_queued": true,
+          "heal_applied": 50,
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 200,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Maestro",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 6,
+        "cost": 6,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-CLE-030",
+      "cls": "Maestro",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 200
+      }
+    },
+    {
+      "id": "S0-ITM-001",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "source": false,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 0,
+        "cost": 0,
+        "left_before": 100,
+        "left_after": 130,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-ITM-001",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "commit_token": "card:PLAYER:S0-ITM-001:1793899892373:0.4230954851808326",
+          "_mana_payment_committed": true,
+          "_mana_payment_committed_cost": 0,
+          "_mana_payment_committed_value": 0,
+          "_mana_payment_committed_shard_uids": []
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 130,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-ITM-001",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 0,
+        "cost": 0,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-ITM-001",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 130
+      }
+    },
+    {
+      "id": "S0-ITM-001",
+      "cls": "",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "source": false,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 0,
+        "cost": 0,
+        "left_before": 100,
+        "left_after": 130,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-ITM-001",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "commit_token": "card:AI:S0-ITM-001:1793899892376:0.11756194724064695",
+          "_mana_payment_committed": true,
+          "_mana_payment_committed_cost": 0,
+          "_mana_payment_committed_value": 0,
+          "_mana_payment_committed_shard_uids": []
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 130,
+          "maxHp": 200,
+          "exhausted": false,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-ITM-001",
+      "cls": "",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 0,
+        "cost": 0,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-ITM-001",
+      "cls": "",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 130
+      }
+    },
+    {
+      "id": "S0-ITM-002",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "source": false,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 0,
+        "cost": 0,
+        "left_before": 100,
+        "left_after": 150,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-ITM-002",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "commit_token": "card:PLAYER:S0-ITM-002:1793899892377:0.5774133232897366",
+          "_mana_payment_committed": true,
+          "_mana_payment_committed_cost": 0,
+          "_mana_payment_committed_value": 0,
+          "_mana_payment_committed_shard_uids": []
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 150,
+          "maxHp": 200,
+          "exhausted": true,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [
+            {
+              "name": "Potion Exhausted",
+              "duration": 1,
+              "text": "Greater Health Potion Exhausts healed Hero after successful heal item resolve.",
+              "sources": [
+                {
+                  "source_name": "Greater Health Potion Exhausts healed Hero after successful heal item resolve.",
+                  "amount": 1,
+                  "note": "Greater Health Potion Exhausts healed Hero after successful heal item resolve."
+                }
+              ]
+            }
+          ],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false,
+          "exhaust_reason": "Greater Health Potion Exhausts healed Hero after successful heal item resolve."
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-ITM-002",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 0,
+        "cost": 0,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-ITM-002",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 150
+      }
+    },
+    {
+      "id": "S0-ITM-002",
+      "cls": "",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "source": false,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 0,
+        "cost": 0,
+        "left_before": 100,
+        "left_after": 150,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-ITM-002",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "commit_token": "card:AI:S0-ITM-002:1793899892378:0.001698041749621626",
+          "_mana_payment_committed": true,
+          "_mana_payment_committed_cost": 0,
+          "_mana_payment_committed_value": 0,
+          "_mana_payment_committed_shard_uids": []
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 150,
+          "maxHp": 200,
+          "exhausted": true,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [
+            {
+              "name": "Potion Exhausted",
+              "duration": 1,
+              "text": "Greater Health Potion Exhausts healed Hero after successful heal item resolve.",
+              "sources": [
+                {
+                  "source_name": "Greater Health Potion Exhausts healed Hero after successful heal item resolve.",
+                  "amount": 1,
+                  "note": "Greater Health Potion Exhausts healed Hero after successful heal item resolve."
+                }
+              ]
+            }
+          ],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false,
+          "exhaust_reason": "Greater Health Potion Exhausts healed Hero after successful heal item resolve."
+        },
+        "last_revive": null,
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-ITM-002",
+      "cls": "",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 0,
+        "cost": 0,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-ITM-002",
+      "cls": "",
+      "side": "AI",
+      "type": "heal_target",
+      "ok": true,
+      "details": {
+        "from": 100,
+        "to": 150
+      }
+    },
+    {
+      "id": "S0-ITM-008",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "source": false,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 0,
+        "cost": 0,
+        "left_before": 0,
+        "left_after": 10,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-ITM-008",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "commit_token": "card:PLAYER:S0-ITM-008:1793899892379:0.13977729632535663",
+          "_mana_payment_committed": true,
+          "_mana_payment_committed_cost": 0,
+          "_mana_payment_committed_value": 0,
+          "_mana_payment_committed_shard_uids": []
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H004",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H004",
+          "hp": 10,
+          "maxHp": 200,
+          "exhausted": true,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H004",
+          "legacy_package_id": "S0-STARTER-01-PACKAGE-1",
+          "legacy_mode": false,
+          "casting": false,
+          "pending_casting": false,
+          "exhaust_reason": "Revived by Phoenix Feather.",
+          "mode": "HERO"
+        },
+        "last_revive": {
+          "id": "revive_1",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "card_id": "S0-WAR-H004",
+          "source_name": "Phoenix Feather",
+          "legacy_card_id": "S0-WAR-L001",
+          "hp": 10,
+          "exhausted": true,
+          "from_legacy": true
+        },
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-ITM-008",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 0,
+        "cost": 0,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-ITM-008",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "revive_hp",
+      "ok": true,
+      "details": {
+        "actual": 10,
+        "expected": 10,
+        "mode": false
+      }
+    },
+    {
+      "id": "S0-ITM-008",
+      "cls": "",
+      "side": "PLAYER",
+      "type": "revive_exhaust",
+      "ok": true,
+      "details": {
+        "actual": true,
+        "expected": true
+      }
+    },
+    {
+      "id": "S0-ITM-008",
+      "cls": "",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 0
+        },
+        "source": false,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 0,
+        "cost": 0,
+        "left_before": 0,
+        "left_after": 10,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-ITM-008",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "commit_token": "card:AI:S0-ITM-008:1793899892380:0.3058409197543466",
+          "_mana_payment_committed": true,
+          "_mana_payment_committed_cost": 0,
+          "_mana_payment_committed_value": 0,
+          "_mana_payment_committed_shard_uids": []
+        },
+        "post_hero": {
+          "card_id": "S0-MAG-H001",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-MAG-H001",
+          "hp": 10,
+          "maxHp": 200,
+          "exhausted": true,
+          "exp_cards": [],
+          "exp_total": 0,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-MAG-L001",
+          "legacy_lineage_id": "S0-MAG-H001",
+          "legacy_package_id": "S0-STARTER-02-PACKAGE-1",
+          "legacy_mode": false,
+          "casting": false,
+          "pending_casting": false,
+          "exhaust_reason": "Revived by Phoenix Feather.",
+          "mode": "HERO"
+        },
+        "last_revive": {
+          "id": "revive_1",
+          "side": "AI",
+          "lane": "LEFT",
+          "card_id": "S0-MAG-H001",
+          "source_name": "Phoenix Feather",
+          "legacy_card_id": "S0-WAR-L001",
+          "hp": 10,
+          "exhausted": true,
+          "from_legacy": true
+        },
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-ITM-008",
+      "cls": "",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 0,
+        "cost": 0,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-ITM-008",
+      "cls": "",
+      "side": "AI",
+      "type": "revive_hp",
+      "ok": true,
+      "details": {
+        "actual": 10,
+        "expected": 10,
+        "mode": false
+      }
+    },
+    {
+      "id": "S0-ITM-008",
+      "cls": "",
+      "side": "AI",
+      "type": "revive_exhaust",
+      "ok": true,
+      "details": {
+        "actual": true,
+        "expected": true
+      }
+    },
+    {
+      "id": "S0-WAR-014",
+      "cls": "Gladiator",
+      "side": "PLAYER",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "source": false,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 4,
+        "cost": 4,
+        "left_before": 0,
+        "left_after": 30,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "PLAYER",
+          "card_id": "S0-WAR-014",
+          "hand_index": 0,
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "commit_token": "card:PLAYER:S0-WAR-014:1793899892381:0.06322507252238552",
+          "player_event_id": "you_1793899892381_598987",
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H002",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "instance_id": "HERO:PLAYER:LEFT:S0-WAR-H001",
+          "hp": 30,
+          "maxHp": 120,
+          "exhausted": true,
+          "exp_cards": [],
+          "exp_total": 300,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H001",
+          "legacy_package_id": "TEST-GLADIATOR",
+          "casting": false,
+          "pending_casting": false,
+          "exhaust_reason": "Revived by Final Grit.",
+          "legacy_mode": false,
+          "mode": "HERO"
+        },
+        "last_revive": {
+          "id": "revive_1",
+          "side": "PLAYER",
+          "lane": "LEFT",
+          "card_id": "S0-WAR-H002",
+          "source_name": "Final Grit",
+          "legacy_card_id": "S0-WAR-L001",
+          "hp": 30,
+          "exhausted": true,
+          "from_legacy": true
+        },
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-WAR-014",
+      "cls": "Gladiator",
+      "side": "PLAYER",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 4,
+        "cost": 4,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-WAR-014",
+      "cls": "Gladiator",
+      "side": "PLAYER",
+      "type": "revive_hp",
+      "ok": true,
+      "details": {
+        "actual": 30,
+        "expected": 30,
+        "mode": false
+      }
+    },
+    {
+      "id": "S0-WAR-014",
+      "cls": "Gladiator",
+      "side": "PLAYER",
+      "type": "revive_exhaust",
+      "ok": true,
+      "details": {
+        "actual": true,
+        "expected": true
+      }
+    },
+    {
+      "id": "S0-WAR-014",
+      "cls": "Gladiator",
+      "side": "AI",
+      "type": "commit_valid",
+      "ok": true,
+      "details": {
+        "pre": {
+          "can": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "gate": {
+          "ok": true,
+          "reasons": [],
+          "cost": 4
+        },
+        "source": false,
+        "phase": "Deploy",
+        "pending": null,
+        "err": null,
+        "result": true,
+        "paid": 4,
+        "cost": 4,
+        "left_before": 0,
+        "left_after": 30,
+        "center_after": 100,
+        "action": {
+          "type": "PLAY_CARD",
+          "side": "AI",
+          "card_id": "S0-WAR-014",
+          "hand_index": 0,
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "_mana_choice_complete": true,
+          "selected_mana_class_uids": [],
+          "commit_token": "card:AI:S0-WAR-014:1793899892382:0.9033860326104931",
+          "source_card_finalized": true
+        },
+        "post_hero": {
+          "card_id": "S0-WAR-H002",
+          "side": "AI",
+          "lane": "LEFT",
+          "instance_id": "HERO:AI:LEFT:S0-WAR-H001",
+          "hp": 30,
+          "maxHp": 120,
+          "exhausted": true,
+          "exp_cards": [],
+          "exp_total": 300,
+          "attachments": [
+            null,
+            null
+          ],
+          "statuses": [],
+          "assigned_legacy_card_id": "S0-WAR-L001",
+          "legacy_lineage_id": "S0-WAR-H001",
+          "legacy_package_id": "TEST-GLADIATOR",
+          "casting": false,
+          "pending_casting": false,
+          "exhaust_reason": "Revived by Final Grit.",
+          "legacy_mode": false,
+          "mode": "HERO"
+        },
+        "last_revive": {
+          "id": "revive_1",
+          "side": "AI",
+          "lane": "LEFT",
+          "card_id": "S0-WAR-H002",
+          "source_name": "Final Grit",
+          "legacy_card_id": "S0-WAR-L001",
+          "hp": 30,
+          "exhausted": true,
+          "from_legacy": true
+        },
+        "hand": [],
+        "log": [
+          "Shard Deck: PLAYER Cleric/Warrior; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ]
+      }
+    },
+    {
+      "id": "S0-WAR-014",
+      "cls": "Gladiator",
+      "side": "AI",
+      "type": "mana_commit",
+      "ok": true,
+      "details": {
+        "paid": 4,
+        "cost": 4,
+        "phase": "Deploy"
+      }
+    },
+    {
+      "id": "S0-WAR-014",
+      "cls": "Gladiator",
+      "side": "AI",
+      "type": "revive_hp",
+      "ok": true,
+      "details": {
+        "actual": 30,
+        "expected": 30,
+        "mode": false
+      }
+    },
+    {
+      "id": "S0-WAR-014",
+      "cls": "Gladiator",
+      "side": "AI",
+      "type": "revive_exhaust",
+      "ok": true,
+      "details": {
+        "actual": true,
+        "expected": true
+      }
+    }
+  ],
+  "browser_errors": []
+}

@@ -1,0 +1,187 @@
+{
+  "baseline": "RC29",
+  "purpose": "Surge payment count + selected physical Mana regression",
+  "checks": [
+    {
+      "name": "4-mana spell opens payment with 4 base selected",
+      "passed": true,
+      "detail": {
+        "status": "MANA 4 / 4",
+        "selected": 4
+      }
+    },
+    {
+      "name": "Surge ON shows 5/5 (+1 Arcane Surge)",
+      "passed": true,
+      "detail": {
+        "status": "MANA 5 / 5 (+1 Arcane Surge)",
+        "selected": 5
+      }
+    },
+    {
+      "name": "Narrow 820px still reports 5/5",
+      "passed": true,
+      "detail": "MANA 5 / 5 (+1 Arcane Surge)"
+    },
+    {
+      "name": "Actual fifth Mana is reserved, not just a text label",
+      "passed": true,
+      "detail": "MANA:PLAYER:Q4"
+    },
+    {
+      "name": "No SURGE SHARD wording in live payment UI",
+      "passed": true,
+      "detail": "ARCANE SURGE (+20). Spend 1 additional Mana for +20 Magical damage."
+    },
+    {
+      "name": "15 repeated renderer passes preserve 5 selected Mana",
+      "passed": true,
+      "detail": {
+        "status": "MANA 5 / 5 (+1 Arcane Surge)",
+        "selected": 5
+      }
+    },
+    {
+      "name": "Reserved fifth Mana visually highlighted",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Arcane Surge spends 5 physical Mana from pool",
+      "passed": true,
+      "detail": {
+        "pool": [],
+        "lastLog": [
+          "Status result: Burn 1 on Bromir Oathforge.",
+          "Fireball Primary Attack Damage resolves for 50 Magical damage to Bromir Oathforge.",
+          "AI chose Take Hit / No Response. Attack/resolution continues.",
+          "AI takes the hit / uses no Defense response.",
+          "Response Window opens for Fireball targeting Bromir Oathforge."
+        ]
+      }
+    },
+    {
+      "name": "Arcane Surge +20 is applied to damage",
+      "passed": true,
+      "detail": [
+        "Status result: Burn 1 on Bromir Oathforge.",
+        "Fireball Primary Attack Damage resolves for 50 Magical damage to Bromir Oathforge.",
+        "AI chose Take Hit / No Response. Attack/resolution continues.",
+        "AI takes the hit / uses no Defense response.",
+        "Response Window opens for Fireball targeting Bromir Oathforge.",
+        "Arcane Surge spends 1 additional Mana. Lucien Voss selected Magical Attack gains +20 damage.",
+        "PLAYER spends 1 additional Mana for Arcane Surge."
+      ]
+    },
+    {
+      "name": "Surge OFF spends only 4 of 5 Mana",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "Surge OFF returns to 4/4 and deselects extra Mana",
+      "passed": true,
+      "detail": {
+        "status": "MANA 4 / 4",
+        "selected": 4
+      }
+    },
+    {
+      "name": "Spell Blade shows +1 Mana Surge, 5/5",
+      "passed": true,
+      "detail": "MANA 5 / 5 (+1 Mana Surge)"
+    },
+    {
+      "name": "Spell Blade pays 5 and +10 is applied",
+      "passed": true,
+      "detail": [
+        "Status result: Burn 1 on Bromir Oathforge.",
+        "Fireball Primary Attack Damage resolves for 40 Magical damage to Bromir Oathforge.",
+        "AI chose Take Hit / No Response. Attack/resolution continues.",
+        "AI takes the hit / uses no Defense response.",
+        "Response Window opens for Fireball targeting Bromir Oathforge.",
+        "Mana Surge spends 1 additional Mana. Lucien Voss selected Magical Attack gains +10 damage."
+      ]
+    },
+    {
+      "name": "No extra Mana disables Surge",
+      "passed": true,
+      "detail": "ARCANE SURGE (+20). Not enough additional Mana after paying the card cost."
+    },
+    {
+      "name": "Non-Magical Attack disables Surge with tooltip",
+      "passed": true,
+      "detail": "ARCANE SURGE (+20). This card is not a Magical Attack."
+    },
+    {
+      "name": "CANCEL spends zero and keeps card",
+      "passed": true,
+      "detail": {
+        "pool": 5,
+        "hand": [
+          "S0-MAG-003"
+        ]
+      }
+    },
+    {
+      "name": "Six Mana: precisely five selected spent, unselected preserved",
+      "passed": true,
+      "detail": {
+        "left": [
+          "MANA:PLAYER:Q5"
+        ],
+        "unselected": [
+          "MANA:PLAYER:Q5"
+        ],
+        "surge": "MANA:PLAYER:Q4"
+      }
+    },
+    {
+      "name": "Base Class Mana contributes 2, Surge +1: total 5/5",
+      "passed": true,
+      "detail": {
+        "base": 4,
+        "physicalCardsSelected": 4,
+        "status": "MANA 5 / 5 (+1 Arcane Surge)"
+      }
+    },
+    {
+      "name": "Mixed Class Mana base and Surge spend 4 cards once each",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "Color Mana surcharge counts as +1, total 5/5",
+      "passed": true,
+      "detail": {
+        "status": "MANA 5 / 5 (+1 Arcane Surge)",
+        "surgeUid": "MANA:PLAYER:CLASS1"
+      }
+    },
+    {
+      "name": "Color Mana surcharge spent once, not double-counted",
+      "passed": true,
+      "detail": {
+        "pool": []
+      }
+    },
+    {
+      "name": "Changing base selection with Surge ON preserves exactly 5 legal Mana",
+      "passed": true,
+      "detail": {
+        "picked": [
+          "MANA:PLAYER:Q1",
+          "MANA:PLAYER:Q2",
+          "MANA:PLAYER:Q3",
+          "MANA:PLAYER:Q5"
+        ],
+        "extra": "MANA:PLAYER:Q4",
+        "status": "MANA 5 / 5 (+1 Arcane Surge)"
+      }
+    }
+  ],
+  "errors": [],
+  "total": 22,
+  "passed": 22,
+  "failed": 0
+}

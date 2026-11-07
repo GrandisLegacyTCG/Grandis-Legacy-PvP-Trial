@@ -1,0 +1,46 @@
+{
+  "build": "Grandis Legacy VS AI Season 0 v1.0 RC15",
+  "baseline": "v1.0 RC14 / official OSA Season 0 DEV45 read-only",
+  "qa_kind": "inline-loaded Chromium browser with real bundled JS; full hosted E2E not verified",
+  "checks": {
+    "deckbuilder_v158": {
+      "5_starter_nested": 5,
+      "5_starter_flat": 5,
+      "total_pass": 10,
+      "negative_invalid_decks_rejected": 3
+    },
+    "bard_maestro": {
+      "bard_center_open": true,
+      "discard_select_enabled": true,
+      "skip_no_zone_changes": true,
+      "maestro_two_select_and_commit": true,
+      "maestro_discarded": 2,
+      "hand_count_preserved": true
+    },
+    "mana_12_layout": {
+      "viewport_widths": [
+        820,
+        900,
+        1024,
+        1280,
+        1600
+      ],
+      "cards_per_pool": 12,
+      "overflow_right_pixels": "none in measured player pool, across five widths; simulated DOM 12 cards"
+    },
+    "S0_builtin_regressions": {
+      "ultimate_tribute": "30/30",
+      "target_selection": "13/13",
+      "lineage": "PASS"
+    },
+    "javascript_syntax": "app.bundle.js and app-runtime.js PASS",
+    "chromium_page_errors": 0
+  },
+  "limits": [
+    "No complete human-versus-AI Game Over match verified",
+    "Actual player Deck Builder JSON file that produced user screenshot not provided; exporter shape tested using five official Season 0 starter decks",
+    "Status animation and arrow behavior checked against code and targeted browser paths, not exhaustive mouse-play all scenarios",
+    "12 Mana geometric test used synthetic DOM cards, not a 12-card naturally played match",
+    "No direct browser test of the actual user-reported Visual Battle VFX in hosted app; anchor now uses visible Hero image bounds"
+  ]
+}

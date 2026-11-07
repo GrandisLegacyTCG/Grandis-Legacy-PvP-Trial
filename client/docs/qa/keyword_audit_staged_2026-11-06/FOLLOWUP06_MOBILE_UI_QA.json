@@ -1,0 +1,353 @@
+{
+  "stats": {
+    "cases": 12,
+    "passed": 12,
+    "failed": 0
+  },
+  "errors": [],
+  "results": [
+    {
+      "card_id": "S0-ARC-030",
+      "scenario": "visible_cancel",
+      "pass": true,
+      "evidence": {
+        "pending": {
+          "type": "card_search_choice",
+          "resolve_to": "s0_condition_precommit",
+          "title": "Crimson Crescendo — CONDITION",
+          "candidates": [
+            {
+              "card_id": "S0-ARC-026",
+              "discard_index": 0
+            },
+            {
+              "card_id": "S0-ARC-026",
+              "discard_index": 1
+            },
+            {
+              "card_id": "S0-ARC-026",
+              "discard_index": 2
+            }
+          ],
+          "required": 1
+        }
+      }
+    },
+    {
+      "card_id": "S0-ARC-030",
+      "scenario": "cancel_rollback",
+      "pass": true,
+      "evidence": {
+        "before": {
+          "pending": {
+            "type": "card_search_choice",
+            "resolve_to": "s0_condition_precommit",
+            "title": "Crimson Crescendo — CONDITION",
+            "selected": [],
+            "required": 1
+          },
+          "pool": 12,
+          "discard": [
+            "S0-ARC-026",
+            "S0-ARC-026",
+            "S0-ARC-026"
+          ],
+          "hand": [
+            "S0-ARC-030",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        },
+        "after": {
+          "pending": null,
+          "pool": 12,
+          "discard": [
+            "S0-ARC-026",
+            "S0-ARC-026",
+            "S0-ARC-026"
+          ],
+          "hand": [
+            "S0-ARC-030",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        }
+      }
+    },
+    {
+      "card_id": "S0-ARC-030",
+      "scenario": "selection_only_no_cost",
+      "pass": true,
+      "evidence": {
+        "before": {
+          "pending": {
+            "type": "card_search_choice",
+            "resolve_to": "s0_condition_precommit",
+            "title": "Crimson Crescendo — CONDITION",
+            "selected": [],
+            "required": 1
+          },
+          "pool": 12,
+          "discard": [
+            "S0-ARC-026",
+            "S0-ARC-026",
+            "S0-ARC-026"
+          ],
+          "hand": [
+            "S0-ARC-030",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        },
+        "after": {
+          "pending": {
+            "type": "card_search_choice",
+            "resolve_to": "s0_condition_precommit",
+            "title": "Crimson Crescendo — CONDITION",
+            "selected": [
+              0
+            ],
+            "required": 1
+          },
+          "pool": 12,
+          "discard": [
+            "S0-ARC-026",
+            "S0-ARC-026",
+            "S0-ARC-026"
+          ],
+          "hand": [
+            "S0-ARC-030",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        }
+      }
+    },
+    {
+      "card_id": "S0-ARC-030",
+      "scenario": "confirm_enabled",
+      "pass": true,
+      "evidence": {
+        "count": 1
+      }
+    },
+    {
+      "card_id": "S0-ARC-030",
+      "scenario": "confirm_advances",
+      "pass": true,
+      "evidence": {
+        "after": {
+          "pending": {
+            "type": "mana_shard_payment_choice",
+            "resolve_to": null,
+            "title": null,
+            "selected": null,
+            "required": null
+          },
+          "pool": 12,
+          "discard": [
+            "S0-ARC-026",
+            "S0-ARC-026",
+            "S0-ARC-026"
+          ],
+          "hand": [
+            "S0-ARC-030",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        },
+        "overlay": "gl-center-choice-stage open gl-center-mode-pay",
+        "buttons": [
+          "CANCEL",
+          "PAY"
+        ]
+      }
+    },
+    {
+      "card_id": "S0-ARC-030",
+      "scenario": "physical_pay_from_ui",
+      "pass": true,
+      "evidence": {
+        "after": {
+          "pending": null,
+          "pool": 7,
+          "discard": [
+            "S0-ARC-026",
+            "S0-ARC-026",
+            "S0-ARC-030"
+          ],
+          "hand": [
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 51
+        },
+        "before_mana": 12
+      }
+    },
+    {
+      "card_id": "S0-CLE-013",
+      "scenario": "visible_cancel",
+      "pass": true,
+      "evidence": {
+        "pending": {
+          "type": "card_search_choice",
+          "resolve_to": "gods_blessing_precommit",
+          "title": "God's Blessing — CONDITION",
+          "candidates": [
+            {
+              "card_id": "S0-WAR-001",
+              "hand_index": 1
+            },
+            {
+              "card_id": "S0-CLE-002",
+              "hand_index": 2
+            }
+          ],
+          "required": 1
+        }
+      }
+    },
+    {
+      "card_id": "S0-CLE-013",
+      "scenario": "cancel_rollback",
+      "pass": true,
+      "evidence": {
+        "before": {
+          "pending": {
+            "type": "card_search_choice",
+            "resolve_to": "gods_blessing_precommit",
+            "title": "God's Blessing — CONDITION",
+            "selected": [],
+            "required": 1
+          },
+          "pool": 12,
+          "discard": [],
+          "hand": [
+            "S0-CLE-013",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        },
+        "after": {
+          "pending": null,
+          "pool": 12,
+          "discard": [],
+          "hand": [
+            "S0-CLE-013",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        }
+      }
+    },
+    {
+      "card_id": "S0-CLE-013",
+      "scenario": "selection_only_no_cost",
+      "pass": true,
+      "evidence": {
+        "before": {
+          "pending": {
+            "type": "card_search_choice",
+            "resolve_to": "gods_blessing_precommit",
+            "title": "God's Blessing — CONDITION",
+            "selected": [],
+            "required": 1
+          },
+          "pool": 12,
+          "discard": [],
+          "hand": [
+            "S0-CLE-013",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        },
+        "after": {
+          "pending": {
+            "type": "card_search_choice",
+            "resolve_to": "gods_blessing_precommit",
+            "title": "God's Blessing — CONDITION",
+            "selected": [],
+            "required": 1
+          },
+          "pool": 12,
+          "discard": [],
+          "hand": [
+            "S0-CLE-013",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        }
+      }
+    },
+    {
+      "card_id": "S0-CLE-013",
+      "scenario": "confirm_enabled",
+      "pass": true,
+      "evidence": {
+        "count": 1
+      }
+    },
+    {
+      "card_id": "S0-CLE-013",
+      "scenario": "confirm_advances",
+      "pass": true,
+      "evidence": {
+        "after": {
+          "pending": {
+            "type": "mana_shard_payment_choice",
+            "resolve_to": null,
+            "title": null,
+            "selected": null,
+            "required": null
+          },
+          "pool": 12,
+          "discard": [],
+          "hand": [
+            "S0-CLE-013",
+            "S0-WAR-001",
+            "S0-CLE-002"
+          ],
+          "deck": 50
+        },
+        "overlay": "gl-center-choice-stage open gl-center-mode-pay",
+        "buttons": [
+          "CANCEL",
+          "PAY"
+        ]
+      }
+    },
+    {
+      "card_id": "S0-CLE-013",
+      "scenario": "physical_pay_from_ui",
+      "pass": true,
+      "evidence": {
+        "after": {
+          "pending": null,
+          "pool": 10,
+          "discard": [
+            "S0-WAR-001",
+            "S0-CLE-013"
+          ],
+          "hand": [
+            "S0-CLE-002",
+            "S0-EVT-008",
+            "S0-WAR-010",
+            "S0-CLE-002"
+          ],
+          "deck": 47
+        },
+        "before_mana": 12
+      }
+    }
+  ]
+}

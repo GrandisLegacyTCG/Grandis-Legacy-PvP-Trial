@@ -1,0 +1,360 @@
+{
+  "checks": [
+    {
+      "name": "Human Ambition Hero-side button exists",
+      "pass": true,
+      "detail": {
+        "racial": [
+          {
+            "abilityId": "human_ambition",
+            "label": "Human Ambition",
+            "cost": 1,
+            "text": "During Deploy Phase, you may spend 1 Racial Token to draw 2 cards.",
+            "action": {
+              "cost": {
+                "racial_token": 1
+              },
+              "action_key": "human_ambition",
+              "phase": "Deploy Phase",
+              "effect": {
+                "draw_cards": 2
+              }
+            },
+            "does_exhaust": false
+          }
+        ],
+        "classAbilities": [],
+        "hero": "S0-WAR-H001"
+      }
+    },
+    {
+      "name": "Human Ambition tooltip: spend 1 Racial, draw 2",
+      "pass": true,
+      "detail": {
+        "tip": "Human AmbitionDuring Deploy Phase, you may spend 1 Racial Token to draw 2 cards.",
+        "open": true,
+        "owner": "Human Ambition",
+        "visible": {
+          "x": 454,
+          "y": 449,
+          "width": 315,
+          "height": 79.625,
+          "top": 449,
+          "right": 769,
+          "bottom": 528.625,
+          "left": 454
+        }
+      }
+    },
+    {
+      "name": "Tooltip remains open during repeated Hero render",
+      "pass": true,
+      "detail": {
+        "tip": "Human AmbitionDuring Deploy Phase, you may spend 1 Racial Token to draw 2 cards.",
+        "open": true,
+        "owner": "Human Ambition",
+        "visible": {
+          "x": 454,
+          "y": 449,
+          "width": 315,
+          "height": 79.625,
+          "top": 449,
+          "right": 769,
+          "bottom": 528.625,
+          "left": 454
+        }
+      }
+    },
+    {
+      "name": "Tooltip closes on pointer exit",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Tooltip also opens on keyboard focus",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Tooltip closes on keyboard blur",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Second Chance response button exists",
+      "pass": true,
+      "detail": {
+        "racial": [],
+        "classAbilities": [],
+        "hero": "S0-THF-H001"
+      }
+    },
+    {
+      "name": "Second Chance: spend 1 Racial, DODGE damage",
+      "pass": true,
+      "detail": {
+        "tip": "Second ChanceSpend 1 Racial Token to dodge incoming Physical or Magical damage.",
+        "open": true,
+        "owner": "Second Chance",
+        "visible": {
+          "x": 458,
+          "y": 449,
+          "width": 315,
+          "height": 79.625,
+          "top": 449,
+          "right": 773,
+          "bottom": 528.625,
+          "left": 458
+        }
+      }
+    },
+    {
+      "name": "Response tooltip persists repeated render",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Changing actions closes stale tooltip",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Ancestral Focus official text tooltip",
+      "pass": true,
+      "detail": {
+        "tip": "Ancestral FocusDuring Deploy Phase, you may spend 1 Racial Token to draw 2 Mana cards to your Mana Pool.",
+        "open": true,
+        "owner": "Ancestral Focus",
+        "visible": {
+          "x": 455,
+          "y": 449,
+          "width": 315,
+          "height": 79.625,
+          "top": 449,
+          "right": 770,
+          "bottom": 528.625,
+          "left": 455
+        }
+      }
+    },
+    {
+      "name": "Primal Strike official text tooltip",
+      "pass": true,
+      "detail": {
+        "tip": "Primal StrikeDuring your Battle Phase, you may spend 1 Racial Token to deal 20 Physical damage to an injured opponent's Hero.",
+        "open": true,
+        "owner": "Primal Strike",
+        "visible": {
+          "x": 81,
+          "y": 440,
+          "width": 315,
+          "height": 97.015625,
+          "top": 440,
+          "right": 396,
+          "bottom": 537.015625,
+          "left": 81
+        }
+      }
+    },
+    {
+      "name": "Holy Resurgence official text tooltip",
+      "pass": true,
+      "detail": {
+        "tip": "Holy ResurgenceOnce per turn during your Deploy Phase, you may spend 1 Mana Shard to heal one of your Heroes for +10 HP. Exhaust this Hero afterward.",
+        "open": true,
+        "owner": "Holy Resurgence",
+        "visible": {
+          "x": 452,
+          "y": 440,
+          "width": 315,
+          "height": 97.015625,
+          "top": 440,
+          "right": 767,
+          "bottom": 537.015625,
+          "left": 452
+        }
+      }
+    },
+    {
+      "name": "Radiant Oblivion official text tooltip",
+      "pass": true,
+      "detail": {
+        "tip": "Radiant OblivionOnce per turn during your Deploy Phase, you may spend 1 Mana Shard to heal one of your Heroes for +20 HP. Exhaust this Hero afterward.",
+        "open": true,
+        "owner": "Radiant Oblivion",
+        "visible": {
+          "x": 454,
+          "y": 440,
+          "width": 315,
+          "height": 97.015625,
+          "top": 440,
+          "right": 769,
+          "bottom": 537.015625,
+          "left": 454
+        }
+      }
+    },
+    {
+      "name": "Dragon Scale official text tooltip",
+      "pass": true,
+      "detail": {
+        "tip": "Dragon ScaleYou may spend 1 Racial Token to Block incoming Physical or Magical damage. (BLOCK 50 damage.)",
+        "open": true,
+        "owner": "Dragon Scale",
+        "visible": {
+          "x": 467,
+          "y": 449,
+          "width": 315,
+          "height": 79.625,
+          "top": 449,
+          "right": 782,
+          "bottom": 528.625,
+          "left": 467
+        }
+      }
+    },
+    {
+      "name": "Legacy ability exists with cost candidates",
+      "pass": true,
+      "detail": [
+        {
+          "abilityId": "warriors_relic",
+          "label": "Warrior's Relic",
+          "ability": {
+            "name": "Warrior's Relic",
+            "action_key": "warriors_relic",
+            "once_per_turn": true,
+            "timing": "Deploy Phase / Reform Phase",
+            "allowed_phases": [
+              "Deploy Phase",
+              "Reform Phase"
+            ],
+            "text": "Once per turn, you may discard 1 Warrior Skill Card from your hand to draw 1 card from your deck.",
+            "cost": {
+              "discard_from_hand": {
+                "count": 1,
+                "filter": {
+                  "class_family": "Warrior",
+                  "card_type": "Skill"
+                },
+                "selection": "controller_selects_exact_card_instances"
+              }
+            },
+            "effect": {
+              "type": "DRAW_CARDS",
+              "count": 1
+            }
+          },
+          "cost_count": 1,
+          "cost_family": "Warrior"
+        }
+      ]
+    },
+    {
+      "name": "Legacy hover uses LEGACY_ABILITY only",
+      "pass": true,
+      "detail": {
+        "tip": "Warrior's RelicOnce per turn, you may discard 1 Warrior Skill Card from your hand to draw 1 card from your deck.",
+        "open": true,
+        "owner": "Warrior's Relic",
+        "visible": {
+          "x": 462,
+          "y": 449,
+          "width": 315,
+          "height": 79.625,
+          "top": 449,
+          "right": 777,
+          "bottom": 528.625,
+          "left": 462
+        }
+      }
+    },
+    {
+      "name": "Real Chromium mouse hover opens tooltip",
+      "pass": true,
+      "detail": {
+        "tip": "Human AmbitionDuring Deploy Phase, you may spend 1 Racial Token to draw 2 cards.",
+        "open": true,
+        "owner": "Human Ambition",
+        "visible": {
+          "x": 454,
+          "y": 449,
+          "width": 315,
+          "height": 79.625,
+          "top": 449,
+          "right": 769,
+          "bottom": 528.625,
+          "left": 454
+        }
+      }
+    },
+    {
+      "name": "Real hover persists through polling-style renders",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Tooltip fits viewport 820",
+      "pass": true,
+      "detail": {
+        "tip": "Human AmbitionDuring Deploy Phase, you may spend 1 Racial Token to draw 2 cards.",
+        "open": true,
+        "owner": "Human Ambition",
+        "visible": {
+          "x": 70,
+          "y": 443,
+          "width": 315,
+          "height": 79.625,
+          "top": 443,
+          "right": 385,
+          "bottom": 522.625,
+          "left": 70
+        }
+      }
+    },
+    {
+      "name": "Tooltip fits viewport 1024",
+      "pass": true,
+      "detail": {
+        "tip": "Human AmbitionDuring Deploy Phase, you may spend 1 Racial Token to draw 2 cards.",
+        "open": true,
+        "owner": "Human Ambition",
+        "visible": {
+          "x": 172,
+          "y": 443,
+          "width": 315,
+          "height": 79.625,
+          "top": 443,
+          "right": 487,
+          "bottom": 522.625,
+          "left": 172
+        }
+      }
+    },
+    {
+      "name": "Tooltip fits viewport 1600",
+      "pass": true,
+      "detail": {
+        "tip": "Human AmbitionDuring Deploy Phase, you may spend 1 Racial Token to draw 2 cards.",
+        "open": true,
+        "owner": "Human Ambition",
+        "visible": {
+          "x": 454,
+          "y": 449,
+          "width": 315,
+          "height": 79.625,
+          "top": 449,
+          "right": 769,
+          "bottom": 528.625,
+          "left": 454
+        }
+      }
+    },
+    {
+      "name": "No JavaScript page errors",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "errors": []
+}

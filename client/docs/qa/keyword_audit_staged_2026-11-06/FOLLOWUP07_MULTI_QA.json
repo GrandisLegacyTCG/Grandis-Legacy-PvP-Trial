@@ -1,0 +1,1202 @@
+{
+  "stats": {
+    "total": 66,
+    "passed": 66,
+    "failed": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "Attack commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "Mana payment 7",
+      "expected": 7,
+      "actual": 7,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "Per-target Response order",
+      "expected": [
+        "LEFT",
+        "CENTER",
+        "RIGHT"
+      ],
+      "actual": [
+        "LEFT",
+        "CENTER",
+        "RIGHT"
+      ],
+      "pass": true,
+      "info": {
+        "guard": 3
+      }
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "First target DODGE offered/committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "payData": {
+          "available": true,
+          "legal": true,
+          "startingWindow": true,
+          "started": true,
+          "pending": "response_payment_choice",
+          "finished": true,
+          "current": "CENTER"
+        },
+        "pending": null,
+        "window": null,
+        "logs": [
+          "PLAYER completes payment for Mirror Image (4 Mana value). Counter-response priority may now open.",
+          "Response Window opens for Glacial Spike target 1/3 — PLAYER LEFT.",
+          "Glacial Spike multi-target sequence: LEFT → CENTER → RIGHT.",
+          "AI plays Glacial Spike and pays 7 Mana. Vaelis Stormweave Exhausts.",
+          "Shard Deck: PLAYER Warrior/Cleric; AI Warrior/Mage. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ],
+        "hand": []
+      }
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "LEFT DODGE prevents damage",
+      "expected": 150,
+      "actual": 150,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "LEFT DODGE prevents Freeze",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "CENTER Hit damage 20",
+      "expected": 130,
+      "actual": 130,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "CENTER Hit causes Freeze",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "RIGHT independent Hit damage 20",
+      "expected": 130,
+      "actual": 130,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "RIGHT independent Freeze",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "Response window closes",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "Original Attack single Discard",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "DODGE single Discard",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "DODGE Mana cost",
+      "expected": 8,
+      "actual": 8,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "Mana physical 12 PLAYER",
+      "expected": 12,
+      "actual": 12,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike 3 active",
+      "label": "Mana physical 12 AI",
+      "expected": 12,
+      "actual": 12,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "Attack commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "Mana payment 7",
+      "expected": 7,
+      "actual": 7,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "Per-target Response order",
+      "expected": [
+        "LEFT",
+        "CENTER"
+      ],
+      "actual": [
+        "LEFT",
+        "CENTER"
+      ],
+      "pass": true,
+      "info": {
+        "guard": 2
+      }
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "First target DODGE offered/committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "payData": {
+          "available": true,
+          "legal": true,
+          "startingWindow": true,
+          "started": true,
+          "pending": "response_payment_choice",
+          "finished": true,
+          "current": "CENTER"
+        },
+        "pending": null,
+        "window": null,
+        "logs": [
+          "PLAYER completes payment for Mirror Image (4 Mana value). Counter-response priority may now open.",
+          "Response Window opens for Glacial Spike target 1/2 — PLAYER LEFT.",
+          "Glacial Spike multi-target sequence: LEFT → CENTER.",
+          "AI plays Glacial Spike and pays 7 Mana. Vaelis Stormweave Exhausts.",
+          "Shard Deck: PLAYER Warrior/Cleric; AI Mage/Warrior. Each Shard Deck starts at 12 cards. After the Opening Coin Flip, each side draws its 6-card Opening Hand first, then 3 Starting Shards into its Shard Pool. Mana Regen starts at +1.",
+          "Match initialized. Main Decks are shuffled. Opening Coin Flip must resolve before Opening Hand and Starting Shards are drawn."
+        ],
+        "hand": []
+      }
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "LEFT DODGE prevents damage",
+      "expected": 150,
+      "actual": 150,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "LEFT DODGE prevents Freeze",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "CENTER Hit damage 20",
+      "expected": 130,
+      "actual": 130,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "CENTER Hit causes Freeze",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "Response window closes",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "Original Attack single Discard",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "DODGE single Discard",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "DODGE Mana cost",
+      "expected": 8,
+      "actual": 8,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "Mana physical 12 PLAYER",
+      "expected": 12,
+      "actual": 12,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Glacial Spike Legacy RIGHT",
+      "label": "Mana physical 12 AI",
+      "expected": 12,
+      "actual": 12,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "Poison Mist commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "pending": {
+          "type": "response_window",
+          "card_id": "S0-THF-011"
+        },
+        "window": {
+          "kind": "incoming_attack",
+          "response_owner": "PLAYER",
+          "card_id": "S0-THF-011",
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "damage": 10,
+          "damage_type": "Magical",
+          "attack_type": "Area Damage",
+          "cannot_dodge": false,
+          "cannot_block": false,
+          "preapplied_block": 0,
+          "preapplied_immunity": false,
+          "area": true,
+          "options": [
+            {
+              "card_id": "S0-MAG-005",
+              "hand_index": 0,
+              "card": {
+                "card_id": "S0-MAG-005",
+                "internal_id": "S0-MAG-005",
+                "name": "Mirror Image",
+                "family": "Skill",
+                "card_type": "Skill",
+                "classification": "Defense",
+                "action_category": "Defense",
+                "class_group": "MAG",
+                "printed": {
+                  "name": "Mirror Image",
+                  "text": "DODGE incoming Physical or Magical damage.",
+                  "rows": [
+                    {
+                      "label": "Mage (Rank I)",
+                      "damage": "",
+                      "effect": "DODGE incoming Physical or Magical damage.",
+                      "text": "DODGE incoming Physical or Magical damage."
+                    }
+                  ],
+                  "blocks": [
+                    {
+                      "label": "Mage (Rank I)",
+                      "damage": "",
+                      "effect": "DODGE incoming Physical or Magical damage.",
+                      "text": "DODGE incoming Physical or Magical damage."
+                    }
+                  ],
+                  "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+                },
+                "card_text": "DODGE incoming Physical or Magical damage.",
+                "effect_text": "DODGE incoming Physical or Magical damage.",
+                "display_text_generated_from_canonical": true,
+                "asset": {
+                  "file": "card-art/S0-MAG-005.webp",
+                  "sha256": "44597da50f8407b5365c90d7926029a52d8001692ce9bd42f10a70617d97e7fd",
+                  "format": "webp",
+                  "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-005.webp"
+                },
+                "canonical_hash": "595c10b45fb8659473a04e698de7e7a559d1caa58f8c0806dde7b7529a6480a1",
+                "timing": {
+                  "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+                },
+                "source_required": true,
+                "target_required": false,
+                "runtime_tags": "SKILL;DODGE",
+                "cost": {
+                  "mana": 4
+                },
+                "cost_display": "4 Mana",
+                "requirement": {
+                  "source_mode": "Hero Mode only",
+                  "printed_class_rank_requirements": [
+                    {
+                      "class": "Mage",
+                      "rank": "Rank I",
+                      "effect_text": "DODGE incoming Physical or Magical damage.",
+                      "damage": null
+                    }
+                  ],
+                  "legal_active_classes": [
+                    "Mage",
+                    "Elementalist",
+                    "Elemental Lord",
+                    "Arcane Warrior",
+                    "Arcane Vanguard"
+                  ],
+                  "rank_gate": {
+                    "min_active_rank": 1,
+                    "eligible_active_classes": [
+                      "Mage",
+                      "Elementalist",
+                      "Elemental Lord",
+                      "Arcane Warrior",
+                      "Arcane Vanguard"
+                    ]
+                  }
+                },
+                "dispatch": {
+                  "enabled": false,
+                  "buckets": [
+                    "DODGE",
+                    "REACTION_WINDOW"
+                  ]
+                },
+                "effects": [],
+                "effect": [
+                  {
+                    "kind": "dodge_incoming_damage",
+                    "damage_types": [
+                      "Physical",
+                      "Magical"
+                    ],
+                    "source_s0_printed_row": true
+                  }
+                ],
+                "s0_authority": {
+                  "family": "Skill",
+                  "subtype": "Defense",
+                  "printed_cost": {
+                    "printed": "4 Mana",
+                    "type": "PRINTED_MANA",
+                    "units": 4
+                  },
+                  "printed_branches": [
+                    {
+                      "printedRank": "Rank I",
+                      "requiredPrintedClass": "Mage",
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "DODGE",
+                            "opcode": "DODGE"
+                          },
+                          {
+                            "charOffset": 6,
+                            "matchedText": "incoming",
+                            "opcode": "REACTION_WINDOW"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "DODGE"
+                        ],
+                        "opcodes": [
+                          "DODGE",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "DODGE incoming Physical or Magical damage.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": 1,
+                      "text": "DODGE incoming Physical or Magical damage.",
+                      "variant": "Mage (Rank I)"
+                    }
+                  ],
+                  "opcodes": [
+                    "DODGE",
+                    "REACTION_WINDOW"
+                  ],
+                  "special_handlers": [],
+                  "source_recipe": {
+                    "path": "Authority/Game/Season0-Recipes/DEV41/S0-MAG-005.json",
+                    "sha256": "ef68a9e96da2ff67bc14b7201df3909e1dc6b3e9039fbad92df0e5c2e56e48e4"
+                  }
+                },
+                "canonical_execution": {
+                  "s0_authority_only": true,
+                  "branches": [
+                    {
+                      "printedRank": "Rank I",
+                      "requiredPrintedClass": "Mage",
+                      "semantics": {
+                        "detectedOpcodeMentionsInPrintedOrder": [
+                          {
+                            "charOffset": 0,
+                            "matchedText": "DODGE",
+                            "opcode": "DODGE"
+                          },
+                          {
+                            "charOffset": 6,
+                            "matchedText": "incoming",
+                            "opcode": "REACTION_WINDOW"
+                          }
+                        ],
+                        "explicitStatusDurationTurns": [],
+                        "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                        "keywords": [
+                          "DODGE"
+                        ],
+                        "opcodes": [
+                          "DODGE",
+                          "REACTION_WINDOW"
+                        ],
+                        "printedDamageOrBlock": null,
+                        "sourceExtractedParameters": [],
+                        "sourceText": "DODGE incoming Physical or Magical damage.",
+                        "statuses": [],
+                        "timingPhrases": []
+                      },
+                      "sourceRow": 1,
+                      "text": "DODGE incoming Physical or Magical damage.",
+                      "variant": "Mage (Rank I)"
+                    }
+                  ],
+                  "dispatch_ready": false
+                },
+                "is_ultimate": false,
+                "source_exhausts_after_successful_use": true,
+                "cost_mana": 4,
+                "canonical_cost": {
+                  "mana": 4
+                },
+                "effect_strings_by_class": {
+                  "Mage": "DODGE incoming Physical or Magical damage."
+                },
+                "printed_class_rank_requirements": [
+                  {
+                    "class": "Mage",
+                    "rank": "Rank I",
+                    "effect_text": "DODGE incoming Physical or Magical damage.",
+                    "damage": null
+                  }
+                ],
+                "source_requirement": {
+                  "legal_active_classes": [
+                    "Mage",
+                    "Elementalist",
+                    "Elemental Lord",
+                    "Arcane Warrior",
+                    "Arcane Vanguard"
+                  ]
+                },
+                "legal_active_classes": "Mage;Elementalist;Elemental Lord;Arcane Warrior;Arcane Vanguard"
+              },
+              "source_lane": "LEFT",
+              "source_card_id": "S0-MAG-H001",
+              "response_kind": "dodge"
+            }
+          ],
+          "selected": null,
+          "post": {
+            "damage": 10,
+            "persistent": false,
+            "attachmentSlot": -1
+          },
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-THF-011",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-THF-H002",
+            "target_side": "PLAYER",
+            "target_lane": "LEFT",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-THF-011:1793904651463:0.6914057136729971",
+            "visual_hold_key": null
+          },
+          "multi_sequence": {
+            "affected_lanes": [
+              "LEFT",
+              "CENTER",
+              "RIGHT"
+            ],
+            "index": 0,
+            "total_damage": 0,
+            "poison_vial_applied": false,
+            "connected_hits": 0
+          }
+        }
+      }
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "3 separate target responses",
+      "expected": [
+        "LEFT",
+        "CENTER",
+        "RIGHT"
+      ],
+      "actual": [
+        "LEFT",
+        "CENTER",
+        "RIGHT"
+      ],
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "LEFT dodge available",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "dodge": {
+          "available": true,
+          "legal": true,
+          "startingWindow": true,
+          "started": true,
+          "pending": "response_payment_choice",
+          "finished": true,
+          "current": "CENTER"
+        }
+      }
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "LEFT HP protected",
+      "expected": 150,
+      "actual": 150,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "LEFT Poison prevented",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "CENTER 10 HP loss",
+      "expected": 140,
+      "actual": 140,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "RIGHT 10 HP loss",
+      "expected": 140,
+      "actual": 140,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "Poison on connected hit CENTER",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "Poison on connected hit RIGHT",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "AI Poison Mist per-target",
+      "label": "Source card discarded exactly once",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "PLAYER S0-MAG-014 vs no-Response AI",
+      "label": "Card commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "PLAYER S0-MAG-014 vs no-Response AI",
+      "label": "Defenders resolved independent damage",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "hp": [
+          130,
+          130,
+          130
+        ],
+        "pending": null,
+        "response": null
+      }
+    },
+    {
+      "group": "MULTI",
+      "scenario": "PLAYER S0-MAG-014 vs no-Response AI",
+      "label": "Target status applied",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "PLAYER S0-MAG-014 vs no-Response AI",
+      "label": "Card discarded exactly once",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "PLAYER S0-THF-011 vs no-Response AI",
+      "label": "Card commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "PLAYER S0-THF-011 vs no-Response AI",
+      "label": "Defenders resolved independent damage",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "hp": [
+          140,
+          140,
+          140
+        ],
+        "pending": null,
+        "response": null
+      }
+    },
+    {
+      "group": "MULTI",
+      "scenario": "PLAYER S0-THF-011 vs no-Response AI",
+      "label": "Target status applied",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "MULTI",
+      "scenario": "PLAYER S0-THF-011 vs no-Response AI",
+      "label": "Card discarded exactly once",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Source Area commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "pending": {
+          "type": "response_window",
+          "card_id": "S0-CLE-009"
+        },
+        "window": {
+          "kind": "incoming_attack",
+          "response_owner": "AI",
+          "card_id": "S0-CLE-009",
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "target_side": "AI",
+          "target_lane": "LEFT",
+          "damage": 30,
+          "damage_type": "Magical",
+          "attack_type": "Area Damage",
+          "cannot_dodge": false,
+          "cannot_block": false,
+          "preapplied_block": 0,
+          "preapplied_immunity": false,
+          "area": true,
+          "options": [],
+          "selected": null,
+          "post": {
+            "damage": 30,
+            "persistent": false,
+            "attachmentSlot": -1
+          },
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-CLE-009",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H002",
+            "target_side": "AI",
+            "target_lane": "LEFT",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-CLE-009:1793904651476:0.22389255587202583",
+            "visual_hold_key": null,
+            "player_event_id": "you_1793904651476_851294"
+          },
+          "multi_sequence": {
+            "affected_lanes": [
+              "LEFT",
+              "CENTER",
+              "RIGHT"
+            ],
+            "index": 0,
+            "total_damage": 0,
+            "poison_vial_applied": false,
+            "connected_hits": 0
+          }
+        }
+      }
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Starts at LEFT",
+      "expected": "LEFT",
+      "actual": "LEFT",
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Defeat opens Legacy selection",
+      "expected": "legacy_defeat_choice",
+      "actual": "legacy_defeat_choice",
+      "pass": true,
+      "info": {
+        "hp": 0,
+        "window": null
+      }
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Saved multi-sequence continuation",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Legacy selection commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "pending": {
+          "type": "response_window",
+          "card_id": "S0-CLE-009"
+        },
+        "window": {
+          "kind": "incoming_attack",
+          "response_owner": "AI",
+          "card_id": "S0-CLE-009",
+          "source_side": "PLAYER",
+          "source_lane": "CENTER",
+          "target_side": "AI",
+          "target_lane": "CENTER",
+          "damage": 30,
+          "damage_type": "Magical",
+          "attack_type": "Area Damage",
+          "cannot_dodge": false,
+          "cannot_block": false,
+          "preapplied_block": 0,
+          "preapplied_immunity": false,
+          "area": true,
+          "options": [],
+          "selected": null,
+          "post": {},
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "PLAYER",
+            "card_id": "S0-CLE-009",
+            "hand_index": 0,
+            "source_side": "PLAYER",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H002",
+            "target_side": "AI",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:PLAYER:S0-CLE-009:1793904651476:0.22389255587202583",
+            "visual_hold_key": null,
+            "player_event_id": "you_1793904651476_851294"
+          },
+          "multi_sequence": {
+            "affected_lanes": [
+              "LEFT",
+              "CENTER",
+              "RIGHT"
+            ],
+            "index": 1,
+            "total_damage": 30,
+            "poison_vial_applied": false,
+            "connected_hits": 1
+          }
+        }
+      }
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Second target resumes CENTER",
+      "expected": "CENTER",
+      "actual": "CENTER",
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Third target remains independently processed",
+      "expected": "RIGHT",
+      "actual": "RIGHT",
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Second Hero takes damage",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "PLAYER Holy Blast lethal-then-Legacy",
+      "label": "Attack response queue clears",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Source Area commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "pending": {
+          "type": "response_window",
+          "card_id": "S0-CLE-009"
+        },
+        "window": {
+          "kind": "incoming_attack",
+          "response_owner": "PLAYER",
+          "card_id": "S0-CLE-009",
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "target_side": "PLAYER",
+          "target_lane": "LEFT",
+          "damage": 30,
+          "damage_type": "Magical",
+          "attack_type": "Area Damage",
+          "cannot_dodge": false,
+          "cannot_block": false,
+          "preapplied_block": 0,
+          "preapplied_immunity": false,
+          "area": true,
+          "options": [],
+          "selected": null,
+          "post": {
+            "damage": 30,
+            "persistent": false,
+            "attachmentSlot": -1
+          },
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-CLE-009",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H002",
+            "target_side": "PLAYER",
+            "target_lane": "LEFT",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-CLE-009:1793904651481:0.23427776701682568",
+            "visual_hold_key": null
+          },
+          "multi_sequence": {
+            "affected_lanes": [
+              "LEFT",
+              "CENTER",
+              "RIGHT"
+            ],
+            "index": 0,
+            "total_damage": 0,
+            "poison_vial_applied": false,
+            "connected_hits": 0
+          }
+        }
+      }
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Starts at LEFT",
+      "expected": "LEFT",
+      "actual": "LEFT",
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Defeat opens Legacy selection",
+      "expected": "legacy_defeat_choice",
+      "actual": "legacy_defeat_choice",
+      "pass": true,
+      "info": {
+        "hp": 0,
+        "window": null
+      }
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Saved multi-sequence continuation",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Legacy selection commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "pending": {
+          "type": "response_window",
+          "card_id": "S0-CLE-009"
+        },
+        "window": {
+          "kind": "incoming_attack",
+          "response_owner": "PLAYER",
+          "card_id": "S0-CLE-009",
+          "source_side": "AI",
+          "source_lane": "CENTER",
+          "target_side": "PLAYER",
+          "target_lane": "CENTER",
+          "damage": 30,
+          "damage_type": "Magical",
+          "attack_type": "Area Damage",
+          "cannot_dodge": false,
+          "cannot_block": false,
+          "preapplied_block": 0,
+          "preapplied_immunity": false,
+          "area": true,
+          "options": [],
+          "selected": null,
+          "post": {},
+          "action": {
+            "type": "PLAY_CARD",
+            "side": "AI",
+            "card_id": "S0-CLE-009",
+            "hand_index": 0,
+            "source_side": "AI",
+            "source_lane": "CENTER",
+            "source_card_id": "S0-CLE-H002",
+            "target_side": "PLAYER",
+            "target_lane": "CENTER",
+            "_mana_choice_complete": true,
+            "selected_mana_class_uids": [],
+            "commit_token": "card:AI:S0-CLE-009:1793904651481:0.23427776701682568",
+            "visual_hold_key": null
+          },
+          "multi_sequence": {
+            "affected_lanes": [
+              "LEFT",
+              "CENTER",
+              "RIGHT"
+            ],
+            "index": 1,
+            "total_damage": 30,
+            "poison_vial_applied": false,
+            "connected_hits": 1
+          }
+        }
+      }
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Second target resumes CENTER",
+      "expected": "CENTER",
+      "actual": "CENTER",
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Third target remains independently processed",
+      "expected": "RIGHT",
+      "actual": "RIGHT",
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Second Hero takes damage",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "group": "LEGACY",
+      "scenario": "AI Holy Blast lethal-then-Legacy",
+      "label": "Attack response queue clears",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "info": null
+    }
+  ],
+  "browser_errors": []
+}

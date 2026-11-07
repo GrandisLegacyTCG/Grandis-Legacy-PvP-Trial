@@ -1,0 +1,385 @@
+{
+  "stats": {
+    "total": 37,
+    "passed": 37,
+    "failed": 0
+  },
+  "failures": [],
+  "checks": [
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Area Attack committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "First target LEFT",
+      "expected": "LEFT",
+      "actual": "LEFT",
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Deflect RESPONSE offered",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Cover Up illegal for Area",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Brilliant Radiance illegal for Area",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Deflect response paid",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "pay": {
+          "offered": true,
+          "started": true,
+          "choice": "response_payment_choice",
+          "done": true,
+          "remainingWindow": "incoming_attack"
+        }
+      }
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Deflect connected hit prevented HP loss",
+      "expected": 150,
+      "actual": 150,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Reflect 20 to incoming attacker",
+      "expected": 130,
+      "actual": 130,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Area remaining targets continue independently",
+      "expected": [
+        "LEFT",
+        "CENTER",
+        "RIGHT"
+      ],
+      "actual": [
+        "LEFT",
+        "CENTER",
+        "RIGHT"
+      ],
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Other Hero CENTER takes damage",
+      "expected": 130,
+      "actual": 130,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Other Hero RIGHT takes damage",
+      "expected": 130,
+      "actual": 130,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Response card physically discarded",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "AREA_DEFLECT",
+      "label": "Physical Mana conservation",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "SINGLE_COVER_UP",
+      "label": "Single target Attack begins",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "SINGLE_COVER_UP",
+      "label": "Cover Up response offered",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "options": [
+          {
+            "id": "S0-WAR-004",
+            "kind": "cover_up",
+            "source_lane": "LEFT"
+          }
+        ]
+      }
+    },
+    {
+      "case": "SINGLE_COVER_UP",
+      "label": "Cover Up payment/commit",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "used": {
+          "offered": true,
+          "started": true,
+          "choice": "response_payment_choice",
+          "done": true,
+          "remainingWindow": "incoming_attack"
+        }
+      }
+    },
+    {
+      "case": "SINGLE_COVER_UP",
+      "label": "Protection Hero moves into attacked CENTER",
+      "expected": "S0-WAR-H001",
+      "actual": "S0-WAR-H001",
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "SINGLE_COVER_UP",
+      "label": "Original Mage moved from CENTER to LEFT",
+      "expected": "S0-MAG-H001",
+      "actual": "S0-MAG-H001",
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "SINGLE_COVER_UP",
+      "label": "Protected Mage HP unchanged",
+      "expected": 150,
+      "actual": 150,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "SINGLE_COVER_UP",
+      "label": "Redirected attack affected protector",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "hp": 140,
+        "p": null,
+        "response": null
+      }
+    },
+    {
+      "case": "SINGLE_COVER_UP",
+      "label": "No response stuck after redirect",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "SIMULTANEOUS_LAST_HERO_DEFEAT_ABSOLUTE_DEFENSE",
+      "label": "Normal Slash commits",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "SIMULTANEOUS_LAST_HERO_DEFEAT_ABSOLUTE_DEFENSE",
+      "label": "Absolute Defense Response offered",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "options": [
+          "S0-MAG-031"
+        ]
+      }
+    },
+    {
+      "case": "SIMULTANEOUS_LAST_HERO_DEFEAT_ABSOLUTE_DEFENSE",
+      "label": "Response pays successfully",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "paid": {
+          "offered": true,
+          "started": true,
+          "choice": "response_payment_choice",
+          "done": true,
+          "remainingWindow": null
+        }
+      }
+    },
+    {
+      "case": "SIMULTANEOUS_LAST_HERO_DEFEAT_ABSOLUTE_DEFENSE",
+      "label": "Both final Heroes at zero HP",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "ai": 0,
+        "player": 0,
+        "pending": null
+      }
+    },
+    {
+      "case": "SIMULTANEOUS_LAST_HERO_DEFEAT_ABSOLUTE_DEFENSE",
+      "label": "Game draws only after same exchange",
+      "expected": "DRAW",
+      "actual": "DRAW",
+      "pass": true,
+      "info": {
+        "over": true,
+        "reason": "Both players lost their final active Hero in the same Attack/Defense exchange.",
+        "pending": null
+      }
+    },
+    {
+      "case": "DEFENDER_LAST_DIES",
+      "label": "Slash legal and committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "DEFENDER_LAST_DIES",
+      "label": "Correct winner after complete exchange",
+      "expected": "AI",
+      "actual": "AI",
+      "pass": true,
+      "info": {
+        "reason": "PLAYER loses: all 3 Heroes have been defeated."
+      }
+    },
+    {
+      "case": "DEFENDER_LAST_DIES",
+      "label": "Correct game-over flag",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "ATTACKER_LAST_DIES_REFLECT",
+      "label": "Slash legal and committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "ATTACKER_LAST_DIES_REFLECT",
+      "label": "Defensive Response legally paid",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "response": {
+          "offered": true,
+          "started": true,
+          "choice": "response_payment_choice",
+          "done": true,
+          "remainingWindow": null
+        }
+      }
+    },
+    {
+      "case": "ATTACKER_LAST_DIES_REFLECT",
+      "label": "Correct winner after complete exchange",
+      "expected": "PLAYER",
+      "actual": "PLAYER",
+      "pass": true,
+      "info": {
+        "reason": "AI loses: all 3 Heroes have been defeated."
+      }
+    },
+    {
+      "case": "ATTACKER_LAST_DIES_REFLECT",
+      "label": "Correct game-over flag",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "BOTH_LAST_SURVIVE_BLOCK",
+      "label": "Slash legal and committed",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": null
+    },
+    {
+      "case": "BOTH_LAST_SURVIVE_BLOCK",
+      "label": "Defensive Response legally paid",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "info": {
+        "response": {
+          "offered": true,
+          "started": true,
+          "choice": "response_payment_choice",
+          "done": true,
+          "remainingWindow": null
+        }
+      }
+    },
+    {
+      "case": "BOTH_LAST_SURVIVE_BLOCK",
+      "label": "Correct winner after complete exchange",
+      "expected": null,
+      "actual": null,
+      "pass": true,
+      "info": {
+        "reason": null
+      }
+    },
+    {
+      "case": "BOTH_LAST_SURVIVE_BLOCK",
+      "label": "Correct game-over flag",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "info": null
+    }
+  ],
+  "browser_errors": []
+}

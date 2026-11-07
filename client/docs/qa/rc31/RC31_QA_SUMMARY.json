@@ -1,0 +1,41 @@
+{
+  "baseline": "Grandis Legacy VS AI Season 0 v1.0 RC30 2026-11-06",
+  "release_candidate": "v1.0 RC31 2026-11-07",
+  "code_differences_from_rc30": [
+    "Grandis_Legacy_VS_AI_Season0/index.html",
+    "Grandis_Legacy_VS_AI_Season0/shared-app/app-runtime.js",
+    "Grandis_Legacy_VS_AI_Season0/shared-ui/battlefield-ui.css"
+  ],
+  "original_rc30_archive_preserved": true,
+  "staged_ui001_regression": {
+    "status": "PASS",
+    "method": "Controlled Chromium actual engine and inline-loaded DOM",
+    "passed": 16,
+    "total": 16,
+    "page_errors": 0
+  },
+  "favicon": {
+    "status": "STATIC PASS; HOSTED BROWSER NOT VERIFIED",
+    "link": "engine/assets/favicon.png",
+    "png_size": "120x120",
+    "bytes": 10391,
+    "sha256": "ba3c77d7c9172a375ad23fb449ad44a1ff4d7dad53a56770f71e352cbc7cb03d",
+    "source": "original existing file, byte-identical to Deck Builder v1.60 and website v1.40"
+  },
+  "javascript_syntax": {
+    "status": "PASS",
+    "files": [
+      "shared-app/app-runtime.js",
+      "engine/shared-app/app.bundle.js"
+    ]
+  },
+  "hosted_browser_asset_loading": {
+    "status": "BLOCKED",
+    "reason": "Localhost navigation is blocked in this execution environment; inline Chromium run used for UI regression instead."
+  },
+  "native_firefox": "NOT VERIFIED",
+  "full_natural_match_to_game_over": "NOT VERIFIED",
+  "natural_gameover_variants_win_lose_draw": "NOT VERIFIED",
+  "greater_health_potion_exhaust": "PENDING \u2014 NOT INCLUDED (separate bug/ruling; requires implementation authorization)",
+  "official_osa": "UNCHANGED"
+}

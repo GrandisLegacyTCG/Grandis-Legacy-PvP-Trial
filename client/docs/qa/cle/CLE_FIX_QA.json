@@ -1,0 +1,526 @@
+{
+  "pass": 23,
+  "total": 23,
+  "failed": [],
+  "results": [
+    {
+      "name": "Purify: cleanses Bleed after payment",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "legal": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "remaining": [],
+        "mana": 11
+      }
+    },
+    {
+      "name": "Purify: cleanses Burn after payment",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "legal": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "remaining": [],
+        "mana": 11
+      }
+    },
+    {
+      "name": "Purify: cleanses Freeze after payment",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "legal": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "remaining": [],
+        "mana": 11
+      }
+    },
+    {
+      "name": "Purify: cleanses Poison after payment",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "legal": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "remaining": [],
+        "mana": 11
+      }
+    },
+    {
+      "name": "Purify: cleanses Sleep after payment",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "legal": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "remaining": [],
+        "mana": 11
+      }
+    },
+    {
+      "name": "Purify: cleanses Stun after payment",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "legal": {
+          "can": true,
+          "reasons": [],
+          "cost": 1
+        },
+        "remaining": [],
+        "mana": 11
+      }
+    },
+    {
+      "name": "Purify: no valid negative target is forbidden without payment",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "legal": {
+          "can": false,
+          "reasons": [
+            "Purify requires an allied active Hero with a negative status."
+          ],
+          "cost": 1
+        }
+      }
+    },
+    {
+      "name": "Purify: two statuses choice occurs before payment",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "beforePayment": [
+          "Sleep",
+          "Poison"
+        ],
+        "after": [
+          {
+            "name": "Sleep",
+            "duration": 2,
+            "text": "QA",
+            "sources": [
+              {
+                "source_name": "QA",
+                "amount": 2,
+                "note": "QA"
+              }
+            ]
+          }
+        ],
+        "pendingAfterConfirm": "mana_shard_payment_choice",
+        "mana": 11
+      }
+    },
+    {
+      "name": "Purify: invalid selection never removes unrelated marker",
+      "pass": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "Saint Holy Rejuvenation includes Sleep",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "r": {
+          "healed": 40
+        },
+        "okPending": true
+      }
+    },
+    {
+      "name": "Lun: S0-CLE-H001 Physical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "offered": false,
+        "amt": 0,
+        "want": false
+      }
+    },
+    {
+      "name": "Lun: S0-CLE-H008 Physical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "offered": true,
+        "amt": 20,
+        "want": true
+      }
+    },
+    {
+      "name": "Lun: S0-CLE-H009 Physical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "offered": true,
+        "amt": 20,
+        "want": true
+      }
+    },
+    {
+      "name": "Lun: S0-CLE-H001 Magical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "offered": true,
+        "amt": 20,
+        "want": true
+      }
+    },
+    {
+      "name": "Lun: S0-CLE-H008 Magical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "offered": true,
+        "amt": 20,
+        "want": true
+      }
+    },
+    {
+      "name": "Lun: S0-CLE-H009 Magical",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "offered": true,
+        "amt": 20,
+        "want": true
+      }
+    },
+    {
+      "name": "Binding Light: S0 Defense classifies and can be countered",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "family": "DefendSkill"
+      }
+    },
+    {
+      "name": "Binding Light: nested Response window opens for paid normal Defense",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "openedNow": true,
+        "opts": [
+          {
+            "card_id": "S0-CLE-012",
+            "hand_index": 0,
+            "card": {
+              "card_id": "S0-CLE-012",
+              "internal_id": "S0-CLE-012",
+              "name": "Binding Light",
+              "family": "Skill",
+              "card_type": "Skill",
+              "classification": "Tactical",
+              "action_category": "Tactical",
+              "class_group": "CLE",
+              "printed": {
+                "name": "Binding Light",
+                "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                "rows": [
+                  {
+                    "label": "Priest (Rank II)",
+                    "damage": "",
+                    "effect": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                    "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)"
+                  }
+                ],
+                "blocks": [
+                  {
+                    "label": "Priest (Rank II)",
+                    "damage": "",
+                    "effect": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                    "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)"
+                  }
+                ],
+                "source": "OSA Season 0 DEV45 / current print (consumer DEV44)"
+              },
+              "card_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+              "effect_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+              "display_text_generated_from_canonical": true,
+              "asset": {
+                "file": "card-art/S0-CLE-012.webp",
+                "sha256": "37b9376c654556142427d268693bb07e8b27abce766def0f2c61b1971ccde4ee",
+                "format": "webp",
+                "osa_artwork_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-012.webp"
+              },
+              "canonical_hash": "6a1a6d624f09b46b99b82c73cb0a3bb1e33f12a2963933bc8984d377c2a4bdb9",
+              "timing": {
+                "phase": "S0_CARD_TEXT_AND_RULEBOOK_V2.9_UNRESOLVED_IN_STAGE3"
+              },
+              "source_required": true,
+              "target_required": false,
+              "runtime_tags": "SKILL;REACTION",
+              "cost": {
+                "mana": 2
+              },
+              "cost_display": "2 Mana",
+              "requirement": {
+                "source_mode": "Hero Mode only",
+                "printed_class_rank_requirements": [
+                  {
+                    "class": "Priest",
+                    "rank": "Rank II",
+                    "effect_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                    "damage": null
+                  }
+                ],
+                "legal_active_classes": [
+                  "Priest",
+                  "Saint"
+                ],
+                "rank_gate": {
+                  "min_active_rank": 2,
+                  "eligible_active_classes": [
+                    "Priest",
+                    "Saint"
+                  ]
+                }
+              },
+              "dispatch": {
+                "enabled": false,
+                "buckets": [
+                  "CONDITION",
+                  "NEGATE",
+                  "REACTION_WINDOW"
+                ]
+              },
+              "effects": [],
+              "effect": [],
+              "s0_authority": {
+                "family": "Skill",
+                "subtype": "Tactical",
+                "printed_cost": {
+                  "printed": "2 Mana",
+                  "type": "PRINTED_MANA",
+                  "units": 2
+                },
+                "printed_branches": [
+                  {
+                    "printedRank": "Rank II",
+                    "requiredPrintedClass": "Priest",
+                    "semantics": {
+                      "detectedOpcodeMentionsInPrintedOrder": [
+                        {
+                          "charOffset": 0,
+                          "matchedText": "REACTION",
+                          "opcode": "REACTION_WINDOW"
+                        },
+                        {
+                          "charOffset": 9,
+                          "matchedText": "When",
+                          "opcode": "CONDITION"
+                        },
+                        {
+                          "charOffset": 45,
+                          "matchedText": "negate",
+                          "opcode": "NEGATE"
+                        }
+                      ],
+                      "explicitStatusDurationTurns": [],
+                      "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                      "keywords": [
+                        "REACTION"
+                      ],
+                      "opcodes": [
+                        "NEGATE",
+                        "CONDITION",
+                        "REACTION_WINDOW"
+                      ],
+                      "printedDamageOrBlock": null,
+                      "sourceExtractedParameters": [],
+                      "sourceText": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                      "statuses": [],
+                      "timingPhrases": []
+                    },
+                    "sourceRow": 1,
+                    "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                    "variant": "Priest (Rank II)"
+                  }
+                ],
+                "opcodes": [
+                  "CONDITION",
+                  "NEGATE",
+                  "REACTION_WINDOW"
+                ],
+                "special_handlers": [],
+                "source_recipe": {
+                  "path": "Authority/Game/Season0-Recipes/DEV41/S0-CLE-012.json",
+                  "sha256": "2b6000e56feccc6049a98a805ebfe794a1a034c93eb1b72738a3a076fcd9e04c"
+                }
+              },
+              "canonical_execution": {
+                "s0_authority_only": true,
+                "branches": [
+                  {
+                    "printedRank": "Rank II",
+                    "requiredPrintedClass": "Priest",
+                    "semantics": {
+                      "detectedOpcodeMentionsInPrintedOrder": [
+                        {
+                          "charOffset": 0,
+                          "matchedText": "REACTION",
+                          "opcode": "REACTION_WINDOW"
+                        },
+                        {
+                          "charOffset": 9,
+                          "matchedText": "When",
+                          "opcode": "CONDITION"
+                        },
+                        {
+                          "charOffset": 45,
+                          "matchedText": "negate",
+                          "opcode": "NEGATE"
+                        }
+                      ],
+                      "explicitStatusDurationTurns": [],
+                      "explicitTargetScope": "SOURCE_RULE_DEFINED",
+                      "keywords": [
+                        "REACTION"
+                      ],
+                      "opcodes": [
+                        "NEGATE",
+                        "CONDITION",
+                        "REACTION_WINDOW"
+                      ],
+                      "printedDamageOrBlock": null,
+                      "sourceExtractedParameters": [],
+                      "sourceText": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                      "statuses": [],
+                      "timingPhrases": []
+                    },
+                    "sourceRow": 1,
+                    "text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                    "variant": "Priest (Rank II)"
+                  }
+                ],
+                "dispatch_ready": false
+              },
+              "is_ultimate": false,
+              "source_exhausts_after_successful_use": true,
+              "cost_mana": 2,
+              "canonical_cost": {
+                "mana": 2
+              },
+              "effect_strings_by_class": {
+                "Priest": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)"
+              },
+              "printed_class_rank_requirements": [
+                {
+                  "class": "Priest",
+                  "rank": "Rank II",
+                  "effect_text": "REACTION When an enemy uses a Defense Skill, negate that Skill. It has no effect and is discarded. (This card cannot be used against Ultimate Card.)",
+                  "damage": null
+                }
+              ],
+              "source_requirement": {
+                "legal_active_classes": [
+                  "Priest",
+                  "Saint"
+                ]
+              },
+              "legal_active_classes": "Priest;Saint"
+            },
+            "source_lane": "CENTER",
+            "response_kind": "cancel_defend_skill"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Binding Light: Ultimate Defense cannot be countered",
+      "pass": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "God's Blessing: precommit choice CANCEL does not spend",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "pending": "gods_blessing_precommit",
+        "mana": 12
+      }
+    },
+    {
+      "name": "God's Blessing: selected CONDITION + 2 Mana + Draw 3",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "pre": "gods_blessing_precommit",
+        "afterChoice": "mana_shard_payment_choice",
+        "unspent": true,
+        "handBefore": [
+          "S0-CLE-013",
+          "S0-WAR-001"
+        ],
+        "hand": [
+          "S0-ARC-001",
+          "S0-ARC-002",
+          "S0-ARC-004"
+        ],
+        "discard": [
+          "S0-WAR-001",
+          "S0-CLE-013"
+        ],
+        "mana": 10,
+        "deck": [
+          "S0-ARC-005"
+        ]
+      }
+    },
+    {
+      "name": "God's Blessing: AI legal direct uses CONDITION",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "res": true,
+        "pending": null,
+        "mana": 10,
+        "hand": [
+          "S0-ARC-001",
+          "S0-ARC-002",
+          "S0-ARC-004"
+        ],
+        "discard": [
+          "S0-WAR-001",
+          "S0-CLE-013"
+        ]
+      }
+    },
+    {
+      "name": "God's Blessing: second copy can be discarded",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "legal": {
+          "can": true,
+          "reasons": [],
+          "cost": 2
+        }
+      }
+    }
+  ],
+  "page_errors": [],
+  "bundle_sha256": "a537198eb160858518274f40f59b0eef188535b4958168cc20121a9b0aee46f3"
+}

@@ -1,0 +1,294 @@
+{
+  "results": [
+    {
+      "ok": true,
+      "counter": 1,
+      "prevent": false,
+      "manual": true,
+      "source_class": "Arcane Warrior",
+      "before": 200,
+      "windowDamage": 40,
+      "windowExists": true,
+      "after": 160,
+      "delta": 40,
+      "pending": null,
+      "stageResults": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 40.",
+            "Committed modifier: +0 from Runeforged Burst.",
+            "Committed damage snapshot: 40.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 40.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward."
+          ]
+        }
+      ],
+      "resultEntries": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 40.",
+            "Committed modifier: +0 from Runeforged Burst.",
+            "Committed damage snapshot: 40.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 40.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward.",
+            "Base damage: 40.",
+            "Damage after modifiers: 40.",
+            "Final HP damage: 40."
+          ]
+        }
+      ],
+      "log": [
+        "Runeforged Burst Primary Attack Damage resolves for 40 Magical damage to Elara Heavens.",
+        "AI chose Take Hit / No Response. Attack/resolution continues.",
+        "Response Window opens for Runeforged Burst targeting Elara Heavens.",
+        "ATK resolve: Runeforged Burst releases as Casting Attack at locked target AI CENTER.",
+        "Runeforged Burst Casting Time 1: scaled printed damage 40, other legal modifiers 0."
+      ]
+    },
+    {
+      "ok": true,
+      "counter": 2,
+      "prevent": false,
+      "manual": true,
+      "source_class": "Arcane Warrior",
+      "before": 200,
+      "windowDamage": 80,
+      "windowExists": true,
+      "after": 120,
+      "delta": 80,
+      "pending": null,
+      "stageResults": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 80.",
+            "Committed modifier: +40 from Runeforged Burst.",
+            "Committed damage snapshot: 80.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 80.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward."
+          ]
+        }
+      ],
+      "resultEntries": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 80.",
+            "Committed modifier: +40 from Runeforged Burst.",
+            "Committed damage snapshot: 80.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 80.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward.",
+            "Base damage: 80.",
+            "Damage after modifiers: 80.",
+            "Final HP damage: 80."
+          ]
+        }
+      ],
+      "log": [
+        "Runeforged Burst Primary Attack Damage resolves for 80 Magical damage to Elara Heavens.",
+        "AI chose Take Hit / No Response. Attack/resolution continues.",
+        "Response Window opens for Runeforged Burst targeting Elara Heavens.",
+        "ATK resolve: Runeforged Burst releases as Casting Attack at locked target AI CENTER.",
+        "Runeforged Burst Casting Time 2: scaled printed damage 80, other legal modifiers 0."
+      ]
+    },
+    {
+      "ok": true,
+      "counter": 3,
+      "prevent": false,
+      "manual": true,
+      "source_class": "Arcane Warrior",
+      "before": 200,
+      "windowDamage": 120,
+      "windowExists": true,
+      "after": 80,
+      "delta": 120,
+      "pending": null,
+      "stageResults": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 120.",
+            "Committed modifier: +80 from Runeforged Burst.",
+            "Committed damage snapshot: 120.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 120.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward."
+          ]
+        }
+      ],
+      "resultEntries": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 120.",
+            "Committed modifier: +80 from Runeforged Burst.",
+            "Committed damage snapshot: 120.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 120.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward.",
+            "Base damage: 120.",
+            "Damage after modifiers: 120.",
+            "Final HP damage: 120."
+          ]
+        }
+      ],
+      "log": [
+        "Runeforged Burst Primary Attack Damage resolves for 120 Magical damage to Elara Heavens.",
+        "AI chose Take Hit / No Response. Attack/resolution continues.",
+        "Response Window opens for Runeforged Burst targeting Elara Heavens.",
+        "ATK resolve: Runeforged Burst releases as Casting Attack at locked target AI CENTER.",
+        "Runeforged Burst Casting Time 3: scaled printed damage 120, other legal modifiers 0."
+      ]
+    },
+    {
+      "ok": true,
+      "counter": 2,
+      "prevent": false,
+      "manual": false,
+      "source_class": "Arcane Warrior",
+      "before": 200,
+      "windowDamage": null,
+      "windowExists": false,
+      "after": 120,
+      "delta": 80,
+      "pending": null,
+      "stageResults": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 80.",
+            "Committed modifier: +40 from Runeforged Burst.",
+            "Committed damage snapshot: 80.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 80.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward.",
+            "Base damage: 80.",
+            "Damage after modifiers: 80.",
+            "Final HP damage: 80."
+          ]
+        }
+      ],
+      "resultEntries": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 80.",
+            "Committed modifier: +40 from Runeforged Burst.",
+            "Committed damage snapshot: 80.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 80.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward.",
+            "Base damage: 80.",
+            "Damage after modifiers: 80.",
+            "Final HP damage: 80."
+          ]
+        }
+      ],
+      "log": [
+        "Runeforged Burst Primary Attack Damage resolves for 80 Magical damage to Elara Heavens.",
+        "AI chose Take Hit / No Response. Attack/resolution continues.",
+        "Response Window opens for Runeforged Burst targeting Elara Heavens.",
+        "ATK resolve: Runeforged Burst releases as Casting Attack at locked target AI CENTER.",
+        "Runeforged Burst Casting Time 2: scaled printed damage 80, other legal modifiers 0."
+      ]
+    },
+    {
+      "ok": true,
+      "counter": 2,
+      "prevent": true,
+      "manual": true,
+      "source_class": "Arcane Warrior",
+      "before": 200,
+      "windowDamage": 80,
+      "windowExists": true,
+      "after": 200,
+      "delta": 0,
+      "pending": null,
+      "stageResults": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 80.",
+            "Committed modifier: +40 from Runeforged Burst.",
+            "Committed damage snapshot: 80.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 80.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward."
+          ]
+        }
+      ],
+      "resultEntries": [
+        {
+          "label": "RESOLVE",
+          "results": [
+            "Casting card left its Attachment Slot for release.",
+            "Attachment Slot 1 is now empty.",
+            "Locked target position: AI CENTER.",
+            "Printed/base damage: 80.",
+            "Committed modifier: +40 from Runeforged Burst.",
+            "Committed damage snapshot: 80.",
+            "Result: Casting Attack released and opened a Defense response window.",
+            "Release source: Bromir Oathforge \u2014 Arcane Warrior Rank 2.",
+            "Damage after modifiers at release: 80.",
+            "HP damage is PENDING until the opponent Defense Response resolves; check Final HP damage below afterward.",
+            "Base damage: 80.",
+            "Damage after modifiers: 80.",
+            "Final HP damage: 0.",
+            "Why no HP damage: Target was INVINCIBLE; the Attack dealt no HP damage."
+          ]
+        }
+      ],
+      "log": [
+        "Runeforged Burst Primary Attack Damage resolves for 0 Magical damage to Elara Heavens.",
+        "AI chose Take Hit / No Response. Attack/resolution continues.",
+        "Response Window opens for Runeforged Burst targeting Elara Heavens.",
+        "ATK resolve: Runeforged Burst releases as Casting Attack at locked target AI CENTER.",
+        "Runeforged Burst Casting Time 2: scaled printed damage 80, other legal modifiers 0."
+      ]
+    }
+  ],
+  "pageErrors": []
+}

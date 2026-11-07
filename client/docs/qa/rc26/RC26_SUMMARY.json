@@ -1,0 +1,22 @@
+{
+  "release": "v1.0 RC26",
+  "baseline": "v1.0 RC25",
+  "timestamp_date": "2026-11-06",
+  "changed_application_files": [
+    "engine/shared-app/app.bundle.js",
+    "shared-app/app-runtime.js",
+    "shared-ui/battlefield-ui.css"
+  ],
+  "hybrid_hero_records": 10,
+  "hybrid_skill_lineage_cases": 1550,
+  "hybrid_lineage_mismatches": 0,
+  "choice_regression_checks": 8,
+  "allied_defense_resolutions": 6,
+  "allied_response_ui_routes": 4,
+  "taunt_attachment_glow_cases": 5,
+  "mouse_legacy_popup_selection_in_natural_match": "NOT VERIFIED",
+  "firefox_ui_regression": "NOT VERIFIED",
+  "human_vs_ai_full_normal_ui_match_to_terminal": "NOT VERIFIED",
+  "natural_match_holy_barrier_response_source_in_previous_screenshot": "NOT VERIFIED",
+  "official_OSA_mutation": false
+}

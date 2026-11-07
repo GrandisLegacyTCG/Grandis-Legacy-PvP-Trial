@@ -1,0 +1,366 @@
+[
+  {
+    "preset": "s0_starter_01_red_white",
+    "side": "PLAYER",
+    "lane": "LEFT",
+    "hero": "S0-WAR-H004",
+    "heroClass": "Warrior",
+    "eligible": [
+      "S0-WAR-L001",
+      "S0-WAR-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_01_red_white",
+    "side": "PLAYER",
+    "lane": "CENTER",
+    "hero": "S0-WAR-H007",
+    "heroClass": "Warrior",
+    "eligible": [
+      "S0-WAR-L001",
+      "S0-WAR-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_01_red_white",
+    "side": "PLAYER",
+    "lane": "RIGHT",
+    "hero": "S0-CLE-H004",
+    "heroClass": "Cleric",
+    "eligible": [
+      "S0-CLE-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_01_red_white",
+    "side": "AI",
+    "lane": "LEFT",
+    "hero": "S0-WAR-H004",
+    "heroClass": "Warrior",
+    "eligible": [
+      "S0-WAR-L001",
+      "S0-WAR-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_01_red_white",
+    "side": "AI",
+    "lane": "CENTER",
+    "hero": "S0-WAR-H007",
+    "heroClass": "Warrior",
+    "eligible": [
+      "S0-WAR-L001",
+      "S0-WAR-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_01_red_white",
+    "side": "AI",
+    "lane": "RIGHT",
+    "hero": "S0-CLE-H004",
+    "heroClass": "Cleric",
+    "eligible": [
+      "S0-CLE-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_02_blue_red",
+    "side": "PLAYER",
+    "lane": "LEFT",
+    "hero": "S0-MAG-H001",
+    "heroClass": "Mage",
+    "eligible": [
+      "S0-MAG-L001",
+      "S0-MAG-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_02_blue_red",
+    "side": "PLAYER",
+    "lane": "CENTER",
+    "hero": "S0-MAG-H007",
+    "heroClass": "Mage",
+    "eligible": [
+      "S0-MAG-L001",
+      "S0-MAG-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_02_blue_red",
+    "side": "PLAYER",
+    "lane": "RIGHT",
+    "hero": "S0-WAR-H001",
+    "heroClass": "Warrior",
+    "eligible": [
+      "S0-WAR-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_02_blue_red",
+    "side": "AI",
+    "lane": "LEFT",
+    "hero": "S0-MAG-H001",
+    "heroClass": "Mage",
+    "eligible": [
+      "S0-MAG-L001",
+      "S0-MAG-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_02_blue_red",
+    "side": "AI",
+    "lane": "CENTER",
+    "hero": "S0-MAG-H007",
+    "heroClass": "Mage",
+    "eligible": [
+      "S0-MAG-L001",
+      "S0-MAG-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_02_blue_red",
+    "side": "AI",
+    "lane": "RIGHT",
+    "hero": "S0-WAR-H001",
+    "heroClass": "Warrior",
+    "eligible": [
+      "S0-WAR-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_03_yellow_blue",
+    "side": "PLAYER",
+    "lane": "LEFT",
+    "hero": "S0-THF-H004",
+    "heroClass": "Thief",
+    "eligible": [
+      "S0-THF-L001",
+      "S0-THF-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_03_yellow_blue",
+    "side": "PLAYER",
+    "lane": "CENTER",
+    "hero": "S0-THF-H007",
+    "heroClass": "Thief",
+    "eligible": [
+      "S0-THF-L001",
+      "S0-THF-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_03_yellow_blue",
+    "side": "PLAYER",
+    "lane": "RIGHT",
+    "hero": "S0-MAG-H004",
+    "heroClass": "Mage",
+    "eligible": [
+      "S0-MAG-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_03_yellow_blue",
+    "side": "AI",
+    "lane": "LEFT",
+    "hero": "S0-THF-H004",
+    "heroClass": "Thief",
+    "eligible": [
+      "S0-THF-L001",
+      "S0-THF-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_03_yellow_blue",
+    "side": "AI",
+    "lane": "CENTER",
+    "hero": "S0-THF-H007",
+    "heroClass": "Thief",
+    "eligible": [
+      "S0-THF-L001",
+      "S0-THF-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_03_yellow_blue",
+    "side": "AI",
+    "lane": "RIGHT",
+    "hero": "S0-MAG-H004",
+    "heroClass": "Mage",
+    "eligible": [
+      "S0-MAG-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_04_green_yellow",
+    "side": "PLAYER",
+    "lane": "LEFT",
+    "hero": "S0-ARC-H004",
+    "heroClass": "Archer",
+    "eligible": [
+      "S0-ARC-L002",
+      "S0-ARC-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_04_green_yellow",
+    "side": "PLAYER",
+    "lane": "CENTER",
+    "hero": "S0-ARC-H007",
+    "heroClass": "Archer",
+    "eligible": [
+      "S0-ARC-L002",
+      "S0-ARC-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_04_green_yellow",
+    "side": "PLAYER",
+    "lane": "RIGHT",
+    "hero": "S0-THF-H001",
+    "heroClass": "Thief",
+    "eligible": [
+      "S0-THF-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_04_green_yellow",
+    "side": "AI",
+    "lane": "LEFT",
+    "hero": "S0-ARC-H004",
+    "heroClass": "Archer",
+    "eligible": [
+      "S0-ARC-L002",
+      "S0-ARC-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_04_green_yellow",
+    "side": "AI",
+    "lane": "CENTER",
+    "hero": "S0-ARC-H007",
+    "heroClass": "Archer",
+    "eligible": [
+      "S0-ARC-L002",
+      "S0-ARC-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_04_green_yellow",
+    "side": "AI",
+    "lane": "RIGHT",
+    "hero": "S0-THF-H001",
+    "heroClass": "Thief",
+    "eligible": [
+      "S0-THF-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_05_white_green",
+    "side": "PLAYER",
+    "lane": "LEFT",
+    "hero": "S0-CLE-H001",
+    "heroClass": "Cleric",
+    "eligible": [
+      "S0-CLE-L001",
+      "S0-CLE-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_05_white_green",
+    "side": "PLAYER",
+    "lane": "CENTER",
+    "hero": "S0-CLE-H007",
+    "heroClass": "Cleric",
+    "eligible": [
+      "S0-CLE-L001",
+      "S0-CLE-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_05_white_green",
+    "side": "PLAYER",
+    "lane": "RIGHT",
+    "hero": "S0-ARC-H001",
+    "heroClass": "Archer",
+    "eligible": [
+      "S0-ARC-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_05_white_green",
+    "side": "AI",
+    "lane": "LEFT",
+    "hero": "S0-CLE-H001",
+    "heroClass": "Cleric",
+    "eligible": [
+      "S0-CLE-L001",
+      "S0-CLE-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_05_white_green",
+    "side": "AI",
+    "lane": "CENTER",
+    "hero": "S0-CLE-H007",
+    "heroClass": "Cleric",
+    "eligible": [
+      "S0-CLE-L001",
+      "S0-CLE-L002"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "preset": "s0_starter_05_white_green",
+    "side": "AI",
+    "lane": "RIGHT",
+    "hero": "S0-ARC-H001",
+    "heroClass": "Archer",
+    "eligible": [
+      "S0-ARC-L001"
+    ],
+    "hasCandidate": true
+  },
+  {
+    "uiTest": true,
+    "triggered": true,
+    "pending": "legacy_defeat_choice",
+    "choices": [
+      "S0-CLE-L001",
+      "S0-CLE-L002"
+    ],
+    "confirmed": true,
+    "was": "S0-CLE-H001",
+    "now": "S0-CLE-L001",
+    "legacy": true,
+    "remainingLegacy": 11
+  }
+]

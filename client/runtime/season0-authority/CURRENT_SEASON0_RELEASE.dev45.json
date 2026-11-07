@@ -1,0 +1,66 @@
+{
+  "schema": "GL-S0-FINAL-AUTHORITY-RELEASE-DEV45-1",
+  "checkpoint": "DEV45",
+  "date": "2026-11-04",
+  "releaseStatus": "FINAL_AUTHORITY_RELEASE",
+  "scope": "OSA_AUTHORITY_ONLY__NOT_APPLICATION_ACCEPTANCE",
+  "validationApproach": "S1_v1.9.5_STYLE_RECIPE_EFFECT_SOURCE_TARGETED_CHECKS",
+  "retiredExhaustiveCertificationRequired": false,
+  "approvedGameplayDatabaseChanged": false,
+  "pinnedAuthority": {
+    "consumerAuthority": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_CONSUMERS.dev44.json",
+      "sha256": "bfa05bf43c22da4bd29906a7b1948f96900f0ce9851ce74c55b4924d3830ee9d"
+    },
+    "sourceRules": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RULES.dev35.json",
+      "sha256": "0bafadcf06955305beef481bae051068096944865b61f06b85febdfd3349c9ab"
+    },
+    "sourceRecipes": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RECIPES.dev41.json",
+      "sha256": "10dd33b791d73ad37b6c1b83b335e23f2e2ca9cf24f1ac125f8bec06472f16f9"
+    },
+    "sourceExecution": {
+      "path": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_EXECUTION.dev43.json",
+      "sha256": "519023690a7420cf195e52f7db1d6985ccb5047215ade6d807dba39ab5ccc52c"
+    },
+    "visualAuthority": {
+      "path": "Authority/Game/Season0-Visual/current-season0-visual-authority.json",
+      "sha256": "5a29531ca5eb6cf6e0a1661f6a7e031db82e8c2e61a491775625260edfd9291b"
+    },
+    "officialRulebook": {
+      "path": "Authority/Game/Rulebooks/Grandis_Legacy_Player_Rulebook_v2.9_EN_2026-11-01.pdf",
+      "sha256": "cbf1b8de4f22dddd9a56f4833033cc055de99af66a838492adc463898b6a68ad"
+    },
+    "machineRules": {
+      "path": "Authority/Game/Rulebooks/Grandis_Legacy_Machine_Rules_v1.1.6_EN_2026-11-02.json",
+      "sha256": "410ce99f610606389b9faa4543978db42cd0a8b75efbb0905a2263a6a4e34f6f"
+    }
+  },
+  "portableDistribution": {
+    "filename": "Grandis_Legacy_OSA_S0_DEV44_Consumer_Authority_2026-11-04.zip",
+    "sha256": "93e35001b1772b0fb692b6582ae6041c8773a9b363d2e764e764adf568f961d9",
+    "entryCount": 262,
+    "reuseByteIdenticalDev44Consumer": true
+  },
+  "sourceStatus": {
+    "cards": 248,
+    "printedEffectBranches": 426,
+    "complexHandlerBindings": 36,
+    "artFronts": 248,
+    "backs": 3,
+    "consumerJSON": 7
+  },
+  "conditionPlay": "Read-only feasibility AND normal legality → PLAY → atomic physical CONDITION + Mana payment → card effects / Response / Combat Settlement",
+  "safeOptionalReference": "Authority/Runtime/Reference/season0-current-authority-reference-v43.cjs",
+  "historicalRawV601NotConditionSafe": true,
+  "qaReport": "Tests/Reports/DEV45/DEV45_RELEASE_QA.json",
+  "consumerApplicationsSeparate": true,
+  "applicationGameplayCertified": false,
+  "historicalReleasePointer": "Authority/Game/Season0-Canonical/CURRENT_SEASON0_RELEASE.dev44.json",
+  "limits": [
+    "No exhaustive per-card interaction certification",
+    "No application engine or UI acceptance",
+    "Raw historical reference gateway remains archival"
+  ]
+}

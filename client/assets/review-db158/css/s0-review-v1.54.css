@@ -1,0 +1,64 @@
+/* Grandis Legacy Deck Builder v1.54 - shared Card Review refinements only.
+   No card data, game rules or non-review pages are modified. */
+
+/* Both styles: Hero Name is the same light heading weight as other labels. */
+#cardReviewDialog[data-review-kind="hero"] .review-header .dialog-eyebrow{
+  font-weight:700!important;
+}
+
+/* All keyword illustrations stay unframed (including inline and glossary). */
+#cardReviewDialog .review-keyword-image,
+#cardReviewDialog .review-condition-label .review-keyword-image,
+#cardReviewDialog .review-keyword-line .review-keyword-image{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  background:none!important;
+  border-radius:0!important;
+}
+/* Inline icon is visually centred against the text, not its baseline. */
+#cardReviewDialog .review-effect-info p .review-keyword-image,
+#cardReviewDialog .review-generic-row p .review-keyword-image,
+#cardReviewDialog .review-condition-text .review-keyword-image{
+  vertical-align:middle!important;
+  position:relative!important;
+  top:-2px!important;
+}
+#cardReviewDialog .review-keyword-line{align-items:center!important}
+#cardReviewDialog .review-keyword-line .review-keyword-image{
+  align-self:center!important;margin-top:0!important;
+}
+
+/* Dual Class alone gets a distinct warm panel before Race/Racial Traits.
+   Standard Hero blocks, their font sizes and their placement stay unchanged. */
+#cardReviewDialog[data-review-kind="hero"] .review-rows>.review-hero-dual-section{
+  display:block!important;
+  box-sizing:border-box!important;
+  min-width:0!important;
+  padding:13px 16px!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:#4a433d!important;
+  box-shadow:none!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-hero-dual-section>span{
+  display:block!important;
+  margin:0 0 3px!important;
+  color:#e5be73!important;
+  font-family:"Noto Sans",sans-serif!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  letter-spacing:.025em!important;
+  line-height:1.35!important;
+}
+#cardReviewDialog[data-review-kind="hero"] .review-hero-dual-section>p{
+  margin:0!important;
+  color:#f2f3f6!important;
+  font-family:"Noto Sans",sans-serif!important;
+  font-size:14px!important;
+  font-weight:500!important;
+  line-height:1.55!important;
+  overflow-wrap:break-word!important;
+}

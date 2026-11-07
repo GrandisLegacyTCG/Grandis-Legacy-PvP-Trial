@@ -1,0 +1,174 @@
+{
+  "stats": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0
+  },
+  "failures": [],
+  "rows": [
+    {
+      "side": "PLAYER",
+      "mode": "HUMAN_CHOICE",
+      "test": "Saint heal succeeded",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "details": {
+        "result": {
+          "healed": 50
+        }
+      }
+    },
+    {
+      "side": "PLAYER",
+      "mode": "HUMAN_CHOICE",
+      "test": "Both statuses remain before selected cleanse",
+      "expected": 2,
+      "actual": 2,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "PLAYER",
+      "mode": "HUMAN_CHOICE",
+      "test": "Mandatory cleanse choice opened",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "PLAYER",
+      "mode": "HUMAN_CHOICE",
+      "test": "Can choose exactly one of two statuses",
+      "expected": 2,
+      "actual": 2,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "PLAYER",
+      "mode": "HUMAN_CHOICE",
+      "test": "Chosen Burn removed",
+      "expected": false,
+      "actual": false,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "PLAYER",
+      "mode": "HUMAN_CHOICE",
+      "test": "Unchosen Poison preserved",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "AI",
+      "mode": "HUMAN_CHOICE",
+      "test": "Saint heal succeeded",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "details": {
+        "result": {
+          "healed": 50
+        }
+      }
+    },
+    {
+      "side": "AI",
+      "mode": "HUMAN_CHOICE",
+      "test": "Both statuses remain before selected cleanse",
+      "expected": 2,
+      "actual": 2,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "AI",
+      "mode": "HUMAN_CHOICE",
+      "test": "Mandatory cleanse choice opened",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "AI",
+      "mode": "HUMAN_CHOICE",
+      "test": "Can choose exactly one of two statuses",
+      "expected": 2,
+      "actual": 2,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "AI",
+      "mode": "HUMAN_CHOICE",
+      "test": "Chosen Burn removed",
+      "expected": false,
+      "actual": false,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "AI",
+      "mode": "HUMAN_CHOICE",
+      "test": "Unchosen Poison preserved",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "AI",
+      "mode": "AI_AUTO",
+      "test": "Saint heal succeeded",
+      "expected": true,
+      "actual": true,
+      "ok": true,
+      "details": {
+        "result": {
+          "healed": 50
+        }
+      }
+    },
+    {
+      "side": "AI",
+      "mode": "AI_AUTO",
+      "test": "Both statuses remain before selected cleanse",
+      "expected": 2,
+      "actual": 2,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "AI",
+      "mode": "AI_AUTO",
+      "test": "AI does not remain stuck in cleanse modal",
+      "expected": false,
+      "actual": false,
+      "ok": true,
+      "details": {}
+    },
+    {
+      "side": "AI",
+      "mode": "AI_AUTO",
+      "test": "AI removes one negative Status",
+      "expected": 1,
+      "actual": 1,
+      "ok": true,
+      "details": {
+        "statuses": [
+          {
+            "name": "Burn",
+            "duration": 1
+          }
+        ]
+      }
+    }
+  ],
+  "browser_errors": []
+}

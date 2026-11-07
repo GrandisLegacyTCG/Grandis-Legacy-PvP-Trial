@@ -1,0 +1,15 @@
+{
+  "committed": true,
+  "physically_returned": 2,
+  "eventCount": 1,
+  "returnedEventCount": 2,
+  "flightSequenceIndexes": [
+    0,
+    1,
+    2
+  ],
+  "completedFlightCount": 2,
+  "remainingFlights": 0,
+  "errors": [],
+  "pass": true
+}

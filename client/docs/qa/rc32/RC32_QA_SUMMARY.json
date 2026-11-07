@@ -1,0 +1,80 @@
+{
+  "release": "v1.0 RC32",
+  "date": "2026-11-07",
+  "baseline": "v1.0 RC31",
+  "type": "RELEASE CANDIDATE — NOT FINAL",
+  "scope": [
+    "EXP visual stack",
+    "Mana Regen and deck counter visual changes",
+    "desktop Regen +2px",
+    "desktop all deck counters +2px",
+    "phase underline simplified",
+    "notification durations and Racial Trait notice",
+    "AI status-aware conditional Attack priority",
+    "AI effective-heal 60% threshold",
+    "Greater Health Potion Ready-only validation",
+    "Poison Vial revised author-approved card text, artwork, and engine",
+    "Deflect vs PIERCING legal with BLOCK ignored and connected-hit REFLECT",
+    "simultaneous Taunt glow preventative hardening"
+  ],
+  "retested_for_release": {
+    "gameplay_engine_fixture": {
+      "status": "PASS",
+      "passed": 14,
+      "total": 14,
+      "source": "GAMEPLAY_QA.json"
+    },
+    "ai_status_node_fixture": {
+      "status": "PASS",
+      "passed": 13,
+      "total": 13,
+      "source": "AI_STATUS_PRIORITY_QA.json"
+    },
+    "ai_healing_node_fixture": {
+      "status": "PASS",
+      "passed": 26,
+      "total": 26,
+      "source": "AI_HEAL_THRESHOLD_QA.json"
+    },
+    "chromium_production_scripts_snapshot": {
+      "status": "PASS",
+      "passed": 9,
+      "total": 9,
+      "source": "BROWSER_INTEGRATION_QA.json"
+    },
+    "stoneblood_focused_regression": {
+      "status": "HISTORIC_PASS_NOT_RERUN",
+      "passed": 10,
+      "total": 10,
+      "source": "STONEBLOOD_REGRESSION_RESULTS.json"
+    },
+    "js_syntax": {
+      "status": "PASS",
+      "files": [
+        "engine/shared-app/app.bundle.js",
+        "shared-app/app-runtime.js"
+      ]
+    },
+    "package_integrity": {
+      "status": "PASS",
+      "method": "ZIP CRC, byte-for-byte archive/file validation, and full SHA256 manifest validation; build aborts on failure"
+    },
+    "http_hosted_chromium_smoke": {
+      "status": "BLOCKED",
+      "reason": "Localhost navigation net::ERR_BLOCKED_BY_ADMINISTRATOR in this environment, not proof of app failure"
+    }
+  },
+  "not_verified": [
+    "normal naturally played Human-vs-AI full match",
+    "native Firefox",
+    "exact original Player-Taunt screenshot reproduction",
+    "upstream OSA parity of designer-approved post-snapshot Poison Vial"
+  ],
+  "notes": [
+    "Previous isolated UI layout QA was not rerun as a complete naturally played match.",
+    "Original RC31 gameplay and prior official OSA data remain intact except for approved app-specific adaptation.",
+    "No modification to separate OSA, Deck Builder or PvP applications.",
+    "Original Taunt root cause not reproduced; no claim of exact symptom fixed in the original state."
+  ],
+  "source_staging_report": "ALL_FIXES_QA_SUMMARY.json (retained separately from release package)"
+}

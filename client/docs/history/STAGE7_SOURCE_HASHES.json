@@ -1,0 +1,15 @@
+{
+  "source": "S0 DEV45 / VS AI v6.91.9",
+  "modified_code_change": "End Phase hand limit round transition",
+  "hashes": {
+    "engine/shared-app/app.bundle.js": "ff4aa7df3619301f0c7b002ae0a1ba1019e2affcf30267a5d13db77a84a11d38",
+    "engine/js/static-data.js": "fc7e1aa59a609ebe59f4456cdf9a1d81ed3ba28549992394f00b4b447df9bf7b",
+    "engine/js/runtime-authority.js": "5529fa6fb76b85e680d184c576a053e837e54466c788b4c5808e12b0dd943764",
+    "engine/shared-app/active-starters.js": "4217002d3a8bfc89dd8d0b234741afe2c899dd0e3e6560fc1e0500280d7560f2",
+    "shared-app/app-runtime.js": "dca9400c55d3d876dc4367a1fd2c90bd4ea31856a4eb68e80c17032a1e8041f6",
+    "runtime/adapters/authority-adapter.js": "859992904b9cc814e8a3ae249e60431c9eafdcd90a7c81db236b60458fabbb00",
+    "runtime/adapters/local-ai-adapter.js": "0ad1eb6c2b312dffa11364c120eee2607c6f57ddf864b6e84ff2d41770682f58",
+    "runtime/season0-generated/s0-card-definitions.json": "a3c63ef2469eedb3f87cc99e571359de554d590f0333b9107d98dccf1eabd71b",
+    "STAGE7_ENGINE_MATCH_RESULTS.json": "64edc82c491b08db51ee7038eab2df634e576de2cde587cd0ab90f691519c230"
+  }
+}

@@ -1,0 +1,576 @@
+{
+  "passed": 25,
+  "count": 25,
+  "checks": [
+    {
+      "name": "Browser parse / script load",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "Player Primal Strike unburned 20",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 50,
+        "hp_loss": 20,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 20 Physical damage.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Player Primal Strike burned 30",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 40,
+        "hp_loss": 30,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 1
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 30 Physical damage.",
+          "Burn adds +10 damage to Primal Strike because its Physical damage passed the Defense Response.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "status",
+            "outcome": null,
+            "attack_kind": null,
+            "has_damage": null
+          },
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "AI Primal Strike burned 30",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 40,
+        "hp_loss": 30,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 2
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 30 Physical damage.",
+          "Burn adds +10 damage to Primal Strike because its Physical damage passed the Defense Response.",
+          "PLAYER takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against PLAYER CENTER.",
+          "AI uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "status",
+            "outcome": null,
+            "attack_kind": null,
+            "has_damage": null
+          },
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Burn stacking duration 6 does not amplify bonus",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 40,
+        "hp_loss": 30,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 6
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 30 Physical damage.",
+          "Burn adds +10 damage to Primal Strike because its Physical damage passed the Defense Response.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "status",
+            "outcome": null,
+            "attack_kind": null,
+            "has_damage": null
+          },
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Burn with target at 11 HP, actual HP loss capped at 11",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 11,
+        "pre_response_hp": 11,
+        "after_hp": 0,
+        "hp_loss": 11,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 30 Physical damage.",
+          "Burn adds +10 damage to Primal Strike because its Physical damage passed the Defense Response.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "status",
+            "outcome": null,
+            "attack_kind": null,
+            "has_damage": null
+          },
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Burn + actual Second Chance DODGE => 0",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 70,
+        "hp_loss": 0,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "dodge",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 1
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 0 Physical damage (Dodged)..",
+          "AI responds: Second Chance dodges Primal Strike.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "attack",
+            "outcome": "dodge",
+            "attack_kind": "P",
+            "has_damage": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "Burn + actual Dragon Scale block prevents damage",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 70,
+        "hp_loss": 0,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 50,
+        "responded": "dragon",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 1
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 0 Physical damage.",
+          "AI responds: Dragon Scale blocks 50 Physical damage.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "attack",
+            "outcome": "block",
+            "attack_kind": "P",
+            "has_damage": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "Dragon Scale option printed block covers base",
+      "pass": true,
+      "detail": 50
+    },
+    {
+      "name": "Burn + active 20 Physical Shield Attachment => 0",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 70,
+        "hp_loss": 0,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 1
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 0 Physical damage.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "Burn + Blessing of Divinity prevents all",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 70,
+        "hp_loss": 0,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 1
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Blessing of Divinity prevents Primal Strike damage.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "Burn + INVINCIBLE target prevents all",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 70,
+        "hp_loss": 0,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 1
+          },
+          {
+            "name": "Damage Immunity",
+            "duration": 1
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "INVINCIBLE prevents Primal Strike damage.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "Primal Strike + INVINCIBLE without Burn prevents all",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 70,
+        "hp_loss": 0,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Damage Immunity",
+            "duration": 1
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "INVINCIBLE prevents Primal Strike damage.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "Poison Vial on attacking hero does not trigger on Primal Strike",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "initial_hp": 70,
+        "pre_response_hp": 70,
+        "after_hp": 40,
+        "hp_loss": 30,
+        "damage_type": "Physical",
+        "printed_base": 20,
+        "block": 0,
+        "responded": "none",
+        "source_statuses": [],
+        "target_statuses": [
+          {
+            "name": "Burn",
+            "duration": 1
+          }
+        ],
+        "poisoned": false,
+        "remainingTokens": 1,
+        "messages": [
+          "Primal Strike resolves for 30 Physical damage.",
+          "Burn adds +10 damage to Primal Strike because its Physical damage passed the Defense Response.",
+          "AI takes Primal Strike with no response.",
+          "Response Window opens for Primal Strike Physical damage against AI CENTER.",
+          "PLAYER uses Primal Strike from Korvak Ironfang, spends 1 Racial Token, and declares 20 Physical damage."
+        ],
+        "feedback": [
+          {
+            "kind": "status",
+            "outcome": null,
+            "attack_kind": null,
+            "has_damage": null
+          },
+          {
+            "kind": "attack",
+            "outcome": "hit",
+            "attack_kind": "P",
+            "has_damage": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "AI finisher HP 20 burn 0",
+      "pass": true,
+      "detail": {
+        "found": true,
+        "target": "CENTER"
+      }
+    },
+    {
+      "name": "AI finisher HP 21 burn 0",
+      "pass": true,
+      "detail": {
+        "found": false,
+        "target": null
+      }
+    },
+    {
+      "name": "AI finisher HP 30 burn 1",
+      "pass": true,
+      "detail": {
+        "found": true,
+        "target": "CENTER"
+      }
+    },
+    {
+      "name": "AI finisher HP 31 burn 1",
+      "pass": true,
+      "detail": {
+        "found": false,
+        "target": null
+      }
+    },
+    {
+      "name": "AI finisher HP 30 burn 6",
+      "pass": true,
+      "detail": {
+        "found": true,
+        "target": "CENTER"
+      }
+    },
+    {
+      "name": "No browser exceptions after scenarios",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "Rulebook retains 15 pages",
+      "pass": true,
+      "detail": 15
+    },
+    {
+      "name": "Rulebook Burn text updated",
+      "pass": true,
+      "detail": "Page 14"
+    },
+    {
+      "name": "Rulebook has specific positive HP after Defense condition",
+      "pass": true,
+      "detail": "Page 14"
+    },
+    {
+      "name": "Rulebook remains a racial trait",
+      "pass": true,
+      "detail": "Page 14"
+    },
+    {
+      "name": "Rulebook other 14 pages text unchanged",
+      "pass": true,
+      "detail": "14 pages text parity"
+    }
+  ],
+  "limitations": [
+    "Natural complete match not executed",
+    "Firefox native not executed",
+    "Audio real-device not verified"
+  ]
+}

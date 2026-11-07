@@ -1,45 +1,19 @@
 {
-  "name": "grandis-legacy-pvp",
-  "version": "3.80.17",
+  "name": "grandis-legacy-pvp-season0-staging",
+  "version": "0.0.0-rc32-staging",
   "private": true,
   "type": "module",
-  "description": "Grandis Legacy PvP v3.80.17 — tablet/mobile-only battle VFX coordinate correction for adaptive-stage transforms; desktop, gameplay, network, Mana, and authority behavior unchanged.",
+  "description": "Season 0 PvP RC32 GitHub/Northflank staging; server-authoritative two-player playtest; hosted acceptance pending",
   "scripts": {
     "start": "node server.js",
-    "check:syntax": "node --check server.js && find server public tests tools -type f \\( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \\) -print0 | sort -z | xargs -0 -r -n1 node --check",
-    "test:authority": "node tests/run-v380-authority-native.mjs",
-    "test:handshake": "node tests/run-v380-handshake-static.cjs",
-    "test:assets": "node tests/run-v380-assets.cjs",
-    "test:lobby": "node tests/run-v380-lobby-parity.cjs",
-    "test": "npm run check:syntax && npm run test:authority && npm run test:mana-ui && npm run test:transport && npm run test:handshake && npm run test:assets && npm run test:lobby",
-    "frontend-manifest": "node tools/build-public-manifest.cjs",
-    "manifest": "node tools/build-file-manifest.cjs",
-    "verify:manifest": "node tools/verify-manifests.cjs",
-    "check:deployment": "node tools/check-deployment-readiness.cjs",
-    "test:startup": "node tests/run-deployment-startup-live.cjs",
-    "release:seal": "npm run test && npm run frontend-manifest && npm run manifest && npm run verify:manifest && npm run check:deployment",
-    "verify:deployment": "npm run check:deployment && npm run test:startup",
-    "test:transport": "node tests/run-v380-intent-channel.cjs && node tests/run-v380-transport-authority.mjs",
-    "test:mana-ui": "node tests/run-v380-mana-ui-draft.cjs"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "dependencies": {
-    "ws": "^8.18.0"
-  },
-  "grandisLegacyArchitecture": {
-    "presentationBase": "VS AI v6.91.6",
-    "lobbyBase": "PvP v3.76.6",
-    "referenceArchitecture": "VS AI Tutorial v6.48 ↔ PvP v3.51 handshake concepts; current Mana interaction follows VS AI v6.91.6 exact replacement behavior with a center-only UI draft and final-UID PvP commit seam",
-    "serverAuthority": "VS AI v6.91.6 shared gameplay engine executed headlessly in Node VM; browser payment clicks hold only an ephemeral UI draft, and PvP validates final selected Shard UIDs at PAY before calling donor commit once",
-    "v351RuntimeShipped": false,
-    "pvpManaPayment": "VS AI v6.91.6 exact-selection UX (including exact replacement and normal-Mana preference) is represented by a centered ephemeral UID draft; PAY sends final selected Shard UIDs once for authoritative validation and donor commit"
-  },
-  "northflankDeployment": {
-    "builder": "DOCKERFILE",
-    "dockerfile": "Dockerfile",
-    "startCommand": "node server.js",
-    "healthcheckPath": "/health"
+    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check server/ws-lite.mjs && node --check client/runtime/pvp-network.js && node --check client/shared-app/app-runtime.js && node --check client/engine/shared-app/app.bundle.js",
+    "test:headless": "node tests/rc32-integration-smoke.mjs && node tests/rc32-same-version-maintenance.mjs && node tests/headless-rc32-smoke.mjs && node tests/privacy-and-turns.mjs && node tests/actual-card-exchange.mjs && node tests/defense-response-commit.mjs && node tests/deckout-complete-match.mjs && node tests/deckbuilder-162-compat.mjs",
+    "test:network": "node tests/run-network-tests.mjs",
+    "check": "npm run check:repo && npm run check:syntax && npm run test:headless && npm run test:network",
+    "test:network-card": "node tests/pvp-network-card-exchange.mjs",
+    "test:ui-bridge": "python tests/browser-bridge-smoke.py",
+    "test:hosted": "node tests/hosted-northflank-smoke.mjs",
+    "test:browser:native": "python tests/browser-native-smoke.py",
+    "check:repo": "node tests/repository-integrity.mjs"
   }
 }

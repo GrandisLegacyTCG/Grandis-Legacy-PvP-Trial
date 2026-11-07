@@ -1,0 +1,344 @@
+{
+  "schema_version": "GL-DECK-1.0",
+  "season": "S0",
+  "deck_name": "Blue-Red Deck",
+  "format": "Grandis Legacy Season 0 / Rulebook v2.9 / exactly 50-card Main Deck",
+  "main_deck_count": 50,
+  "main_deck": [
+    {
+      "card_id": "S0-EVT-002",
+      "card_name": "Market Bargain",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-003",
+      "card_name": "Scouting",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-004",
+      "card_name": "Relentless Leveling",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-007",
+      "card_name": "Intercept",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-009",
+      "card_name": "Tactical Adaptation",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-008",
+      "card_name": "Phoenix Feather",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-018",
+      "card_name": "Magic Compass",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-017",
+      "card_name": "Flashpowder Bomb",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-002",
+      "card_name": "Greater Health Potion",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-008",
+      "card_name": "Forged Alliance",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-020",
+      "card_name": "Freeze Bomb",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ITM-001",
+      "card_name": "Health Potion",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-005",
+      "card_name": "Mirror Image",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-MAG-006",
+      "card_name": "Meditation",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-008",
+      "card_name": "Tornado",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-007",
+      "card_name": "Frostbite",
+      "quantity": 3
+    },
+    {
+      "card_id": "S0-MAG-015",
+      "card_name": "Permafrost",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-016",
+      "card_name": "Nova Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-017",
+      "card_name": "Frostfire Nova",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-MAG-018",
+      "card_name": "Double Casting",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-026",
+      "card_name": "Arcane Disruption",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-027",
+      "card_name": "Runeforged Burst",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-MAG-028",
+      "card_name": "Provoke",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-030",
+      "card_name": "Invincible Stance",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "card_name": "Absolute Defense",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-005",
+      "card_name": "Taunt",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-009",
+      "card_name": "Rage Swing",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-WAR-010",
+      "card_name": "Rage Blast",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-012",
+      "card_name": "Deflect",
+      "quantity": 3
+    },
+    {
+      "card_id": "S0-WAR-014",
+      "card_name": "Final Grit",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-015",
+      "card_name": "Charge Attack",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-017",
+      "card_name": "Fiery Thrust",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-018",
+      "card_name": "Execute",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-026",
+      "card_name": "Skull Crush",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-WAR-027",
+      "card_name": "Colossal Bash",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-031",
+      "card_name": "Shield Blast",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-WAR-029",
+      "card_name": "Runic Guard",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-WAR-030",
+      "card_name": "Shield Charge",
+      "quantity": 1
+    }
+  ],
+  "mana_deck": [
+    {
+      "kind": "MANA",
+      "quantity": 10
+    },
+    {
+      "class_name": "Mage",
+      "kind": "CLASS",
+      "quantity": 1
+    },
+    {
+      "class_name": "Warrior",
+      "kind": "CLASS",
+      "quantity": 1
+    }
+  ],
+  "mana_deck_count": 12,
+  "legacy_package_count": 3,
+  "legacy_deck_count": 12,
+  "legacy_deck_label": "Legacy Deck",
+  "legacy_deck_package_slots": [
+    {
+      "slot": "LEFT",
+      "progression": "S0-MAG-H001",
+      "legacy": "S0-MAG-L001",
+      "package_id": "S0-STARTER-02-PACKAGE-1",
+      "package_name": "Vaelis Stormweave + Ancestral Tome"
+    },
+    {
+      "slot": "CENTER",
+      "progression": "S0-MAG-H007",
+      "legacy": "S0-MAG-L002",
+      "package_id": "S0-STARTER-02-PACKAGE-2",
+      "package_name": "Bromir Oathforge + Arcane Wand"
+    },
+    {
+      "slot": "RIGHT",
+      "progression": "S0-WAR-H001",
+      "legacy": "S0-WAR-L001",
+      "package_id": "S0-STARTER-02-PACKAGE-3",
+      "package_name": "Draxen Blacksand + Warrior's Relic"
+    }
+  ],
+  "legacy_deck_expanded": [
+    {
+      "card_id": "S0-MAG-H001",
+      "card_name": "Vaelis Stormweave",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-1",
+      "package_name": "Vaelis Stormweave + Ancestral Tome"
+    },
+    {
+      "card_id": "S0-MAG-H002",
+      "card_name": "Vaelis Stormweave",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-1",
+      "package_name": "Vaelis Stormweave + Ancestral Tome"
+    },
+    {
+      "card_id": "S0-MAG-H003",
+      "card_name": "Vaelis Stormweave",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-1",
+      "package_name": "Vaelis Stormweave + Ancestral Tome"
+    },
+    {
+      "card_id": "S0-MAG-L001",
+      "card_name": "Ancestral Tome",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-02-PACKAGE-1",
+      "package_name": "Vaelis Stormweave + Ancestral Tome"
+    },
+    {
+      "card_id": "S0-MAG-H007",
+      "card_name": "Bromir Oathforge",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-2",
+      "package_name": "Bromir Oathforge + Arcane Wand"
+    },
+    {
+      "card_id": "S0-MAG-H008",
+      "card_name": "Bromir Oathforge",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-2",
+      "package_name": "Bromir Oathforge + Arcane Wand"
+    },
+    {
+      "card_id": "S0-MAG-H009",
+      "card_name": "Bromir Oathforge",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-2",
+      "package_name": "Bromir Oathforge + Arcane Wand"
+    },
+    {
+      "card_id": "S0-MAG-L002",
+      "card_name": "Arcane Wand",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-02-PACKAGE-2",
+      "package_name": "Bromir Oathforge + Arcane Wand"
+    },
+    {
+      "card_id": "S0-WAR-H001",
+      "card_name": "Draxen Blacksand",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-3",
+      "package_name": "Draxen Blacksand + Warrior's Relic"
+    },
+    {
+      "card_id": "S0-WAR-H002",
+      "card_name": "Draxen Blacksand",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-3",
+      "package_name": "Draxen Blacksand + Warrior's Relic"
+    },
+    {
+      "card_id": "S0-WAR-H003",
+      "card_name": "Draxen Blacksand",
+      "card_type": "Hero",
+      "package_id": "S0-STARTER-02-PACKAGE-3",
+      "package_name": "Draxen Blacksand + Warrior's Relic"
+    },
+    {
+      "card_id": "S0-WAR-L001",
+      "card_name": "Warrior's Relic",
+      "card_type": "Legacy",
+      "package_id": "S0-STARTER-02-PACKAGE-3",
+      "package_name": "Draxen Blacksand + Warrior's Relic"
+    }
+  ],
+  "default_formation": {
+    "CENTER": "S0-MAG-H007",
+    "LEFT": "S0-MAG-H001",
+    "RIGHT": "S0-WAR-H001"
+  },
+  "is_valid": true,
+  "validation_issues": [],
+  "validation_warnings": [],
+  "source_database_version": "OSA Season 0 DEV45 / current Starter Deck Authority DEV34 / Deck Builder v1.58",
+  "source_file": "engine/starter_deck_examples/s0_starter_02_blue_red_GL_DECK_1_0.json",
+  "source_authority": "Generated/Season0-Current/season0-current-starters.dev34.json",
+  "source_export_sha256": "1de282cc31343034751154fdbfb840c26d5b4e769dbe493522c0e21d6d20e8d3",
+  "source_approval_basis": "Deck Builder v1.58 script header states Approved Season 0 starter decks 1-5; user directed using latest Deck Builder starters as reference",
+  "active_starter_id": "s0_starter_02_blue_red",
+  "active_starter_slot": 2,
+  "generated_only": true
+}

@@ -1,0 +1,1037 @@
+{
+  "results": [
+    {
+      "card_id": "S0-ARC-018",
+      "card_name": "Soul Charged Shot",
+      "hero": "Marksman",
+      "rank": 2,
+      "subtype": "Physical Attack",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "RANGE",
+        "SURE HIT",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-ARC-018_undefined"
+      ],
+      "payment": 5,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 210,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-ARC-018",
+      "card_name": "Soul Charged Shot",
+      "hero": "Grand Ranger",
+      "rank": 3,
+      "subtype": "Physical Attack",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "RANGE",
+        "SURE HIT",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-ARC-018_undefined"
+      ],
+      "payment": 5,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 180,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-ARC-019",
+      "card_name": "Divine Edge",
+      "hero": "Marksman",
+      "rank": 2,
+      "subtype": "Physical Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "SURE HIT",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-ARC-019_undefined"
+      ],
+      "payment": 6,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 170,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-ARC-019",
+      "card_name": "Divine Edge",
+      "hero": "Grand Ranger",
+      "rank": 3,
+      "subtype": "Physical Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "SURE HIT",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-ARC-019_undefined"
+      ],
+      "payment": 6,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 140,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-ARC-025",
+      "card_name": "Colossal Dreadbolt",
+      "hero": "Arbalest",
+      "rank": 2,
+      "subtype": "Physical Attack",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-ARC-025_undefined"
+      ],
+      "payment": 5,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 210,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-ARC-025",
+      "card_name": "Colossal Dreadbolt",
+      "hero": "Grand Arbalest",
+      "rank": 3,
+      "subtype": "Physical Attack",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-ARC-025_undefined"
+      ],
+      "payment": 5,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 160,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-CLE-018",
+      "card_name": "Wings of Valor",
+      "hero": "Priest",
+      "rank": 2,
+      "subtype": "Support",
+      "expected_mana_cost": 2,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "BUFF"
+      ],
+      "isAllTarget": false,
+      "attackType": "",
+      "committed": true,
+      "resolutionSteps": [],
+      "payment": 2,
+      "discardCount": 0,
+      "attachment": true,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 250,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": false,
+      "errors": []
+    },
+    {
+      "card_id": "S0-CLE-018",
+      "card_name": "Wings of Valor",
+      "hero": "Saint",
+      "rank": 3,
+      "subtype": "Support",
+      "expected_mana_cost": 2,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "BUFF"
+      ],
+      "isAllTarget": false,
+      "attackType": "",
+      "committed": true,
+      "resolutionSteps": [],
+      "payment": 2,
+      "discardCount": 0,
+      "attachment": true,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 250,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": false,
+      "errors": []
+    },
+    {
+      "card_id": "S0-CLE-019",
+      "card_name": "Divine Punishment",
+      "hero": "Priest",
+      "rank": 2,
+      "subtype": "Area Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Area Damage",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-CLE-019_0",
+        "window_S0-CLE-019_1",
+        "window_S0-CLE-019_2"
+      ],
+      "payment": 6,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 220,
+        "CENTER": 220,
+        "RIGHT": 220
+      },
+      "targetStatuses": {
+        "LEFT": [
+          "Stun:1"
+        ],
+        "CENTER": [
+          "Stun:1"
+        ],
+        "RIGHT": [
+          "Stun:1"
+        ]
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-CLE-019",
+      "card_name": "Divine Punishment",
+      "hero": "Saint",
+      "rank": 3,
+      "subtype": "Area Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Area Damage",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-CLE-019_0",
+        "window_S0-CLE-019_1",
+        "window_S0-CLE-019_2"
+      ],
+      "payment": 6,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 200,
+        "CENTER": 200,
+        "RIGHT": 200
+      },
+      "targetStatuses": {
+        "LEFT": [
+          "Stun:1"
+        ],
+        "CENTER": [
+          "Stun:1"
+        ],
+        "RIGHT": [
+          "Stun:1"
+        ]
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-CLE-025",
+      "card_name": "Blessing of Divinity",
+      "hero": "Paladin",
+      "rank": 2,
+      "subtype": "Defense",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "check": "response separately"
+    },
+    {
+      "card_id": "S0-CLE-025",
+      "card_name": "Blessing of Divinity",
+      "hero": "Crusader",
+      "rank": 3,
+      "subtype": "Defense",
+      "expected_mana_cost": 4,
+      "source_is_legal": true,
+      "check": "response separately"
+    },
+    {
+      "card_id": "S0-CLE-031",
+      "card_name": "Grand Finale",
+      "hero": "Bard",
+      "rank": 2,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK",
+        "CONDITION",
+        "INVINCIBLE"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [],
+      "payment": 0,
+      "discardCount": 0,
+      "attachment": false,
+      "pending": "card_search_choice",
+      "handCount": 1,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 250,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": false,
+      "errors": []
+    },
+    {
+      "card_id": "S0-CLE-031",
+      "card_name": "Grand Finale",
+      "hero": "Maestro",
+      "rank": 3,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK",
+        "CONDITION",
+        "INVINCIBLE"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [],
+      "payment": 0,
+      "discardCount": 0,
+      "attachment": false,
+      "pending": "card_search_choice",
+      "handCount": 1,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 250,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": false,
+      "errors": []
+    },
+    {
+      "card_id": "S0-MAG-018",
+      "card_name": "Double Casting",
+      "hero": "Elementalist",
+      "rank": 2,
+      "subtype": "Tactical",
+      "expected_mana_cost": 3,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "BUFF"
+      ],
+      "isAllTarget": false,
+      "attackType": "",
+      "committed": true,
+      "resolutionSteps": [],
+      "payment": 3,
+      "discardCount": 0,
+      "attachment": true,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 250,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": false,
+      "errors": []
+    },
+    {
+      "card_id": "S0-MAG-018",
+      "card_name": "Double Casting",
+      "hero": "Elemental Lord",
+      "rank": 3,
+      "subtype": "Tactical",
+      "expected_mana_cost": 1,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "BUFF"
+      ],
+      "isAllTarget": false,
+      "attackType": "",
+      "committed": true,
+      "resolutionSteps": [],
+      "payment": 1,
+      "discardCount": 0,
+      "attachment": true,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 250,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": false,
+      "errors": []
+    },
+    {
+      "card_id": "S0-MAG-019",
+      "card_name": "Flame Dragon's Wrath",
+      "hero": "Elementalist",
+      "rank": 2,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 7,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ALL OPPONENTS",
+        "ATTACK"
+      ],
+      "isAllTarget": true,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-MAG-019_0",
+        "window_S0-MAG-019_1",
+        "window_S0-MAG-019_2"
+      ],
+      "payment": 7,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 220,
+        "CENTER": 220,
+        "RIGHT": 220
+      },
+      "targetStatuses": {
+        "LEFT": [
+          "Burn:2"
+        ],
+        "CENTER": [
+          "Burn:2"
+        ],
+        "RIGHT": [
+          "Burn:2"
+        ]
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-MAG-019",
+      "card_name": "Flame Dragon's Wrath",
+      "hero": "Elemental Lord",
+      "rank": 3,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 7,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ALL OPPONENTS",
+        "ATTACK"
+      ],
+      "isAllTarget": true,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-MAG-019_0",
+        "window_S0-MAG-019_1",
+        "window_S0-MAG-019_2"
+      ],
+      "payment": 7,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 200,
+        "CENTER": 200,
+        "RIGHT": 200
+      },
+      "targetStatuses": {
+        "LEFT": [
+          "Burn:3"
+        ],
+        "CENTER": [
+          "Burn:3"
+        ],
+        "RIGHT": [
+          "Burn:3"
+        ]
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-MAG-025",
+      "card_name": "Mana Void",
+      "hero": "Spell Blade",
+      "rank": 2,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 3,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "SURE HIT",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [],
+      "payment": 0,
+      "discardCount": 0,
+      "attachment": false,
+      "pending": "optional_magical_surge",
+      "handCount": 1,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 250,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": false,
+      "errors": []
+    },
+    {
+      "card_id": "S0-MAG-025",
+      "card_name": "Mana Void",
+      "hero": "Arcane Duelist",
+      "rank": 3,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 3,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "SURE HIT",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [],
+      "payment": 0,
+      "discardCount": 0,
+      "attachment": false,
+      "pending": "optional_magical_surge",
+      "handCount": 1,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 250,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": false,
+      "errors": []
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "card_name": "Absolute Defense",
+      "hero": "Arcane Warrior",
+      "rank": 2,
+      "subtype": "Defense",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "check": "response separately"
+    },
+    {
+      "card_id": "S0-MAG-031",
+      "card_name": "Absolute Defense",
+      "hero": "Arcane Vanguard",
+      "rank": 3,
+      "subtype": "Defense",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "check": "response separately"
+    },
+    {
+      "card_id": "S0-THF-018",
+      "card_name": "Venom Detonation",
+      "hero": "Rogue",
+      "rank": 2,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ALL OPPONENTS",
+        "ATTACK"
+      ],
+      "isAllTarget": true,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-THF-018_0",
+        "window_S0-THF-018_1"
+      ],
+      "payment": 6,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 230,
+        "CENTER": 250,
+        "RIGHT": 240
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-THF-018",
+      "card_name": "Venom Detonation",
+      "hero": "Renegade",
+      "rank": 3,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ALL OPPONENTS",
+        "ATTACK"
+      ],
+      "isAllTarget": true,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-THF-018_0",
+        "window_S0-THF-018_1"
+      ],
+      "payment": 6,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 210,
+        "CENTER": 250,
+        "RIGHT": 230
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-THF-019",
+      "card_name": "Lethal Venom",
+      "hero": "Rogue",
+      "rank": 2,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-THF-019_undefined"
+      ],
+      "payment": 5,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 190,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [
+          "Poison:2"
+        ],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-THF-019",
+      "card_name": "Lethal Venom",
+      "hero": "Renegade",
+      "rank": 3,
+      "subtype": "Magical Attack",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-THF-019_undefined"
+      ],
+      "payment": 5,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 190,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [
+          "Poison:2"
+        ],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-WAR-018",
+      "card_name": "Execute",
+      "hero": "Gladiator",
+      "rank": 2,
+      "subtype": "Physical Attack",
+      "expected_mana_cost": 7,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "SURE HIT",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-WAR-018_undefined"
+      ],
+      "payment": 7,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": "legacy_defeat_choice",
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 0,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-WAR-018",
+      "card_name": "Execute",
+      "hero": "Conqueror",
+      "rank": 3,
+      "subtype": "Physical Attack",
+      "expected_mana_cost": 5,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "SURE HIT",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Single Target",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-WAR-018_undefined"
+      ],
+      "payment": 5,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": "legacy_defeat_choice",
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 250,
+        "CENTER": 0,
+        "RIGHT": 250
+      },
+      "targetStatuses": {
+        "LEFT": [],
+        "CENTER": [],
+        "RIGHT": []
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-WAR-019",
+      "card_name": "Wild Assault",
+      "hero": "Gladiator",
+      "rank": 2,
+      "subtype": "Area Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Area Damage",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-WAR-019_0",
+        "window_S0-WAR-019_1",
+        "window_S0-WAR-019_2"
+      ],
+      "payment": 6,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 220,
+        "CENTER": 220,
+        "RIGHT": 220
+      },
+      "targetStatuses": {
+        "LEFT": [
+          "Bleed:2"
+        ],
+        "CENTER": [
+          "Bleed:2"
+        ],
+        "RIGHT": [
+          "Bleed:2"
+        ]
+      },
+      "sourceExhausted": true,
+      "errors": []
+    },
+    {
+      "card_id": "S0-WAR-019",
+      "card_name": "Wild Assault",
+      "hero": "Conqueror",
+      "rank": 3,
+      "subtype": "Area Attack",
+      "expected_mana_cost": 6,
+      "source_is_legal": true,
+      "codeTags": [
+        "SKILL",
+        "ATTACK"
+      ],
+      "isAllTarget": false,
+      "attackType": "Area Damage",
+      "committed": true,
+      "resolutionSteps": [
+        "window_S0-WAR-019_0",
+        "window_S0-WAR-019_1",
+        "window_S0-WAR-019_2"
+      ],
+      "payment": 6,
+      "discardCount": 1,
+      "attachment": false,
+      "pending": null,
+      "handCount": 0,
+      "targetHP": {
+        "LEFT": 200,
+        "CENTER": 200,
+        "RIGHT": 200
+      },
+      "targetStatuses": {
+        "LEFT": [
+          "Bleed:2"
+        ],
+        "CENTER": [
+          "Bleed:2"
+        ],
+        "RIGHT": [
+          "Bleed:2"
+        ]
+      },
+      "sourceExhausted": true,
+      "errors": []
+    }
+  ],
+  "page_errors": []
+}
