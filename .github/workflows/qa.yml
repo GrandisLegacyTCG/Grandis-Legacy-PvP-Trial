@@ -1,4 +1,4 @@
-name: S1 Pregame to S0 Battle QA
+name: PvP S0 RC32 — S1 Lobby UI / S0 Content QA
 on:
   push:
   pull_request:
@@ -10,6 +10,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm run check:syntax
-      - run: npm run test:transition
+      - run: npm run check
       - run: docker build -t gl-pvp-s0-test .

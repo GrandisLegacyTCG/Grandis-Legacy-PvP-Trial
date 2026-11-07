@@ -9,21 +9,21 @@ let logs='';server.stdout.on('data',d=>logs+=d);server.stderr.on('data',d=>logs+
 const clients=[];
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 async function readyServer(){for(let i=0;i<200;i++){try{const r=await fetch(base+'/health');if(r.ok)return await r.json()}catch{}await delay(50)}throw Error('Server startup failed: '+logs)}
-const BUILD='gl-s0-handoff-v38017-rc32-2026-11-07';
+const BUILD='gl-s0-v38017-ui-rc32-data-2026-11-08';
 function connect(id,role='player',seatToken=''){return new Promise((resolve,reject)=>{
  const ws=new WebSocket('ws://127.0.0.1:'+port+'/ws?'+new URLSearchParams({client:id,name:id,role,buildId:BUILD,...(seatToken?{seatToken}:{})}));const c={ws,msg:[],snapshot:null,send(type,data={}){ws.send(JSON.stringify({type,clientBuildId:BUILD,...data}))},wait(predicate,timeout=45000){return new Promise((ok,bad)=>{const start=Date.now();const loop=()=>{if(predicate(c.snapshot,c))return ok(c.snapshot);if(Date.now()-start>timeout)return bad(Error('Timeout '+id+' '+JSON.stringify({status:c.snapshot?.match?.status,logs:logs.slice(-400)})));setTimeout(loop,50)};loop()})}};clients.push(c);
  ws.onmessage=e=>{const m=JSON.parse(e.data);c.msg.push(m);if(m.type==='snapshot')c.snapshot=m;if(m.snapshot?.type==='snapshot')c.snapshot=m.snapshot;if(m.type==='error')console.error('Server rejected:',id,m.message)};
  ws.onerror=reject;ws.onopen=()=>resolve(c);
 })}
 async function run(){
- const health=await readyServer();assert.match(health.architecture,/s1-v38017-lobby-opening__s0-rc32-gameplay/);
+ const health=await readyServer();assert.match(health.architecture,/s1-v38017-ui__s0-rc32-decks-opening-battle/);
  const s1=readFileSync(ROOT+'/public/pvp/pvp-host.js','utf8');
  assert.ok(!s1.includes('ROOM CODE'));assert.ok(!s1.includes('JOIN ROOM'));
  const a=await connect('s1-to-s0-seat1');let b=await connect('s1-to-s0-seat2');
  await Promise.all([a.wait(s=>s?.players?.length===2),b.wait(s=>s?.players?.length===2)]);
  assert.equal(a.snapshot.local.seat,1);assert.equal(b.snapshot.local.seat,2);
- const s1key='starter_01_elemental_lord_conqueror_renegade';
- const s1key2='starter_02_saint_crusader_grand_ranger';
+ const s1key='s0_starter_01_red_white';
+ const s1key2='s0_starter_02_blue_red';
  a.send('set-deck',{deckKey:s1key});b.send('set-deck',{deckKey:s1key2});
  await Promise.all([a.wait(s=>s?.local?.hasDeck),b.wait(s=>s?.local?.hasDeck)]);
  a.send('ready',{ready:true});b.send('ready',{ready:true});
@@ -36,7 +36,9 @@ async function run(){
  await Promise.all([a.wait(s=>s?.match?.canStartOpening),b.wait(s=>s?.match?.canStartOpening)]);
  a.send('confirm-coin-flip');
  await Promise.all([a.wait(s=>s?.match?.status==='opening'),b.wait(s=>s?.match?.status==='opening')]);
- assert.ok(a.snapshot.match.opening,'S1 opening presentation must exist before S0 handoff');
+ assert.ok(a.snapshot.match.opening,'S0 opening presentation must exist');
+ assert.ok(a.snapshot.match.opening.heroIds.every(id=>id.startsWith('S0-')),'S0 Hero preview must match S0 deck');
+ assert.ok(a.snapshot.match.board?.appState?.playerHand?.some(x=>String(x).startsWith('S0-')),'S0 opening cards available before transition');
  a.send('opening-presented');b.send('opening-presented');
  await Promise.all([a.wait(s=>s?.match?.status==='started'),b.wait(s=>s?.match?.status==='started')]);
  for(const c of [a,b]){

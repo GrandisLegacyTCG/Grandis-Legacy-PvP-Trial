@@ -1,60 +1,47 @@
-# Grandis Legacy PvP Season 0 — S1 v3.80.17 Full Pregame → RC32 Battlefield
+# Grandis Legacy PvP Season 0 RC32 — PvP S1 v3.80.17 Lobby UI / S0 Content
 
-**Status: staging for GitHub / Northflank playtest, NOT a final validated release.**
+**Status: GitHub/Northflank staging candidate; gameplay not fully verified in two live remote browsers.**
 
-This package replaces the previous faux-S1 Season 0 lobby with the actual `Grandis_Legacy_PvP_v3.80.17_2026-10-13` frontend **from page load through lobby, player/spectator roles, Ready, START MATCH, coin choice, coin result and the original S1 opening presentation**. Season 0 loads **only once both players have completed the S1 opening presentation**. The browser then navigates to `/battle/`, loading the Season 0 RC32 game client (not a fork of the Season 1 battle client).
+## Exact source boundaries
 
-## Page boundaries
+| Screen or behavior | Source | Actual content |
+| --- | --- | --- |
+| Lobby structure, visuals, CSS, responsive layout, room/seat management, Ready, Spectate, Start Match | **PvP Season 1 v3.80.17** | **Season 0** decks, Heroes, class names, deck counts, artwork |
+| Starter Deck 1–5 and hero rank/progression preview | Layout from S1 v3.80.17 | **Exact S0 RC32 starter catalog** in `public/battle/engine/shared-app/active-starters.js` |
+| Custom deck import | S1 lobby control | S0 Deck Builder JSON or S0 canonical starter JSON; S1 cards rejected |
+| Coin selection and coin result | S1 v3.80.17 original UX/controls | First-player choice sent to S0 authority |
+| Opening presentation | S1 coin overlay styling and back-of-card assets, custom lightweight S0 content display | **S0 RC32 authoritative Opening Hand and Mana** (6 + 3) and selected S0 Heroes; no S1 match is started |
+| Game board, cards, effects, authority, victory, reconnect | **VS AI Season 0 RC32** and PvP multiplayer adapter | Season 0 only, including Grand Finale RC32 override |
 
-| URL / phase | Active application | Card and deck presentation |
-|---|---|---|
-| `/` — initial lobby | **Unchanged S1 v3.80.17 index.html, lobby stylesheet, lobby images** | Season 1 source set (as expressly requested) |
-| Room / Ready / spectator / coin / opening | **S1 v3.80.17 original pregame client, server protocol and presenter** | Season 1 opening display |
-| `opening-presented` acknowledged by BOTH players | **One server-side transition to S0 RC32 authority** | New Season 0 match opening is created |
-| `/battle/` — playing / finished | **Season 0 RC32 gameplay engine, card effects, art and battlefield UI** | Season 0 cards |
+**Important:** This release does **not** use the former "S1 Starter 1 -> S0 Starter 1" positional mapping. The lobby sends the real `s0_starter_*` ID; the server constructs its RC32 match using that exact selected S0 deck (plus any valid Hero formation changes). The S1 starter registry is not read by the lobby or S0 server.
 
-### Source parity
+Source-specific details:
+- `public/index.html` preserves original v3.80.17 markup with only **two S0 catalog script tags** inserted; removing them reproduces donor's original HTML SHA-256.
+- `public/lobby/pvp-lobby-v3.76.6.css` is **byte-identical** to S1 v3.80.17.
+- `public/pvp/pvp-host.js` retains S1 lobby skeleton, coin controls, connection; its **data readers** now use the S0 catalog / card data and `/battle/card-art/`.
+- `server/s0-pregame-catalog.mjs` loads S0 RC32 starter source into an isolated VM and rejects unexpected season or deck size.
+- `server.js` uses S1 server room/pregame protocol but **prepares RC32 authority at START MATCH**, which rejects invalid S0 decks before the coin flip; the S0 authority itself draws and controls the Opening Hand/Mana.
+- After S0 opening both clients navigate to `/battle/`, and use the existing S0 RC32 battle client.
 
-- `public/index.html`: **SHA-256 identical** to S1 v3.80.17.
-- `public/lobby/pvp-lobby-v3.76.6.css`: **SHA-256 identical** to S1 v3.80.17.
-- `public/assets/lobby/*`: copied untouched from S1 v3.80.17.
-- `public/pvp/pvp-host.js`: S1 host with exactly one narrow handoff hook added to redirect to `/battle/` on `started` / `finished` status.
-- `server.js`: S1 v3.80.17 pregame room/coin/start controller plus a boundary adapter to the actual S0 RC32 engine. No explicit Room Code or JOIN ROOM form exists.
-- `public/battle`: the existing Season 0 RC32 battlefield, with its old S0 lobby disconnected (no imported S0 lobby elements).
+## Usage / Northflank
 
-### **Known deck compatibility limitation — IMPORTANT**
+1. **For GitHub:** unzip this package and upload the **contents** directly to the root of the *PvP Season 0* repository; do not upload a single ZIP and do not overwrite the existing PvP Season 1 repository.
+2. Connect Northflank to the PvP S0 repository; use Dockerfile build, public HTTP port **3000**, health URL `/health` and single instance for the in-memory room model.
+3. Use the service's HTTPS URL in two different browsers or devices. One player joins automatically as Player 1, the other as Player 2; additional visitors are spectators (S1 protocol). There is **no Room Code**.
+4. Select S0 Starter 1–5 (or import an S0 Deck Builder JSON), Ready both seats, click START MATCH, complete the coin flip, and proceed to the S0 board.
+5. Avoid scaling to multiple server instances while the room and match are in memory; reconnects must reach the original running instance.
 
-Strictly keeping **Season 1's full pregame source** means the pregame deck selector and opening animation display *Season 1* cards, which **cannot be played directly by the Season 0 engine**. To allow a playable Season 0 battle, the server currently maps starter selections **by position**: S1 Starter 1 → S0 Starter 1, ..., S1 Starter 5 → S0 Starter 5.
+## Tests
 
-This is a **deliberate transition scaffold, not deck equivalence**. The player will see S1 hero/cards in pregame and different S0 hero/cards after handoff. This should be considered unresolved for a final public game. Season 1 imported custom decks are rejected with a clear error at match start, because they are not legal S0 game decks. There is no silent cross-season conversion.
+Run `npm run check` (Node.js 22 recommended). This executes syntax, S1 UI parity, WebSocket transition, and extra S0 catalog/custom-deck tests. No external npm dependencies required for runtime.
 
-To make pregame deck selection match the eventual S0 cards, the Season 1 lobby's data source must be switched to S0 — **which would change the strict full-S1 pregame requirement**. This change has not been made without authorization.
+**Verified in this staging build:**
+- Original S1 layout and CSS parity, with zero Room Code or manual Join Room.
+- Exactly five selected S0 starter decks with 50 Main Deck cards, 12 Legacy cards, and 12 Mana, and all referenced artwork present.
+- Both player seats, Deck/Ready, coin flip, S0 opening payload, both acknowledgements, and automatic S0 game handoff.
+- Imported S0 v1.58 Deck Builder export works in the authoritative server; an attempted S1 deck import is rejected.
+- Correct S0 Hero cards in Player 2's battlefield, seat-specific hidden hand protections, wrong-seat action rejection, reconnect, surrender.
 
-## Run / Northflank
+**Not verified:** two-browser visual walkthrough (Chromium rejects localhost navigation here with `ERR_BLOCKED_BY_ADMINISTRATOR`), Northflank deployment, full combat match win, every S0 card interaction, imports of all possible Deck Builder v1.62 export variants. The new opening is **not** pixel-identical to Season 1's original in-battle flying-card animation: the canonical game draw is performed by RC32 and presented using an S1-style card-back sequence so no S1 cards appear during the transition.
 
-- Node.js >= 18; **no npm dependencies required** (the S1 WebSocket protocol uses the pre-existing dependency-free S0 transport wrapper for this staged build).
-- `npm start` or `node server.js`.
-- Northflank: Dockerfile build, public port HTTP 3000, healthcheck `/health`. Same-origin WebSocket upgrades on `/ws`. Deploy only this **Season 0** repository, not the real Season 1 repository.
-- If Northflank sets `PORT`, this server respects it automatically.
-- All players should use the **same website URL**, no Room Code. First two players are seats 1/2; additional visitors enter as spectators per S1 mechanics.
-- `/battle/` only works with the tab session previously established by the S1 lobby. Direct visitors are redirected to `/`.
-
-## Tests actually performed
-
-Run: `npm run check:syntax && npm run test:transition`
-
-- PASS: exact S1 lobby HTML and CSS SHA-256 parity; no ROOM CODE / JOIN ROOM markup.
-- PASS: server responds at `/health`; both routes `/` and `/battle/` serve the correct application.
-- PASS: two actual WebSocket clients connect without a room code and receive two S1 seats.
-- PASS: S1 deck selection, both Ready, START MATCH, Player 2 coin choice, coin result, coin acknowledgements, **S1 opening payload** and both `opening-presented` acknowledgements.
-- PASS: S0 RC32 authority becomes active only at handoff, each player receives own S0 opening Hand and masked opponent Hand.
-- PASS: wrong-seat S0 gameplay action rejected; legitimate S0 phase action committed; surrender ends the match.
-- **NOT VERIFIED:** real two-browser visual walkthrough (the browser in this execution environment refuses HTTP and `file:` navigation with `ERR_BLOCKED_BY_ADMINISTRATOR`).
-- **NOT VERIFIED:** complete 3-Hero combat victory through Northflank (no live deployment performed here).
-- **NOT VERIFIED:** all custom deck flows / all RC32 card interactions / spectator rendering across the transition.
-
-## Scope, safety and provenance
-
-The source ZIPs for **Season 1 v3.80.17** and **Season 0 RC32** were not changed. The previous staging builds remain untouched. Source transition is isolated in server + S1 client handoff + S0 game-only WS client.
-
-See `docs/TAKEOVER_S1_FULL_LOBBY_RC32.md` and `tests/s1-to-s0-transition.mjs`.
+See `docs/TAKEOVER_S0_PREGAME_CONTENT_2026-11-08.md` for changed files, QA, open items and deployment checkpoints.

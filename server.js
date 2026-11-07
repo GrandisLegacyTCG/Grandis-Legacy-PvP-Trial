@@ -4,8 +4,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, randomInt, createHash } from 'node:crypto';
 import { WebSocketServer, WebSocket } from './server/ws-compat.mjs';
-import { V6916Authority, sourceHashes } from './server/v6916-authority.mjs';
+import { sourceHashes } from './server/v6916-authority.mjs';
 import { Season0HeadlessAuthority } from './server/headless-rc32.mjs';
+import { season0StarterCatalog } from './server/s0-pregame-catalog.mjs';
 import { viewerSafeBoard, assertViewerSafeBoard, makeBlindChoices } from './server/viewer-safe.mjs';
 
 const BASE=path.dirname(fileURLToPath(import.meta.url));
@@ -13,7 +14,7 @@ const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
 const VERSION='3.80.17';
-const BUILD_ID='gl-s0-handoff-v38017-rc32-2026-11-07';
+const BUILD_ID='gl-s0-v38017-ui-rc32-data-2026-11-08';
 const BUILD_LABEL=`Grandis Legacy PvP · S1 v${VERSION} Lobby / S0 RC32 Battle`;
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
@@ -53,7 +54,7 @@ function clearMatch(){room.authority=null;room.match=freshMatch();room.ledger.cl
 function viewFor(client){
   const local=client?{clientId:client.clientId,name:client.name,role:client.role,seat:client.seat||null,seatToken:client.role==='player'?client.seatToken:null,ready:!!client.ready,hasDeck:!!(client.deckKey||client.customDeck),deckKey:client.deckKey||null,deckName:client.deckName||null,customDeck:room.match.status==='setup'&&client.customDeck?clone(client.customDeck):null,formation:client.formation?clone(client.formation):null}:null;
   let board=null,opening=null;
-  if(room.authority){
+  if(room.authority&&['opening','started','finished'].includes(room.match.status)){
     if(client?.role==='player'&&client.seat){board=room.authority.viewForSeat(client.seat);opening=room.authority.openingForSeat(client.seat)}
     else board=room.authority.viewForSpectator();
   }
@@ -73,14 +74,18 @@ function validateFormation(deck,formation){
   if(!a.every(Boolean)||!b.every(Boolean)||new Set(b).size!==3||a.join('|')!==b.join('|'))throw new Error('Formation must be a permutation of the selected deck Heroes.');
   return{LEFT:String(formation.LEFT),CENTER:String(formation.CENTER),RIGHT:String(formation.RIGHT)};
 }
-// One immutable setup authority only supplies the exact v6.91.6 starter catalog. Match authority is always new per match.
-const setupAuthority=new V6916Authority();
-function setupStarters(){return setupAuthority.starters}
+// Keep the S1 room/ready/coin lifecycle, but all selected deck data comes from RC32 S0.
+function setupStarters(){return season0StarterCatalog}
 
 function setDeckFast(client,msg){
   if(room.match.status!=='setup')throw new Error('Deck selection is locked after match start.');
   if(msg.customDeck){
     const raw=clone(msg.customDeck);const json=JSON.stringify(raw);if(json.length>800000)throw new Error('Imported deck is too large.');
+    const input=raw?.deck&&typeof raw.deck==='object'?raw.deck:raw;
+    const cards=[...(Array.isArray(input.main_deck)?input.main_deck:[]),...(Array.isArray(input.legacy_deck_expanded)?input.legacy_deck_expanded:[])];
+    if(raw.season&&String(raw.season).toUpperCase()!=='S0')throw new Error('Only Season 0 decks may be imported.');
+    if(!cards.length||cards.some(x=>x?.card_id&&!String(x.card_id).startsWith('S0-')))throw new Error('Only Season 0 card IDs are supported.');
+    if(input.main_deck_count!=null&&Number(input.main_deck_count)!==50)throw new Error('Season 0 Main Deck must contain 50 cards.');
     client.customDeck=raw;client.deckKey=null;client.deckName=safeText(msg.deckName||raw.deck_name||'Imported Deck',100);
     client.formation=validateFormation(raw,msg.formation||raw.default_formation)||clone(raw.default_formation||null);
   }else{
@@ -90,23 +95,27 @@ function setDeckFast(client,msg){
   client.ready=false;
 }
 
-// S1 controls the complete pre-match lifecycle and opening animation. Only
-// after BOTH clients acknowledge the exact S1 opening does the real match
-// switch to the isolated RC32 Season 0 authority.
-const S0_DECK_KEYS=Object.freeze(['s0_starter_01_red_white','s0_starter_02_blue_red','s0_starter_03_yellow_blue','s0_starter_04_green_yellow','s0_starter_05_white_green']);
-const S1_DECK_KEYS=Object.keys(setupStarters());
+// S1 owns the UI/room/coin lifecycle. RC32 S0 owns deck validation, opening
+// cards/Mana and battle; no Season 1 card is ever used for an S0 match.
 function season0DeckFor(player){
-  if(player.customDeck)throw new Error('A Season 1 imported deck cannot be used in Season 0 battle. Select a starter deck.');
-  const n=S1_DECK_KEYS.indexOf(player.deckKey);
-  if(n<0||n>=S0_DECK_KEYS.length)throw new Error('Selected Season 1 deck has no approved Season 0 starter mapping.');
-  return S0_DECK_KEYS[n];
+  const src=player.customDeck||setupStarters()?.[player.deckKey]?.deck;
+  if(!src)throw new Error('Please select a Season 0 starter or import a Season 0 deck.');
+  const deck=clone(src);
+  deck.default_formation=validateFormation(deck,player.formation||deck.default_formation)||deck.default_formation;
+  return deck;
 }
 class Season0BattleAuthority {
-  constructor(){this.engine=new Season0HeadlessAuthority(path.join(PUBLIC,'battle'))}
-  static begin(p1,p2,firstSeat,face){
+  constructor(){this.engine=new Season0HeadlessAuthority(path.join(PUBLIC,'battle'));this.opening=null}
+  static prepare(p1,p2){
     const a=new Season0BattleAuthority();
-    a.engine.start({player1DeckKey:season0DeckFor(p1),player2DeckKey:season0DeckFor(p2),player1Name:p1.name,player2Name:p2.name});
-    a.engine.completeOpening(firstSeat,face);return a;
+    a.deckHeroIds={1:['LEFT','CENTER','RIGHT'].map(k=>season0DeckFor(p1).default_formation[k]),2:['LEFT','CENTER','RIGHT'].map(k=>season0DeckFor(p2).default_formation[k])};
+    a.engine.start({player1Deck:season0DeckFor(p1),player2Deck:season0DeckFor(p2),
+      player1Name:p1.name,player2Name:p2.name});
+    return a;
+  }
+  complete(firstSeat,face){
+    this.engine.completeOpening(firstSeat,face);
+    this.opening={choice:face,outcome:face,firstSeat:Number(firstSeat),heroIdsBySeat:this.deckHeroIds};
   }
   get revision(){return this.engine.revision}
   get canonical(){return this.engine._canonicalForServerOnly()}
@@ -124,7 +133,7 @@ class Season0BattleAuthority {
     st.responseWindow=st.responseWindow?{kind:st.responseWindow.kind,private_masked:true}:null;
     return safe;
   }
-  openingForSeat(){return null}
+  openingForSeat(seat){if(!this.opening)return null;return {choice:this.opening.choice,outcome:this.opening.outcome,firstSeat:this.opening.firstSeat,heroIds:this.opening.heroIdsBySeat?.[seat]||[]}}
   applyIntent(seat,name,args=[]){
     if(name==='selectOpponentManaChoiceHandle'){
       const map=makeBlindChoices(this.engine._viewForMaskingOnly(seat).appState,this.revision,BLIND_SECRET,seat);
@@ -144,8 +153,7 @@ function startMatch(client){
   const p1=playerBySeat(1),p2=playerBySeat(2);
   // Verify the battle transition before beginning the S1 coin animation.
   season0DeckFor(p1);season0DeckFor(p2);
-  const authority=new V6916Authority();
-  authority.start({p1:selectionOf(p1),p2:selectionOf(p2)});
+  const authority=Season0BattleAuthority.prepare(p1,p2);
   room.authority=authority;room.ledger.clear();
   room.match={...freshMatch(),status:'coin-flip',chooserSeat:2,startedAt:now()};
 }
@@ -164,17 +172,14 @@ function confirmCoin(client){
   if(client.role!=='player')throw new Error('Spectators cannot start gameplay.');
   if(room.match.status!=='coin-result')throw new Error('Coin result is not ready.');
   if(!allPlayerSeatsAck(room.match.coinPresented))throw new Error('Waiting for both players to finish the Coin Flip presentation.');
-  const r=room.authority.commitOpening({choice:room.match.choice,outcome:room.match.outcome,firstSeat:room.match.firstSeat});
-  if(!r?.board)throw new Error('Opening setup failed.');
+  room.authority.complete(room.match.firstSeat,room.match.outcome);
   room.match.openingId='opening:'+String(room.match.startedAt||now())+':'+String(room.match.firstSeat||0);room.match.status='opening';room.match.openingPresented=[];
 }
 function openingPresented(client){
   if(client.role!=='player')return;if(room.match.status!=='opening')return;
   if(!room.match.openingPresented.includes(client.seat))room.match.openingPresented.push(client.seat);
   if(allPlayerSeatsAck(room.match.openingPresented)){
-    const p1=playerBySeat(1),p2=playerBySeat(2);
-    const season0=Season0BattleAuthority.begin(p1,p2,room.match.firstSeat,room.match.outcome);
-    room.authority=season0;room.ledger.clear();room.match.status='started';
+    room.ledger.clear();room.match.status='started';
   }
 }
 function applyIntent(client,msg,batch=false){
@@ -277,7 +282,7 @@ const server=http.createServer(async(req,res)=>{
     }
     if(url.pathname==='/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
-      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lobby-opening__s0-rc32-gameplay',authoritySources:sourceHashes()}));return;
+      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-ui__s0-rc32-decks-opening-battle',authoritySources:sourceHashes()}));return;
     }
     let rel=decodeURIComponent(url.pathname);if(rel==='/'||rel==='')rel='/index.html';if(rel==='/battle'||rel==='/battle/')rel='/battle/index.html';
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);

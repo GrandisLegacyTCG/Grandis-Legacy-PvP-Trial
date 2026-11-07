@@ -8,7 +8,8 @@
     "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js",
     "test:transition": "node tests/s1-to-s0-transition.mjs",
     "check:parity": "node tests/s1-source-parity.mjs",
-    "check": "npm run check:syntax && npm run check:parity && npm run test:transition"
+    "check": "npm run check:syntax && npm run check:parity && npm run test:transition && npm run test:s0-catalog",
+    "test:s0-catalog": "node tests/s0-catalog-and-custom.mjs"
   },
   "engines": {
     "node": ">=18"
