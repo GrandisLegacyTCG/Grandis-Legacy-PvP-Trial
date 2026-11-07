@@ -14,8 +14,8 @@
     "test:ui-bridge": "python tests/browser-bridge-smoke.py",
     "test:hosted": "node tests/hosted-northflank-smoke.mjs",
     "test:browser:native": "python tests/browser-native-smoke.py",
-    "check:repo": "node tests/repository-integrity.mjs && node tests/lobby-s1-static.mjs",
-    "test:ui:lobby": "python tests/lobby-s1-style-browser.py",
-    "test:ui:lobby-network": "python tests/lobby-s1-formation-network.py"
+    "check:repo": "node tests/repository-integrity.mjs && node tests/lobby-v38017-parity.mjs",
+    "test:ui:lobby": "python tests/lobby-v38017-browser.py",
+    "test:ui:lobby-network": "python tests/lobby-v38017-network.py"
   }
 }

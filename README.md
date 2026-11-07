@@ -66,33 +66,38 @@ This working tree integrates the newest uploaded RC32 maintenance snapshot: **Pr
 
 See [`docs/TAKEOVER_RC32_LATEST_MAINTENANCE_2026-11-07.md`](docs/TAKEOVER_RC32_LATEST_MAINTENANCE_2026-11-07.md) and [`docs/RC32_LATEST_SOURCE_PARITY.json`](docs/RC32_LATEST_SOURCE_PARITY.json) for exact source parity, tests and outstanding Northflank acceptance. **Latest RC32 staging is NOT deployed and NOT final**.
 
-## Season 1-style lobby integration (7 Nov 2026)
+## Actual PvP Season 1 v3.80.17 lobby port (7 Nov 2026)
 
-**Scope:** The lobby on the initial PvP page has been replaced with the Season 1 two-column presentation (deck formation and preview on the left; room/players/ready on the right). The underlying in-match UI, assets, and authoritative gameplay remain the **VS AI Season 0 RC32** ones. No Season 1 cards, databases, or gameplay engine have been imported.
+This supersedes the earlier **v3.51-style lobby**. The uploaded
+`Grandis_Legacy_PvP_v3.80.17_2026-10-13.zip` was used **directly**.
+Its `public/lobby/pvp-lobby-v3.76.6.css` is copied byte-for-byte into
+`client/lobby/pvp-lobby-v3.76.6.css`; SHA-256:
+`7175fb9ddf54f7d173d05e5a3d569fd4391d0e378c81f559f5c7c8bdbae138eb`.
+Lobby assets and font files were likewise copied from that exact v3.80.17 release
+and verified byte-for-byte. The page structure and the deck/formation/hero
+progression UI are ported from its actual `public/pvp/pvp-host.js`.
 
-**Reference limitation:** The exact `Grandis_Legacy_PvP_v3.80.17_2026-10-13` archive was **not provided or available** in the project files. The accessible Season 1 lobby source is **PvP v3.51 (2026-09-28)**. Accordingly, this is a functional port of the verifiable Season 1 v3.51 lobby presentation, **not a pixel-perfect verified reproduction of v3.80.17**. For exact v3.80.17 parity, compare that version when its source becomes available.
+The **Season 0** server, game engine, card database, battlefield UI, intent
+transport, privacy masking, and Northflank Dockerfile are **retained**. Only
+UI/transport bindings necessary to map this lobby to the Season 0 room protocol
+were adapted in `client/runtime/pvp-network.js`.
 
-### Lobby workflow
+Differences from Season 1 are intentional and explicit:
+- S0 currently requires a manually chosen **Room Code** and **JOIN ROOM**;
+  Season 1 uses a different room/seat joining protocol.
+- S0's two-player authority does not support **SPECTATE**, so this control is
+  replaced with **JOIN ROOM**; no spectator mode is simulated.
+- S0 starters and imported S0 deck data replace Season 1 deck data. Decks
+  auto-submit on join/selection/formation swap, then **READY** is enabled
+  only after the server confirms a deck was loaded.
+- Season 0 coin choice follows its original two-seat server flow.
 
-1. Open the hosted Season 0 PvP application. The full-screen lobby is presented immediately, instead of the old centered join-room modal.
-2. Choose one of the five Season 0 starters or import a Season 0 Deck Builder JSON. The three Hero cards, rank preview, formation swap buttons, and deck summary are displayed on the left.
-3. Enter player name and room code on the right, and click **JOIN ROOM**. The other player uses the same room code in a separate browser or device.
-4. Click **LOAD DECK** to submit the selected deck/formation. Swapped starter formations are submitted to the **existing server custom-deck validator**, rather than assuming the displayed order is authoritative. The original source deck is not changed.
-5. Both players click **READY**. Player 1 clicks **START MATCH**; Player 2 chooses the coin. The lobby closes and RC32's normal battlefield appears. Use the compact **PvP Room** control to return to room controls.
-6. On disconnect, use **RECONNECT** for the saved seat. **COPY INVITE LINK** copies the current room URL. All server role, readiness, coin, match, and card decisions remain server-authoritative.
+QA: `npm run check` PASS, `npm run test:ui:lobby` PASS (Chromium, desktop
+and scaled narrow viewport), `npm run test:ui:lobby-network` PASS (two real
+Chromium renderers connected via test-only WebSocket relay to the actual Node
+S0 server; join/auto-deck/formation/ready/coin/RC32 battle/phase). Source
+parity checked with `tests/lobby-v38017-parity.mjs`. Native 2-browser
+Northflank deployment and real network play still **NOT VERIFIED**.
 
-### Source changes
-
-- `client/runtime/pvp-network.js` — lobby DOM, deck preview, room status and actions only; retains the original PvP WebSocket/gameplay intent transport.
-- `client/runtime/s1-lobby.css` — copied Season 1 v3.51 lobby styles plus scoped Season 0 overrides. The RC32 battlefield CSS is unchanged.
-- `client/assets/lobby/*` — Season 1 lobby background, logo and dropdown chevron.
-- `client/index.html` — links the new lobby stylesheet.
-- `tests/lobby-s1-*` — static, desktop/mobile Chromium, WebSocket formation/ready/coin tests.
-
-### QA summary
-
-- `npm run check`: **PASS** (syntax, repository integrity, RC32 headless gameplay regressions, WebSocket/network match smoke).
-- `python tests/lobby-s1-style-browser.py`: **PASS** (actual Chromium DOM and visual geometry at 1600x900 and 430x900; test-only asset embedding). Evidence: `docs/LOBBY_S1_STYLE_DESKTOP.png`, `docs/LOBBY_S1_STYLE_MOBILE.png`.
-- `python tests/lobby-s1-formation-network.py` against a local Node server on port 3000: **PASS** (two Chromium renderers, WS test relay, formation swap accepted by server and reflected on match Hero positions, deck load/Ready/coin/phase).
-- Native Chromium HTTP navigation was **BLOCKED** by this test environment's policy; therefore this staging build is **not** verified in two browsers directly against Northflank yet.
-- v3.80.17 exact lobby appearance, mobile interactions on real devices, and full three-Hero combat victory: **NOT VERIFIED**.
+See `docs/LOBBY_V38017_SOURCE_PORT_AND_QA.md` for the specific source
+comparison, safety constraints and playtest acceptance criteria.

@@ -1,0 +1,38 @@
+/* Season 0 protocol additions only. The donor PvP v3.80.17 CSS in
+   ../lobby/pvp-lobby-v3.76.6.css is intentionally byte-for-byte unchanged. */
+#s0PvpOverlay.playing{display:none!important}
+#s0PvpOverlay:not(.playing){display:block!important}
+#s0PvpOverlay .s0-room-code-label{display:block;margin:13px 0 7px}
+#s0PvpOverlay #s0PvpRoom{margin-bottom:0}
+#s0PvpOverlay .pvp-v260-room-copy strong{overflow-wrap:anywhere}
+#s0PvpOverlay .pvp-v260-room-id{margin-top:4px}
+#s0PvpOverlay #s0PvpStatus{font-size:11px;text-align:center;color:#9cb1c2;margin-top:4px}
+#s0PvpOverlay #s0PvpControls{gap:9px}
+#s0PvpOverlay .s0-pvp-controls-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#s0PvpOverlay .s0-pvp-coin{font-size:12px;line-height:1.4;color:#cbd0db;margin:6px 0}
+#s0PvpOverlay .s0-pvp-coin p{margin:0 0 8px}
+#s0PvpOverlay .pvp-v260-card{cursor:pointer}
+#s0PvpOverlay .pvp-v260-card:focus-visible{outline:2px solid #f1d481}
+#s0PvpOverlay [hidden]{display:none!important}
+#s0PvpOverlay .pvp-v260-footer #s0PvpLoadedDeckStatus{min-height:15px}
+#s0PvpOverlay .pvp-v260-logo img{object-fit:contain}
+#s0PvpOverlay .pvp-v260-heading h1{line-height:1.25}
+#s0PvpToggle{position:fixed;top:8px;left:8px;z-index:120;border:1px solid #c2a45a;color:#f3d789;background:#061b2ce8;border-radius:5px;padding:6px 10px;font:600 12px Noto,Arial;cursor:pointer}
+body.pvp-lobby-mode #s0PvpToggle{display:none}
+#s0PvpProgression[hidden]{display:none!important}
+@media(max-width:760px){
+ #s0PvpOverlay .pvp-v260-room-panel{min-height:440px}
+ #s0PvpOverlay .pvp-v260-footer #s0PvpImportButton{width:100%}
+}
+/* S1 v3.80.17 transforms the full BODY on touch; RC32 transforms only
+   the battlefield .app. Map its established stage transform to the lobby
+   page alone, so the lobby does not overflow the mobile viewport. */
+html.gl-adaptive-stage #s0PvpOverlay{
+ position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;
+ overflow:hidden!important;transform:none!important;
+}
+html.gl-adaptive-stage #s0PvpOverlay .pvp-v260-page{
+ position:absolute!important;left:0!important;top:0!important;
+ width:1600px!important;height:747px!important;min-height:747px!important;
+ transform:var(--gl-stage-transform)!important;transform-origin:0 0!important;
+}

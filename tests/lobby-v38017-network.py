@@ -83,8 +83,7 @@ with sync_playwright() as p:
   before=pages[0].evaluate('window.GL_ACTIVE_STARTER_DECKS.s0_starter_01_red_white.deck.default_formation')
   pages[0].locator('[data-swap="0"]').click()
   for page in pages:
-   page.locator('#s0PvpSelect').click()
-   until(lambda page=page:page.evaluate('window.GL_S0_PVP_NETWORK.state.ready')==False and page.evaluate('window.GL_S0_PVP_NETWORK.state.status')=='lobby','deck select')
+   until(lambda page=page:page.evaluate('window.GL_S0_PVP_NETWORK.state.deckKey')!='','automatic deck submitted')
   until(lambda: pages[0].evaluate('window.GL_S0_PVP_NETWORK.state.deckKey')=='CUSTOM','swapped formation server accepted')
   for page in pages:
    until(lambda page=page:page.locator('#s0PvpReady').is_enabled(),'ready enabled')

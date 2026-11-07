@@ -1,4 +1,4 @@
-"""Read-only Chromium render check of Season 1-style Season 0 lobby.
+"""Read-only Chromium render check of Season 1 v3.80.17 donor-based Season 0 lobby.
 Browsers in this test container cannot connect to loopback HTTP; embed JS/CSS and assets
 solely in the browser test, never into the shipped application.
 """
@@ -6,16 +6,19 @@ import pathlib, re, base64, os
 from playwright.sync_api import sync_playwright
 root=pathlib.Path(__file__).resolve().parents[1]/'client'
 html=(root/'index.html').read_text()
-css=(root/'runtime/s1-lobby.css').read_text()
+css=(root/'lobby/pvp-lobby-v3.76.6.css').read_text()+'\n'+(root/'runtime/s0-lobby-v38017-adapter.css').read_text()
 def data(path):
  raw=(root/path).read_bytes()
  ext=path.split('.')[-1]
  mime='image/webp' if ext=='webp' else 'image/png'
  return f'data:{mime};base64,'+base64.b64encode(raw).decode()
-css=css.replace('assets/lobby/background.webp',data('assets/lobby/background.webp'))
-css=css.replace('assets/lobby/chevron-down.png',data('assets/lobby/chevron-down.png'))
-html=re.sub(r'<link rel="stylesheet" href="runtime/s1-lobby.css\?v=1">',lambda m:'<style>'+css+'</style>',html)
+css=css.replace('../assets/lobby/background.webp',data('assets/lobby/background.webp'))
+css=css.replace('../assets/lobby/chevron-down.png',data('assets/lobby/chevron-down.png'))
+for name in ['NotoSans-Variable.woff2','NotoSans-Italic-Variable.woff2']:
+ css=css.replace('../engine/assets/fonts/noto-sans/'+name, 'data:font/woff2;base64,'+base64.b64encode((root/'engine/assets/fonts/noto-sans'/name).read_bytes()).decode())
+html=re.sub(r'<link rel="stylesheet" href="lobby/pvp-lobby-v3\.76\.6\.css\?v=38017">\s*<link rel="stylesheet" href="runtime/s0-lobby-v38017-adapter\.css\?v=1">',lambda m:'<style>'+css+'</style>',html)
 html=html.replace('assets/lobby/grandis-legacy-logo.webp',data('assets/lobby/grandis-legacy-logo.webp'))
+html=html.replace('assets/lobby/swap.png',data('assets/lobby/swap.png'))
 html=re.sub(r'<script src="([^"]+)"></script>',lambda m:'<script>'+ (root/m.group(1)).read_text()+'</script>',html)
 html=html.replace('<link rel="stylesheet" href="shared-ui/battlefield-ui.css">','<style>'+(root/'shared-ui/battlefield-ui.css').read_text()+'</style>')
 with sync_playwright() as p:
@@ -33,10 +36,17 @@ with sync_playwright() as p:
     if src and src.startswith('card-art/'):
      img.evaluate('(el,src)=>el.src=src',data(src))
   inject_cards()
+  for icon in page.locator('#s0PvpFormation .pvp-v260-swap-button img').all():
+   icon.evaluate('(el,src)=>el.src=src',data('assets/lobby/swap.png'))
   page.locator('.pvp-v260-logo img').evaluate('(el,src)=>el.src=src',data('assets/lobby/grandis-legacy-logo.webp'))
   assert page.locator('#s0PvpDeck').count()==1
   assert page.locator('#s0PvpRoom').count()==1
   assert page.locator('#s0PvpJoin').is_visible()
+  assert page.locator('#s0PvpReady').is_visible()
+  assert page.locator('#s0PvpStart').is_visible()
+  assert page.locator('#s0PvpDeckStats .legacy-total').count()==1
+  assert page.locator('#s0PvpDeckStats .main-total').count()==1
+  assert page.locator('#s0PvpFormation .pvp-v260-swap-button img').count()==2
   assert page.locator('.pvp-v260-panel').count()==2
   assert page.locator('#s0PvpRankLabel').inner_text()=='RANK I'
   # S1-like preview behavior, rank selector, ability to swap positional preview.
@@ -45,20 +55,31 @@ with sync_playwright() as p:
   assert page.locator('#s0PvpRankLabel').inner_text()=='RANK II'
   before=page.locator('#s0PvpFormation img').first.get_attribute('src')
   page.locator('[data-swap="0"]').click()
+  for icon in page.locator('#s0PvpFormation .pvp-v260-swap-button img').all():icon.evaluate('(el,src)=>el.src=src',data('assets/lobby/swap.png'))
   after=page.locator('#s0PvpFormation img').first.get_attribute('src')
   assert before!=after,'preview swap did not reorder Hero positions'
   page.locator('#s0PvpRankPrev').click()
   inject_cards()
-  page.screenshot(path=str(root.parent/'docs'/'LOBBY_S1_STYLE_DESKTOP.png'),full_page=True)
-  print('PASS: Season 1-style lobby renders 2 panels, three Season 0 Heroes, deck stats, room panel, rank selection, and formation preview swap at 1600x900.')
+  for icon in page.locator('#s0PvpFormation .pvp-v260-swap-button img').all():icon.evaluate('(el,src)=>el.src=src',data('assets/lobby/swap.png'))
+  page.screenshot(path=str(root.parent/'docs'/'LOBBY_V38017_DESKTOP.png'),full_page=True)
+  print('PASS: Season 1 v3.80.17 donor-based lobby renders 2 panels, three Season 0 Heroes, deck stats, room panel, rank selection, and formation preview swap at 1600x900.')
   assert not errors,errors
   page.set_viewport_size({'width':430,'height':900})
   page.wait_for_timeout(150)
   inject_cards()
+  for icon in page.locator('#s0PvpFormation .pvp-v260-swap-button img').all():icon.evaluate('(el,src)=>el.src=src',data('assets/lobby/swap.png'))
   assert page.locator('#s0PvpJoin').is_visible()
+  assert page.locator('#s0PvpReady').is_visible()
+  assert page.locator('#s0PvpStart').is_visible()
+  assert page.locator('#s0PvpDeckStats .legacy-total').count()==1
+  assert page.locator('#s0PvpDeckStats .main-total').count()==1
+  assert page.locator('#s0PvpFormation .pvp-v260-swap-button img').count()==2
   dims=page.evaluate('''() => ({scroll:document.querySelector("#s0PvpOverlay").scrollHeight,client:document.querySelector("#s0PvpOverlay").clientHeight,width:document.querySelector("#s0PvpOverlay .pvp-v260-page").scrollWidth,view:window.innerWidth})''')
-  assert dims['scroll']>dims['client'],dims
-  assert dims['width']<=dims['view']+5,dims
-  page.screenshot(path=str(root.parent/'docs'/'LOBBY_S1_STYLE_MOBILE.png'),full_page=True)
-  print('PASS: 430px mobile lobby is scrollable, with no material horizontal overflow.')
+  # Season 1 v3.80.17 deliberately scales the whole desktop lobby on narrow viewports.
+  assert page.evaluate('parseFloat(getComputedStyle(document.querySelector("#s0PvpOverlay")).getPropertyValue("--pvp-lobby-scale"))')<1
+  bounds=page.locator('#s0PvpOverlay .pvp-v260-page').bounding_box()
+  assert bounds and bounds['width']<=dims['view']+5,(bounds,dims)
+  assert bounds['x']>=-5,(bounds,dims)
+  page.screenshot(path=str(root.parent/'docs'/'LOBBY_V38017_MOBILE.png'),full_page=True)
+  print('PASS: 430px narrow viewport scales S1 v3.80.17 desktop lobby layout without horizontal overflow.')
  finally:browser.close()

@@ -84,6 +84,7 @@ function update(snapshot){
   state.ready=!!me?.ready;
   state.deckKey=snapshot.myDeckKey||'';
   drawControls(snapshot);
+  autoLoadDeckIfNeeded(players);
   if(hadInflight)flushQueuedIntent();
 }
 function connect(room,token=''){
@@ -99,8 +100,8 @@ function connect(room,token=''){
   ws.onclose=()=>{if(state.socket!==ws)return;state.inflight=false;state.queuedIntents.length=0;info('Disconnected. Use Reconnect to rejoin.',true);showLobby();};
   ws.onerror=()=>info('WebSocket connection failed. Check Northflank WS URL / proxy settings.',true);
 }
-// Season 1 lobby presentation (from available v3.51 reference), backed by the S0 protocol.
-// RC32 gameplay renderer/engine and WebSocket authority above remain untouched.
+// Lobby markup, layout, controls and progression design ported from the actual Season 1 PvP v3.80.17 public/pvp/pvp-host.js and public/lobby/pvp-lobby-v3.76.6.css.
+// Only the Season 0 network protocol/deck sources and necessary room-code controls differ. RC32 game engine remains intact.
 let draftKey=starters[0];
 let draftFormation=null;
 let customPreview=null;
@@ -124,121 +125,157 @@ function lineageFor(deck,baseId){
 const art=id=>'card-art/'+encodeURIComponent(String(id||''))+'.webp';
 function currentDeckLabel(){return draftKey==='CUSTOM'?(importedDeckName||'Imported Season 0 Deck'):(starterLabels[starters.indexOf(draftKey)]||'Starter Deck');}
 function deckStats(deck){
-  const rows=Array.isArray(deck?.main_deck)?deck.main_deck:[];
-  const total=rows.reduce((n,c)=>n+Number(c.quantity||0),0);
-  const items=rows.filter(c=>String(c.card_id||'').startsWith('S0-ITM-')).reduce((n,c)=>n+Number(c.quantity||0),0);
-  const events=rows.filter(c=>String(c.card_id||'').startsWith('S0-EVT-')).reduce((n,c)=>n+Number(c.quantity||0),0);
-  const num=(n)=>Number.isFinite(n)?n:0;
-  return [['Main Deck',num(total)],['Skill Cards',num(total-items-events)],['Item Cards',num(items)],['Event Cards',num(events)],['Mana Deck',num(deck?.mana_deck_count??(deck?.shard_deck||deck?.deck?.shard_deck||[]).reduce((n,c)=>n+Number(c.quantity||0),0))],['Legacy Deck',num(deck?.legacy_deck_count??(deck?.legacy_packages||deck?.deck?.legacy_packages||[]).length*4)]];
+ const rows=Array.isArray(deck?.main_deck)?deck.main_deck:[];
+ const sum=xs=>xs.reduce((n,c)=>n+Number(c?.quantity||0),0);
+ const main=sum(rows);
+ const items=sum(rows.filter(c=>String(c?.card_id||'').startsWith('S0-ITM-')));
+ const events=sum(rows.filter(c=>String(c?.card_id||'').startsWith('S0-EVT-')));
+ const legacy=Array.isArray(deck?.legacy_deck_expanded)?deck.legacy_deck_expanded:[];
+ const heroes=legacy.filter(c=>String(c?.card_type||'').toLowerCase()==='hero').length;
+ const legacies=legacy.filter(c=>String(c?.card_type||'').toLowerCase()==='legacy').length;
+ return {heroes,legacies,legacyTotal:legacy.length,skills:main-items-events,items,events,main};
 }
+function submitDraftDeck(){
+ if(state.status!=='lobby'||!state.seat||state.socket?.readyState!==WebSocket.OPEN)return false;
+ const d=previewDeck();if(!d)return false;
+ const f=formation();
+ if(draftKey==='CUSTOM'||JSON.stringify(f)!==JSON.stringify(defaultFormation(d))){
+   const copy=JSON.parse(JSON.stringify(d));copy.default_formation={...f};
+   return emit('custom-deck',{deck:copy});
+ }
+ return emit('deck',{deckKey:draftKey});
+}
+let automaticDeckUploadKey='';
+function autoLoadDeckIfNeeded(players){
+ if(state.status!=='lobby'||!state.seat)return;
+ const me=players.find(p=>p.seat===state.seat);
+ if(me?.hasDeck)return;
+ const signature=state.room+'|'+state.seat+'|'+draftKey+'|'+JSON.stringify(formation());
+ if(signature===automaticDeckUploadKey)return;
+ automaticDeckUploadKey=signature;
+ submitDraftDeck();
+}
+
 function drawPreview(){
  const deck=previewDeck();
  const title=document.getElementById('s0PvpDeckTitle');if(!title)return;
- title.textContent=deck?.deck_name||currentDeckLabel();
- document.getElementById('s0PvpDeckClassLine').textContent=draftKey==='CUSTOM'?'CUSTOM SEASON 0 DECK':currentDeckLabel();
- document.getElementById('s0PvpDeckStats').innerHTML=deckStats(deck).map(([k,v],i)=>`<div class="${i===0?'total':''}"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('');
+ title.textContent=draftKey==='CUSTOM'?(importedDeckName||deck?.deck_name||'Imported Deck'):('Starter Deck '+(starters.indexOf(draftKey)+1));
+ document.getElementById('s0PvpDeckClassLine').textContent=draftKey==='CUSTOM'?'CUSTOM DECK':currentDeckLabel().replace(/\s*\/\s*/g,', ').toUpperCase();
+ const stats=deckStats(deck);
+ document.getElementById('s0PvpDeckStats').innerHTML=`
+ <div><dt>Heroes</dt><dd>${stats.heroes}</dd></div>
+ <div><dt>Legacies</dt><dd>${stats.legacies}</dd></div>
+ <div class="total legacy-total"><dt>Legacy Deck</dt><dd>${stats.legacyTotal}</dd></div>
+ <div class="deck-section-start"><dt>Skills</dt><dd>${stats.skills}</dd></div>
+ <div><dt>Items</dt><dd>${stats.items}</dd></div>
+ <div><dt>Events</dt><dd>${stats.events}</dd></div>
+ <div class="total main-total"><dt>Main Deck</dt><dd>${stats.main}</dd></div>`;
  const form=formation();
  const keys=['LEFT','CENTER','RIGHT'];
  document.getElementById('s0PvpFormation').innerHTML=keys.map((lane,index)=>{
    const base=form[lane],ids=lineageFor(deck,base),hero=ids[Math.min(previewRank-1,ids.length-1)]||base;
    const heroMarkup=`<div class="pvp-v260-hero"><button type="button" class="pvp-v260-card" data-preview-hero="${esc(lane)}" aria-label="View ${esc(lane)} Hero progression"><img src="${art(hero)}" alt="${esc(lane)} Hero" loading="eager" onerror="this.style.opacity='.25'"></button><div class="pvp-v260-position">${esc(lane)}</div></div>`;
-   return index===0?heroMarkup:`<button type="button" class="pvp-v260-swap-button" data-swap="${index-1}" title="Swap adjacent Hero positions" ${state.status==='playing'||state.status==='finished'?'disabled':''}>⇄</button>`+heroMarkup;
+   return index===0?heroMarkup:`<button type="button" class="pvp-v260-swap-button" data-swap="${index-1}" title="Swap adjacent Hero positions" ${state.status==='playing'||state.status==='finished'?'disabled':''}><img src="assets/lobby/swap.png" alt="Swap"></button>`+heroMarkup;
  }).join('');
  document.getElementById('s0PvpRankLabel').textContent='RANK '+ranks[previewRank-1];
  document.getElementById('s0PvpRankPrev').disabled=previewRank===1;
  document.getElementById('s0PvpRankNext').disabled=previewRank===3;
  document.getElementById('s0PvpDeck').value=draftKey;
  const status=document.getElementById('s0PvpLoadedDeckStatus');
- if(status)status.textContent=state.deckKey===draftKey&&!(draftFormation&&JSON.stringify(draftFormation)!==JSON.stringify(defaultFormation(deck)))?'Deck loaded on server':'Press LOAD DECK to confirm your selection';
+ if(status)status.textContent=state.status==='lobby'&&state.seat?(state.deckKey===(draftKey==='CUSTOM'||JSON.stringify(formation())!==JSON.stringify(defaultFormation(deck))?'CUSTOM':draftKey)?'Deck loaded on server':'Deck selection pending…'):'Join a room to load your deck';
 }
 function showProgression(lane){
- const d=previewDeck(),base=formation()[lane],ids=lineageFor(d,base);
+ const ids=lineageFor(previewDeck(),formation()[lane]);if(ids.length<3)return;
  const node=document.getElementById('s0PvpProgression');
- node.innerHTML=`<div class="s0-progression-card" role="dialog" aria-modal="true" aria-label="Hero progression"><header><h2>${esc(lane)} · HERO PROGRESSION</h2><button type="button" id="s0PvpProgressionClose">CLOSE</button></header><div class="s0-progression-cards">${ids.map((id,i)=>`<div><img src="${art(id)}" alt="Rank ${ranks[i]||i+1} Hero"><strong>RANK ${ranks[i]||i+1}</strong></div>`).join('')}</div></div>`;
+ node.className='pvp-progression-modal';
+ const cards=ids.slice(0,3).map((id,i)=>`<article class="pvp-v260-hero pvp-progression-hero ${i===0?'current':''}"><button type="button" class="pvp-v260-card pvp-progression-static-card" data-progression-card="${esc(id)}"><img src="${art(id)}" alt="Rank ${ranks[i]} Hero"></button><div class="pvp-v260-position">RANK ${ranks[i]}</div></article>`);
+ node.innerHTML=`<section class="pvp-progression-card" role="dialog" aria-modal="true" aria-label="Hero progression"><header><div><span>HERO PROGRESSION</span><h2>${esc(lane)}</h2></div><button id="s0PvpProgressionClose" type="button">Close</button></header><div class="pvp-progression-row">${cards.join('<span class="pvp-progression-arrow">→</span>')}</div><p>Select a Rank card to open Card Preview.</p></section>`;
  node.hidden=false;
- node.querySelector('#s0PvpProgressionClose').onclick=()=>{node.hidden=true;node.innerHTML='';};
+ const close=()=>{node.hidden=true;node.innerHTML='';};
+ node.querySelector('#s0PvpProgressionClose').onclick=close;
+ node.onclick=e=>{if(e.target===node)close();const btn=e.target.closest?.('[data-progression-card]');if(btn){const id=btn.dataset.progressionCard;window.GL_GAME_UI?.openCardReview?.(id)}};
 }
 function swapFormation(index){
  const deck=previewDeck();if(!deck||!['lobby','offline'].includes(state.status))return;
  const f={...formation()},lanes=['LEFT','CENTER','RIGHT'],a=lanes[index],b=lanes[index+1];
  [f[a],f[b]]=[f[b],f[a]];
- draftFormation=f;drawPreview();info('Formation updated. Press LOAD DECK to save it to the room.');
+ draftFormation=f;automaticDeckUploadKey='';drawPreview();if(state.status==='lobby'&&state.seat)submitDraftDeck();
 }
 function selectDeck(key){
  if(key!=='CUSTOM'&&!starters.includes(key))return;
- draftKey=key;draftFormation=null;previewRank=1;drawPreview();
+ draftKey=key;draftFormation=null;previewRank=1;automaticDeckUploadKey='';drawPreview();if(state.status==='lobby'&&state.seat)submitDraftDeck();
 }
-function loadDeck(){
- if(state.status!=='lobby'||!state.seat)return info('Join a room before loading your deck.',true);
- const d=previewDeck();if(!d)return info('Choose a valid Season 0 deck.',true);
- const form=formation();
- if(draftKey==='CUSTOM'||JSON.stringify(form)!==JSON.stringify(defaultFormation(d))){
-   const clone=JSON.parse(JSON.stringify(d));
-   clone.default_formation={...form};
-   emit('custom-deck',{deck:clone});
- }else emit('deck',{deckKey:draftKey});
- info('Submitting deck to the server...');
-}
+
 function updateRoomStatus(s){
- const connected=state.socket?.readyState===WebSocket.OPEN && !!state.seat;
- const players=s.players||[],occupied=players.filter(p=>p?.occupied).length;
- const connectedCount=players.filter(p=>p?.connected).length;
- const stage=document.getElementById('s0PvpControls');if(!stage)return;
- document.getElementById('s0PvpRoomTitle').textContent=state.room||'Not connected';
- document.getElementById('s0PvpRoomStats').innerHTML=`<div><dt>Players</dt><dd>${occupied}/2</dd></div><div><dt>Online</dt><dd>${connectedCount}/2</dd></div><div><dt>Connection</dt><dd>${connected?'ONLINE':'OFFLINE'}</dd></div><div><dt>Match</dt><dd>${esc(state.status.toUpperCase())}</dd></div>`;
+ const connected=state.socket?.readyState===WebSocket.OPEN&&!!state.seat;
+ const players=s.players||[],me=players.find(p=>p?.seat===state.seat),ready=!!me?.ready;
+ const current=document.getElementById('s0PvpRoomTitle');if(!current)return;
+ current.textContent=state.room||'Not connected';
  document.getElementById('s0PvpPlayers').innerHTML=[0,1].map(i=>{
-    const p=players[i],online=!!p?.connected,ready=!!p?.ready;
-    return `<article class="pvp-v260-seat"><div><span>Player ${i+1}</span><strong>${esc(p?.occupied?p.name:'Empty Seat')}</strong></div><p class="${online?'online':''}"><i></i>${online?'ONLINE':'OFFLINE'}</p><p>${ready?'✓ READY':p?.hasDeck?'DECK LOADED':'NOT READY'}</p></article>`;
+   const p=players[i],online=!!p?.connected;
+   return `<article class="pvp-v260-seat"><div><span>Player ${i+1}</span><strong>${esc(p?.occupied?p.name:'Empty')}</strong></div><p class="${online?'online':''}"><i></i>${online?'online':'offline'}${p?.ready?' · READY':''}</p></article>`;
  }).join('');
- let controls='';
- if(state.status==='lobby'){
-   controls=`<div class="s0-pvp-controls-row"><button id="s0PvpReady" class="pvp-v260-btn pvp-v260-gold" ${!connected||!players.find(p=>p.seat===state.seat)?.hasDeck?'disabled':''}>${state.ready?'UNREADY':'READY'}</button></div>`;
-   if(state.seat===1)controls+=`<button id="s0PvpStart" class="pvp-v260-btn pvp-v260-gold" ${!(players[0]?.ready&&players[1]?.ready&&players[0]?.connected&&players[1]?.connected)?'disabled':''}>START MATCH</button>`;
- }else if(state.status==='coin'){
-   controls=state.seat===2?'<div class="s0-pvp-coin"><p>Choose HEADS or TAILS for the opening coin flip.</p><div class="s0-pvp-controls-row"><button class="pvp-v260-btn pvp-v260-gold" data-coin="HEADS">HEADS</button><button class="pvp-v260-btn pvp-v260-gold" data-coin="TAILS">TAILS</button></div></div>':'<p class="s0-pvp-coin">Waiting for Player 2 to choose the opening coin...</p>';
- }else if(state.status==='playing'||state.status==='finished'){
-   controls=`<p class="s0-pvp-coin">Round ${Number(s.board?.appState?.round||1)} · ${esc(s.board?.appState?.phase||'')} · Revision ${Number(s.revision||0)}</p><button id="s0PvpResume" class="pvp-v260-btn pvp-v260-gold">BACK TO BATTLEFIELD</button>`;
-   if(state.status==='finished'&&state.seat===1)controls+='<button id="s0PvpReset" class="pvp-v260-btn pvp-v260-gold-outline">RESET ROOM</button>';
+ const readyButton=document.getElementById('s0PvpReady');
+ if(readyButton){readyButton.textContent=ready?'UNREADY':'READY';readyButton.disabled=state.status!=='lobby'||!connected||!me?.hasDeck;}
+ const join=document.getElementById('s0PvpJoin');if(join)join.disabled=!['lobby','offline'].includes(state.status);
+ const start=document.getElementById('s0PvpStart');
+ if(start)start.disabled=state.status!=='lobby'||state.seat!==1||!players[0]?.ready||!players[1]?.ready||!players[0]?.connected||!players[1]?.connected;
+ const controls=document.getElementById('s0PvpControls');
+ controls.querySelector('#s0PvpCoin')?.remove();
+ if(state.status==='coin'){
+   const node=document.createElement('div');node.id='s0PvpCoin';node.className='s0-pvp-coin';
+   node.innerHTML=state.seat===2?'<p>Choose HEADS or TAILS for the opening coin flip.</p><div class="s0-pvp-controls-row"><button class="pvp-v260-btn pvp-v260-gold" data-coin="HEADS">HEADS</button><button class="pvp-v260-btn pvp-v260-gold" data-coin="TAILS">TAILS</button></div>':'<p>Waiting for Player 2 to choose the opening coin...</p>';
+   controls.prepend(node);node.querySelectorAll('[data-coin]').forEach(b=>b.addEventListener('click',()=>emit('coin',{choice:b.dataset.coin})));
  }
- stage.innerHTML=controls;
- stage.querySelector('#s0PvpReady')?.addEventListener('click',()=>emit('ready',{ready:!state.ready}));
- stage.querySelector('#s0PvpStart')?.addEventListener('click',()=>emit('start'));
- stage.querySelectorAll('[data-coin]').forEach(b=>b.addEventListener('click',()=>emit('coin',{choice:b.dataset.coin})));
- stage.querySelector('#s0PvpResume')?.addEventListener('click',hideLobby);
- stage.querySelector('#s0PvpReset')?.addEventListener('click',()=>emit('reset'));
+ if(start)start.hidden=!['lobby','offline'].includes(state.status);
+ if(document.getElementById('s0PvpResume'))document.getElementById('s0PvpResume').hidden=!['playing','finished'].includes(state.status);
+ if(document.getElementById('s0PvpReset'))document.getElementById('s0PvpReset').hidden=!(state.status==='finished'&&state.seat===1);
+ const ic=document.getElementById('s0PvpNameIcon');if(ic)ic.className='pvp-v260-name-icon'+(ready?' ready':'');
  const status=document.getElementById('s0PvpStatus');if(status)status.textContent=connected?`Player ${state.seat} · Room ${state.room}`:'Not connected';
- if(state.status==='lobby'&&state.deckKey===draftKey){drawPreview();}
+ if(state.status==='lobby')drawPreview();
 }
+
 function drawControls(s){updateRoomStatus(s);}
+function syncLobbyScale(){
+ const el=document.getElementById('s0PvpOverlay');if(!el)return;
+ if(document.documentElement.classList.contains('gl-adaptive-stage')){
+   el.style.removeProperty('--pvp-lobby-scale');return;
+ }
+ const fit=window.innerWidth<=1160;
+ if(!fit){el.style.removeProperty('--pvp-lobby-scale');return;}
+ const scale=Math.max(.2,Math.min(1,(window.innerWidth||1)/1366,(window.innerHeight||1)/768));
+ el.style.setProperty('--pvp-lobby-scale',String(scale));
+}
 function hideLobby(){document.getElementById('s0PvpOverlay').classList.add('playing');document.body.classList.remove('pvp-lobby-mode');}
 function showLobby(){document.getElementById('s0PvpOverlay').classList.remove('playing');document.body.classList.add('pvp-lobby-mode');}
 function setup(){
- const overlay=document.createElement('div');overlay.id='s0PvpOverlay';overlay.className='pvp-v260-lobby open';overlay.innerHTML=`
- <div class="pvp-v260-page">
-  <header class="pvp-v260-topbar">
-   <a class="pvp-v260-logo" href="https://grandislegacytcg.github.io/" aria-label="Grandis Legacy home"><img src="assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"></a>
-   <div class="pvp-v260-heading"><h1>PVP LOBBY · SEASON 0</h1><p>Choose your deck, then ready up to play.</p></div>
-   <nav class="pvp-v260-top-actions"><a class="pvp-v260-btn pvp-v260-outline" href="https://grandislegacytcg.github.io/Grandis-Legacy-Deck-Builder/style-1/" target="_blank" rel="noopener">GO TO DECK BUILDER</a><a class="pvp-v260-btn pvp-v260-blue" href="https://grandislegacytcg.github.io/Grandis-Legacy-VS-AI/" target="_blank" rel="noopener">GO TO VS AI</a></nav>
-  </header>
+ const overlay=document.createElement('div');overlay.id='s0PvpOverlay';overlay.className='pvp-v260-lobby open';
+ // Structural source: PvP v3.80.17 public/pvp/pvp-host.js ensureLobby() markup.
+ // Deliberate S0 deviations: explicit room code/Join instead of S1 automatic seat,
+ // no Spectate (S0 server supports two player seats only), and shared invite link.
+ overlay.innerHTML=`<div class="pvp-v260-page">
+  <header class="pvp-v260-topbar"><a class="pvp-v260-logo" href="https://grandislegacytcg.github.io/" aria-label="Back to Grandis Legacy home"><img src="assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"></a><div class="pvp-v260-heading"><h1>PVP LOBBY · SEASON 0</h1><p>Choose your deck, then ready up to play.</p></div></header>
   <main class="pvp-v260-layout">
    <section class="pvp-v260-panel pvp-v260-deck-panel">
-    <div class="pvp-v260-picker"><label for="s0PvpDeck">Choose a Deck</label><div class="pvp-v260-select"><select id="s0PvpDeck">${starters.map((k,i)=>`<option value="${k}">${esc(starterLabels[i])}</option>`).join('')}</select></div></div>
-    <div class="pvp-v260-title"><h2 id="s0PvpDeckTitle">Starter Deck</h2><p id="s0PvpDeckClassLine">Season 0</p></div>
-    <div class="pvp-v260-showcase"><div class="pvp-v260-formation-wrap"><div id="s0PvpFormation" class="pvp-v260-formation"></div><div class="rank-control"><button id="s0PvpRankPrev" type="button" aria-label="Previous Rank">‹</button><strong id="s0PvpRankLabel">RANK I</strong><button id="s0PvpRankNext" type="button" aria-label="Next Rank">›</button></div></div><aside class="pvp-v260-summary"><h3>YOUR DECK</h3><dl id="s0PvpDeckStats"></dl></aside></div>
-    <div class="pvp-v260-footer"><input id="s0PvpImport" type="file" accept="application/json,.json" hidden><button id="s0PvpImportButton" class="pvp-v260-btn pvp-v260-gold pvp-v260-compact" type="button">IMPORT CUSTOM DECK</button><button id="s0PvpSelect" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline" type="button">LOAD DECK</button><div id="s0PvpLoadedDeckStatus" class="pvp-v260-status"></div></div>
+    <div class="pvp-v260-picker"><label for="s0PvpDeck">Choose a Deck</label><div class="pvp-v260-select"><select id="s0PvpDeck">${starters.map((k,i)=>`<option value="${k}">${esc('Starter '+(i+1)+' — '+starterLabels[i])}</option>`).join('')}</select></div></div>
+    <div class="pvp-v260-title"><h2 id="s0PvpDeckTitle">Starter Deck</h2><p id="s0PvpDeckClassLine"></p></div>
+    <div class="pvp-v260-showcase"><div class="pvp-v260-formation-wrap"><div id="s0PvpFormation" class="pvp-v260-formation"></div><div class="rank-control"><button id="s0PvpRankPrev" type="button">‹</button><strong id="s0PvpRankLabel">RANK I</strong><button id="s0PvpRankNext" type="button">›</button></div></div><aside class="pvp-v260-summary"><h3>YOUR DECK</h3><dl id="s0PvpDeckStats"></dl></aside></div>
+    <div class="pvp-v260-footer"><input id="s0PvpImport" type="file" accept="application/json,.json" hidden><button id="s0PvpImportButton" class="pvp-v260-btn pvp-v260-gold pvp-v260-compact" type="button">IMPORT CUSTOM DECK</button><div id="s0PvpLoadedDeckStatus" class="pvp-v260-status"></div></div>
    </section>
    <aside class="pvp-v260-panel pvp-v260-room-panel">
-    <h2>ROOM PANEL</h2><label class="pvp-v260-label" for="s0PvpName">PLAYER NAME</label><div class="pvp-v260-name"><input id="s0PvpName" maxlength="45" placeholder="Your player name" autocomplete="off"><span class="pvp-v260-name-icon" id="s0PvpNameIcon"></span></div>
-    <label class="pvp-v260-label s0-room-code-label" for="s0PvpRoom">ROOM CODE</label><input id="s0PvpRoom" maxlength="32" autocomplete="off" placeholder="S0Room01" spellcheck="false">
-    <div class="pvp-v260-actions"><button id="s0PvpJoin" class="pvp-v260-btn pvp-v260-gold" type="button">JOIN ROOM</button><button id="s0PvpReconnect" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline" type="button">RECONNECT</button></div>
+    <h2>MATCH PANEL</h2><label class="pvp-v260-label" for="s0PvpName">PLAYER NAME</label><div class="pvp-v260-name"><input id="s0PvpName" maxlength="25" placeholder="Your player name" autocomplete="off"><span id="s0PvpNameIcon" class="pvp-v260-name-icon"></span></div>
+    <label class="pvp-v260-label s0-room-code-label" for="s0PvpRoom">ROOM CODE</label><input id="s0PvpRoom" maxlength="32" placeholder="S0Room01" autocomplete="off" spellcheck="false">
+    <div class="pvp-v260-actions"><button id="s0PvpJoin" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline" type="button">JOIN ROOM</button><button id="s0PvpReady" class="pvp-v260-btn pvp-v260-gold" type="button" disabled>READY</button></div>
     <div class="pvp-v260-divider"></div><div class="pvp-v260-room-id"><div class="pvp-v260-room-copy"><span>CURRENT ROOM</span><strong id="s0PvpRoomTitle">Not connected</strong></div><button id="s0PvpCopyInvite" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline pvp-v260-switch" type="button">COPY INVITE LINK</button></div>
-    <dl id="s0PvpRoomStats" class="pvp-v260-room-stats"></dl><div id="s0PvpPlayers" class="pvp-v260-seats"></div><div id="s0PvpMessage" class="pvp-v260-message" role="status" aria-live="polite">Enter your name and join a room to begin.</div><div id="s0PvpStatus" class="s0-pvp-status"></div>
-    <div id="s0PvpControls" class="pvp-v260-room-footer"></div>
+    <div id="s0PvpPlayers" class="pvp-v260-seats"></div><div id="s0PvpMessage" class="pvp-v260-message" role="status" aria-live="polite">Enter your name and join a room to begin.</div><div id="s0PvpStatus" class="s0-pvp-status"></div>
+    <div id="s0PvpControls" class="pvp-v260-room-footer"><button id="s0PvpStart" class="pvp-v260-btn pvp-v260-gold" type="button" disabled>START MATCH</button><button id="s0PvpReconnect" class="pvp-v260-btn pvp-v260-outline pvp-v260-gold-outline" type="button">RECONNECT</button><button id="s0PvpResume" class="pvp-v260-btn pvp-v260-gold" type="button" hidden>BACK TO BATTLEFIELD</button><button id="s0PvpReset" class="pvp-v260-btn pvp-v260-gold" type="button" hidden>RESET ROOM</button></div>
    </aside>
   </main>
  </div>`;
  document.body.appendChild(overlay);
  document.body.classList.add('pvp-lobby-mode');
+ syncLobbyScale();window.addEventListener('resize',syncLobbyScale,{passive:true});
+ window.addEventListener('orientationchange',()=>setTimeout(syncLobbyScale,75),{passive:true});
  const toggle=document.createElement('button');toggle.id='s0PvpToggle';toggle.textContent='PvP Room';toggle.onclick=()=>{if(overlay.classList.contains('playing'))showLobby();else if(state.status==='playing'||state.status==='finished')hideLobby();};document.body.appendChild(toggle);
  const prog=document.createElement('div');prog.id='s0PvpProgression';prog.hidden=true;document.body.appendChild(prog);
  const saved=(()=>{try{return JSON.parse(localStorage.getItem(STOR)||'null')}catch{return null}})();
@@ -251,14 +288,17 @@ function setup(){
  overlay.querySelector('#s0PvpRankPrev').onclick=()=>{previewRank=Math.max(1,previewRank-1);drawPreview();};
  overlay.querySelector('#s0PvpRankNext').onclick=()=>{previewRank=Math.min(3,previewRank+1);drawPreview();};
  overlay.querySelector('#s0PvpFormation').onclick=e=>{const sw=e.target.closest('[data-swap]');if(sw)return swapFormation(Number(sw.dataset.swap));const hero=e.target.closest('[data-preview-hero]');if(hero)showProgression(hero.dataset.previewHero);};
- overlay.querySelector('#s0PvpSelect').onclick=loadDeck;
+ overlay.querySelector('#s0PvpReady').onclick=()=>emit('ready',{ready:!state.ready});
+ overlay.querySelector('#s0PvpStart').onclick=()=>emit('start');
+ overlay.querySelector('#s0PvpResume').onclick=hideLobby;
+ overlay.querySelector('#s0PvpReset').onclick=()=>emit('reset');
  overlay.querySelector('#s0PvpImportButton').onclick=()=>overlay.querySelector('#s0PvpImport').click();
  overlay.querySelector('#s0PvpImport').onchange=async e=>{
   const file=e.target.files?.[0];if(!file)return;
   if(file.size>90000)return info('Deck file must be 90 KB or smaller.',true);
   try{const deck=JSON.parse(await file.text());if(!deck||typeof deck!=='object'||Array.isArray(deck))throw Error('Not a deck');customPreview=deck;importedDeckName=deck.deck_name||file.name;selectDeck('CUSTOM');
     if(!Array.from(overlay.querySelector('#s0PvpDeck').options).some(o=>o.value==='CUSTOM'))overlay.querySelector('#s0PvpDeck').add(new Option('Imported: '+importedDeckName,'CUSTOM'));
-    drawPreview();if(state.status==='lobby'&&state.seat)loadDeck();else info('Custom deck loaded locally. Join a room, then press LOAD DECK.');
+    drawPreview();if(state.status!=='lobby'||!state.seat)info('Custom deck selected. Join a room to load it.');
   }catch(err){info('Invalid JSON file: '+String(err.message||err),true);}
  };
  const startDeck=(saved?.deckKey&&starters.includes(saved.deckKey))?saved.deckKey:starters[0];selectDeck(startDeck);
