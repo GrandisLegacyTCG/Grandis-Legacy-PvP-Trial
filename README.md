@@ -1,103 +1,60 @@
-# Grandis Legacy — PvP Season 0 | RC32 | GitHub-Ready Staging
+# Grandis Legacy PvP Season 0 — S1 v3.80.17 Full Pregame → RC32 Battlefield
 
-**Baseline gameplay and battlefield:** supplied **VS AI Season 0 v1.0 RC32 (2026-11-07)**. **Multiplayer baseline:** previous PvP S0 RC31 Playtest Staging. **Architecture reference:** Season 1 PvP v3.51, whose server runs the shared game runtime and sends recipient-scoped views. This package is an independent staging checkout; it does not modify or replace VS AI RC32 or PvP Season 1.
+**Status: staging for GitHub / Northflank playtest, NOT a final validated release.**
 
-**State:** complete source repository prepared for GitHub upload and an isolated Northflank staging deployment. Automated local WebSocket matches and limited two-Chromium renderer integration have passed. **NOT CERTIFIED AS FINAL:** direct hosted browser HTTP/WebSocket navigation, mobile/Firefox, comprehensive card-by-card parity, complete ordinary 3-Hero victory through two human UIs, Docker build and Northflank staging deployment remain unverified. Do not treat this as a production release.
+This package replaces the previous faux-S1 Season 0 lobby with the actual `Grandis_Legacy_PvP_v3.80.17_2026-10-13` frontend **from page load through lobby, player/spectator roles, Ready, START MATCH, coin choice, coin result and the original S1 opening presentation**. Season 0 loads **only once both players have completed the S1 opening presentation**. The browser then navigates to `/battle/`, loading the Season 0 RC32 game client (not a fork of the Season 1 battle client).
 
-## Upload this repository to GitHub (not a production release)
+## Page boundaries
 
-1. **Extract** the `Grandis_Legacy_PvP_S0_RC32_GitHub_Ready_2026-11-07.zip` archive. Do **not** upload the ZIP itself as a single file to the GitHub repository: GitHub does not automatically unpack it.
-2. Create a **new isolated repository** for Season 0 PvP (prefer **Private** while testing). With GitHub Desktop or Git, copy the **contents** of the extracted folder into the repository root (not an extra nested folder). The root must contain `package.json`, `Dockerfile`, `server.js`, `client/`, `server/`, `tests/`, `docs/`, and `.github/`.
-3. Commit and push. Open **Actions → PvP Season 0 staging QA**. Both `rc32-and-network` (including Docker/HTTP/native WSS) and `browser-native` (two native Chromium instances) must turn green. **Their GitHub results are NOT VERIFIED prior to this upload.**
-4. Create a **separate Northflank Combined Service** from this new repository, set **Dockerfile** build at repository root, **one replica**, public HTTP port `3000`, environment `PORT=3000` (and `HOST=0.0.0.0`). Use the generated HTTPS URL; the client connects to the same host's WSS `/ws` automatically. Do not replace the existing Season 1 service.
-5. Once deployed, visit `/health`, play from two separate browsers or devices, and check the scenarios in [`docs/NORTHFLANK_STAGING_GATE.md`](docs/NORTHFLANK_STAGING_GATE.md). A remote Node acceptance script is included (`PVP_PUBLIC_URL=https://<staging-host> npm run test:hosted`). Real Northflank acceptance remains **NOT VERIFIED** until performed.
+| URL / phase | Active application | Card and deck presentation |
+|---|---|---|
+| `/` — initial lobby | **Unchanged S1 v3.80.17 index.html, lobby stylesheet, lobby images** | Season 1 source set (as expressly requested) |
+| Room / Ready / spectator / coin / opening | **S1 v3.80.17 original pregame client, server protocol and presenter** | Season 1 opening display |
+| `opening-presented` acknowledged by BOTH players | **One server-side transition to S0 RC32 authority** | New Season 0 match opening is created |
+| `/battle/` — playing / finished | **Season 0 RC32 gameplay engine, card effects, art and battlefield UI** | Season 0 cards |
 
-For test scope, file inventory and outstanding gates see [`docs/GITHUB_READY_HANDOFF_2026-11-07.md`](docs/GITHUB_READY_HANDOFF_2026-11-07.md). All art and gameplay still originate from VS AI RC32; **Grand Finale and Poison Vial use RC32, not stale OSA DEV45 values**. The repo has no Node dependencies (`npm install` is optional). Node 22 is required.
+### Source parity
 
-## Play locally
+- `public/index.html`: **SHA-256 identical** to S1 v3.80.17.
+- `public/lobby/pvp-lobby-v3.76.6.css`: **SHA-256 identical** to S1 v3.80.17.
+- `public/assets/lobby/*`: copied untouched from S1 v3.80.17.
+- `public/pvp/pvp-host.js`: S1 host with exactly one narrow handoff hook added to redirect to `/battle/` on `started` / `finished` status.
+- `server.js`: S1 v3.80.17 pregame room/coin/start controller plus a boundary adapter to the actual S0 RC32 engine. No explicit Room Code or JOIN ROOM form exists.
+- `public/battle`: the existing Season 0 RC32 battlefield, with its old S0 lobby disconnected (no imported S0 lobby elements).
 
-Requires **Node.js 22 or newer**. Extract the ZIP and open a terminal inside the directory containing `server.js`.
+### **Known deck compatibility limitation — IMPORTANT**
 
-```sh
-npm run check
-npm start
-```
+Strictly keeping **Season 1's full pregame source** means the pregame deck selector and opening animation display *Season 1* cards, which **cannot be played directly by the Season 0 engine**. To allow a playable Season 0 battle, the server currently maps starter selections **by position**: S1 Starter 1 → S0 Starter 1, ..., S1 Starter 5 → S0 Starter 5.
 
-Open `http://localhost:3000` in **two separate browser profiles** (or one normal and one private browser). Both players enter the same Room Code, select a deck or upload a valid Season 0 Deck Builder JSON, click SELECT DECK and READY. Seat 1 starts; seat 2 calls the opening coin. The match loads the actual **RC32 battlefield**, with the server executing all gameplay intents. Use **PvP Room** to view room status again and **RECONNECT** after a temporary disconnect.
+This is a **deliberate transition scaffold, not deck equivalence**. The player will see S1 hero/cards in pregame and different S0 hero/cards after handoff. This should be considered unresolved for a final public game. Season 1 imported custom decks are rejected with a clear error at match start, because they are not legal S0 game decks. There is no silent cross-season conversion.
 
-For an additional **controlled renderer QA**, with Python Playwright and websocket-client installed, run `python tests/browser-bridge-smoke.py` while the server is active. It uses a **test-only WebSocket relay**, not browser-native WebSocket; its success is not proof of live hosting. The server is independently exercised through real Node WebSocket connections by `npm run check`.
+To make pregame deck selection match the eventual S0 cards, the Season 1 lobby's data source must be switched to S0 — **which would change the strict full-S1 pregame requirement**. This change has not been made without authorization.
 
-## Northflank staging deployment — one service, one origin
+## Run / Northflank
 
-This ZIP includes a `Dockerfile` based on Node 22 Alpine. Create a **separate Season 0 service/repository**, not the existing Season 1 production service. Use the repository root as Docker build context; deploy a single service and one running instance (rooms live in process memory). Expose **public HTTP port 3000**, configure service environment `PORT=3000`, and use the generated HTTPS service URL to open the app. The page constructs `wss://<same-host>/ws` automatically; no separate static frontend is necessary. Verify `/health`, then perform the first 2-browser cross-device match before enabling public access. Do **not** claim resilience across restarts: active rooms are lost on process restart.
+- Node.js >= 18; **no npm dependencies required** (the S1 WebSocket protocol uses the pre-existing dependency-free S0 transport wrapper for this staged build).
+- `npm start` or `node server.js`.
+- Northflank: Dockerfile build, public port HTTP 3000, healthcheck `/health`. Same-origin WebSocket upgrades on `/ws`. Deploy only this **Season 0** repository, not the real Season 1 repository.
+- If Northflank sets `PORT`, this server respects it automatically.
+- All players should use the **same website URL**, no Room Code. First two players are seats 1/2; additional visitors enter as spectators per S1 mechanics.
+- `/battle/` only works with the tab session previously established by the S1 lobby. Direct visitors are redirected to `/`.
 
-For a separately hosted GitHub Pages frontend, supply a `?ws=wss://<northflank-host>/ws` query on the frontend URL and set `PVP_ALLOWED_ORIGINS=https://<exact-frontend-origin>` in Northflank. Do not use the default same-origin policy for a distinct-origin website and do not expose the reconnect seat token publicly. This split deployment has **not** been tested end-to-end in this build.
+## Tests actually performed
 
-Optional server settings: `HOST` (default `0.0.0.0`), `PORT` (default `3000`), `PVP_MAX_ROOMS` (default `32`), `PVP_RECONNECT_MS` (default 300000), `PVP_LOBBY_IDLE_MS` (default 300000), `PVP_ALLOWED_ORIGINS` (explicit comma-separated HTTP(S) origins). Do not run multiple replicas without first adding shared durable room/session authority.
+Run: `npm run check:syntax && npm run test:transition`
 
-## Why RC32 parity is maintained
+- PASS: exact S1 lobby HTML and CSS SHA-256 parity; no ROOM CODE / JOIN ROOM markup.
+- PASS: server responds at `/health`; both routes `/` and `/battle/` serve the correct application.
+- PASS: two actual WebSocket clients connect without a room code and receive two S1 seats.
+- PASS: S1 deck selection, both Ready, START MATCH, Player 2 coin choice, coin result, coin acknowledgements, **S1 opening payload** and both `opening-presented` acknowledgements.
+- PASS: S0 RC32 authority becomes active only at handoff, each player receives own S0 opening Hand and masked opponent Hand.
+- PASS: wrong-seat S0 gameplay action rejected; legitimate S0 phase action committed; surrender ends the match.
+- **NOT VERIFIED:** real two-browser visual walkthrough (the browser in this execution environment refuses HTTP and `file:` navigation with `ERR_BLOCKED_BY_ADMINISTRATOR`).
+- **NOT VERIFIED:** complete 3-Hero combat victory through Northflank (no live deployment performed here).
+- **NOT VERIFIED:** all custom deck flows / all RC32 card interactions / spectator rendering across the transition.
 
-- The authoritative per-room Node VM loads **the same RC32 card rules and JS game engine** that the browser uses, with two human seats and no local-AI action scheduler.
-- Room management, WebSocket transport, reconnect, tokenized seats and recipient-private projections are separate from card effects.
-- RC32 assets (including the six Mana Deck R2 fronts, revised Poison Vial, EXP artwork and new presentation assets) were merged from the RC32 archive. **All 689 latest RC32 upstream files are present** in `client/`; **686 are byte-identical** and only the 3 PvP-owned runtime/UI files intentionally differ (see the latest source parity manifest). `client/runtime/pvp-network.js` is additional.
-- Four narrowly scoped engine adaptations are retained from PvP RC31: round advancement after a forced Hand Limit discard; no result modal invocation in suppressed headless mode; physical Mana zone seat mirroring; prevention of double-swapping private presentation event sides and the result reason. The RC32 logic for Poison Vial, Deflect, Greater Health Potion, rendering and notification updates is otherwise retained.
-- Card authority exceptions: **Grand Finale `S0-CLE-031`: Bard 60, Maestro 90**, from VS AI RC32's inherited approved local override. **Poison Vial `S0-ITM-011`** uses RC32's designer-approved updated text/art/Skill-Physical-damage behavior and current-turn Attachment expiry, even though upstream OSA DEV45 is behind. No import of Season 1 card effects.
+## Scope, safety and provenance
 
-## Source layout / QA
+The source ZIPs for **Season 1 v3.80.17** and **Season 0 RC32** were not changed. The previous staging builds remain untouched. Source transition is isolated in server + S1 client handoff + S0 game-only WS client.
 
-- `client/` — latest RC32 UI, card assets, scripts, overlay and PvP client adapter.
-- `server/headless-rc32.mjs` — isolated authoritative RC32 engine VM.
-- `server/viewer-safe.mjs` — per-player hidden-card/mana masking and opaque blind choice handles.
-- `server/ws-lite.mjs`, `server.js` — WebSocket, lobby, rooms, reconnect, HTTP and origin checks.
-- `tests/` — executable source/authority/privacy/response/complete-match/WebSocket regressions, optional Chromium UI bridge test.
-- `docs/TAKEOVER_RC32.md` — complete RC32 migration and QA checkpoint, evidence and outstanding acceptance gates.
-
-`npm run check` checks syntax, actual RC32 engine boot, local card overrides, 2-seat Attack/Response, client-private projection, fully authoritative deck-out matches, and true WebSocket lobby/hand-discard/terminal flow. **Passing those tests is not the same as verifying every card interaction through two native browsers.**
-
-## Northflank preflight continuation (2026-11-07; NOT DEPLOYED)
-
-This **separate** `pvp_s0_rc32_northflank_preflight` worktree extends RC32 staging. It adds correctly labeled **custom Deck Builder imports**, stricter Season 0-only envelope checks, an export-**shaped** Deck Builder v1.62 regression, and a disposable-room live-host smoke test. These are **not** new gameplay effects. RC32 Grand Finale and Poison Vial remain unchanged. The original RC32 playtest ZIP and VS AI archive were not replaced.
-
-Run `npm run check` for predeployment automated regressions. After creating an isolated Northflank staging service, an operator can run `PVP_PUBLIC_URL=https://<host> npm run test:hosted`. For click-by-click staging setup, see [`docs/NORTHFLANK_STAGING_GATE.md`](docs/NORTHFLANK_STAGING_GATE.md). For verified vs pending work and code-diff scope, see [`docs/TAKEOVER_PREFLIGHT_2026-11-07.md`](docs/TAKEOVER_PREFLIGHT_2026-11-07.md). The GitHub Actions `.github/workflows/staging-qa.yml` has **not** run yet; Docker image build and direct hosted playability are **NOT VERIFIED**.
-
-## Latest RC32 source update — 2026-11-07 (same RC number)
-
-This working tree integrates the newest uploaded RC32 maintenance snapshot: **Primal Strike/Burn, Stun gating of activated Hero/Class/Racial actions, and the new 2-Mana matching Color Shard selection priority**. No restart from RC31 or rebuild of the Season 1 multiplayer architecture was needed. All previous PvP WebSocket/network/UI integrations and RC32 Grand Finale/Poison Vial authority are retained.
-
-See [`docs/TAKEOVER_RC32_LATEST_MAINTENANCE_2026-11-07.md`](docs/TAKEOVER_RC32_LATEST_MAINTENANCE_2026-11-07.md) and [`docs/RC32_LATEST_SOURCE_PARITY.json`](docs/RC32_LATEST_SOURCE_PARITY.json) for exact source parity, tests and outstanding Northflank acceptance. **Latest RC32 staging is NOT deployed and NOT final**.
-
-## Actual PvP Season 1 v3.80.17 lobby port (7 Nov 2026)
-
-This supersedes the earlier **v3.51-style lobby**. The uploaded
-`Grandis_Legacy_PvP_v3.80.17_2026-10-13.zip` was used **directly**.
-Its `public/lobby/pvp-lobby-v3.76.6.css` is copied byte-for-byte into
-`client/lobby/pvp-lobby-v3.76.6.css`; SHA-256:
-`7175fb9ddf54f7d173d05e5a3d569fd4391d0e378c81f559f5c7c8bdbae138eb`.
-Lobby assets and font files were likewise copied from that exact v3.80.17 release
-and verified byte-for-byte. The page structure and the deck/formation/hero
-progression UI are ported from its actual `public/pvp/pvp-host.js`.
-
-The **Season 0** server, game engine, card database, battlefield UI, intent
-transport, privacy masking, and Northflank Dockerfile are **retained**. Only
-UI/transport bindings necessary to map this lobby to the Season 0 room protocol
-were adapted in `client/runtime/pvp-network.js`.
-
-Differences from Season 1 are intentional and explicit:
-- S0 currently requires a manually chosen **Room Code** and **JOIN ROOM**;
-  Season 1 uses a different room/seat joining protocol.
-- S0's two-player authority does not support **SPECTATE**, so this control is
-  replaced with **JOIN ROOM**; no spectator mode is simulated.
-- S0 starters and imported S0 deck data replace Season 1 deck data. Decks
-  auto-submit on join/selection/formation swap, then **READY** is enabled
-  only after the server confirms a deck was loaded.
-- Season 0 coin choice follows its original two-seat server flow.
-
-QA: `npm run check` PASS, `npm run test:ui:lobby` PASS (Chromium, desktop
-and scaled narrow viewport), `npm run test:ui:lobby-network` PASS (two real
-Chromium renderers connected via test-only WebSocket relay to the actual Node
-S0 server; join/auto-deck/formation/ready/coin/RC32 battle/phase). Source
-parity checked with `tests/lobby-v38017-parity.mjs`. Native 2-browser
-Northflank deployment and real network play still **NOT VERIFIED**.
-
-See `docs/LOBBY_V38017_SOURCE_PORT_AND_QA.md` for the specific source
-comparison, safety constraints and playtest acceptance criteria.
+See `docs/TAKEOVER_S1_FULL_LOBBY_RC32.md` and `tests/s1-to-s0-transition.mjs`.

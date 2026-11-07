@@ -1,0 +1,13 @@
+import {readFileSync,existsSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
+import {resolve} from 'node:path';
+const base=resolve(import.meta.dirname,'../public');
+const hash=r=>createHash('sha256').update(readFileSync(resolve(base,r))).digest('hex');
+assert.equal(hash('index.html'),'3e05bd53c43830ce1d7113cc7d4d19e8edf5d4a430f2644d6d666e71678828f4');
+assert.equal(hash('lobby/pvp-lobby-v3.76.6.css'),'7175fb9ddf54f7d173d05e5a3d569fd4391d0e378c81f559f5c7c8bdbae138eb');
+const root=readFileSync(resolve(base,'index.html'),'utf8'),host=readFileSync(resolve(base,'pvp/pvp-host.js'),'utf8');
+assert.ok(!/ROOM CODE|JOIN ROOM|s0PvpOverlay|S0Room01/i.test(root+host));
+assert.match(host,/location.replace\('\/battle\/'\)/);
+assert.ok(existsSync(resolve(base,'battle/index.html')));
+console.log(JSON.stringify({ok:true,lobbyIndexIdentical:true,lobbyCssIdentical:true,roomCode:false,originalS1HostHandoff:true,s0OnlyAtBattleRoute:true},null,2));

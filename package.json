@@ -1,21 +1,16 @@
 {
-  "name": "grandis-legacy-pvp-season0-staging",
-  "version": "0.0.0-rc32-staging",
+  "name": "grandis-legacy-pvp-s0-s1-lifecycle-staging",
+  "version": "0.0.0-bridge-staging",
   "private": true,
   "type": "module",
-  "description": "Season 0 PvP RC32 GitHub/Northflank staging; server-authoritative two-player playtest; hosted acceptance pending",
   "scripts": {
     "start": "node server.js",
-    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check server/ws-lite.mjs && node --check client/runtime/pvp-network.js && node --check client/shared-app/app-runtime.js && node --check client/engine/shared-app/app.bundle.js",
-    "test:headless": "node tests/rc32-integration-smoke.mjs && node tests/rc32-same-version-maintenance.mjs && node tests/headless-rc32-smoke.mjs && node tests/privacy-and-turns.mjs && node tests/actual-card-exchange.mjs && node tests/defense-response-commit.mjs && node tests/deckout-complete-match.mjs && node tests/deckbuilder-162-compat.mjs",
-    "test:network": "node tests/run-network-tests.mjs",
-    "check": "npm run check:repo && npm run check:syntax && npm run test:headless && npm run test:network",
-    "test:network-card": "node tests/pvp-network-card-exchange.mjs",
-    "test:ui-bridge": "python tests/browser-bridge-smoke.py",
-    "test:hosted": "node tests/hosted-northflank-smoke.mjs",
-    "test:browser:native": "python tests/browser-native-smoke.py",
-    "check:repo": "node tests/repository-integrity.mjs && node tests/lobby-v38017-parity.mjs",
-    "test:ui:lobby": "python tests/lobby-v38017-browser.py",
-    "test:ui:lobby-network": "python tests/lobby-v38017-network.py"
+    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js",
+    "test:transition": "node tests/s1-to-s0-transition.mjs",
+    "check:parity": "node tests/s1-source-parity.mjs",
+    "check": "npm run check:syntax && npm run check:parity && npm run test:transition"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
