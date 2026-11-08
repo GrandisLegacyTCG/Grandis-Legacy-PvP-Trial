@@ -10,6 +10,120 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { webcrypto } from 'node:crypto';
 import vm from 'node:vm';
+/**
+ * Carefully bounded, server-authoritative UI round-trip reductions.
+ * Never invent a target/choice or skip mandatory payment. The actual RC34
+ * engine performs every rule check and every state transition.
+ */
+export function applyOptimizedPvpIntent({bridge, readPending, name, args}) {
+  if (!bridge || typeof readPending !== 'function') throw new Error('PvP action bridge unavailable.');
+  const run = (intent, parameters) => {
+    const result = bridge.applyServerIntent(intent, parameters);
+    if (!result?.ok) throw new Error(String(result?.error || `Runtime rejected ${intent}.`).slice(0,220));
+    return result;
+  };
+  // Narrow, server-verified multi-step UI shortcuts. The Season 1-style
+  // strict in-flight channel must not split one button press into two RTTs.
+  const compound = {
+    selectAndConfirmResponse: ['response_window', 'responseSelectNoStuck', 'confirmSelectedResponse'],
+    selectAndConfirmStatusRemovalChoice: ['status_removal_choice', 'selectStatusRemovalChoice', 'handleChoiceConfirm'],
+    selectAndConfirmSaintPurifyChoice: ['saint_purify_choice', 'selectSaintPurifyChoice', 'handleChoiceConfirm'],
+    selectAndConfirmCardSearchChoice: ['card_search_choice', 'selectCardSearchChoice', 'handleChoiceConfirm']
+  };
+  if (Object.hasOwn(compound, name)) {
+    const [expected,select,confirm] = compound[name],p=readPending();
+    if (name === 'selectAndConfirmResponse') {
+      // Response ownership is carried by responseWindow, not pending. In the
+      // headless local PLAYER coordinate system it must be our response.
+      const snapshot=bridge.getCanonicalSnapshot(1).appState;
+      if (snapshot?.responseWindow?.response_owner !== 'PLAYER' ||
+          !Number.isInteger(args?.[0]) || args[0] < 0 || args[0] >= (snapshot.responseWindow.options||[]).length)
+        throw new Error('Response option is unavailable.');
+    } else if (!p || p.type !== expected || p.decision_side !== 'PLAYER' ||
+        (name === 'selectAndConfirmCardSearchChoice' && p.resolve_to !== 'discard_then_draw_three') ||
+        !Number.isInteger(args?.[0]) || args[0] < 0) {
+      throw new Error('Compound choice is unavailable.');
+    }
+    run(select,[args[0]]);
+    return run(confirm,[]);
+  }
+  if (name === 'cancelAndSkipBardDrawChoice') {
+    const p=readPending();
+    if (!p || p.type !== 's0_bard_draw_choice' || p.decision_side !== 'PLAYER')
+      throw new Error('Bard Draw choice is unavailable.');
+    if (p.selection_active) run('cancelS0BardDrawChoice',[]);
+    return run('commitS0BardDrawChoice',[true]);
+  }
+  // Season 1 style single-shot Response payment: the browser drafts additional
+  // Hand discards and physical Mana UIDs locally; the server verifies and
+  // applies both costs IN THIS SINGLE AUTHORITY INTENT. The RC34 engine still
+  // owns card legality, discard conditions, mana values and counter timing.
+  if (name === 'commitExactResponsePaymentWithDiscardChoice') {
+    const p = readPending();
+    if (!p || p.type !== 'response_payment_choice' || p.decision_side !== 'PLAYER') {
+      throw new Error('Response payment is not available.');
+    }
+    const selectedUids = args?.[0], indices = args?.[1];
+    const need = Number(p.required_discard_count || 0);
+    if (!Array.isArray(selectedUids) || selectedUids.length > 12 ||
+        selectedUids.some(uid => typeof uid !== 'string' || uid.length > 100) ||
+        new Set(selectedUids).size !== selectedUids.length ||
+        !Array.isArray(indices) || indices.length !== need ||
+        indices.some(idx => !Number.isInteger(idx) || idx < 0 || idx >= (p.candidates || []).length) ||
+        new Set(indices).size !== indices.length) {
+      throw new Error('Invalid Response Mana or additional discard selection.');
+    }
+    const original = (p.selected_indices || []).map(Number);
+    for (const idx of original) if (!indices.includes(idx)) run('selectResponsePaymentChoice', [idx]);
+    const without = readPending()?.selected_indices || [];
+    for (const idx of indices) if (!without.includes(idx)) run('selectResponsePaymentChoice', [idx]);
+    const confirmed = readPending();
+    if (!confirmed || confirmed.type !== 'response_payment_choice' ||
+        confirmed.selected_indices?.length !== need ||
+        !indices.every(idx => confirmed.selected_indices.includes(idx))) {
+      throw new Error('Response additional cost could not be verified.');
+    }
+    // Exact physical UID validation and all card-specific Response CONDITIONS
+    // are performed in the original Season 0 RC34 engine.
+    return run('commitExactResponsePaymentChoice', [selectedUids]);
+  }
+  if (name === 'commitExactTuneUpChoice') {
+    const p = readPending();
+    if (!p || p.type !== 'card_search_choice' || p.source_card_id !== 'S0-CLE-029' ||
+        p.decision_side !== 'PLAYER' || p.zone !== 'deck' || !p.multi_select) {
+      throw new Error('Tune Up selection is not available.');
+    }
+    const selected = args?.[0];
+    const token = String(args?.[1] || '');
+    const required = Number(p.required_count || 2);
+    if (!token || token !== String(p.commit_token || '') ||
+        !Array.isArray(selected) || required !== 2 || selected.length !== required ||
+        !selected.every(n => Number.isInteger(n) && n >= 0 && n < (p.candidates || []).length) ||
+        new Set(selected).size !== selected.length || (p.selected_indices || []).length) {
+      throw new Error('Invalid or stale Tune Up selection.');
+    }
+    for (const index of selected) run('selectCardSearchChoice', [index]);
+    const chosen = readPending();
+    if (!chosen || chosen.type !== 'card_search_choice' ||
+        (chosen.selected_indices || []).length !== required) {
+      throw new Error('Tune Up selection could not be verified.');
+    }
+    return run('handleChoiceConfirm', []);
+  }
+  const result = run(name === 'beginPlayFromHandFast' ? 'beginPlayFromHand' : name, args);
+  if (name === 'beginPlayFromHandFast') {
+    const p = readPending();
+    // Source Hero is not an optional choice when precisely one Hero is legal.
+    // For two or three legal Heroes, keep the original RC34 selection UI.
+    if (p?.type === 'source_selection' && p.decision_side === 'PLAYER' &&
+        p.source_side === 'PLAYER' && Array.isArray(p.legal_sources) &&
+        p.legal_sources.length === 1 && ['LEFT','CENTER','RIGHT'].includes(p.legal_sources[0])) {
+      return run('chooseHeroFromBoard', ['PLAYER', p.legal_sources[0]]);
+    }
+  }
+  return result;
+}
+
 
 const RUNTIME_SOURCES = Object.freeze([
   'engine/js/static-data.js',
@@ -246,11 +360,24 @@ export class Season0HeadlessAuthority {
     // may falsely appear to mutate the board and increment revision.
     const rollback = this.#canonical;
     const before = JSON.stringify(this.#bridge.getCanonicalSnapshot(seat).appState);
-    const result = this.#bridge.applyServerIntent(name, clone(args));
-    if (!result?.ok) {
-      // An attempted intent may have mutated transient state before its rejection.
+    try {
+      applyOptimizedPvpIntent({
+        bridge: this.#bridge,
+        // The bridge is restored into the acting player's LOCAL perspective.
+        // getCanonicalSnapshot(2) flips it back into fixed seat-1 coordinates:
+        // local PLAYER decisions become AI and atomic Tune Up falsely rejects
+        // them. Read-only choice checks must use the LOCAL perspective (1).
+        // Persisting the result still uses getCanonicalSnapshot(seat) below.
+        readPending: () => this.#bridge.getCanonicalSnapshot(1).appState?.pending,
+        name, args: clone(args)
+      });
+    } catch (error) {
+      // A multi-step fast path must remain fully atomic. The server-owned
+      // canonical snapshot has not changed, and the next action must reimport
+      // that canonical state instead of reusing the modified VM state.
       this.#bridgeSeat = null;
-      throw new Error(String(result?.error || 'Runtime rejected action.').slice(0,220));
+      this.#bridgeRevision = -1;
+      throw error;
     }
     // RC32 executes seat 2 actions in a mirrored local PLAYER perspective.
     // getCanonicalSnapshot(seat) flips that perspective BACK into the fixed

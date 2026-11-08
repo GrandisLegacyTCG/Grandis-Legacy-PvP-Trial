@@ -1,4 +1,4 @@
-# Cara deploy Grandis Legacy PvP Season 0 RC34 (GitHub RC3)
+# Cara deploy Grandis Legacy PvP Season 0 RC34 (GitHub RC5)
 
 ## 0. Tujuan dan batasan
 
@@ -34,14 +34,14 @@ Contoh untuk pengguna Git (di luar mesin pembuat paket):
 ```bash
 git clone https://github.com/GrandisLegacyTCG/Grandis-Legacy-PvP-Trial.git
 cd Grandis-Legacy-PvP-Trial
-git switch -c s0-rc34-github-rc3
+git switch -c s0-rc34-github-rc5
 # Hapus file tracked versi RC32 pada branch staging (direkam oleh Git).
 git rm -r -- .
 # Salin SELURUH ISI folder hasil ekstraksi RC34 ke folder ini,
 # termasuk .github/ dan file dotfiles, tetapi JANGAN copy folder .git lain.
 git add -A
-git commit -m "PvP S0 RC34 GitHub RC3 response-and-postmatch staging"
-git push -u origin s0-rc34-github-rc3
+git commit -m "PvP S0 RC34 GitHub RC5 mana-and-tuneup staging"
+git push -u origin s0-rc34-github-rc5
 ```
 
 Jika memakai GitHub web upload, pertahankan hierarki direktori dan semua berkas. Untuk ratusan artwork lebih baik gunakan Git CLI/GitHub Desktop. GitHub upload web saja kurang cocok untuk struktur proyek besar. Jangan tanpa sengaja menghapus folder `.github` karena workflow otomatis bergantung padanya.
@@ -59,7 +59,7 @@ Masuk ke repo **PvP-Trial → Actions**. Workflow `Grandis Legacy PvP S0 RC34 - 
 
 ## 3. Host node/websocket di Northflank
 
-Di Northflank, buat **Combined Service** dari repo `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial` dan branch staging `s0-rc34-github-rc3`.
+Di Northflank, buat **Combined Service** dari repo `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial` dan branch staging `s0-rc34-github-rc5`.
 
 - **Build type:** Dockerfile, path root `/Dockerfile`, build context root.
 - **Port:** **3000 / HTTP / Public**. Endpoint WebSocket `/ws` melewati origin/port yang sama; browser memakai `wss://` di HTTPS.
@@ -86,7 +86,7 @@ Sumber panduan resmi: `https://northflank.com/docs/v1/application/getting-starte
 **Masih OPEN, bukan bagian fix RC3:** lobby *mobile* belum disetujui, dan visual Coin Flip / Back-of-Card / Hero Reveal belum dipastikan sesuai donor VS AI. Jangan menyatakan ketiganya beres hanya karena tes RC3 lulus.
 
 
-1. Buka `https://<subdomain-host>/health` dan pastikan `ok:true`, `buildId=gl-s0-rc34-github-rc3-2026-11-08`, serta `authoritySources` terisi.
+1. Buka `https://<subdomain-host>/health` dan pastikan `ok:true`, `buildId=gl-s0-rc34-github-rc5-2026-11-09`, serta `authoritySources` terisi.
 2. Buka `https://<subdomain-host>/` di **dua browser/profil independen**. Pastikan lobby PvP yang disetujui: artwork penuh, Import Deck emas di samping pilih deck, panel responsif.
 3. Pastikan dua pemain memiliki seat berbeda, memilih Starter, READY, lalu seat 1 START.
 4. Coin Flip konsisten di dua layar. Battlefield menampilkan tiga Hero sebelum enam pasang Opening Hand dan tiga Mana opening; Draw normal baru mengikuti aturan gilirannya.
@@ -115,4 +115,14 @@ Source disiapkan untuk **deployment percobaan**, bukan pernyataan bahwa game pas
 5. Simulasikan koneksi melambat, reload, hilang/terlambatnya ACK tanpa membuka antrean aksi ganda.
 6. Pastikan pemain yang menunggu giliran tidak tiba-tiba kalah karena idle; uji putus koneksi saat giliran sendiri untuk melihat reconnect grace.
 
-Status QA berikut belum terpenuhi tanpa tes di host: **full-match dua browser dan mobile UX**. Dilarang memberi label FINAL sebelum lulus. Lihat `docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md` dan `docs/RC34_RC3_RESPONSE_POSTMATCH_FIXES_2026-11-08.md`.
+Status QA berikut belum terpenuhi tanpa tes di host: **full-match dua browser dan mobile UX**. Dilarang memberi label FINAL sebelum lulus. Lihat `docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md` dan `docs/RC34_RC3_RESPONSE_POSTMATCH_FIXES_2026-11-08.md` serta `docs/RC34_RC4_MANA_TUNEUP_POOL_FIXES_2026-11-08.md`.
+
+## RC5 Mana Transport Staging (9 November 2026)
+
+- Mana draft, Surge dan biaya tambahan discard Response dipilih di browser tanpa gameplay WebSocket per klik. Tekan PAY mengirim satu transaksi final ke server RC34 untuk divalidasi.
+- Animasi Mana berjalan *setelah* pengiriman, bukan menghalangi konfirmasi PAY.
+- Antrean sampai 4 gameplay intent dihapus; aksi baru saat ACK sebelumnya belum selesai ditolak dengan pesan terlihat.
+- `npm run test:mana-transport` memeriksa adapter browser kedua seat, validasi UID/Surge, serta transaksi Response tambahan pada engine RC34 asli.
+- Untuk diagnostik lama buka `/battle/?pvpPerf=1`; `lastManaOpenPaintMs` membantu mengamati jeda PLAY hingga modal pembayaran muncul.
+- **Harus diuji setelah deploy:** kedua pemain dalam dua browser/HP, Mana matching Color, Magical Surge, kartu Response dengan biaya tambahan, serta performa latency sebenarnya.
+- RC5 tetap staging, jangan sebut FINAL sebelum tes gameplay hosted selesai.

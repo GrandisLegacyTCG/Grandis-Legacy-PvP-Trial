@@ -1,14 +1,14 @@
 {
   "name": "grandis-legacy-pvp-s0-rc34-github-release-candidate",
-  "version": "1.0.0-rc34-github-rc3-response",
+  "version": "1.0.0-rc34-github-rc5-mana-transport",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js && node --check public/battle/runtime/pvp-touch-actions.js",
+    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js && node --check public/battle/runtime/pvp-touch-actions.js && node --check public/battle/runtime/pvp-mana-draft.js",
     "test:transition": "npm run test:ws-gate",
     "check:parity": "node tests/s1-source-parity.mjs",
-    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog && npm run test:browser-response && npm run test:postmatch && npm run test:touch-static",
+    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog && npm run test:browser-response && npm run test:postmatch && npm run test:touch-static && npm run test:quickplay-tuneup && npm run test:mana-transport",
     "test:s0-catalog": "npm run check:catalog",
     "check:catalog": "node tests/s0-catalog-static.mjs",
     "test:ws-gate": "python3 tests/ws-gate.py",
@@ -27,7 +27,9 @@
     "test:opening-watchdog": "node tests/rc34-opening-watchdog.mjs",
     "test:browser-response": "node tests/rc34-response-browser-gate.mjs",
     "test:postmatch": "python3 tests/rc34-postmatch-cleanup.py",
-    "test:touch-static": "node tests/rc34-touch-static.mjs"
+    "test:touch-static": "node tests/rc34-touch-static.mjs",
+    "test:quickplay-tuneup": "node tests/rc34-rc4-quickplay-tuneup.mjs",
+    "test:mana-transport": "node tests/rc34-rc5-mana-transport.mjs"
   },
   "engines": {
     "node": ">=18"

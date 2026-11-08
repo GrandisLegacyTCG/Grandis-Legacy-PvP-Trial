@@ -102,7 +102,16 @@ function art(id){return id?'card-art/'+encodeURIComponent(id)+'.webp':'';}
 function shardArt(sh){const faces={Generic:'S0-MAN-001',Warrior:'S0-MAN-002',Mage:'S0-MAN-003',Cleric:'S0-MAN-004',Thief:'S0-MAN-005',Archer:'S0-MAN-006'};const name=sh&&sh.kind==='CLASS'?String(sh.class_name||'').trim():'Generic';return 'card-art/'+(faces[name]||faces.Generic)+'.webp';}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cloneLite(v){try{return JSON.parse(JSON.stringify(v))}catch{return null}}
-function intent(name,args=[]){const r=E().intent(name,args);setTimeout(renderNow,0);return r;}
+function intent(name,args=[]){
+  const r=E().intent(name,args);
+  // In PvP, a remote intent changes NO authoritative browser state until the
+  // server ACK arrives. Rendering the entire old scene after every click was
+  // needless work that also delayed the subsequent payment overlay.
+  // Local Mana / Tune Up draft choices already repaint inside the network
+  // adapter; normal VS AI keeps its original immediate rendering behavior.
+  if(window.GL_APP_MODE!=='PVP'&&!window.GL_PVP_SHARED_BOARD_ACTIVE)setTimeout(renderNow,0);
+  return r;
+}
 function flash(msg){feedback.textContent=msg;feedback.classList.add('show');clearTimeout(flash.t);flash.t=setTimeout(()=>feedback.classList.remove('show'),700);}
 function sideHeroes(s,side){return side==='AI'?s.aiHeroes:s.playerHeroes;}
 function sideHand(s,side){return side==='AI'?s.aiHand:s.playerHand;}
@@ -1096,8 +1105,7 @@ function confirmResponseOption(optionIndex){
     if(target)transientDefenseConnector={card_id:opt.card_id,...target};
   }
   uiResponseSourceChoice=null;
-  intent('responseSelectNoStuck',[Number(optionIndex)]);
-  intent('confirmSelectedResponse',[]);
+  intent('selectAndConfirmResponse',[Number(optionIndex)]);
   // Once an engine Response choice has been confirmed, any payment cancellation is
   // authoritative through cancelResponsePaymentChoice(); the UI snapshot is no longer a rollback source.
   responseRollbackSnapshot=null;
@@ -1218,8 +1226,34 @@ function layoutManaPoolCards(host){
   });
 }
 
+// S1-style browser-only draft: Season 0 rules still come from server pending
+// shard_choices and are validated again by the authority at PAY.
+function pvpManaInfo(s=st()){
+  if(window.GL_APP_MODE==='PVP')return window.GL_PVP_MANA_DRAFT?.getInfo(s)||null;
+  return E().getManaPlan?.()||null;
+}
+function pvpResponseDiscardIndices(p,s=st()){
+  return p?.type==='response_payment_choice'&&window.GL_APP_MODE==='PVP'
+    ?(pvpManaInfo(s)?.selected_indices||[]):(p?.selected_indices||[]);
+}
+function syncManaDraftHighlights(s=st()){
+  const info=pvpManaInfo(s),chosen=new Set((info?.plan?.selected_shard_uids||[]).map(String));
+  if(info?.surge?.selected&&info.surge.surge_mana_uid)chosen.add(String(info.surge.surge_mana_uid));
+  playerManaHost?.querySelectorAll?.(':scope > .mana-card').forEach(el=>{
+    el.classList.toggle('gl-selected',chosen.has(String(el.dataset.uid||'')));
+  });
+}
+function renderManaDraftOnly(){
+  const s=st();if(!s)return;
+  // Do not render Hero art, Hands, sidebar, or attachments for a Mana tap.
+  centerChoiceRenderSig='';renderCenterChoiceStage(s);syncManaDraftHighlights(s);
+  if(s.pending?.type==='response_payment_choice'){
+    // PAY readiness also applies to the small outside-the-center PAY button.
+    const info=pvpManaInfo(s);payBtn.disabled=!info?.canPay;
+  }
+}
 function renderPool(host,countEl,pool,side){
-  const s=st(),p=s?.pending,plan=side==='PLAYER'?E().getManaPlan():null;
+  const s=st(),p=s?.pending,plan=side==='PLAYER'?pvpManaInfo(s):null;
   const selected=new Set(),selectable=new Set();
   if(side==='PLAYER'&&p?.type==='mana_shard_payment_choice'&&plan){
     (plan.plan?.selected_shard_uids||plan.plan?.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).forEach(x=>selected.add(String(x)));
@@ -1227,7 +1261,7 @@ function renderPool(host,countEl,pool,side){
   }
   if(side==='PLAYER'&&p?.type==='mana_spend_choice') (pool||[]).forEach(sh=>selected.add(String(sh.uid)));
   if(side==='PLAYER'&&p?.type==='response_payment_choice'&&Number(p.mana_cost||0)>0){
-    (p.selected_shard_uids||[]).forEach(uid=>selected.add(String(uid)));
+    (plan?.plan?.selected_shard_uids||p.selected_shard_uids||[]).forEach(uid=>selected.add(String(uid)));
     (pool||[]).forEach(sh=>selectable.add(String(sh.uid)));
   }
 
@@ -1330,7 +1364,7 @@ function responseDiscardStageKey(p){
   return JSON.stringify([p?.response_option?.card_id,p?.response_option?.hand_index,
     p?.response_option?.source_lane,p?.incoming_response_window?.response_window_token,
     p?.mana_cost,p?.required_discard_count,(p?.candidates||[]).map(c=>[c.card_id,c.hand_index]),
-    p?.selected_indices||[]]);
+    pvpResponseDiscardIndices(p)]);
 }
 function isHandDiscardPending(p){
   return !!p&&(p.type==='legacy_cost_selection'||p.type==='hand_limit_discard'||
@@ -1455,6 +1489,26 @@ async function animateCenterChoiceExit(selectedKeys,selectedTarget,otherTarget,{
   }));
   return true;
 }
+function playPvpManaVisualFlight(selectedUids,target){
+  // Preserve the recognizable 340ms PAY-to-deck animation without waiting for
+  // it before submitting payment. Clones survive an immediate server snapshot.
+  const targetRect=uiRect(target?.querySelector?.('.zoneCard')||target);
+  if(!targetRect||!targetRect.width)return;
+  centerChoiceStage.querySelectorAll('.gl-center-choice-card').forEach(card=>{
+    if(!selectedUids.has(String(card.dataset.choiceKey||'')))return;
+    const rect=uiRect(card),src=card.querySelector('.gl-center-choice-front img');
+    if(!rect?.width||!src?.src)return;
+    const visual=document.createElement('img');visual.src=src.src;visual.alt='';visual.setAttribute('aria-hidden','true');
+    visual.style.cssText='position:fixed;z-index:2147483500;pointer-events:none;object-fit:contain;will-change:transform,opacity;';
+    Object.assign(visual.style,{left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px'});
+    document.body.appendChild(visual);
+    const dx=targetRect.left+targetRect.width/2-(rect.left+rect.width/2),dy=targetRect.top+targetRect.height/2-(rect.top+rect.height/2);
+    const finish=()=>visual.remove();
+    try{visual.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx}px,${dy}px) scale(.4)`,opacity:0}],{duration:340,easing:'ease-in',fill:'forwards'}).finished.then(finish,finish)}
+    catch{setTimeout(finish,340)}
+    setTimeout(finish,1000);
+  });
+}
 function resetCenterChoiceVisualState(){
   centerChoiceBusy=false;centerChoiceStage.classList.remove('is-busy');
   const copy=centerChoiceStage.querySelector('.gl-center-choice-copy'),actions=centerChoiceStage.querySelector('.gl-center-choice-actions');
@@ -1502,7 +1556,7 @@ function renderCenterChoiceStage(s){
     const search=p.type==='card_search_choice';
     const available=legacy?(p.cost_candidates||[]):response?(p.candidates||[]):
       search?(p.candidates||[]):(s.playerHand||[]).map((card_id,hand_index)=>({card_id,hand_index}));
-    const chosen=legacy?(p.selected_cost_indices||[]):response?(p.selected_indices||[]):
+    const chosen=legacy?(p.selected_cost_indices||[]):response?pvpResponseDiscardIndices(p,s):
       cleanup?(p.selected||[]):(p.multi_select?(p.selected_indices||[]):
       p.selected_index==null?[]:[Number(p.selected_index)]);
     const selected=new Set(chosen.map(Number));
@@ -1545,7 +1599,7 @@ function renderCenterChoiceStage(s){
     statusText='DEFEAT PENDING';
     cards=id?[{key:id,front:art(id),back:'assets/ui/back-main.webp',faceUp:true,selected:false,clickable:false,label:cv(id)?.name||id}]:[];
   }else if(mode==='pay'){
-    const responsePay=p.type==='response_payment_choice',info=E().getManaPlan?.(),plan=info?.plan||{},rawPool=info?.pool||s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((plan.selected_shard_uids||plan.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).map(String)),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?(p.selected_indices||[]).length:0);
+    const responsePay=p.type==='response_payment_choice',info=pvpManaInfo(s),plan=info?.plan||{},rawPool=info?.pool||s.playerManaPoolCards||[],pool=sortedShardPoolForDisplay(rawPool,'PLAYER'),spentUids=new Set((plan.selected_shard_uids||plan.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).map(String)),cardId=responsePay?p.response_option?.card_id:p.card_id,cost=Number(responsePay?p.mana_cost:p.cost||0),discardNeed=Number(responsePay?p.required_discard_count||0:0),discardHave=Number(responsePay?pvpResponseDiscardIndices(p,s).length:0);
     identity='pay|'+(responsePay?'response':'normal')+'|'+pool.map(x=>x.uid).join('|')+'|'+String(cardId||'')+'|'+cost+'|'+String(p.action?.source_lane||p.response_option?.source_lane||'')+'|'+String(s.playerHeroes?.[p.action?.source_lane]?.card_id||'');
     sig=identity+'|'+[...spentUids].join(',')+'|'+discardHave+'/'+discardNeed+'|'+String(p.use_magical_surge||false)+'|'+String(info?.surge?.available||false)+'|'+String(info?.surge?.reason||'')+'|'+String(info?.surge?.selected&&info.surge.surge_mana_uid||'');
     titleText='PAY MANA';helperText=responsePay&&discardNeed>0?'Select the additional Hand cost, then confirm exact Mana.':'Class Mana can also be selected.';const surge=info?.surge,extra=surge?.selected&&surge?.surge_mana_uid?Number(surge.cost||1):0;statusText='MANA '+(Number(plan.value||0)+extra)+' / '+(cost+extra)+(extra?' (+'+extra+' '+surge.name+')':'');
@@ -1596,7 +1650,7 @@ function renderCenterChoiceStage(s){
     makeBtn('SKIP','gl-center-choice-cancel',false,()=>{
       if(centerChoiceBusy)return;
       // Skip is allowed even after a tentative selection, without committing it.
-      intent('cancelS0BardDrawChoice',[]);intent('commitS0BardDrawChoice',[true]);
+      intent('cancelAndSkipBardDrawChoice',[]);
     });
     makeBtn('DISCARD & DRAW','gl-center-choice-primary',!(p.selected_indices||[]).length,async()=>{
       if(centerChoiceBusy)return;
@@ -1616,7 +1670,7 @@ function renderCenterChoiceStage(s){
     });
     const legacy=p.type==='legacy_cost_selection',cleanup=p.type==='hand_limit_discard',response=p.type==='response_payment_choice';
     const selectedCount=legacy?(p.selected_cost_indices||[]).length:cleanup?(p.selected||[]).length:
-      response?(p.selected_indices||[]).length:p.multi_select?(p.selected_indices||[]).length:
+      response?pvpResponseDiscardIndices(p,s).length:p.multi_select?(p.selected_indices||[]).length:
       p.selected_index==null?0:1;
     const need=legacy?Number(p.required_cost||1):cleanup?Number(p.required||1):
       response?Number(p.required_discard_count||1):Number(p.required_count||1);
@@ -1638,10 +1692,12 @@ function renderCenterChoiceStage(s){
           return;
         }
         const keys=new Set(cards.filter(c=>c.selected).map(c=>c.key));
-        if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget)){
-          if(response)intent('commitResponsePaymentChoice',[]);
-          else intent('handleChoiceConfirm',[]);
+        if(response){
+          const result=intent('commitResponsePaymentChoice',[]);
+          if(result?.ok)playPvpManaVisualFlight(keys,selectedTarget);
+          return;
         }
+        if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget))intent('handleChoiceConfirm',[]);
       });
   }else if(mode==='draw-replacement'){
     // The displayed card is not a choice target. Only the two decision buttons are interactive.
@@ -1657,7 +1713,7 @@ function renderCenterChoiceStage(s){
     makeBtn('DECLINE & CONTINUE DEFEAT','gl-center-choice-cancel',false,()=>{if(!centerChoiceBusy)intent('resolveStonebloodChoice',[false])});
     makeBtn('SPEND 1 TOKEN & STAY AT 30 HP','gl-center-choice-primary',false,()=>{if(!centerChoiceBusy)intent('resolveStonebloodChoice',[true])});
   }else if(mode==='pay'){
-    const responsePay=p.type==='response_payment_choice',discardReady=!responsePay||Number((p.selected_indices||[]).length)===Number(p.required_discard_count||0),planReady=!!E().getManaPlan?.()?.plan?.ok;
+    const responsePay=p.type==='response_payment_choice',localInfo=pvpManaInfo(s),discardReady=!responsePay||pvpResponseDiscardIndices(p,s).length===Number(p.required_discard_count||0),planReady=!!localInfo?.plan?.ok;
     cardsHost.querySelectorAll('.gl-center-choice-card.is-clickable').forEach(c=>c.onclick=()=>{if(centerChoiceBusy)return;intent(responsePay?'toggleResponseManaShardChoice':'toggleManaShardPaymentChoice',[c.dataset.choiceUid])});
     if(responsePay&&Number(p.required_discard_count||0)>0){
       makeBtn('BACK TO DISCARD','gl-center-choice-cancel',false,()=>{
@@ -1672,7 +1728,7 @@ function renderCenterChoiceStage(s){
       else intent('cancelPendingAction',[]);
     });
     if(!responsePay){
-      const surge=E().getManaPlan?.()?.surge;
+      const surge=pvpManaInfo(s)?.surge;
       if(surge){
         const label=String(surge.name||'MANA SURGE').toUpperCase()+' (+'+Number(surge.bonus||0)+')';
         const reason=surge.available?'Spend '+surge.cost+' additional Mana for +'+surge.bonus+' Magical damage.':(surge.reason||'Unavailable for this Attack.');
@@ -1696,7 +1752,17 @@ function renderCenterChoiceStage(s){
         }
       }
     }
-    makeBtn('PAY','gl-center-choice-primary',!(planReady&&discardReady),async()=>{if(centerChoiceBusy)return;const liveInfo=E().getManaPlan?.()||{},live=liveInfo.plan||{},keys=new Set((live.selected_shard_uids||live.shards?.map(x=>x.uid)||[]).map(String));if(liveInfo.surge?.selected&&liveInfo.surge.surge_mana_uid)keys.add(String(liveInfo.surge.surge_mana_uid));if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget,{returnSide:'PLAYER'}))intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[])});
+    makeBtn('PAY','gl-center-choice-primary',!(planReady&&discardReady),()=>{
+      if(centerChoiceBusy)return;
+      const live=pvpManaInfo(st())||{},keys=new Set((live.plan?.selected_shard_uids||[]).map(String));
+      if(live.surge?.selected&&live.surge.surge_mana_uid)keys.add(String(live.surge.surge_mana_uid));
+      // Dispatch the authoritative PAY BEFORE starting visual animation. The
+      // browser cannot hold the server transaction hostage if animation stalls.
+      const result=intent(responsePay?'commitResponsePaymentChoice':'commitManaShardPaymentChoice',[]);
+      if(!result?.ok)return;
+      centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy');
+      playPvpManaVisualFlight(keys,selectedTarget);
+    });
   }else if(mode==='opponent-shard'){
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentManaChoice',[Number(c.dataset.choiceIndex)])});
     const required=Math.min(Number(p.required_count||1),(p.candidates||[]).length),ready=(p.selected_indices||[]).length===required;
@@ -1900,10 +1966,10 @@ function renderStatuses(laneEl,h,s,side,lane,delayExhaust){
     const p=s.pending;
     if(p?.target_lane===lane&&p?.target_side===side){
       if(p.type==='status_removal_choice'){
-        b.classList.add('gl-clickable');b.onclick=()=>{intent('selectStatusRemovalChoice',[idx]);intent('handleChoiceConfirm',[])};
+        b.classList.add('gl-clickable');b.onclick=()=>{intent('selectAndConfirmStatusRemovalChoice',[idx])};
       }else if(p.type==='saint_purify_choice'){
         const choiceIndex=(p.status_choices||[]).findIndex(x=>Number(x.status_index)===idx);
-        if(choiceIndex>=0){b.classList.add('gl-clickable');b.onclick=()=>{intent('selectSaintPurifyChoice',[choiceIndex]);intent('handleChoiceConfirm',[])}}
+        if(choiceIndex>=0){b.classList.add('gl-clickable');b.onclick=()=>{intent('selectAndConfirmSaintPurifyChoice',[choiceIndex])}}
       }
     }
     holder.append(b,tip);wrap.appendChild(holder);
@@ -2056,7 +2122,7 @@ function renderHeroActions(laneEl,side,lane,s){
         items.push({key:'bard:cancel',label:'CANCEL',fn:()=>intent('cancelS0BardDrawChoice',[])});
       }else{
         items.push({kind:'class',key:'bard:activate',label:p.ability_name||heroClassAbilityName(hero)||'CLASS ABILITY',fn:()=>intent('activateS0BardDrawChoice',[])});
-        items.push({key:'bard:skip',label:'SKIP',fn:()=>intent('commitS0BardDrawChoice',[true])});
+        items.push({key:'bard:skip',label:'SKIP',fn:()=>intent('cancelAndSkipBardDrawChoice',[])});
       }
     }
   }
@@ -2350,7 +2416,7 @@ function renderHand(s){
         addAction(actions,'TRIBUTE','tribute',()=>intent('selectCardSearchChoice',[choiceIndex]));actionCount++;
         if(directSelected===choiceIndex)card.classList.add('is-selected');
       }else if(p.resolve_to==='discard_then_draw_three'){
-        addAction(actions,'DISCARD','discard',()=>{intent('selectCardSearchChoice',[choiceIndex]);intent('handleChoiceConfirm',[])});actionCount++;
+        addAction(actions,'DISCARD','discard',()=>{intent('selectAndConfirmCardSearchChoice',[choiceIndex])});actionCount++;
       }
     }else if(discardMode&&discardSet.has(idx)){
       addAction(actions,discardSel.selected?'CANCEL':'DISCARD',discardSel.selected?'cancel':'discard',()=>handleDiscardClick(p,idx));actionCount++;
@@ -2358,6 +2424,12 @@ function renderHand(s){
       const manaOnlyBlock=!m.canPlay&&Array.isArray(m.playReasons)&&m.playReasons.length>0&&m.playReasons.every(reason=>/not enough mana/i.test(String(reason||'')));
       if(m.canPlay){addAction(actions,'PLAY','play',()=>intent('beginPlayFromHand',[idx]));actionCount++}
       else if(manaOnlyBlock){addAction(actions,'PLAY','play gl-mana-disabled',()=>{}, {disabled:true,reason:'Not enough Mana'});actionCount++}
+      else if(id==='S0-CLE-029'){
+        addAction(actions,'WHY?', 'gl-tuneup-explain', ()=>{
+          const reasons=(m.playReasons||[]).map(x=>String(x));
+          flash('Tune Up needs Bard Rank II / Maestro Rank III, Ready, Deploy Phase, and 2 Mana. '+(reasons.length?'Unavailable: '+reasons.join(', '):''));
+        });actionCount++;
+      }
       if(m.canTribute){addAction(actions,'TRIBUTE','tribute',()=>intent('beginTributeFromHand',[idx]));actionCount++}
     }
     if(actionCount)card.classList.add('gl-has-action');
@@ -2374,20 +2446,15 @@ function addAction(host,label,cls,fn,options={}){const b=document.createElement(
 function handleDiscardClick(p,handIndex){
   if(p.type==='hand_limit_discard'){
     intent('toggleDiscardIndex',[handIndex]);
-    const s2=st(),p2=s2.pending;
-    if((p2?.selected||[]).length>=Number(p2?.required||0))intent('handleChoiceConfirm',[]);
+    // The authoritative snapshot will show CONFIRM. Do not queue a second
+    // command against the previous revision.
     return;
   }
   if(p.type==='response_payment_choice'){
     const ci=(p.candidates||[]).findIndex(x=>Number(x.hand_index)===Number(handIndex));
     if(ci>=0){
       intent('selectResponsePaymentChoice',[ci]);
-      const q=st()?.pending;
-      if(q?.type==='response_payment_choice' &&
-         (q.selected_indices||[]).length>=Number(q.required_discard_count||0) &&
-         Number(q.mana_cost||0)<=0){
-        intent('commitResponsePaymentChoice',[]);
-      }
+      // Extra discard is drafted locally. PAY is a single server transaction.
     }
     return;
   }
@@ -2395,8 +2462,7 @@ function handleDiscardClick(p,handIndex){
     const ci=(p.cost_candidates||[]).findIndex(x=>Number(x.hand_index??x.index)===Number(handIndex));
     if(ci>=0){
       intent('selectLegacyCostChoice',[ci]);
-      const q=st().pending;
-      if((q?.selected_cost_indices||[]).length>=Number(q?.required_cost||1))intent('handleChoiceConfirm',[]);
+      // Wait for the server-authored confirmation stage.
     }
   }
 }
@@ -2482,9 +2548,9 @@ function renderSwap(s){
   });
 }
 function responsePaymentReady(s,p){
-  const selectedDiscard=(p?.selected_indices||[]).length,requiredDiscard=Number(p?.required_discard_count||0);
+  const selectedDiscard=pvpResponseDiscardIndices(p,s).length,requiredDiscard=Number(p?.required_discard_count||0);
   if(selectedDiscard!==requiredDiscard)return false;
-  return !!E().getManaPlan?.()?.plan?.ok;
+  return !!pvpManaInfo(s)?.canPay;
 }
 function renderPay(s){
   const p=s.pending;
@@ -2495,7 +2561,7 @@ function renderPay(s){
   payBtn.style.left=((pr.right-br.left)/currentUiScale()+8)+'px';
   payBtn.style.top=((pr.top+pr.height/2-br.top)/currentUiScale()-13)+'px';
   let ready=true;
-  if(p.type==='mana_shard_payment_choice')ready=!!E().getManaPlan()?.plan?.ok;
+  if(p.type==='mana_shard_payment_choice')ready=!!pvpManaInfo(s)?.canPay;
   else if(p.type==='response_payment_choice')ready=responsePaymentReady(s,p);
   payBtn.disabled=!ready;
   payBtn.title=ready?'Pay selected Mana':'Select a valid Mana payment first';
@@ -2854,6 +2920,6 @@ function requestPvpRender(){
   if(pvpRenderQueued)return;
   pvpRenderQueued=true;requestAnimationFrame(()=>{pvpRenderQueued=false;renderNow();window.GL_PVP_TOUCH_SYNC?.()});
 }
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);if(window.GL_APP_MODE==='PVP')setInterval(refreshPostMatchCountdown,1000);if(window.GL_APP_MODE!=='PVP')setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:requestPvpRender,state:st,intent,playPvPOpening:beginPvPOpeningPresentation,openingBusy:()=>{if(window.GL_APP_MODE==='PVP'&&openingPresentationActive&&pvpOpeningStartedAt&&Date.now()-pvpOpeningStartedAt>12000)finishPvPOpeningPresentation(pvpOpeningSerial,true);return openingPresentationActive},openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal};window.addEventListener('gl-pvp-intent-error',()=>{resetCenterChoiceVisualState();requestPvpRender()});}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);if(window.GL_APP_MODE==='PVP')setInterval(refreshPostMatchCountdown,1000);if(window.GL_APP_MODE!=='PVP')setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:requestPvpRender,renderManaDraft:renderManaDraftOnly,manaModalVisible:()=>centerChoiceStage.classList.contains('open')&&centerChoiceStage.classList.contains('gl-center-mode-pay'),state:st,intent,playPvPOpening:beginPvPOpeningPresentation,openingBusy:()=>{if(window.GL_APP_MODE==='PVP'&&openingPresentationActive&&pvpOpeningStartedAt&&Date.now()-pvpOpeningStartedAt>12000)finishPvPOpeningPresentation(pvpOpeningSerial,true);return openingPresentationActive},openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal};window.addEventListener('gl-pvp-intent-error',()=>{resetCenterChoiceVisualState();requestPvpRender()});}
 boot();
 })();

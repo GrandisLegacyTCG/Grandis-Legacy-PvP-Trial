@@ -170,7 +170,12 @@ button{font:inherit}
 .bottom-hud .hand-track{pointer-events:auto}
 .mana-pool{position:absolute;width:21.5%;height:var(--zone-h);border:1px solid rgba(244,211,94,.28);border-radius:8px;background:linear-gradient(180deg,rgba(9,19,30,.92),rgba(4,10,17,.96));box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);display:flex;align-items:center;padding:3px 6px;z-index:65;overflow:visible}
 .player-mana-pool{left:4px;top:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2))}
-.opponent-mana-pool{right:4px;bottom:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2))}
+/* PvP: opponent Mana is a visible face-down pool at the top-right HUD.
+   It cannot be positioned from the opponent field height: on short/mobile
+   canvases the old bottom-based offset put the pool above the field and
+   behind the opponent hand. The parent is now .battlefield itself. */
+.opponent-mana-pool{right:4px;top:4px;bottom:auto;z-index:96}
+.opponent-mana-pool .gl-pool-badge{position:absolute;right:3px;bottom:-15px;z-index:8;padding:2px 6px;border:1px solid rgba(243,207,88,.42);border-radius:4px;background:rgba(5,17,29,.95);font:900 8px/1.1 Noto,Arial,sans-serif;letter-spacing:.07em;color:#ffdf8c;white-space:nowrap;pointer-events:none}
 .mana-pool .count{right:-4px;top:-4px}
 .mana-cards{position:relative;height:100%;width:100%;min-width:0;overflow:hidden;padding-left:2px;padding-right:2px}.mana-card{position:absolute;top:50%;left:2px;width:var(--std-w);height:var(--std-h);margin:0;transform:translateY(-50%);filter:drop-shadow(0 3px 5px rgba(0,0,0,.55));transition:left .14s ease}.mana-card img{width:100%;height:100%;object-fit:cover;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
 .mana-controls{position:absolute;left:calc(21.5% + 12px);top:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2) + (var(--zone-h) - 49px)/2);display:flex;flex-direction:column;gap:5px;z-index:85}.mana-controls button{width:27px;height:22px;border:1px solid #315b7f;border-radius:5px;background:#0a2238;color:#dff0ff;font-size:12px;font-weight:900;line-height:1;box-shadow:0 3px 8px rgba(0,0,0,.45)}
@@ -278,7 +283,7 @@ html.gl-adaptive-stage .played-box{padding-top:7px;padding-bottom:6px;gap:5px}
 html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 
 /* Opponent counter geometry remains the approved desktop geometry on every device. */
-.opponent-field .zone>.count,.opponent-field .opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
+.opponent-field .zone>.count,.opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
 </style>
 
 <link rel="stylesheet" href="shared-ui/battlefield-ui.css">
@@ -323,11 +328,14 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
         <div class="zone"><img src="assets/ui/back-shard.webp" alt="Opponent Shard Deck"><span class="count">0</span><span class="zone-label">MANA<br>DECK</span></div>
         <div class="zone"><img src="assets/ui/back-legacy.webp" alt="Opponent Legacy Deck"><span class="count">0</span><span class="zone-label">LEGACY<br>DECK</span></div>
       </div>
-      <div class="mana-pool opponent-mana-pool">
-        <div class="mana-cards" id="opponentManaCards"></div>
-        <span class="count" id="opponentManaCount">0</span>
-      </div>
     </section>
+
+    <!-- Independent of opponent field geometry: always visible on mobile and desktop. -->
+    <div class="mana-pool opponent-mana-pool" aria-label="Opponent Mana Pool (face-down Shards)">
+      <div class="mana-cards" id="opponentManaCards"></div>
+      <span class="count" id="opponentManaCount">0</span>
+      <span class="gl-pool-badge" aria-hidden="true">OPPONENT MANA</span>
+    </div>
 
     <section class="phase" aria-label="Turn phase tracker">
       <div class="phase-turn"><div class="turn"></div></div>
@@ -477,6 +485,7 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
   <script src="runtime/adapters/local-ai-adapter.js"></script>
   <script src="runtime/adapters/pvp-adapter.js"></script>
   <script src="/build-meta.js"></script>
+  <script src="runtime/pvp-mana-draft.js"></script>
   <script src="runtime/pvp-network.js"></script>
   <script src="shared-app/app-runtime.js"></script>
   <script src="runtime/pvp-touch-actions.js"></script>

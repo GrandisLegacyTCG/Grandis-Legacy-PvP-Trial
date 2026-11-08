@@ -18,7 +18,8 @@ const BUILD_ID=String(meta.buildId||'');
 // acknowledged ids to make retries safe; never reuse an id across page loads.
 const ACTION_NONCE=(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
 const clone=v=>v==null?v:JSON.parse(JSON.stringify(v));
-const LOCAL_MANA_ACTIONS=new Set(['toggleManaShardPaymentChoice','toggleResponseManaShardChoice','toggleManaPaymentSurgeChoice']);
+const LOCAL_MANA_ACTIONS=new Set(['toggleManaShardPaymentChoice','toggleResponseManaShardChoice','toggleManaPaymentSurgeChoice','selectResponsePaymentChoice']);
+const isTuneUpDecision=p=>p?.type==='card_search_choice'&&p.source_card_id==='S0-CLE-029'&&p.decision_side==='PLAYER'&&p.zone==='deck'&&!!p.multi_select;
 // Debug sampling stays entirely inside the player's browser; no extra WebSocket packets.
 const performanceSamples=[];
 const clock=()=>globalThis.performance?.now?.()||Date.now();
@@ -66,33 +67,57 @@ function pvpIntentError(message){
   try{window.dispatchEvent(new CustomEvent('gl-pvp-intent-error',{detail:{message:String(message||'Action rejected.')}}))}catch{}
 }
 function updateLocalManaDraft(name,args){
+  if(state.inflight)return {ok:false,error:'Waiting for the previous server action.'};
+  const s=bridge.getSnapshot?.()?.appState,p=s?.pending;
+  const draft=window.GL_PVP_MANA_DRAFT;
+  if(!draft||!p||p.decision_side!=='PLAYER'||
+      !['mana_shard_payment_choice','response_payment_choice'].includes(p.type))
+    return {ok:false,error:'No local Mana Payment decision is available.'};
+  let ok=false;
+  if(name==='toggleManaShardPaymentChoice'&&p.type==='mana_shard_payment_choice')
+    ok=draft.toggleShard(s,args?.[0]);
+  else if(name==='toggleResponseManaShardChoice'&&p.type==='response_payment_choice')
+    ok=draft.toggleShard(s,args?.[0]);
+  else if(name==='toggleManaPaymentSurgeChoice'&&p.type==='mana_shard_payment_choice')
+    ok=draft.toggleSurge(s);
+  else if(name==='selectResponsePaymentChoice'&&p.type==='response_payment_choice')
+    ok=draft.toggleDiscard(s,args?.[0]);
+  if(!ok)return {ok:false,error:'That Mana or Response cost choice is unavailable.'};
+  // Unlike RC4, NO gameplay engine mutation and NO full battlefield render.
+  window.GL_GAME_UI?.renderManaDraft?.();
+  return {ok:true,local:true};
+}
+// Tune Up's two Note selections are a local draft. Only the final validated
+// choice goes to the authority, saving two full WebSocket RTTs and avoiding
+// rebuilding the whole battlefield after each Note tap.
+function updateLocalTuneUpDraft(args){
   if(state.inflight||state.queue.length)return {ok:false,error:'Wait for the server action to complete.'};
-  const current=bridge.getSnapshot?.()?.appState?.pending;
-  const expected=name==='toggleResponseManaShardChoice'?'response_payment_choice':'mana_shard_payment_choice';
-  if(!current||current.type!==expected||current.decision_side!=='PLAYER')return {ok:false,error:'No local Mana Payment decision is available.'};
-  // This runs ONLY the exact already-existing RC34 pending-choice selector in
-  // the disposable browser copy. It never modifies server Hand/Mana/HP/turn.
-  const result=bridge.applyServerIntent(name,clone(args));
-  if(!result?.ok)return {ok:false,error:String(result?.error||'Mana choice rejected.')};
+  const p=bridge.getSnapshot?.()?.appState?.pending;
+  if(!isTuneUpDecision(p))return {ok:false,error:'No active Tune Up choice.'};
+  const r=bridge.applyServerIntent('selectCardSearchChoice',clone(args));
+  if(!r?.ok)return {ok:false,error:String(r?.error||'Tune Up selection rejected.')};
   window.GL_GAME_UI?.render?.();
   return {ok:true,local:true};
 }
+function toAtomicTuneUpChoice(name,args){
+  if(name!=='handleChoiceConfirm')return {name,args};
+  const p=bridge.getSnapshot?.()?.appState?.pending;
+  if(!isTuneUpDecision(p))return {name,args};
+  const selected=p.selected_indices||[];
+  const required=Number(p.required_count||2);
+  if(!Array.isArray(selected)||selected.length!==required||new Set(selected).size!==required)
+    return {error:'Select exactly two different Note Card positions for Tune Up.'};
+  return {name:'commitExactTuneUpChoice',args:[selected.map(Number),String(p.commit_token||'')]};
+}
 function toAtomicPayment(name,args){
   if(name!=='commitManaShardPaymentChoice'&&name!=='commitResponsePaymentChoice')return {name,args};
-  // A 0-Mana Response can still have an additional mandatory discard. Keep
-  // its original server-only confirmation; there are no Mana Shard choices.
-  if(name==='commitResponsePaymentChoice'&&Number(state.snapshot?.appState?.pending?.mana_cost||0)===0)return {name,args};
-  const info=engine.getManaPlan?.()||null;
-  const pending=info?.pending;
-  const correct=name==='commitResponsePaymentChoice'?'response_payment_choice':'mana_shard_payment_choice';
-  if(!pending||pending.type!==correct||pending.decision_side!=='PLAYER'||!info.plan?.ok)return {error:'Invalid Mana Payment selection.'};
-  const selected=info.plan.selected_shard_uids || (info.plan.shards||[]).map(sh=>sh.uid);
-  if(!Array.isArray(selected))return {error:'Mana Payment requires physical Shard selections.'};
-  if(name==='commitManaShardPaymentChoice'){
-    const surge=info.surge;
-    return {name:'commitExactManaPaymentChoice',args:[selected.map(String),!!surge?.selected,surge?.selected?String(surge.surge_mana_uid||''):null]};
-  }
-  return {name:'commitExactResponsePaymentChoice',args:[selected.map(String)]};
+  const s=bridge.getSnapshot?.()?.appState;
+  const p=s?.pending,expected=name==='commitResponsePaymentChoice'?'response_payment_choice':'mana_shard_payment_choice';
+  if(!p||p.type!==expected||p.decision_side!=='PLAYER')
+    return {error:'Mana Payment is not currently available.'};
+  const packet=window.GL_PVP_MANA_DRAFT?.payload(s);
+  if(!packet||packet.error)return {error:packet?.error||'Invalid Mana Payment selection.'};
+  return packet;
 }
 
 function session(key){try{return sessionStorage.getItem(SESSION[key])||''}catch{return''}}
@@ -118,19 +143,26 @@ function tryAction(name,args=[]){
  if(!state.connected)return {ok:false,error:'Connection unavailable.'};
  if(name!=='executeConfirmedSurrender'&&window.GL_GAME_UI?.openingBusy?.())return {ok:false,error:'Opening animation is still in progress.'};
  if(LOCAL_MANA_ACTIONS.has(name))return updateLocalManaDraft(name,args);
+ if(name==='selectCardSearchChoice'&&isTuneUpDecision(state.snapshot?.appState?.pending))
+   return updateLocalTuneUpDraft(args);
  if(state.inflight){
    if(name==='executeConfirmedSurrender'){
-     // An opponent's pending choice or an older action timeout cannot trap the
-     // Concede button. Its server action bypasses a stale base revision.
+     // Surrender remains available even when a previous intent is delayed.
      clearInFlight();state.queue.length=0;
-   }else{if(state.queue.length>=4)return {ok:false,error:'Too many pending actions.'};state.queue.push({name,args:clone(args)});return {ok:true,queued:true}}
+   }else return {ok:false,pending:true,busy:true,error:'Waiting for the server to finish the previous action.'};
  }
  return dispatch(name,args);
 }
 function action(name,args=[]){const r=tryAction(name,args);return r?.ok?r:reportRejectedAction(r)}
 function dispatch(name,args=[]){
+ const tuneUp=toAtomicTuneUpChoice(name,args);if(tuneUp.error)return {ok:false,error:tuneUp.error};
+ name=tuneUp.name;args=tuneUp.args;
  const payment=toAtomicPayment(name,args);if(payment.error)return {ok:false,error:payment.error};
  name=payment.name;args=payment.args;
+ // The server may choose a Hero automatically ONLY when exactly one source
+ // is legal. Other Play actions keep every player-choice step unchanged.
+ if(name==='beginPlayFromHand')name='beginPlayFromHandFast';
+ if(name==='beginPlayFromHandFast')state.playFlowStartedAt=clock();
  const s=state.snapshot?.appState;
  if(name!=='executeConfirmedSurrender'){
    const who=s?.pending&&(s.pending.decision_side||s.pending.response_owner||s.pending.side||s.pending.source_side);
@@ -161,7 +193,7 @@ function dispatch(name,args=[]){
  },1300);
  armTimeout(id);return {ok:true,pending:true};
 }
-function queueNext(){if(state.inflight||!state.queue.length)return;const cmd=state.queue.shift();const r=dispatch(cmd.name,cmd.args);if(!r.ok){state.queue.length=0;reportRejectedAction(r)}}
+// RC5: exactly one outstanding action; no silent queue of old-revision choices.
 native.intent=(name,args=[])=>action(name,args);
 registry.register('s0-pvp',{mode:'PVP',engine:()=>native,bridge:()=>bridge});
 registry.use('s0-pvp');
@@ -171,14 +203,14 @@ function update(snap,{force=false}={}){
  const m=snap?.match||{},me=snap?.local||{};
  state.status=m.status||'setup';state.role=me.role||'spectator';state.seat=me.seat||null;
  window.GL_PVP_IDENTITY={playerName:String(me.name||'PLAYER'),opponentName:String((snap.players||[]).find(p=>Number(p.seat)!==Number(me.seat))?.name||'OPPONENT'),playerDeck:String(me.deckName||'Player Deck'),opponentDeck:String((snap.players||[]).find(p=>Number(p.seat)!==Number(me.seat))?.deckName||'Opponent Deck')};
- if(state.status==='setup'){location.replace('/');return}
+ if(state.status==='setup'){window.GL_PVP_MANA_DRAFT?.clear?.();location.replace('/');return}
  const coin=window.GL_S0_RC32_PVP_COIN;
- if(m.status==='coin-flip'){
+ if(m.status==='coin-flip'){window.GL_PVP_MANA_DRAFT?.clear?.();
    const key=String(m.chooserSeat)+'|'+String(me.seat||'spectator');
    if(key!==state.lastCoinChoiceKey){state.lastCoinChoiceKey=key;coin?.showChoice?.({canChoose:state.role==='player'&&Number(me.seat)===Number(m.chooserSeat)});}
    return;
  }
- if(m.status==='coin-result'){
+ if(m.status==='coin-result'){window.GL_PVP_MANA_DRAFT?.clear?.();
    const firstSeat=Number(m.firstSeat||1);
    coin?.showResult?.({choice:m.choice,outcome:m.outcome,firstSeat,localSeat:Number(me.seat||0),
      localWasChooser:Number(m.chooserSeat)===Number(me.seat),
@@ -198,7 +230,35 @@ function update(snap,{force=false}={}){
    window.GL_PVP_LOCAL_SEAT=state.seat;
    window.GL_PVP_LOCAL_ROLE=state.role;
    try{
-     bridge.importSnapshot(board,{skipImportAnimations:true});window.GL_GAME_UI?.render?.();clearError();
+     const renderStarted=clock();
+     bridge.importSnapshot(board,{skipImportAnimations:true});
+     // Reconcile the browser-only selection with each authoritative revision.
+     window.GL_PVP_MANA_DRAFT?.sync(board.appState,state.revision,engine.getManaPlan?.()?.surge||null);
+     // Show the payment prompt BEFORE the heavier scheduled board render.
+     // Source/target selections remain server-authoritative.
+     if(board.appState?.pending?.decision_side==='PLAYER'&&
+         ['mana_shard_payment_choice','response_payment_choice'].includes(board.appState.pending.type)){
+       window.GL_GAME_UI?.renderManaDraft?.();
+     }
+     window.GL_GAME_UI?.render?.();clearError();
+     if(state.playFlowStartedAt&&board.appState?.pending?.decision_side==='PLAYER'&&
+        ['mana_shard_payment_choice','response_payment_choice'].includes(board.appState?.pending?.type)){
+       const start=state.playFlowStartedAt;state.playFlowStartedAt=null;
+       const raf=globalThis.requestAnimationFrame;
+       if(typeof raf==='function')raf(()=>raf(()=>{
+         const visible=!!document.querySelector?.('.gl-center-choice-stage.open.gl-center-mode-pay');
+         const ms=Math.round(clock()-start);
+         state.lastManaOpenPaintMs=visible?ms:null;
+         if(perfEnabled)console.debug('[GL PvP PLAY-to-Mana paint]',{visible,ms});
+       }));
+     }
+     const renderMs=Math.round((clock()-renderStarted)*10)/10;
+     state.lastRenderMs=renderMs;
+     if(perfEnabled){
+       console.debug('[GL PvP render]',{revision:state.revision,renderMs,pending:board.appState?.pending?.type||'none'});
+       const panel=document.getElementById('glPvpPerfPanel');
+       if(panel)panel.textContent+=' • render '+renderMs+'ms';
+     }
      if(!state.pvpOpeningShown&&state.role==='player'&&state.status==='started'&&Number(m.revision)===2){
        state.pvpOpeningShown=true;
        window.GL_GAME_UI?.playPvPOpening?.();
@@ -231,7 +291,7 @@ function connect(){
      recordActionLatency(state.inflightActionId,msg);
      clearInFlight();
      if(msg.snapshot)update(msg.snapshot,{force:!msg.ok});
-     if(!msg.ok){state.queue.length=0;pvpIntentError(msg.message);showError(msg.message||'Action rejected.')}else queueNext();
+     if(!msg.ok){state.queue.length=0;pvpIntentError(msg.message);showError(msg.message||'Action rejected.');window.GL_PVP_MANA_DRAFT?.clear?.()}
    }else if(msg.type==='error'){
      // Non-intent errors have no action ID. Never release an unrelated intent.
      if(msg.snapshot)update(msg.snapshot,{force:true});
@@ -261,7 +321,7 @@ setInterval(()=>{if(state.connected){
   send('ping',{clientTime:Date.now()});
   if(document.visibilityState!=='hidden')send('activity');
 }},25000);
-window.GL_S0_PVP_NETWORK={state,connect,sendIntent:action,performanceSamples};
+window.GL_S0_PVP_NETWORK={state,connect,sendIntent:action,performanceSamples,manaDraft:window.GL_PVP_MANA_DRAFT};
 
 window.GL_PVP_HOST={getSnapshot:()=>state.snapshot,sendIntent:action,identity:()=>({seat:state.seat,role:state.role,localConnected:state.connected}),returnToLobby:()=>send('return-to-lobby'),abortPregame:()=>send('return-to-lobby'),chooseCoin:choice=>send('choose-coin-flip',{choice}),coinPresented:()=>send('coin-presented'),confirmCoin:()=>send('confirm-coin-flip')};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',connect);else connect();
