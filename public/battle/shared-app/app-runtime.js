@@ -579,10 +579,11 @@ function syncBattlefieldIdentity(){
   const setup=E()?.getDeckSetupState?.()||{};
   const playerName=document.getElementById('playerIdentityName'),opponentName=document.getElementById('opponentPlayerIdentityName');
   const playerDeck=document.getElementById('playerDeckIdentity'),opponentDeck=document.getElementById('opponentDeckIdentity');
-  if(playerName)playerName.textContent=clampIdentityText('PLAYER','PLAYER');
-  if(opponentName)opponentName.textContent=clampIdentityText('LOCAL AI','LOCAL AI');
-  if(playerDeck){const full=String(setup.player?.deck_name||'Player Deck');playerDeck.textContent=clampIdentityText(full,'Player Deck');playerDeck.title=full;}
-  if(opponentDeck){const full=String(setup.ai?.deck_name||'AI Deck');opponentDeck.textContent=clampIdentityText(full,'AI Deck');opponentDeck.title=full;}
+  const isPvP=window.GL_APP_MODE==='PVP',identity=window.GL_PVP_IDENTITY||{};
+  if(playerName)playerName.textContent=clampIdentityText(isPvP?identity.playerName:'PLAYER','PLAYER');
+  if(opponentName)opponentName.textContent=clampIdentityText(isPvP?identity.opponentName:'LOCAL AI',isPvP?'OPPONENT':'LOCAL AI');
+  if(playerDeck){const full=String((isPvP?identity.playerDeck:null)||setup.player?.deck_name||'Player Deck');playerDeck.textContent=clampIdentityText(full,'Player Deck');playerDeck.title=full;}
+  if(opponentDeck){const full=String((isPvP?identity.opponentDeck:null)||setup.ai?.deck_name||(isPvP?'Opponent Deck':'AI Deck'));opponentDeck.textContent=clampIdentityText(full,isPvP?'Opponent Deck':'AI Deck');opponentDeck.title=full;}
 }
 function syncPlayerNameBox(){syncBattlefieldIdentity();}
 function lockPrimaryActionWidth(){
@@ -1412,7 +1413,7 @@ function animateCenterChoiceTo(card,target,duration=430){
   const r=uiRect(card),tr=uiRect(target),cx=r.left+r.width/2,cy=r.top+r.height/2,tx=tr.left+tr.width/2,ty=tr.top+tr.height/2;
   try{return card.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${tx-cx}px,${ty-cy}px) scale(.48)`,opacity:.12}],{duration,easing:'cubic-bezier(.25,.7,.2,1)',fill:'forwards'}).finished.catch(()=>{})}catch{return Promise.resolve()}
 }
-function animateCenterChoiceIntoDeck(card,target,duration=520){
+function animateCenterChoiceIntoDeck(card,target,duration=(window.GL_APP_MODE==='PVP'?340:520)){
   if(!card||!target)return Promise.resolve();
   const r=uiRect(card),targetCard=target.querySelector?.('.zoneCard')||target.querySelector?.('img')||target,tr=uiRect(targetCard),cx=r.left+r.width/2,cy=r.top+r.height/2,tx=tr.left+tr.width/2,ty=tr.top+tr.height/2;
   const endScale=Math.max(.34,Math.min(.82,(tr.width||r.width*.48)/Math.max(1,r.width)));
@@ -2512,7 +2513,7 @@ function latestResolvedActionThisPhase(s){
   return allEvents(s).reverse().find(e=>[e.turn||'',Number(e.round||1),e.phase||''].join('|')===stamp&&e.card_id)||null;
 }
 function renderSidebar(s,chain){
-  turnBox.innerHTML=`<h3 class="gold">${s.turn==='PLAYER'?'Your Turn':'AI Turn'}</h3><div class="tiny">Round ${Number(s.round||1)} · ${s.turn==='PLAYER'?'Player':'AI'}<br>Phase: ${esc(phaseName(s.phase))}<br>Mana ${Number(s.mana||0)} / 12 · Regen +${Number(s.manaRegen||0)}<br>AI Mana ${Number(s.aiMana||0)} / 12 · Regen +${Number(s.aiManaRegen||0)}</div>`;
+  turnBox.innerHTML=`<h3 class="gold">${s.turn==='PLAYER'?'Your Turn':(window.GL_APP_MODE==='PVP'?'Opponent Turn':'AI Turn')}</h3><div class="tiny">Round ${Number(s.round||1)} · ${s.turn==='PLAYER'?'Player':(window.GL_APP_MODE==='PVP'?'Opponent':'AI')}<br>Phase: ${esc(phaseName(s.phase))}<br>Mana ${Number(s.mana||0)} / 12 · Regen +${Number(s.manaRegen||0)}<br>${window.GL_APP_MODE==='PVP'?'Opponent Mana':'AI Mana'} ${Number(s.aiMana||0)} / 12 · Regen +${Number(s.aiManaRegen||0)}</div>`;
   const phaseStamp=currentPhaseStamp(s);
   if(activeCardPhaseStamp!==phaseStamp){activeCardPhaseStamp=phaseStamp;activeCardHold=null}
   const live=topActive(s,chain);
@@ -2696,7 +2697,27 @@ function repairBlockingStateIfNeeded(s){
   const rv=E()?.intent?.('repairOrphanBlockingState',[]);
   return !!rv?.ok;
 }
-function returnToLobbyAfterResult(){resultOverlay.classList.remove('open');try{window.location.reload()}catch{location.href=location.href}}
+function returnToLobbyAfterResult(){
+  if(window.GL_APP_MODE==='PVP'){
+    // The whole room must reset once, on the authoritative server, so both
+    // players land together in setup without a stale Game Result in one tab.
+    if(!window.GL_PVP_HOST?.returnToLobby?.()){
+      flash('Could not reach the server. Automatic return is still scheduled.');
+      return;
+    }
+    resultOverlay.classList.remove('open');return;
+  }
+  resultOverlay.classList.remove('open');
+  try{window.location.reload()}catch{location.href=location.href}
+}
+function refreshPostMatchCountdown(){
+  const display=resultOverlay.querySelector('#glResultReturnCountdown');
+  if(!display||window.GL_APP_MODE!=='PVP')return;
+  const end=Number(window.GL_PVP_POSTMATCH_EXPIRES_AT||0);
+  if(!end){display.textContent='Returning to Lobby automatically after the match.';return}
+  const secs=Math.max(0,Math.ceil((end-Date.now())/1000));
+  display.textContent='Returning to Lobby in '+String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0');
+}
 function syncMatchActionButton(s){
   if(!matchActionBtn)return;
   const finished=!!s?.gameOver;
@@ -2722,10 +2743,10 @@ function showGameResult(s){
   const phase=phaseName(s.phase)||'Unknown';
   const body=resultOverlay.querySelector('.gl-result-body');
   resultOverlay.querySelector('#glResultTitle').textContent='Game Result';
-  body.innerHTML='<div class="gl-result-summary"><section class="gl-result-winner"><span>Winner</span><strong>'+esc(winner)+'</strong></section><section class="gl-result-reason"><span>Reason</span><strong>'+esc(reason)+'</strong></section><section class="gl-result-round"><span>Round</span><strong>'+Number(s.round||1)+'</strong><small>'+esc((s.turn==='PLAYER'?'Player':s.turn==='AI'?(window.GL_APP_MODE==='PVP'?'Opponent':'Local AI'):String(s.turn||''))+' · '+phase+' Phase')+'</small></section></div><div class="gl-result-actions"><div class="gl-result-buttons"><button type="button" class="gl-result-close">CLOSE</button><button type="button" class="gl-result-back">BACK TO LOBBY</button></div><small>Reopen this popup anytime using Match Result.</small></div>';
+  body.innerHTML='<div class="gl-result-summary"><section class="gl-result-winner"><span>Winner</span><strong>'+esc(winner)+'</strong></section><section class="gl-result-reason"><span>Reason</span><strong>'+esc(reason)+'</strong></section><section class="gl-result-round"><span>Round</span><strong>'+Number(s.round||1)+'</strong><small>'+esc((s.turn==='PLAYER'?'Player':s.turn==='AI'?(window.GL_APP_MODE==='PVP'?'Opponent':'Local AI'):String(s.turn||''))+' · '+phase+' Phase')+'</small></section></div><div class="gl-result-actions"><div class="gl-result-buttons"><button type="button" class="gl-result-close">CLOSE</button><button type="button" class="gl-result-back">BACK TO LOBBY</button></div><small>Reopen this popup anytime using Match Result.</small><small id="glResultReturnCountdown" role="timer" style="display:block;margin-top:7px;color:#ffdc78"></small></div>';
   body.querySelector('.gl-result-close').onclick=()=>resultOverlay.classList.remove('open');
   body.querySelector('.gl-result-back').onclick=returnToLobbyAfterResult;
-  resultOverlay.classList.add('open');
+  resultOverlay.classList.add('open');refreshPostMatchCountdown();
 }
 let glStatusPhaseSeen='',glFreezeWindowSeen='';
 function renderStatusReminder(s){
@@ -2831,8 +2852,8 @@ let pvpRenderQueued=false;
 function requestPvpRender(){
   if(window.GL_APP_MODE!=='PVP'){renderNow();return;}
   if(pvpRenderQueued)return;
-  pvpRenderQueued=true;requestAnimationFrame(()=>{pvpRenderQueued=false;renderNow()});
+  pvpRenderQueued=true;requestAnimationFrame(()=>{pvpRenderQueued=false;renderNow();window.GL_PVP_TOUCH_SYNC?.()});
 }
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);if(window.GL_APP_MODE!=='PVP')setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:requestPvpRender,state:st,intent,playPvPOpening:beginPvPOpeningPresentation,openingBusy:()=>{if(window.GL_APP_MODE==='PVP'&&openingPresentationActive&&pvpOpeningStartedAt&&Date.now()-pvpOpeningStartedAt>12000)finishPvPOpeningPresentation(pvpOpeningSerial,true);return openingPresentationActive},openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal};window.addEventListener('gl-pvp-intent-error',()=>{resetCenterChoiceVisualState();requestPvpRender()});}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);if(window.GL_APP_MODE==='PVP')setInterval(refreshPostMatchCountdown,1000);if(window.GL_APP_MODE!=='PVP')setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:requestPvpRender,state:st,intent,playPvPOpening:beginPvPOpeningPresentation,openingBusy:()=>{if(window.GL_APP_MODE==='PVP'&&openingPresentationActive&&pvpOpeningStartedAt&&Date.now()-pvpOpeningStartedAt>12000)finishPvPOpeningPresentation(pvpOpeningSerial,true);return openingPresentationActive},openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal};window.addEventListener('gl-pvp-intent-error',()=>{resetCenterChoiceVisualState();requestPvpRender()});}
 boot();
 })();

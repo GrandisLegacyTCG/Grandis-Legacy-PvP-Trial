@@ -1,4 +1,4 @@
-# Cara deploy Grandis Legacy PvP Season 0 RC34 (GitHub RC2)
+# Cara deploy Grandis Legacy PvP Season 0 RC34 (GitHub RC3)
 
 ## 0. Tujuan dan batasan
 
@@ -34,14 +34,14 @@ Contoh untuk pengguna Git (di luar mesin pembuat paket):
 ```bash
 git clone https://github.com/GrandisLegacyTCG/Grandis-Legacy-PvP-Trial.git
 cd Grandis-Legacy-PvP-Trial
-git switch -c s0-rc34-github-rc2
+git switch -c s0-rc34-github-rc3
 # Hapus file tracked versi RC32 pada branch staging (direkam oleh Git).
 git rm -r -- .
 # Salin SELURUH ISI folder hasil ekstraksi RC34 ke folder ini,
 # termasuk .github/ dan file dotfiles, tetapi JANGAN copy folder .git lain.
 git add -A
-git commit -m "PvP S0 RC34 GitHub RC2 optimized staging"
-git push -u origin s0-rc34-github-rc2
+git commit -m "PvP S0 RC34 GitHub RC3 response-and-postmatch staging"
+git push -u origin s0-rc34-github-rc3
 ```
 
 Jika memakai GitHub web upload, pertahankan hierarki direktori dan semua berkas. Untuk ratusan artwork lebih baik gunakan Git CLI/GitHub Desktop. GitHub upload web saja kurang cocok untuk struktur proyek besar. Jangan tanpa sengaja menghapus folder `.github` karena workflow otomatis bergantung padanya.
@@ -59,7 +59,7 @@ Masuk ke repo **PvP-Trial → Actions**. Workflow `Grandis Legacy PvP S0 RC34 - 
 
 ## 3. Host node/websocket di Northflank
 
-Di Northflank, buat **Combined Service** dari repo `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial` dan branch staging `s0-rc34-github-rc2`.
+Di Northflank, buat **Combined Service** dari repo `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial` dan branch staging `s0-rc34-github-rc3`.
 
 - **Build type:** Dockerfile, path root `/Dockerfile`, build context root.
 - **Port:** **3000 / HTTP / Public**. Endpoint WebSocket `/ws` melewati origin/port yang sama; browser memakai `wss://` di HTTPS.
@@ -75,7 +75,18 @@ Sumber panduan resmi: `https://northflank.com/docs/v1/application/getting-starte
 
 ## 4. Smoke test setelah deploy
 
-1. Buka `https://<subdomain-host>/health` dan pastikan `ok:true`, `buildId=gl-s0-rc34-github-rc2-2026-11-08`, serta `authoritySources` terisi.
+**Prioritas RC3 (wajib dua browser / salah satu perangkat mobile):**
+
+- Uji **kedua arah**: Seat 1 Attack -> Seat 2 PASS atau Defense; Seat 2 Attack -> Seat 1 PASS atau Defense. Tombol tidak boleh tampak aktif namun diblokir dengan `Opponent decision pending.`. Server harus menerima tindakan yang legal.
+- Jalankan satu Play Card dari Hand dan cek waktu action melalui URL `/battle/?pvpPerf=1` bila lambat. Overlay menampilkan **ACK** (waktu total request/response) dan **engine** (waktu pemrosesan di server) dalam milidetik. Simpan screenshot/perkiraan waktu jika masih terasa lambat.
+- Pada smartphone, pastikan dock tombol 46 CSS px di luar kanvas yang diskalakan dapat melakukan PLAY/PASS/PAY, bukan sekadar terlihat. Coba rotate ke landscape, Return dan Surrender serta pastikan tidak ada double-PAY.
+- Setelah selesai pertandingan, pastikan Game Result memiliki countdown dan **BACK TO LOBBY** mengembalikan kedua klien lewat server; tanpa aksi manual kedua klien harus kembali ke lobby sekitar **60 detik setelah match selesai** (sweeper server dapat menambah beberapa detik). READY menjadi false dan Deck/Formation dipertahankan.
+- Pastikan tidak ada tombol floating RETURN TO LOBBY kanan atas atau label LOCAL AI.
+
+**Masih OPEN, bukan bagian fix RC3:** lobby *mobile* belum disetujui, dan visual Coin Flip / Back-of-Card / Hero Reveal belum dipastikan sesuai donor VS AI. Jangan menyatakan ketiganya beres hanya karena tes RC3 lulus.
+
+
+1. Buka `https://<subdomain-host>/health` dan pastikan `ok:true`, `buildId=gl-s0-rc34-github-rc3-2026-11-08`, serta `authoritySources` terisi.
 2. Buka `https://<subdomain-host>/` di **dua browser/profil independen**. Pastikan lobby PvP yang disetujui: artwork penuh, Import Deck emas di samping pilih deck, panel responsif.
 3. Pastikan dua pemain memiliki seat berbeda, memilih Starter, READY, lalu seat 1 START.
 4. Coin Flip konsisten di dua layar. Battlefield menampilkan tiga Hero sebelum enam pasang Opening Hand dan tiga Mana opening; Draw normal baru mengikuti aturan gilirannya.
@@ -95,7 +106,7 @@ Jika opening, Mana PAY, Response, status/rule, atau identitas private gagal, jan
 
 Source disiapkan untuk **deployment percobaan**, bukan pernyataan bahwa game pasti bebas bug atau siap public release.
 
-## RC2 khusus: skenario deadlock wajib dites di hosting
+## Warisan RC2: skenario deadlock wajib dites di hosting
 
 1. Selesai Coin Flip tanpa reload; sengaja tutup salah satu tab selama Coin Flip lalu pastikan room kembali ke lobby setelah grace, tidak memerlukan restart host. Uji RETURN TO LOBBY saat Coin Flip.
 2. Pemenang Coin Flip kedua arah: Mandatory Draw + Mana Regen selesai dan **Deploy aktif** tanpa klik NEXT saat Draw. Ulangi setelah beberapa kali End Turn.
@@ -104,4 +115,4 @@ Source disiapkan untuk **deployment percobaan**, bukan pernyataan bahwa game pas
 5. Simulasikan koneksi melambat, reload, hilang/terlambatnya ACK tanpa membuka antrean aksi ganda.
 6. Pastikan pemain yang menunggu giliran tidak tiba-tiba kalah karena idle; uji putus koneksi saat giliran sendiri untuk melihat reconnect grace.
 
-Status QA berikut belum terpenuhi tanpa tes di host: **full-match dua browser dan mobile UX**. Dilarang memberi label FINAL sebelum lulus. Lihat `docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md`.
+Status QA berikut belum terpenuhi tanpa tes di host: **full-match dua browser dan mobile UX**. Dilarang memberi label FINAL sebelum lulus. Lihat `docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md` dan `docs/RC34_RC3_RESPONSE_POSTMATCH_FIXES_2026-11-08.md`.

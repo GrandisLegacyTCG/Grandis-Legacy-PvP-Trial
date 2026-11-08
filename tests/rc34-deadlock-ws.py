@@ -35,6 +35,17 @@ try:
   for ws,deck in [(a,'s0_starter_01_red_white'),(b,'s0_starter_02_blue_red')]:
    send(ws,'set-deck',deckKey=deck);until(ws,lambda x:x['type']=='snapshot' and x['local']['deckKey']==deck,'deck')
    send(ws,'ready',ready=True);until(ws,lambda x:x['type']=='snapshot' and x['local']['ready'],'ready')
+  # Stale snapshots from prior rounds may remain unread on either WebSocket.
+  # Drain until a fresh, ordered PONG barrier from EACH connection, then
+  # explicitly resync and confirm BOTH seats are READY at the server now.
+  for ws in (a,b):
+   nonce=int(time.monotonic_ns()%1000000000000)
+   send(ws,'ping',clientTime=nonce)
+   until(ws,lambda x:x['type']=='pong' and x.get('clientTime')==nonce,'ready-barrier')
+  send(a,'resync')
+  both_ready=until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='setup' and
+    len(x['players'])==2 and all(p['ready'] and p['connected'] and p['hasDeck'] for p in x['players']),'both-seats-ready')
+  assert all(p['seat'] in (1,2) for p in both_ready['players'])
   send(a,'start-match');until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='coin-flip','coin-flip')
  def start_game(a,b):
   send(b,'choose-coin-flip',choice='HEADS');result=until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='coin-result','coin-result')

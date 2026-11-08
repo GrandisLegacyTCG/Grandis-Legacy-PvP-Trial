@@ -282,6 +282,21 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 </style>
 
 <link rel="stylesheet" href="shared-ui/battlefield-ui.css">
+<style id="gl-pvp-touch-accessibility">
+/* Never scale down the accessibility action dock with the battlefield. */
+#glPvPTouchDock{display:none;position:fixed;z-index:2147483500;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 20px);padding:6px 8px 8px;border:1px solid #af8c43;border-radius:11px;background:rgba(5,17,29,.97);box-shadow:0 8px 26px #000b;color:#e9dcab;text-align:center;font:700 12px/1.15 system-ui,sans-serif;user-select:none}
+#glPvPTouchDock[hidden]{display:none!important}
+#glPvPTouchDock .gl-pvp-touch-help{display:block;font-size:10px;letter-spacing:.08em;margin-bottom:5px;color:#c4b781}
+#glPvPTouchDock .gl-pvp-touch-buttons{display:flex;justify-content:center;gap:7px}
+#glPvPTouchDock .gl-pvp-touch-button{flex:1 1 auto;min-width:76px;min-height:46px;padding:9px 12px;border:1px solid #bf9c47;border-radius:8px;background:#122b41;color:#ffe6ab;font:800 13px/1.12 system-ui,sans-serif;touch-action:manipulation;cursor:pointer;white-space:nowrap}
+#glPvPTouchDock .gl-pvp-touch-button.is-primary{background:linear-gradient(180deg,#f6d671,#d6ae34);color:#171d26;border-color:#ffd981}
+#glPvPTouchDock .gl-pvp-touch-button:focus-visible{outline:3px solid white;outline-offset:2px}
+@media (any-pointer:coarse), (pointer:coarse){#glPvPTouchDock:not([hidden]){display:block}}
+@media (max-width:450px){#glPvPTouchDock{width:calc(100vw - 20px)}#glPvPTouchDock .gl-pvp-touch-button{min-width:0;padding:8px 7px;font-size:12px}}
+.hand.bottom .hand-card.gl-pvp-touch-selected{z-index:90}
+.hand.bottom .hand-card.gl-pvp-touch-selected .card-actions{opacity:1;pointer-events:auto}
+</style>
+
 </head>
 <body>
 <div class="app gl-lobby-hidden">
@@ -289,7 +304,7 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     <div class="concept" aria-hidden="true"></div>
 
     <section class="hand top">
-      <div class="hand-title identity-card" data-gl-identity="opponent"><span class="identity-copy"><strong class="identity-name" id="opponentPlayerIdentityName">LOCAL AI</strong><span class="identity-deck" id="opponentDeckIdentity">AI Deck</span></span></div>
+      <div class="hand-title identity-card" data-gl-identity="opponent"><span class="identity-copy"><strong class="identity-name" id="opponentPlayerIdentityName">OPPONENT</strong><span class="identity-deck" id="opponentDeckIdentity">Opponent Deck</span></span></div>
       <div class="hand-track"></div>
     </section>
 
@@ -362,7 +377,7 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
   </main>
 
   <aside class="sidebar">
-    <section class="sidebox"><h3 class="gold">VS AI</h3><div class="tiny"></div></section>
+    <section class="sidebox"><h3 class="gold">PvP Match</h3><div class="tiny"></div></section>
     <section class="sidebox played-box"><h3>Card Played</h3><div class="played"></div><button class="history-btn" id="fullHistoryBtn" type="button">Full Card History</button></section>
     <section class="sidebox shared-box" id="sharedPreviewBox">
       <div class="active-card-pane"><h3>Active Card</h3><div class="active-card-stage"></div></div>
@@ -464,6 +479,7 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
   <script src="/build-meta.js"></script>
   <script src="runtime/pvp-network.js"></script>
   <script src="shared-app/app-runtime.js"></script>
+  <script src="runtime/pvp-touch-actions.js"></script>
 
 </body>
 </html>

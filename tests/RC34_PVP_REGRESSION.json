@@ -1,6 +1,6 @@
 {
   "build": "VS AI Season 0 RC34 Patch Candidate",
-  "date": "2026-11-08T12:54:12.342Z",
+  "date": "2026-11-08T15:18:52.875Z",
   "passed": 20,
   "failed": 0,
   "tests": [
@@ -99,13 +99,13 @@
       "title": "real auto-End pauses for Stoneblood and resumes to Legacy",
       "ok": true,
       "details": {
-        "afterStonebloodHP": 0,
+        "afterStonebloodHP": 30,
         "racialRemaining": 1,
         "centerLegacy": true,
         "leftTicks": 1,
-        "pending": "racial_stoneblood",
-        "phase": "Battle",
-        "turn": "AI"
+        "pending": null,
+        "phase": "Deploy",
+        "turn": "PLAYER"
       }
     },
     {
@@ -136,8 +136,8 @@
           "S0-WAR-001"
         ],
         "deck": [
-          "S0-CLE-026",
-          "S0-WAR-002"
+          "S0-WAR-002",
+          "S0-CLE-026"
         ]
       }
     },

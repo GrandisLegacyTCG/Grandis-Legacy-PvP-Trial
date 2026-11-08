@@ -15,8 +15,8 @@ const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
 const VERSION='3.80.17';
-const BUILD_ID='gl-s0-rc34-github-rc2-2026-11-08';
-const BUILD_LABEL=`Grandis Legacy PvP · Season 0 RC34 Deadlock Fix RC2`;
+const BUILD_ID='gl-s0-rc34-github-rc3-2026-11-08';
+const BUILD_LABEL=`Grandis Legacy PvP · Season 0 RC34 Response Fix RC3`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
@@ -30,6 +30,7 @@ const COIN_RESULT_TIMEOUT_MS=Math.max(1000,Number(process.env.COIN_RESULT_TIMEOU
 const COIN_ACK_GRACE_MS=Math.max(500,Number(process.env.COIN_ACK_GRACE_MS)||12*1000);
 const COIN_DISCONNECT_GRACE_MS=Math.max(1000,Number(process.env.COIN_DISCONNECT_GRACE_MS)||45*1000);
 const IDLE_SWEEP_MS=Math.max(200,Number(process.env.IDLE_SWEEP_MS)||5000);
+const POST_MATCH_CLEANUP_MS=Math.max(1000,Number(process.env.POST_MATCH_CLEANUP_MS)||60000);
 
 const mime={
   '.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8',
@@ -74,14 +75,14 @@ function viewFor(client){
     if(client?.role==='player'&&client.seat)board=room.authority.viewForSeat(client.seat);
     else board=room.authority.viewForSpectator();
   }
-  const match={...clone(room.match),revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&(allPlayerSeatsAck(room.match.coinPresented||[])||room.match.presentationGraceOpen),board};
+  const match={...clone(room.match),postMatchCleanupAt:room.match.status==='finished'&&room.match.finishedAt?new Date(Date.parse(room.match.finishedAt)+POST_MATCH_CLEANUP_MS).toISOString():null,revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&(allPlayerSeatsAck(room.match.coinPresented||[])||room.match.presentationGraceOpen),board};
   return{type:'snapshot',version:VERSION,buildId:BUILD_ID,serverTime:now(),local,players:sortedPlayers().map(publicPlayer),spectators:[...room.spectators.values()].map(publicSpectator),match};
 }
 function send(ws,payload){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(payload))}
 function broadcast(exceptClient=null){for(const p of [...room.players.values(),...room.spectators.values()])if(p!==exceptClient&&p.connected&&p.ws)send(p.ws,viewFor(p))}
 function fail(client,message,code='REQUEST_REJECTED'){send(client?.ws,{type:'error',code,message:String(message||'Request rejected.'),serverTime:now(),snapshot:viewFor(client)})}
-function intentResult(client,{clientActionId='',ok=true,code=null,message='',appliedRevision=null}={}){
-  send(client?.ws,{type:'intent-result',clientActionId:String(clientActionId||''),ok:!!ok,code:code||null,message:String(message||''),revision:Number(room.authority?.revision||0),appliedRevision:appliedRevision==null?Number(room.authority?.revision||0):Number(appliedRevision),serverTime:now(),snapshot:viewFor(client)});
+function intentResult(client,{clientActionId='',ok=true,code=null,message='',appliedRevision=null,serverActionMs=null}={}){
+  send(client?.ws,{type:'intent-result',clientActionId:String(clientActionId||''),ok:!!ok,code:code||null,message:String(message||''),revision:Number(room.authority?.revision||0),appliedRevision:appliedRevision==null?Number(room.authority?.revision||0):Number(appliedRevision),serverActionMs:Number.isFinite(serverActionMs)?Math.round(serverActionMs*10)/10:null,serverTime:now(),snapshot:viewFor(client)});
 }
 
 function validateFormation(deck,formation){
@@ -201,6 +202,7 @@ function confirmCoin(client){
   room.match.status='started';room.match.stageChangedAt=now();room.match.lastProgressAt=Date.now();
 }
 function applyIntent(client,msg,batch=false){
+  const actionStartedAt=process.hrtime.bigint();
   if(client.role!=='player')throw new Error('Spectators are read-only.');
   if(room.match.status!=='started')throw new Error('Gameplay is not ready.');
   const actionId=safeText(msg.clientActionId,160);
@@ -227,7 +229,7 @@ function applyIntent(client,msg,batch=false){
     // Complete the originating browser action atomically: result + the exact viewer-safe
     // authoritative snapshot produced by that action. The normal room broadcast follows for
     // the opponent/spectators, but the sender never has to correlate a separate ACK and snapshot.
-    intentResult(client,{clientActionId:actionId,ok:true,appliedRevision:room.authority.revision});
+    intentResult(client,{clientActionId:actionId,ok:true,appliedRevision:room.authority.revision,serverActionMs:Number(process.hrtime.bigint()-actionStartedAt)/1e6});
   }
 }
 function resetRoom(client){
@@ -307,6 +309,13 @@ function enforceIdleTimeouts(){
       // Client animation ACK is advisory after the grace window: the game state
       // cannot remain hostage to a browser timer that never fired.
       room.match.presentationGraceOpen=true;changed=true;
+    }
+  }else if(room.match.status==='finished'){
+    // Server-owned post-match expiry: runs even when BOTH players close tabs.
+    // Clear only the match; deck choices, formation and connected seats persist.
+    const ended=Date.parse(room.match.finishedAt||'');
+    if(Number.isFinite(ended)&&t-ended>=POST_MATCH_CLEANUP_MS){
+      clearMatch();changed=true;
     }
   }else if(room.match.status==='started'&&!room.authority?.canonical?.appState?.gameOver){
     const active=sortedPlayers().filter(p=>room.authority.canSeatAct(p.seat));

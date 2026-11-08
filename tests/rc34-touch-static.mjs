@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const html=readFileSync('public/battle/index.html','utf8');
+const touch=readFileSync('public/battle/runtime/pvp-touch-actions.js','utf8');
+const network=readFileSync('public/battle/runtime/pvp-network.js','utf8');
+const runtime=readFileSync('public/battle/shared-app/app-runtime.js','utf8');
+assert.ok(html.includes('<script src="runtime/pvp-touch-actions.js"></script>'));
+assert.ok(html.indexOf('src="runtime/pvp-touch-actions.js"')>html.indexOf('src="shared-app/app-runtime.js"'));
+assert.match(html,/#glPvPTouchDock \.gl-pvp-touch-button\{[^}]*min-height:46px/);
+assert.ok(touch.includes("const isTouch=()=>"),'Only touch devices should show the dock');
+assert.ok(touch.includes('el.click();'),'Touch actions must delegate to the real UI callback');
+assert.ok(touch.includes("stage?.classList.contains('is-busy')"),'Do not allow double PAY while animation is resolving');
+assert.ok(runtime.includes('window.GL_PVP_TOUCH_SYNC?.()'),'Sync dock after a state render');
+assert.ok(network.includes("s?.pending?.type==='response_window'"),'Keep Response ownership exception');
+assert.ok(network.includes('glPvpActionToast'),'Display rejected intents');
+assert.ok(network.includes('performanceSamples'),'Record local ACK delay without extra server packets');
+console.log('PASS RC3 touch dock integration, 46px native targets, Response gate, user feedback, latency capture (static contract)');

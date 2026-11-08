@@ -1,99 +1,114 @@
 {
-  "release_id": "gl-s0-rc34-github-rc2-2026-11-08",
+  "release_id": "gl-s0-rc34-github-rc3-2026-11-08",
+  "release_version": "1.0.0-rc34-github-rc3-response",
   "target_repo": "GrandisLegacyTCG/Grandis-Legacy-PvP-Trial",
-  "status": "RC2 staging candidate; DL-01..DL-07 code regression local PASS; real two-browser game not verified",
-  "s0_card_art_files": 248,
-  "brotli_sidecars": 71,
+  "status": "RC3 staging candidate; production browser and remote-host full-match QA not yet passed",
+  "s0_card_art_files": 0,
+  "brotli_sidecars": 72,
+  "gzip_sidecars": 72,
   "rc34_donor_static_data_sha256": "fc7e1aa59a609ebe59f4456cdf9a1d81ed3ba28549992394f00b4b447df9bf7b",
   "static_definitions_match_rc34_donor": true,
+  "total_release_files_excluding_manifest": 663,
   "sha256": {
-    "README.md": {
-      "sha256": "51788e0b2ad67034df54e00997e729ade23079ee5342df9442a56ade713f1114",
-      "bytes": 5683
-    },
-    "package.json": {
-      "sha256": "7111616bdc650272d3f463e4bc215ceb3f9eb011fa23fa70f5e67c43ee37722a",
-      "bytes": 2090
+    ".github/workflows/qa.yml": {
+      "sha256": "9210524c39b42a4a5b6fc95728c38dca786fc1e74fd7dba1e873e25f1a7a16fa",
+      "bytes": 934
     },
     "Dockerfile": {
       "sha256": "81e6eb943ce5c4e2cc2ed8c58221822e08032763b37df27370b4da8a2367a6b7",
       "bytes": 613
     },
-    "server.js": {
-      "sha256": "9ffa5a740ceb2288801285294266b1e364d49b5d6c98bd29e2cf0681c959b2b3",
-      "bytes": 32584
+    "README.md": {
+      "sha256": "fa7be93c5b9b0495ad0df62d3d624471564fb76542c2d2508f993bc0a2eca50e",
+      "bytes": 7506
     },
-    ".github/workflows/qa.yml": {
-      "sha256": "9210524c39b42a4a5b6fc95728c38dca786fc1e74fd7dba1e873e25f1a7a16fa",
-      "bytes": 934
+    "docs/GITHUB_DEPLOY_RC34.md": {
+      "sha256": "3e8d790b2937875a876958c6b3bfb660e5aa0c5f1ab48e6a8430255ff1d5415d",
+      "bytes": 8517
     },
-    "public/index.html": {
-      "sha256": "bdb7dcdd26deeb15370c4962a063d0d8ed87c617510aee641ae5590bd29fa39b",
-      "bytes": 878
-    },
-    "public/pvp/pvp-host.js": {
-      "sha256": "d2d491941abed77e70df3d861211100c039840932a57b9d00910a1db97210287",
-      "bytes": 42544
-    },
-    "public/pvp/intent-channel.js": {
-      "sha256": "dd7183a5e4f9444f8f0c841765aff7993da991073ce0239b5bcddefe2ec9fae5",
-      "bytes": 3933
-    },
-    "public/battle/index.html": {
-      "sha256": "f397ae3b1ff2ee519a63687a307bcb4bb84de9e6bcd7c5ea6c3dc1e6224b1d49",
-      "bytes": 39463
-    },
-    "public/battle/shared-app/app-runtime.js": {
-      "sha256": "ba26625fe7de246290eee4e8bef7a25a5c4af6a2beba80b70557189339b6fb27",
-      "bytes": 235462
-    },
-    "public/battle/engine/shared-app/app.bundle.js": {
-      "sha256": "b2b5e50790e01fa358d98b3faf8740a3c00f05d46696ec825838080bcb86d2ad",
-      "bytes": 1675885
-    },
-    "public/battle/engine/js/static-data.js": {
-      "sha256": "fc7e1aa59a609ebe59f4456cdf9a1d81ed3ba28549992394f00b4b447df9bf7b",
-      "bytes": 7067658
-    },
-    "public/battle/engine/assets/audio/Tavern Quest.mp3": {
-      "sha256": "98416937b2f44beda80528c320c76096929a13fe230d747c3a4064f62881098a",
-      "bytes": 4303201
-    },
-    "public/battle/runtime/pvp-network.js": {
-      "sha256": "b5dfbefc4ab82a03d5a4e16d5da0b54785873d452d0f647153e269addc3966c8",
-      "bytes": 14183
-    },
-    "server/viewer-safe.mjs": {
-      "sha256": "a96117815d6d8584172f87d873e3cfc2ff7574b257ca33b1c6b2ec766c6bc736",
-      "bytes": 7570
-    },
-    "server/headless-rc32.mjs": {
-      "sha256": "7e558d132ec8e9f7bda7d19e4d550f585472aba6aeb2f1e1d69ca773409c590a",
-      "bytes": 14363
+    "docs/QA_STATUS_2026-11-08.md": {
+      "sha256": "f5a41cf09a920b74c1c97a36cac999cc2b75d964fc93446d5e6abfbf17ea80af",
+      "bytes": 4818
     },
     "docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md": {
       "sha256": "3cc82175667fb6ed05154ea4b9c755586ae9b515ac96c027ff6ce6bb3cdef7a5",
       "bytes": 6659
     },
+    "docs/RC34_RC3_RESPONSE_POSTMATCH_FIXES_2026-11-08.md": {
+      "sha256": "15baa3f4b69800c56b46ac64cb758695d88b58c6089a7b31ade018a041821504",
+      "bytes": 3926
+    },
     "docs/RELEASE_NOTES_RC34_GITHUB_RC2_2026-11-08.md": {
       "sha256": "5a2e90faf05e7e42e0c016fab91837ed4359d1fd1b992900e1052c9b83873cff",
       "bytes": 2755
     },
-    "docs/QA_STATUS_2026-11-08.md": {
-      "sha256": "51c559f57aa9be88457e3062333b7edc53e4b8c6b6716e870576e28783951577",
-      "bytes": 3334
+    "docs/RELEASE_NOTES_RC34_GITHUB_RC3_2026-11-08.md": {
+      "sha256": "963167f874dff8a17a4aa2ff30d2ef20b79f329a46c834a21262ca32df18cd71",
+      "bytes": 2330
     },
-    "docs/GITHUB_DEPLOY_RC34.md": {
-      "sha256": "6419d4929c95dbd2d6825acb5cbdf62ccbd1f632d2e9bd3918a9138412d63ac3",
-      "bytes": 6997
+    "package.json": {
+      "sha256": "17cf09c0b0afe4425057a48b2a7d8893a650b2fba785cc47c108c12730c362c6",
+      "bytes": 2446
+    },
+    "public/battle/engine/assets/audio/Tavern Quest.mp3": {
+      "sha256": "98416937b2f44beda80528c320c76096929a13fe230d747c3a4064f62881098a",
+      "bytes": 4303201
+    },
+    "public/battle/engine/js/static-data.js": {
+      "sha256": "fc7e1aa59a609ebe59f4456cdf9a1d81ed3ba28549992394f00b4b447df9bf7b",
+      "bytes": 7067658
+    },
+    "public/battle/engine/shared-app/app.bundle.js": {
+      "sha256": "b2b5e50790e01fa358d98b3faf8740a3c00f05d46696ec825838080bcb86d2ad",
+      "bytes": 1675885
+    },
+    "public/battle/index.html": {
+      "sha256": "ca60504eeb8eef044c9b9e6795de92c7cd2945087f1a5bdf72b41f13e5c48752",
+      "bytes": 41181
+    },
+    "public/battle/runtime/pvp-network.js": {
+      "sha256": "5a3f7a494585890143f025625bdd92f38bcdbca20612b0284707729c3d2df863",
+      "bytes": 17740
+    },
+    "public/battle/runtime/pvp-touch-actions.js": {
+      "sha256": "780fe16d766bd7835460397a2b1d3d7695d14bf939b1e222fac2a257119ad4a2",
+      "bytes": 4843
+    },
+    "public/battle/shared-app/app-runtime.js": {
+      "sha256": "f5c3cdc268e5d3f5263fbd9e94107d92bbdfb23a74cbc575db89f810a4c95709",
+      "bytes": 237031
+    },
+    "public/index.html": {
+      "sha256": "bdb7dcdd26deeb15370c4962a063d0d8ed87c617510aee641ae5590bd29fa39b",
+      "bytes": 878
+    },
+    "public/pvp/intent-channel.js": {
+      "sha256": "dd7183a5e4f9444f8f0c841765aff7993da991073ce0239b5bcddefe2ec9fae5",
+      "bytes": 3933
+    },
+    "public/pvp/pvp-host.js": {
+      "sha256": "d2d491941abed77e70df3d861211100c039840932a57b9d00910a1db97210287",
+      "bytes": 42544
+    },
+    "server.js": {
+      "sha256": "5ef16eb3118bff35c7758d0b7b9c94465ca12b30a8d5196958ad0e6cb7749c4e",
+      "bytes": 33419
+    },
+    "server/headless-rc32.mjs": {
+      "sha256": "7e558d132ec8e9f7bda7d19e4d550f585472aba6aeb2f1e1d69ca773409c590a",
+      "bytes": 14363
+    },
+    "server/viewer-safe.mjs": {
+      "sha256": "a96117815d6d8584172f87d873e3cfc2ff7574b257ca33b1c6b2ec766c6bc736",
+      "bytes": 7570
     },
     "tests/rc34-deadlock-engine.mjs": {
       "sha256": "754d4cd541864fe193730162dd78b2771d7079356d50107df2df7f2aaa982684",
       "bytes": 5346
     },
     "tests/rc34-deadlock-ws.py": {
-      "sha256": "a3ebb40573c9fd1040a62e8fd19f0e9439755d94698d062a6fdd41a627d020bd",
-      "bytes": 6577
+      "sha256": "8009cc97fc5cf211fbe388621e1480b7c171f64f5a13972fd44b6e09df3e87d8",
+      "bytes": 7287
     },
     "tests/rc34-network-ack-race.mjs": {
       "sha256": "742d4bf2c0cfdbdf209095a8ff3d41205263433cc43487bfbccd541f724653b0",
@@ -102,6 +117,18 @@
     "tests/rc34-opening-watchdog.mjs": {
       "sha256": "d616d534268783f97b8adb8b06df8eb823a3fdf08bed71a165002f1db1b2c9c3",
       "bytes": 2868
+    },
+    "tests/rc34-postmatch-cleanup.py": {
+      "sha256": "9b0999e67422f6524ad4f920477c26a8fcbbf0644cf83844717777db5283a39e",
+      "bytes": 3609
+    },
+    "tests/rc34-response-browser-gate.mjs": {
+      "sha256": "b3a868abd6332c279f8421249907d6e2ab305bc10fe6e87b116736a0ab0a67c9",
+      "bytes": 7296
+    },
+    "tests/rc34-touch-static.mjs": {
+      "sha256": "9dabd623d825bfad5b863fd39a0b5c8ebca14dd92675e0f71746743509def183",
+      "bytes": 1469
     }
   },
   "deadlock_fixes": [
@@ -113,6 +140,24 @@
     "DL-06",
     "DL-07"
   ],
-  "checks": "npm run check",
-  "release_notes": "docs/RELEASE_NOTES_RC34_GITHUB_RC2_2026-11-08.md"
+  "rc3_fixes": [
+    "BUG-05",
+    "BUG-06",
+    "BUG-07",
+    "BUG-08",
+    "UI-04",
+    "UI-05",
+    "UI-06",
+    "SYS-01",
+    "SYS-02",
+    "SYS-03"
+  ],
+  "checks": "npm run build:precompress && npm run check",
+  "release_notes": "docs/RELEASE_NOTES_RC34_GITHUB_RC3_2026-11-08.md",
+  "open_items": [
+    "Mobile lobby parity",
+    "Coin Flip opening/back-of-card presentation",
+    "Two-browser deployed full-match QA",
+    "Real mobile UX and hosted latency"
+  ]
 }
