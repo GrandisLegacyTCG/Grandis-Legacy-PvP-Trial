@@ -6477,7 +6477,12 @@
       else if(GL_AI_TURN_DIRECTOR.active) aiDirectorEnterEnd(state);
       else {
         resolveEndPhaseCleanupForSide(state,'AI');
-        if(!state.pending&&!state.gameOver){clearAIPlanAtTurnEnd(state);advanceRoundAfterCompletedTurnPair(state,'AI');beginPlayerTurnDrawPhase(state,'AI ends turn. PLAYER begins Draw Phase for Round '+state.round+'.');}
+        if(!state.pending&&!state.gameOver){
+          // In human-vs-human perspective swapping, this AI branch may be the
+          // canonical active human's End continuation after Provoke. Clear the
+          // server-owned End handoff flags before starting the next Draw.
+          state.autoEndTurnPending=false;state.autoEndResumeScheduled=false;
+          clearAIPlanAtTurnEnd(state);advanceRoundAfterCompletedTurnPair(state,'AI');beginPlayerTurnDrawPhase(state,'AI ends turn. PLAYER begins Draw Phase for Round '+state.round+'.');}
       }
     }
     return true;
@@ -11726,6 +11731,42 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
     swapSideMapKeys(s.pvpActionEventsBySide);
     swapSideMapKeys(s.cardsDrawnThisTurn);
     swapSideMapKeys(s.lastDrawnCardBySide);
+    // RC34 PvP RC2: turn-owned bookkeeping has composite identifiers such as
+    // PLAYER:1 or 1|PLAYER. Deep swapping exact values alone is insufficient:
+    // after seat 2 makes a choice, Provoke/Poison could tick twice or a Bard
+    // exchange could reopen because those dynamic keys kept the old side.
+    function swapCompositeMapKeys(map){
+      if(!map||typeof map!=='object')return map;
+      var out={};Object.keys(map).forEach(function(key){out[glPvpSwapTextSide(key)]=map[key];});
+      return out;
+    }
+    s.s0_provoke_processed_turns=swapCompositeMapKeys(s.s0_provoke_processed_turns);
+    s.s0_attack_cards_played_by_turn=swapCompositeMapKeys(s.s0_attack_cards_played_by_turn);
+    s.s0BardDrawResolved=swapCompositeMapKeys(s.s0BardDrawResolved);
+    if(s.endPhaseCleanupProgress&&typeof s.endPhaseCleanupProgress.key==='string')
+      s.endPhaseCleanupProgress.key=glPvpSwapTextSide(s.endPhaseCleanupProgress.key);
+    swapSideMapKeys(s.manualRepositionUsedTurnKey);
+    if(s.manualRepositionUsedTurnKey){
+      ['PLAYER','AI'].forEach(function(side){
+        if(typeof s.manualRepositionUsedTurnKey[side]==='string')
+          s.manualRepositionUsedTurnKey[side]=glPvpSwapTextSide(s.manualRepositionUsedTurnKey[side]);
+      });
+    }
+    sw('playerRacialTokenSpentTurn','aiRacialTokenSpentTurn');
+    ['playerRacialTokenSpentTurn','aiRacialTokenSpentTurn','aiWarpScrollTurnStamp'].forEach(function(key){
+      if(typeof s[key]==='string')s[key]=glPvpSwapTextSide(s[key]);
+    });
+    function swapHeroTurnMarkers(value){
+      if(!value||typeof value!=='object')return;
+      if(Array.isArray(value)){value.forEach(swapHeroTurnMarkers);return;}
+      Object.keys(value).forEach(function(key){
+        var entry=value[key];
+        if(typeof entry==='string'&&/^(?:racial_used_turn|stoneblood_used_turn|stoneblood_declined_turn|draw_replacement_used_turn|class_ability_used_turn|stamina_no_proactive_skill_turn|legacy_ability_used_key)$/.test(key))
+          value[key]=glPvpSwapTextSide(entry);
+        else if(entry&&typeof entry==='object')swapHeroTurnMarkers(entry);
+      });
+    }
+    swapHeroTurnMarkers(s.playerHeroes);swapHeroTurnMarkers(s.aiHeroes);
     if(typeof s.gameEndReason==='string')s.gameEndReason=glPvpSwapTextSide(s.gameEndReason);
     // PvP: glPvpDeepSwapSides has already swapped the nested presentation event sides.
     if(Array.isArray(s.log)) s.log=s.log.map(glPvpSwapTextSide);

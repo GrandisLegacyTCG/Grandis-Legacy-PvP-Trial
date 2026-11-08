@@ -159,7 +159,39 @@ export class Season0HeadlessAuthority {
     this.#revision++;
     this.#canonical = clone(this.#bridge.getCanonicalSnapshot(1));
     this.#bridgeSeat = 1; this.#bridgeRevision = this.#revision;
+    // Opening draws are committed on the server. A fully resolved Draw must
+    // enter Deploy without waiting for an impossible browser click.
+    this.#settleServerContinuations();
     return { ok: true, revision: this.#revision, firstSeat };
+  }
+  /**
+   * Complete only transitions whose rule work is already fully resolved.
+   * In particular, never cross a pending Bard/Quick Reload/Response choice.
+   * The headless VM intentionally has no timer, so an End continuation after
+   * Provoke must execute here rather than waiting for a setTimeout callback.
+   * Each user intent + its immediate automatic consequences is one revision.
+   */
+  #settleServerContinuations() {
+    for (let step = 0; step < 8; step++) {
+      const s = this.#canonical?.appState;
+      if (!s || s.gameOver || s.pending || s.responseWindow) return;
+      const drawReady = s.phase === 'Draw' &&
+        s.drawPhaseResolvedFor === s.turn && !s.drawPresentationPending && !s.pvpTurnReady;
+      const endReady = s.phase === 'End' && !!s.autoEndTurnPending;
+      if (!drawReady && !endReady) return;
+      const seat = s.turn === 'PLAYER' ? 1 : s.turn === 'AI' ? 2 : null;
+      if (!seat) throw new Error('Automatic continuation has no active seat.');
+      this.#restore(seat);
+      const before = JSON.stringify(this.#bridge.getCanonicalSnapshot(seat).appState);
+      const result = this.#bridge.applyServerIntent('advancePhase', []);
+      if (!result?.ok) throw new Error('Automatic phase continuation failed: ' + String(result?.error || 'rejected'));
+      const next = clone(this.#bridge.getCanonicalSnapshot(seat));
+      if (JSON.stringify(next.appState) === before) throw new Error('Automatic phase continuation made no progress.');
+      this.#canonical = next;
+      this.#bridgeSeat = seat;
+      this.#bridgeRevision = this.#revision;
+    }
+    throw new Error('Automatic phase continuation exceeded safe step limit.');
   }
   /** A verified seat may concede without turn/response ownership. */
   forfeit(seat) {
@@ -212,6 +244,7 @@ export class Season0HeadlessAuthority {
     // gameResultShown). Compare action against the RESTORED baseline, not
     // against the pre-import serialized state, or seat 2 invalid actions
     // may falsely appear to mutate the board and increment revision.
+    const rollback = this.#canonical;
     const before = JSON.stringify(this.#bridge.getCanonicalSnapshot(seat).appState);
     const result = this.#bridge.applyServerIntent(name, clone(args));
     if (!result?.ok) {
@@ -232,6 +265,15 @@ export class Season0HeadlessAuthority {
     this.#revision += 1;
     this.#bridgeSeat = seat;
     this.#bridgeRevision = this.#revision;
+    try { this.#settleServerContinuations(); }
+    catch (error) {
+      // Do not publish a partially settled authority state.
+      this.#canonical = rollback;
+      this.#revision -= 1;
+      this.#bridgeSeat = null;
+      this.#bridgeRevision = -1;
+      throw error;
+    }
     return {ok: true, revision: this.#revision};
   }
 }

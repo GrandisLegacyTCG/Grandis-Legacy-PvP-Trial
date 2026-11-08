@@ -63,6 +63,20 @@ let uiResponseSourceChoice=null,responseRollbackSnapshot=null;
 let activeCardHold=null,activeCardPhaseStamp='';
 let inspectState=null,lobbyIsOpen=true,lobbyErrorText='';
 let openingFirstSide='PLAYER',openingChoice='HEADS',openingOutcome='HEADS',openingPresentationActive=false;
+let pvpOpeningWatchdog=null,pvpOpeningStartedAt=0,pvpOpeningSerial=0;
+function finishPvPOpeningPresentation(serial,interrupted=false){
+  if(window.GL_APP_MODE!=='PVP'||!openingPresentationActive||serial!==pvpOpeningSerial)return;
+  clearTimeout(pvpOpeningWatchdog);pvpOpeningWatchdog=null;
+  // Invalidate any delayed motion callbacks before making controls interactive.
+  pvpOpeningSerial++;
+  glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();
+  glOpeningHiddenShardUids.clear();handRenderKey='';opponentHandRenderKey='';manaRenderKey='';
+  if(interrupted){animationLayer?.querySelectorAll('.gl-flying-card').forEach(el=>el.remove());glPresentationActive=0;glPresentationBusyUntil=0;}
+  previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;
+  renderNow();
+  if(interrupted)console.warn('[PvP] Opening presentation recovered after missed animation callback.');
+}
+
 let glOpeningHiddenShardUids=new Set(),resultShown=false;
 let transientConnectorKey='',transientConnectorUntil=0,transientDefenseConnector=null;
 let presentationPrimed=false,previousVisualState=null,lastTurnBannerKey='';
@@ -739,6 +753,15 @@ function s0PvpCoinResult(info={}){
 }
 function s0PvpCoinRelease(){coinOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}
 window.GL_S0_RC32_PVP_COIN={showChoice:s0PvpCoinChoice,showResult:s0PvpCoinResult,release:s0PvpCoinRelease};
+// A lost coin-animation acknowledgement must never require restarting the room.
+if(window.GL_APP_MODE==='PVP'&&coinOverlay){
+  const cancelCoin=document.createElement('button');cancelCoin.type='button';
+  cancelCoin.id='glPvpCancelCoin';cancelCoin.textContent='RETURN TO LOBBY';
+  cancelCoin.style.cssText='position:absolute;bottom:16px;right:16px;z-index:10001;padding:8px 14px;border:1px solid #cfad50;border-radius:7px;background:#14263b;color:#ffe0a1;font-weight:800;cursor:pointer';
+  cancelCoin.addEventListener('click',()=>{if(window.confirm('Cancel this Coin Flip for both players and return to the lobby?'))window.GL_PVP_HOST?.abortPregame?.()});
+  coinOverlay.appendChild(cancelCoin);
+}
+
 function resetPresentationState(){seenCounterMessages.clear();seenRacialMessages.clear();presentationNoticeQueue.length=0;presentationNoticeActive=false;clearTimeout(counterBannerTimer);counterBanner.classList.remove('show','is-racial');counterBanner.style.removeProperty('--gl-notice-duration');presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;glPendingDrawReservations.PLAYER.length=0;glPendingDrawReservations.AI.length=0;glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();glOpeningHiddenShardUids.clear();glExternalDrawSequence=Promise.resolve();glExternalManaDrawSequence=Promise.resolve();glExternallyPresentedShardUids.clear();resultShown=false;resultOverlay.classList.remove('open');syncMatchActionButton(null);closeLobbyProgression();resetMatchTimer()}
 function startMatchFromLobby(){
   lobbyErrorText='';const r=E().prepareLocalMatch?.();if(!r?.ok){lobbyErrorText=r?.error||'Could not start match.';renderLobby();return}
@@ -762,6 +785,9 @@ function beginPvPOpeningPresentation(){
   if(!game||raw.length<12)return false;
   resetPresentationState();
   startMatchTimer();openingPresentationActive=true;lastTurnBannerKey='';
+  const serial=++pvpOpeningSerial;pvpOpeningStartedAt=Date.now();
+  clearTimeout(pvpOpeningWatchdog);
+  pvpOpeningWatchdog=setTimeout(()=>finishPvPOpeningPresentation(serial,true),12000);
   const events=raw.slice(0,12).map(e=>({...e,
     group_index:Number.isFinite(Number(e.group_index))?Number(e.group_index):Math.max(0,Number(String(e.group_id||'').split('_').pop())-1)
   }));
@@ -780,18 +806,21 @@ function beginPvPOpeningPresentation(){
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
     if(!openingPresentationActive)return;
     syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();
-    runOpeningHandGroups(events,shardEvents);
+    try{runOpeningHandGroups(events,shardEvents,serial)}
+    catch(e){console.warn('[PvP] Opening presentation exception',e);finishPvPOpeningPresentation(serial,true)}
   }));
   return true;
 }
 function runPairMotions(parts,duration,done){let left=parts.length;if(!left){done();return}parts.forEach((part,i)=>{const finish=()=>{left--;if(left<=0)done()};if(!flyBetween(part.src,part.from,part.to,duration,finish,i===0))finish()})}
-function runOpeningHandGroups(events,manaEvents){
+function runOpeningHandGroups(events,manaEvents,serial=null){
+  const valid=()=>serial===null||(openingPresentationActive&&serial===pvpOpeningSerial);
   const groups=[];for(let i=0;i<6;i++)groups.push((events||[]).filter(e=>Number(e.group_index)===i));let gi=0;
-  const next=()=>{if(gi>=groups.length){runOpeningShardGroups(manaEvents);return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',hand=side==='PLAYER'?playerHandTrack:oppHandTrack,to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e.hand_index)+'"]'),from=zoneEl(side,'Main Deck');parts.push({src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{group.forEach(e=>glHiddenCommittedDrawSlots[e.side==='AI'?'AI':'PLAYER'].delete(Number(e.hand_index)));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());requestAnimationFrame(()=>setTimeout(next,20))})};next();
+  const next=()=>{if(!valid())return;if(gi>=groups.length){runOpeningShardGroups(manaEvents,serial);return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',hand=side==='PLAYER'?playerHandTrack:oppHandTrack,to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e.hand_index)+'"]'),from=zoneEl(side,'Main Deck');parts.push({src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{if(!valid())return;group.forEach(e=>glHiddenCommittedDrawSlots[e.side==='AI'?'AI':'PLAYER'].delete(Number(e.hand_index)));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());requestAnimationFrame(()=>setTimeout(next,20))})};next();
 }
-function runOpeningShardGroups(events){
+function runOpeningShardGroups(events,serial=null){
+  const valid=()=>serial===null||(openingPresentationActive&&serial===pvpOpeningSerial);
   const groups=[];for(let i=0;i<3;i++)groups.push((events||[]).filter(e=>Number(e.group_index)===i));let gi=0;
-  const next=()=>{if(gi>=groups.length){glOpeningHiddenShardUids.clear();manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(()=>{previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;if(window.GL_APP_MODE!=='PVP')E().beginFirstTurn?.(openingFirstSide);setTimeout(renderNow,0)},180));return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',host=side==='PLAYER'?playerManaHost:aiManaHost,to=host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(e.uid))+'"]'),from=zoneEl(side,'Shard Deck');parts.push({src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{group.forEach(e=>glOpeningHiddenShardUids.delete((e.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid)));manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(next,20))})};next();
+  const next=()=>{if(!valid())return;if(gi>=groups.length){glOpeningHiddenShardUids.clear();manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(()=>{if(!valid())return;if(serial!==null)finishPvPOpeningPresentation(serial);else{previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;E().beginFirstTurn?.(openingFirstSide);setTimeout(renderNow,0)}},180));return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',host=side==='PLAYER'?playerManaHost:aiManaHost,to=host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(e.uid))+'"]'),from=zoneEl(side,'Shard Deck');parts.push({src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{if(!valid())return;group.forEach(e=>glOpeningHiddenShardUids.delete((e.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid)));manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(next,20))})};next();
 }
 function visualStateOf(s){
   const hero={};for(const side of ['PLAYER','AI']){hero[side]={};for(const lane of laneOrder){const h=sideHeroes(s,side)?.[lane];hero[side][lane]={card_id:h?.card_id||'',image_id:heroImageId(h)||'',legacy:!!h?.legacy_mode,hp:Number(h?.hp||0),exp_cards:Array.isArray(h?.exp_cards)?h.exp_cards.slice():[]}}}
@@ -2804,6 +2833,6 @@ function requestPvpRender(){
   if(pvpRenderQueued)return;
   pvpRenderQueued=true;requestAnimationFrame(()=>{pvpRenderQueued=false;renderNow()});
 }
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);if(window.GL_APP_MODE!=='PVP')setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:requestPvpRender,state:st,intent,playPvPOpening:beginPvPOpeningPresentation,openingBusy:()=>openingPresentationActive,openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal};window.addEventListener('gl-pvp-intent-error',()=>{resetCenterChoiceVisualState();requestPvpRender()});}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);if(window.GL_APP_MODE!=='PVP')setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:requestPvpRender,state:st,intent,playPvPOpening:beginPvPOpeningPresentation,openingBusy:()=>{if(window.GL_APP_MODE==='PVP'&&openingPresentationActive&&pvpOpeningStartedAt&&Date.now()-pvpOpeningStartedAt>12000)finishPvPOpeningPresentation(pvpOpeningSerial,true);return openingPresentationActive},openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal};window.addEventListener('gl-pvp-intent-error',()=>{resetCenterChoiceVisualState();requestPvpRender()});}
 boot();
 })();

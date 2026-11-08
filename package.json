@@ -1,6 +1,6 @@
 {
   "name": "grandis-legacy-pvp-s0-rc34-github-release-candidate",
-  "version": "1.0.0-rc34-github-rc1",
+  "version": "1.0.0-rc34-github-rc2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
     "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js",
     "test:transition": "npm run test:ws-gate",
     "check:parity": "node tests/s1-source-parity.mjs",
-    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment",
+    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog",
     "test:s0-catalog": "npm run check:catalog",
     "check:catalog": "node tests/s0-catalog-static.mjs",
     "test:ws-gate": "python3 tests/ws-gate.py",
@@ -20,7 +20,11 @@
     "test:privacy": "node tests/privacy-presentation.mjs",
     "test:ids": "node tests/intent-id-uniqueness.mjs",
     "test:assets": "node tests/asset-integrity.mjs",
-    "test:seat2-payment": "node tests/rc34-seat2-payment-response.mjs"
+    "test:seat2-payment": "node tests/rc34-seat2-payment-response.mjs",
+    "test:deadlock-engine": "node tests/rc34-deadlock-engine.mjs",
+    "test:deadlock-ws": "python3 tests/rc34-deadlock-ws.py",
+    "test:ack-race": "node tests/rc34-network-ack-race.mjs",
+    "test:opening-watchdog": "node tests/rc34-opening-watchdog.mjs"
   },
   "engines": {
     "node": ">=18"

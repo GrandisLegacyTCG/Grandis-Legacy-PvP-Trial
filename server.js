@@ -15,13 +15,21 @@ const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
 const VERSION='3.80.17';
-const BUILD_ID='gl-s0-rc34-github-rc1-2026-11-08';
-const BUILD_LABEL=`Grandis Legacy PvP · Season 0 RC34 GitHub Release Candidate`;
+const BUILD_ID='gl-s0-rc34-github-rc2-2026-11-08';
+const BUILD_LABEL=`Grandis Legacy PvP · Season 0 RC34 Deadlock Fix RC2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 const LOBBY_IDLE_MS=60*1000;
-const MATCH_IDLE_MS=3*60*1000;
+// The owner of the active decision is the only person subject to a match
+// idle deadline. A waiting opponent is never silently surrendered.
+const MATCH_IDLE_MS=Math.max(1000,Number(process.env.MATCH_IDLE_MS)||10*60*1000);
+const MATCH_DISCONNECT_GRACE_MS=Math.max(1000,Number(process.env.MATCH_DISCONNECT_GRACE_MS)||3*60*1000);
+const COIN_CHOICE_TIMEOUT_MS=Math.max(1000,Number(process.env.COIN_CHOICE_TIMEOUT_MS)||90*1000);
+const COIN_RESULT_TIMEOUT_MS=Math.max(1000,Number(process.env.COIN_RESULT_TIMEOUT_MS)||90*1000);
+const COIN_ACK_GRACE_MS=Math.max(500,Number(process.env.COIN_ACK_GRACE_MS)||12*1000);
+const COIN_DISCONNECT_GRACE_MS=Math.max(1000,Number(process.env.COIN_DISCONNECT_GRACE_MS)||45*1000);
+const IDLE_SWEEP_MS=Math.max(200,Number(process.env.IDLE_SWEEP_MS)||5000);
 
 const mime={
   '.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8',
@@ -37,7 +45,7 @@ const safeRole=v=>String(v)==='spectator'?'spectator':'player';
 const token=()=>randomBytes(24).toString('base64url');
 const tokenHash=v=>v?createHash('sha256').update(String(v)).digest('hex'):'';
 
-function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,coinPresented:[],startedAt:null,finishedAt:null,lastError:null}}
+function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,coinPresented:[],startedAt:null,finishedAt:null,stageChangedAt:null,lastProgressAt:null,presentationGraceOpen:false,lastError:null}}
 const room={players:new Map(),spectators:new Map(),authority:null,match:freshMatch(),ledger:new Map(),kickedClients:new Set(),createdAt:now()};
 
 function playerBySeat(seat){return [...room.players.values()].find(p=>Number(p.seat)===Number(seat))||null}
@@ -51,7 +59,13 @@ function bothPlayersReady(){return bothPlayersPresent()&&sortedPlayers().every(p
 function allPlayerSeatsAck(list){return [1,2].every(s=>list.includes(s))}
 function selectionOf(p){return{name:p.name,deckKey:p.deckKey||null,customDeck:p.customDeck?clone(p.customDeck):null,formation:p.formation?clone(p.formation):null}}
 function closeClientSocket(p,code=4000,reason='Reconnected elsewhere'){try{if(p?.ws?.readyState===WebSocket.OPEN)p.ws.close(code,reason)}catch{}}
-function clearMatch(){room.authority=null;room.match=freshMatch();room.ledger.clear();room.kickedClients.clear();for(const p of room.players.values())p.ready=false}
+function clearMatch(reason=''){room.authority=null;room.match=freshMatch();room.match.lastError=reason||null;room.ledger.clear();room.kickedClients.clear();for(const p of room.players.values())p.ready=false}
+function abortPregame(reason){
+  if(!['coin-flip','coin-result'].includes(room.match.status))return false;
+  clearMatch(reason||'Coin Flip canceled.');
+  for(const p of [...room.players.values(),...room.spectators.values()])send(p.ws,{type:'pregame-recovered',message:room.match.lastError,serverTime:now()});
+  return true;
+}
 
 function viewFor(client){
   const local=client?{clientId:client.clientId,name:client.name,role:client.role,seat:client.seat||null,seatToken:client.role==='player'?client.seatToken:null,ready:!!client.ready,hasDeck:!!(client.deckKey||client.customDeck),deckKey:client.deckKey||null,deckName:client.deckName||null,customDeck:room.match.status==='setup'&&client.customDeck?clone(client.customDeck):null,formation:client.formation?clone(client.formation):null}:null;
@@ -60,7 +74,7 @@ function viewFor(client){
     if(client?.role==='player'&&client.seat)board=room.authority.viewForSeat(client.seat);
     else board=room.authority.viewForSpectator();
   }
-  const match={...clone(room.match),revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&allPlayerSeatsAck(room.match.coinPresented||[]),board};
+  const match={...clone(room.match),revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&(allPlayerSeatsAck(room.match.coinPresented||[])||room.match.presentationGraceOpen),board};
   return{type:'snapshot',version:VERSION,buildId:BUILD_ID,serverTime:now(),local,players:sortedPlayers().map(publicPlayer),spectators:[...room.spectators.values()].map(publicSpectator),match};
 }
 function send(ws,payload){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(payload))}
@@ -120,6 +134,7 @@ class Season0BattleAuthority {
   }
   get revision(){return this.engine.revision}
   get canonical(){return this.engine._canonicalForServerOnly()}
+  canSeatAct(seat){return this.engine.canSeatAct(seat)}
   viewForSeat(seat){
     const safe=viewerSafeBoard(this.engine._viewForMaskingOnly(seat),{seat,revision:this.revision,secret:BLIND_SECRET});
     assertViewerSafeBoard(safe);return safe;
@@ -159,14 +174,16 @@ function startMatch(client){
   season0DeckFor(p1);season0DeckFor(p2);
   const authority=Season0BattleAuthority.prepare(p1,p2);
   room.authority=authority;room.ledger.clear();
-  room.match={...freshMatch(),status:'coin-flip',chooserSeat:2,startedAt:now()};
+  room.match={...freshMatch(),status:'coin-flip',chooserSeat:2,startedAt:now(),stageChangedAt:now()};
 }
 function chooseCoin(client,msg){
-  if(room.match.status!=='coin-flip')throw new Error('Coin choice is not active.');
   if(client.role!=='player'||client.seat!==room.match.chooserSeat)throw new Error('Only Player 2 chooses Heads or Tails.');
   const choice=String(msg.choice||'').toUpperCase();if(!['HEADS','TAILS'].includes(choice))throw new Error('Choose HEADS or TAILS.');
+  // A duplicated choice from reconnect MUST NOT roll a new outcome.
+  if(room.match.status==='coin-result'&&room.match.choice===choice)return;
+  if(room.match.status!=='coin-flip')throw new Error('Coin choice is not active.');
   const outcome=randomInt(2)===0?'HEADS':'TAILS';
-  room.match.choice=choice;room.match.outcome=outcome;room.match.firstSeat=choice===outcome?client.seat:(client.seat===1?2:1);room.match.status='coin-result';room.match.coinPresented=[];
+  room.match.choice=choice;room.match.outcome=outcome;room.match.firstSeat=choice===outcome?client.seat:(client.seat===1?2:1);room.match.status='coin-result';room.match.coinPresented=[];room.match.stageChangedAt=now();room.match.presentationGraceOpen=false;
 }
 function coinPresented(client){
   if(client.role!=='player')return;if(room.match.status!=='coin-result')return;
@@ -175,12 +192,13 @@ function coinPresented(client){
 function confirmCoin(client){
   if(client.role!=='player')throw new Error('Spectators cannot start gameplay.');
   if(room.match.status!=='coin-result')throw new Error('Coin result is not ready.');
-  if(!allPlayerSeatsAck(room.match.coinPresented))throw new Error('Waiting for both players to finish the Coin Flip presentation.');
+  if(!sortedPlayers().every(p=>p.connected))throw new Error('Both players must reconnect before Start Game.');
+  if(!allPlayerSeatsAck(room.match.coinPresented)&&!room.match.presentationGraceOpen)throw new Error('Waiting for both players to finish the Coin Flip presentation.');
   // Coin presentation is handled inside the S0 RC32 battlefield document.
   // Server commits a complete S0 board, never a fabricated opening modal.
   room.authority.complete(room.match.firstSeat,room.match.outcome);
   room.ledger.clear();
-  room.match.status='started';
+  room.match.status='started';room.match.stageChangedAt=now();room.match.lastProgressAt=Date.now();
 }
 function applyIntent(client,msg,batch=false){
   if(client.role!=='player')throw new Error('Spectators are read-only.');
@@ -190,7 +208,10 @@ function applyIntent(client,msg,batch=false){
     const prior=room.ledger.get(actionId);if(prior?.clientId!==client.clientId)throw new Error('Duplicate action id belongs to another client.');
     intentResult(client,{clientActionId:actionId,ok:true,appliedRevision:Number(prior?.revision||room.authority.revision)});return;
   }
-  const base=Number(msg.baseRevision);if(base!==room.authority.revision)throw Object.assign(new Error('STALE_REVISION'),{code:'STALE_REVISION'});
+  // A verified player may concede even if an opponent decision advanced the
+  // revision while the local tab was suspended or reconnecting.
+  const isSurrender=!batch&&String(msg.intent)==='executeConfirmedSurrender';
+  const base=Number(msg.baseRevision);if(!isSurrender&&base!==room.authority.revision)throw Object.assign(new Error('STALE_REVISION'),{code:'STALE_REVISION'});
   if(batch){
     const steps=Array.isArray(msg.steps)?msg.steps.slice(0,2):[];if(!steps.length)throw new Error('Intent batch is empty.');
     room.authority.applyIntentBatch(client.seat,steps);
@@ -198,6 +219,7 @@ function applyIntent(client,msg,batch=false){
     const name=safeText(msg.intent,100);if(!name)throw new Error('Intent name is required.');
     room.authority.applyIntent(client.seat,name,Array.isArray(msg.args)?msg.args:[]);
   }
+  room.match.lastProgressAt=Date.now();
   if(room.authority.canonical?.appState?.gameOver){room.match.status='finished';room.match.finishedAt=now()}
   if(actionId){
     room.ledger.set(actionId,{revision:room.authority.revision,clientId:client.clientId,at:Date.now()});
@@ -208,8 +230,18 @@ function applyIntent(client,msg,batch=false){
     intentResult(client,{clientActionId:actionId,ok:true,appliedRevision:room.authority.revision});
   }
 }
-function resetRoom(client){if(client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can reset the room.');if(room.match.status!=='setup')throw new Error('Room reset is only available during setup.');clearMatch()}
-function returnToLobby(client){if(client.role!=='player')throw new Error('Only players can return the room to lobby.');if(room.match.status!=='finished')throw new Error('Match is not finished.');clearMatch()}
+function resetRoom(client){
+  if(client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can reset the room.');
+  if(room.match.status==='setup'){clearMatch();return}
+  if(abortPregame('Coin Flip canceled by Player 1.'))return;
+  throw new Error('An active match cannot be reset.');
+}
+function returnToLobby(client){
+  if(client.role!=='player')throw new Error('Only players can return the room to lobby.');
+  if(abortPregame('Coin Flip canceled by a player.'))return;
+  if(room.match.status!=='finished')throw new Error('Match is not finished.');
+  clearMatch();
+}
 function kickSeat2(client){
   if(room.match.status!=='setup'||client.role!=='player'||client.seat!==1)throw new Error('Only Player 1 can kick Player 2 during setup.');
   const p=playerBySeat(2);if(!p)throw new Error('Player 2 seat is empty.');room.kickedClients.add(p.clientId);room.players.delete(p.clientId);room.spectators.delete(p.clientId);closeClientSocket(p,4002,'Removed by Player 1');p.role='spectator';delete p.seat;p.ready=false;p.connected=false;
@@ -253,23 +285,45 @@ function moveIdleLobbyPlayerToSpectator(p){
   send(p.ws,{type:'idle-timeout',scope:'lobby',message:'Moved to Spectator after 1 minute of inactivity.',serverTime:now()});
   return true;
 }
-function surrenderIdleMatchPlayer(p){
+function surrenderIdleMatchPlayer(p,reason){
   if(!p||p.role!=='player'||room.match.status!=='started'||!room.authority)return false;
   try{room.authority.applyIntent(p.seat,'executeConfirmedSurrender',[]);}catch(err){console.warn('[idle] surrender failed',err?.message||err);return false}
-  const state=room.authority.canonical?.appState;if(state?.gameOver)state.gameEndReason='Match ended by inactivity surrender.';
-  room.match.status='finished';room.match.finishedAt=now();send(p.ws,{type:'idle-timeout',scope:'match',message:'Match surrendered after 3 minutes of inactivity.',serverTime:now()});return true;
+  room.match.status='finished';room.match.finishedAt=now();
+  room.match.lastError=reason;
+  send(p.ws,{type:'idle-timeout',scope:'match',message:reason,serverTime:now()});return true;
 }
 function enforceIdleTimeouts(){
   const t=Date.now();let changed=false;
   if(room.match.status==='setup'){
     for(const p of [...room.players.values()])if(t-Number(p.lastActivityAt||t)>=LOBBY_IDLE_MS)changed=moveIdleLobbyPlayerToSpectator(p)||changed;
+  }else if(['coin-flip','coin-result'].includes(room.match.status)){
+    const elapsed=t-Date.parse(room.match.stageChangedAt||room.match.startedAt||now());
+    const disconnected=sortedPlayers().find(p=>!p.connected&&t-Number(p.disconnectedAt||t)>=COIN_DISCONNECT_GRACE_MS);
+    const expired=room.match.status==='coin-flip'?elapsed>=COIN_CHOICE_TIMEOUT_MS:elapsed>=COIN_RESULT_TIMEOUT_MS;
+    if(disconnected||expired){
+      const reason=disconnected?'Coin Flip canceled: a player disconnected.':'Coin Flip timed out; both players may READY again.';
+      changed=abortPregame(reason)||changed;
+    }else if(room.match.status==='coin-result'&&!room.match.presentationGraceOpen&&elapsed>=COIN_ACK_GRACE_MS){
+      // Client animation ACK is advisory after the grace window: the game state
+      // cannot remain hostage to a browser timer that never fired.
+      room.match.presentationGraceOpen=true;changed=true;
+    }
   }else if(room.match.status==='started'&&!room.authority?.canonical?.appState?.gameOver){
-    const idle=sortedPlayers().filter(p=>t-Number(p.lastActivityAt||t)>=MATCH_IDLE_MS).sort((a,b)=>Number(a.lastActivityAt||0)-Number(b.lastActivityAt||0));
-    if(idle.length)changed=surrenderIdleMatchPlayer(idle[0])||changed;
+    const active=sortedPlayers().filter(p=>room.authority.canSeatAct(p.seat));
+    // A turn/Response owner gets a fresh decision interval when the opponent
+    // finishes an action. Waiting players are not penalized for being idle.
+    const timedOut=active.find(p=>{
+      if(!p.connected)return t-Math.max(Number(p.disconnectedAt||t),Number(room.match.lastProgressAt||0))>=MATCH_DISCONNECT_GRACE_MS;
+      return t-Math.max(Number(p.lastActivityAt||t),Number(room.match.lastProgressAt||0))>=MATCH_IDLE_MS;
+    });
+    if(timedOut){
+      const reason=timedOut.connected?'Match surrendered after 10 minutes without activity while a decision was due.':'Match surrendered after the active player disconnected and the reconnect grace elapsed.';
+      changed=surrenderIdleMatchPlayer(timedOut,reason)||changed;
+    }
   }
   if(changed)broadcast();
 }
-setInterval(enforceIdleTimeouts,5000).unref?.();
+setInterval(enforceIdleTimeouts,IDLE_SWEEP_MS).unref?.();
 
 const server=http.createServer(async(req,res)=>{
   try{
@@ -340,9 +394,9 @@ wss.on('connection',(ws,req)=>{
     const existing=room.players.get(clientId)||room.spectators.get(clientId);
     if(existing&&existing.role==='player'){
       if(!seatToken||existing.seatTokenHash!==tokenHash(seatToken))throw Object.assign(new Error('SEAT_TOKEN_MISMATCH'),{code:'SEAT_TOKEN_MISMATCH'});
-      client=existing;closeClientSocket(client,4006,'Seat session replaced by another tab');client.ws=ws;client.connected=true;client.name=name;client.lastActivityAt=Date.now();
+      client=existing;closeClientSocket(client,4006,'Seat session replaced by another tab');client.ws=ws;client.connected=true;client.name=name;client.lastActivityAt=Date.now();client.disconnectedAt=null;
     }else if(existing&&existing.role==='spectator'){
-      client=existing;closeClientSocket(client);client.ws=ws;client.connected=true;client.name=name;client.lastActivityAt=Date.now();
+      client=existing;closeClientSocket(client);client.ws=ws;client.connected=true;client.name=name;client.lastActivityAt=Date.now();client.disconnectedAt=null;
     }else if(requested==='player'&&!room.kickedClients.has(clientId)&&room.match.status==='setup'&&chooseSeat()){
       const seat=chooseSeat(),seatTokenNew=token();client={clientId,name,role:'player',seat,seatToken:seatTokenNew,seatTokenHash:tokenHash(seatTokenNew),ready:false,deckKey:null,customDeck:null,deckName:null,formation:null,connected:true,ws,lastActivityAt:Date.now()};room.players.set(clientId,client);
     }else{
@@ -354,7 +408,7 @@ wss.on('connection',(ws,req)=>{
       if(isGameplay)intentResult(client,{clientActionId:actionId,ok:false,code,message:String(err?.message||err),appliedRevision:room.authority?.revision||0});
       else fail(client,err?.message||err,code);
     }});
-    ws.on('close',()=>{if(client&&client.ws===ws){client.connected=false;client.ws=null;broadcast()}});
+    ws.on('close',()=>{if(client&&client.ws===ws){client.connected=false;client.disconnectedAt=Date.now();client.ws=null;broadcast()}});
     ws.on('error',()=>{});
   }catch(err){const code=err?.code||'CONNECT_REJECTED';send(ws,{type:'error',code,message:String(err?.message||err)});const closeCode=code==='CLIENT_BUILD_MISMATCH'?4003:code==='SEAT_TOKEN_MISMATCH'?4004:4001;const reason=code==='CLIENT_BUILD_MISMATCH'?'Client build mismatch':code==='SEAT_TOKEN_MISMATCH'?'Seat token mismatch':'Connection rejected';try{ws.close(closeCode,reason)}catch{}}
 });

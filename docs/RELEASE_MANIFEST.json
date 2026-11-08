@@ -1,27 +1,27 @@
 {
-  "release_id": "gl-s0-rc34-github-rc1-2026-11-08",
+  "release_id": "gl-s0-rc34-github-rc2-2026-11-08",
   "target_repo": "GrandisLegacyTCG/Grandis-Legacy-PvP-Trial",
-  "status": "GitHub/Docker staging deploy package; live full-game E2E not verified",
+  "status": "RC2 staging candidate; DL-01..DL-07 code regression local PASS; real two-browser game not verified",
   "s0_card_art_files": 248,
   "brotli_sidecars": 71,
   "rc34_donor_static_data_sha256": "fc7e1aa59a609ebe59f4456cdf9a1d81ed3ba28549992394f00b4b447df9bf7b",
   "static_definitions_match_rc34_donor": true,
   "sha256": {
     "README.md": {
-      "sha256": "38e12a099a3e062cb2068cdc9c700d122a765744fdc9f58813adfe13fd42ac89",
-      "bytes": 4801
+      "sha256": "51788e0b2ad67034df54e00997e729ade23079ee5342df9442a56ade713f1114",
+      "bytes": 5683
     },
     "package.json": {
-      "sha256": "e383a35ae4ec184ba73a3c610f975bdd0476fb69ae7fb1bc58a1b01156dac527",
-      "bytes": 1714
+      "sha256": "7111616bdc650272d3f463e4bc215ceb3f9eb011fa23fa70f5e67c43ee37722a",
+      "bytes": 2090
     },
     "Dockerfile": {
       "sha256": "81e6eb943ce5c4e2cc2ed8c58221822e08032763b37df27370b4da8a2367a6b7",
       "bytes": 613
     },
     "server.js": {
-      "sha256": "45dad7736f602a8acc37e354ea12d018797d215a46b1ca496bb6f90c6672c8a3",
-      "bytes": 28965
+      "sha256": "9ffa5a740ceb2288801285294266b1e364d49b5d6c98bd29e2cf0681c959b2b3",
+      "bytes": 32584
     },
     ".github/workflows/qa.yml": {
       "sha256": "9210524c39b42a4a5b6fc95728c38dca786fc1e74fd7dba1e873e25f1a7a16fa",
@@ -44,12 +44,12 @@
       "bytes": 39463
     },
     "public/battle/shared-app/app-runtime.js": {
-      "sha256": "885a15b66268784678ca74e6544d907bdea106990f6abe227425bd6ebfb043b8",
-      "bytes": 233004
+      "sha256": "ba26625fe7de246290eee4e8bef7a25a5c4af6a2beba80b70557189339b6fb27",
+      "bytes": 235462
     },
     "public/battle/engine/shared-app/app.bundle.js": {
-      "sha256": "94ecea75b8e1e5a3c512cd0cdf9c7487567b84d78363ea56bd23403bc2108838",
-      "bytes": 1673381
+      "sha256": "b2b5e50790e01fa358d98b3faf8740a3c00f05d46696ec825838080bcb86d2ad",
+      "bytes": 1675885
     },
     "public/battle/engine/js/static-data.js": {
       "sha256": "fc7e1aa59a609ebe59f4456cdf9a1d81ed3ba28549992394f00b4b447df9bf7b",
@@ -60,16 +60,59 @@
       "bytes": 4303201
     },
     "public/battle/runtime/pvp-network.js": {
-      "sha256": "205763c02f5f808bf396c7071e370472f7d9e8108d06dcbf99927575b2ee927d",
-      "bytes": 13051
+      "sha256": "b5dfbefc4ab82a03d5a4e16d5da0b54785873d452d0f647153e269addc3966c8",
+      "bytes": 14183
     },
     "server/viewer-safe.mjs": {
       "sha256": "a96117815d6d8584172f87d873e3cfc2ff7574b257ca33b1c6b2ec766c6bc736",
       "bytes": 7570
     },
     "server/headless-rc32.mjs": {
-      "sha256": "5b830eddb61dda3624a855a80ccaddcc890e4bcdad6ec7f9f08b6182d0732997",
-      "bytes": 12188
+      "sha256": "7e558d132ec8e9f7bda7d19e4d550f585472aba6aeb2f1e1d69ca773409c590a",
+      "bytes": 14363
+    },
+    "docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md": {
+      "sha256": "3cc82175667fb6ed05154ea4b9c755586ae9b515ac96c027ff6ce6bb3cdef7a5",
+      "bytes": 6659
+    },
+    "docs/RELEASE_NOTES_RC34_GITHUB_RC2_2026-11-08.md": {
+      "sha256": "5a2e90faf05e7e42e0c016fab91837ed4359d1fd1b992900e1052c9b83873cff",
+      "bytes": 2755
+    },
+    "docs/QA_STATUS_2026-11-08.md": {
+      "sha256": "51c559f57aa9be88457e3062333b7edc53e4b8c6b6716e870576e28783951577",
+      "bytes": 3334
+    },
+    "docs/GITHUB_DEPLOY_RC34.md": {
+      "sha256": "6419d4929c95dbd2d6825acb5cbdf62ccbd1f632d2e9bd3918a9138412d63ac3",
+      "bytes": 6997
+    },
+    "tests/rc34-deadlock-engine.mjs": {
+      "sha256": "754d4cd541864fe193730162dd78b2771d7079356d50107df2df7f2aaa982684",
+      "bytes": 5346
+    },
+    "tests/rc34-deadlock-ws.py": {
+      "sha256": "a3ebb40573c9fd1040a62e8fd19f0e9439755d94698d062a6fdd41a627d020bd",
+      "bytes": 6577
+    },
+    "tests/rc34-network-ack-race.mjs": {
+      "sha256": "742d4bf2c0cfdbdf209095a8ff3d41205263433cc43487bfbccd541f724653b0",
+      "bytes": 4124
+    },
+    "tests/rc34-opening-watchdog.mjs": {
+      "sha256": "d616d534268783f97b8adb8b06df8eb823a3fdf08bed71a165002f1db1b2c9c3",
+      "bytes": 2868
     }
-  }
+  },
+  "deadlock_fixes": [
+    "DL-01",
+    "DL-02",
+    "DL-03",
+    "DL-04",
+    "DL-05",
+    "DL-06",
+    "DL-07"
+  ],
+  "checks": "npm run check",
+  "release_notes": "docs/RELEASE_NOTES_RC34_GITHUB_RC2_2026-11-08.md"
 }

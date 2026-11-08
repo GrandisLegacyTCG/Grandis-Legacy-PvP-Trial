@@ -1,4 +1,4 @@
-# Cara deploy Grandis Legacy PvP Season 0 RC34 (GitHub RC1)
+# Cara deploy Grandis Legacy PvP Season 0 RC34 (GitHub RC2)
 
 ## 0. Tujuan dan batasan
 
@@ -34,14 +34,14 @@ Contoh untuk pengguna Git (di luar mesin pembuat paket):
 ```bash
 git clone https://github.com/GrandisLegacyTCG/Grandis-Legacy-PvP-Trial.git
 cd Grandis-Legacy-PvP-Trial
-git switch -c s0-rc34-github-rc1
+git switch -c s0-rc34-github-rc2
 # Hapus file tracked versi RC32 pada branch staging (direkam oleh Git).
 git rm -r -- .
 # Salin SELURUH ISI folder hasil ekstraksi RC34 ke folder ini,
 # termasuk .github/ dan file dotfiles, tetapi JANGAN copy folder .git lain.
 git add -A
-git commit -m "PvP S0 RC34 GitHub RC1 optimized staging"
-git push -u origin s0-rc34-github-rc1
+git commit -m "PvP S0 RC34 GitHub RC2 optimized staging"
+git push -u origin s0-rc34-github-rc2
 ```
 
 Jika memakai GitHub web upload, pertahankan hierarki direktori dan semua berkas. Untuk ratusan artwork lebih baik gunakan Git CLI/GitHub Desktop. GitHub upload web saja kurang cocok untuk struktur proyek besar. Jangan tanpa sengaja menghapus folder `.github` karena workflow otomatis bergantung padanya.
@@ -59,7 +59,7 @@ Masuk ke repo **PvP-Trial → Actions**. Workflow `Grandis Legacy PvP S0 RC34 - 
 
 ## 3. Host node/websocket di Northflank
 
-Di Northflank, buat **Combined Service** dari repo `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial` dan branch staging `s0-rc34-github-rc1`.
+Di Northflank, buat **Combined Service** dari repo `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial` dan branch staging `s0-rc34-github-rc2`.
 
 - **Build type:** Dockerfile, path root `/Dockerfile`, build context root.
 - **Port:** **3000 / HTTP / Public**. Endpoint WebSocket `/ws` melewati origin/port yang sama; browser memakai `wss://` di HTTPS.
@@ -75,7 +75,7 @@ Sumber panduan resmi: `https://northflank.com/docs/v1/application/getting-starte
 
 ## 4. Smoke test setelah deploy
 
-1. Buka `https://<subdomain-host>/health` dan pastikan `ok:true`, `buildId=gl-s0-rc34-github-rc1-2026-11-08`, serta `authoritySources` terisi.
+1. Buka `https://<subdomain-host>/health` dan pastikan `ok:true`, `buildId=gl-s0-rc34-github-rc2-2026-11-08`, serta `authoritySources` terisi.
 2. Buka `https://<subdomain-host>/` di **dua browser/profil independen**. Pastikan lobby PvP yang disetujui: artwork penuh, Import Deck emas di samping pilih deck, panel responsif.
 3. Pastikan dua pemain memiliki seat berbeda, memilih Starter, READY, lalu seat 1 START.
 4. Coin Flip konsisten di dua layar. Battlefield menampilkan tiga Hero sebelum enam pasang Opening Hand dan tiga Mana opening; Draw normal baru mengikuti aturan gilirannya.
@@ -94,3 +94,14 @@ Jika opening, Mana PAY, Response, status/rule, atau identitas private gagal, jan
 **Belum diverifikasi:** full match nyata dengan dua browser HTTP/HTTPS; klik UI Mana lengkap; performa hosting, puncak concurrent users; GitHub Actions Docker build; Northflank live WSS.
 
 Source disiapkan untuk **deployment percobaan**, bukan pernyataan bahwa game pasti bebas bug atau siap public release.
+
+## RC2 khusus: skenario deadlock wajib dites di hosting
+
+1. Selesai Coin Flip tanpa reload; sengaja tutup salah satu tab selama Coin Flip lalu pastikan room kembali ke lobby setelah grace, tidak memerlukan restart host. Uji RETURN TO LOBBY saat Coin Flip.
+2. Pemenang Coin Flip kedua arah: Mandatory Draw + Mana Regen selesai dan **Deploy aktif** tanpa klik NEXT saat Draw. Ulangi setelah beberapa kali End Turn.
+3. Saat Provoke aktif, pilih Mana yang diminta pada End dan pastikan End **langsung** diteruskan, tidak ada Mana Burn dua kali.
+4. Uji Surrender saat lawan sedang Response, sedang memilih Mana, dan saat animasi opening.
+5. Simulasikan koneksi melambat, reload, hilang/terlambatnya ACK tanpa membuka antrean aksi ganda.
+6. Pastikan pemain yang menunggu giliran tidak tiba-tiba kalah karena idle; uji putus koneksi saat giliran sendiri untuk melihat reconnect grace.
+
+Status QA berikut belum terpenuhi tanpa tes di host: **full-match dua browser dan mobile UX**. Dilarang memberi label FINAL sebelum lulus. Lihat `docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md`.

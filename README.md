@@ -1,6 +1,6 @@
-# Grandis Legacy PvP — Season 0 RC34 GitHub Release Candidate 1
+# Grandis Legacy PvP — Season 0 RC34 GitHub Release Candidate 2 (Deadlock Fix)
 
-**Kode build:** `gl-s0-rc34-github-rc1-2026-11-08`  
+**Kode build:** `gl-s0-rc34-github-rc2-2026-11-08`  
 **Tujuan repo:** `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial` (**bukan** repo Season 1)  
 **Status:** **siap sebagai source untuk push GitHub + deploy uji coba ke host Node/Docker**. Belum lulus QA pertandingan lengkap melalui dua browser di hosting publik; **bukan FINAL / production release**.
 
@@ -13,7 +13,7 @@
 | Game state, coin, RNG, giliran, Mana PAY, Response | **Server** Node.js, satu authoritative RC34 engine dan dua viewer-safe perspective. |
 | Artwork, animation, sound, optional BGM | **Browser**. BGM dapat dimatikan dan tidak dieksekusi engine server. |
 
-## Optimasi dan perbaikan RC34 GitHub RC1
+## Optimasi dan perbaikan RC34 GitHub RC1 + stabilitas RC2
 
 - Lobby tanpa engine Season 1 yang besar; Hero dan Formation Season 0 tetap penuh.
 - Mana Shard dipilih lokal, lalu satu konfirmasi **PAY atomik** berisi UID fisik yang divalidasi server; Response juga memakai transaksi final serupa.
@@ -22,6 +22,8 @@
 - Memulihkan musik **Tavern Quest.mp3** dan **8 ikon aksi Hero** dari donor RC34 yang hilang pada kandidat optimized sebelumnya.
 - ID tindakan unik per dokumen setelah refresh untuk mencegah salah ACK; data event publik Counter/Racial dipertahankan sementara kartu pribadi tetap ditutup.
 - Dockerfile Node 22 tanpa dependency runtime eksternal, health check, menjalankan user nonroot. GitHub Actions menjalankan regression, WebSocket QA, asset checks, dan Docker build.
+
+**RC2 deadlock/liveness:** server auto Draw -> Deploy setelah wajib Draw/Regen selesai; Provoke End langsung lanjut setelah pilihan Mana; Coin Flip punya tombol batal dan timeout/reconnect recovery; Surrender tetap tersedia saat keputusan lawan; opening watchdog 12 detik; ACK dicocokkan per action ID; idle timeout hanya berlaku untuk pemilik keputusan aktif. Juga memperbaiki pemetaan bookkeeping Provoke/End saat Seat 2. Detail bukti dan batasan ada di `docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md`.
 
 **Tidak ada fitur kartu, status, artwork, atau aturan yang sengaja dipangkas.** Optimasi ini tidak membuktikan peningkatan FPS/latency pada hosting; itu harus diukur saat tes dua pemain.
 
@@ -48,7 +50,9 @@ npm run check
 
 **Baca `docs/GITHUB_DEPLOY_RC34.md` sebelum upload.** Ekstrak ZIP lalu upload **semua isi folder proyek ke root repo**, termasuk folder tersembunyi `.github/workflows/`. **Jangan upload ZIP sebagai satu file di repo.** GitHub Pages adalah static hosting dan tidak menjalankan Node.js/WebSocket server; gunakan GitHub sebagai sumber code dan Northflank Combined Service (Dockerfile root, HTTP port 3000, satu instance) untuk tes multiplayer. Tidak ada push GitHub yang dilakukan oleh pembuat paket.
 
-## Hasil QA saat pembuatan paket
+## Hasil QA saat pembuatan paket RC2
+
+`npm run check` kini juga menjalankan `test:deadlock-engine`, `test:deadlock-ws`, `test:ack-race` dan `test:opening-watchdog`, selain seluruh tes RC1. Semua lolos pada pemeriksaan lokal terkontrol. **Ini belum menyatakan bug visual/mobile sebelumnya selesai atau full browser match sudah PASS.**
 
 `npm run check` lulus (pemeriksaan sintaks, lobby shell, lima starter Season 0, **20/20** regression engine RC34, Mana PAY + duplicate UID rejection, dua seat WebSocket/coin/first action, privasi spectator, HTTP Brotli/gzip/cache, delapan ikon dan 248 artwork, ID unik setelah reload, seat 2 Attack → PAY → Response PASS → damage). Ini **bukan** pengganti game lengkap melalui dua browser sungguhan.
 
@@ -56,4 +60,4 @@ npm run check
 
 **Batas arsitektur:** server hanya mengelola **satu room/match in-memory** dan **satu container instance**. Restart menghilangkan state match aktif; scale horizontal tanpa shared state **belum didukung**. Ini deploy **uji coba**, belum sistem public multiparty skala besar.
 
-Dokumen tambahan: `docs/GITHUB_DEPLOY_RC34.md`, `docs/QA_STATUS_2026-11-08.md`, screenshot layout di `docs/`; catatan RC32 lama disimpan di `docs/archive_rc32/` dan **tidak** menggambarkan RC34 terkini.
+Dokumen tambahan: `docs/RC34_RC2_DEADLOCK_FIXES_2026-11-08.md`, `docs/GITHUB_DEPLOY_RC34.md`, `docs/QA_STATUS_2026-11-08.md`, screenshot layout di `docs/`; catatan RC32 lama disimpan di `docs/archive_rc32/` dan **tidak** menggambarkan RC34 terkini.
