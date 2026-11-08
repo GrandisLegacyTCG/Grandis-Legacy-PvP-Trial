@@ -8,13 +8,50 @@
  * The server remains authoritative for coin RNG, state and both players.
  */
 const bridge=window.GL_LOCAL_AI_BRIDGE,engine=window.GL_GAME_ENGINE,registry=window.GL_AUTHORITY_ADAPTER;
-if(!bridge||!engine||!registry)throw Error('Season 0 RC32 game runtime is unavailable.');
+if(!bridge||!engine||!registry)throw Error('Season 0 RC34 game runtime is unavailable.');
 const native=Object.create(engine);
 const SESSION={client:'grandis_legacy_pvp_v3801_tab_client_id',seat:'grandis_legacy_pvp_v3801_tab_seat_token',role:'grandis_legacy_pvp_v3801_tab_role'};
 const state={ws:null,snapshot:null,seat:null,role:'player',status:'connecting',revision:0,inflight:false,queue:[],seq:0,connected:false,pendingTimeout:null,reconnectTimer:null,disconnects:0,clientId:'',name:'',lastCoinChoiceKey:''};
 const meta=window.GL_PVP_BUILD_META||{};
 const BUILD_ID=String(meta.buildId||'');
+// Unique to this document, including after reload. The server stores recently
+// acknowledged ids to make retries safe; never reuse an id across page loads.
+const ACTION_NONCE=(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
 const clone=v=>v==null?v:JSON.parse(JSON.stringify(v));
+const LOCAL_MANA_ACTIONS=new Set(['toggleManaShardPaymentChoice','toggleResponseManaShardChoice','toggleManaPaymentSurgeChoice']);
+function pvpIntentError(message){
+  try{window.dispatchEvent(new CustomEvent('gl-pvp-intent-error',{detail:{message:String(message||'Action rejected.')}}))}catch{}
+}
+function updateLocalManaDraft(name,args){
+  if(state.inflight||state.queue.length)return {ok:false,error:'Wait for the server action to complete.'};
+  const current=bridge.getSnapshot?.()?.appState?.pending;
+  const expected=name==='toggleResponseManaShardChoice'?'response_payment_choice':'mana_shard_payment_choice';
+  if(!current||current.type!==expected||current.decision_side!=='PLAYER')return {ok:false,error:'No local Mana Payment decision is available.'};
+  // This runs ONLY the exact already-existing RC34 pending-choice selector in
+  // the disposable browser copy. It never modifies server Hand/Mana/HP/turn.
+  const result=bridge.applyServerIntent(name,clone(args));
+  if(!result?.ok)return {ok:false,error:String(result?.error||'Mana choice rejected.')};
+  window.GL_GAME_UI?.render?.();
+  return {ok:true,local:true};
+}
+function toAtomicPayment(name,args){
+  if(name!=='commitManaShardPaymentChoice'&&name!=='commitResponsePaymentChoice')return {name,args};
+  // A 0-Mana Response can still have an additional mandatory discard. Keep
+  // its original server-only confirmation; there are no Mana Shard choices.
+  if(name==='commitResponsePaymentChoice'&&Number(state.snapshot?.appState?.pending?.mana_cost||0)===0)return {name,args};
+  const info=engine.getManaPlan?.()||null;
+  const pending=info?.pending;
+  const correct=name==='commitResponsePaymentChoice'?'response_payment_choice':'mana_shard_payment_choice';
+  if(!pending||pending.type!==correct||pending.decision_side!=='PLAYER'||!info.plan?.ok)return {error:'Invalid Mana Payment selection.'};
+  const selected=info.plan.selected_shard_uids || (info.plan.shards||[]).map(sh=>sh.uid);
+  if(!Array.isArray(selected))return {error:'Mana Payment requires physical Shard selections.'};
+  if(name==='commitManaShardPaymentChoice'){
+    const surge=info.surge;
+    return {name:'commitExactManaPaymentChoice',args:[selected.map(String),!!surge?.selected,surge?.selected?String(surge.surge_mana_uid||''):null]};
+  }
+  return {name:'commitExactResponsePaymentChoice',args:[selected.map(String)]};
+}
+
 function session(key){try{return sessionStorage.getItem(SESSION[key])||''}catch{return''}}
 function showError(message){
   let banner=document.getElementById('pvpS0ConnectionNotice');if(!banner){banner=document.createElement('div');banner.id='pvpS0ConnectionNotice';banner.style.cssText='position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:100000;padding:12px 20px;background:#14263b;color:#ffdc85;border:1px solid #d5aa48;border-radius:8px;font:600 13px sans-serif;max-width:90vw;text-align:center';document.body.appendChild(banner)}
@@ -27,10 +64,14 @@ function action(name,args=[]){
  if(!['started','finished'].includes(state.status)||state.role==='spectator')return {ok:false,error:'Not permitted to act.'};
  if(state.status==='finished'&&name!=='executeConfirmedSurrender')return {ok:false,error:'The match has finished.'};
  if(!state.connected)return {ok:false,error:'Connection unavailable.'};
+ if(window.GL_GAME_UI?.openingBusy?.())return {ok:false,error:'Opening animation is still in progress.'};
+ if(LOCAL_MANA_ACTIONS.has(name))return updateLocalManaDraft(name,args);
  if(state.inflight){if(state.queue.length>=4)return {ok:false,error:'Too many pending actions.'};state.queue.push({name,args:clone(args)});return {ok:true,queued:true}}
  return dispatch(name,args);
 }
 function dispatch(name,args=[]){
+ const payment=toAtomicPayment(name,args);if(payment.error)return {ok:false,error:payment.error};
+ name=payment.name;args=payment.args;
  const s=state.snapshot?.appState;
  if(s?.pending){const who=s.pending.decision_side||s.pending.response_owner||s.pending.side||s.pending.source_side;
    if(who&&who!=='PLAYER')return {ok:false,error:'Opponent decision pending.'}}
@@ -40,7 +81,7 @@ function dispatch(name,args=[]){
    const c=s?.pending?.candidates?.[Number(args?.[0])];if(!c?.choice_handle)return {ok:false,error:'Blind Mana choice unavailable.'};
    name='selectOpponentManaChoiceHandle';args=[c.choice_handle,state.revision];
  }
- const id=state.clientId+'.s0.'+(++state.seq);
+ const id=state.clientId+'.s0.'+ACTION_NONCE+'.'+(++state.seq);
  if(!send('runtime-intent',{clientActionId:id,baseRevision:state.revision,intent:name,args:clone(args)}))return {ok:false,error:'WebSocket unavailable.'};
  state.inflight=true;armTimeout();return {ok:true,pending:true};
 }
@@ -50,7 +91,7 @@ registry.register('s0-pvp',{mode:'PVP',engine:()=>native,bridge:()=>bridge});
 registry.use('s0-pvp');
 window.GL_PVP_SHARED_BOARD_ACTIVE=true;
 window.GL_PVP_LOCAL_ROLE='player';
-function update(snap){
+function update(snap,{force=false}={}){
  const m=snap?.match||{},me=snap?.local||{};
  state.status=m.status||'setup';state.role=me.role||'spectator';state.seat=me.seat||null;
  if(state.status==='setup'){location.replace('/');return}
@@ -75,10 +116,17 @@ function update(snap){
    const recipient=state.role==='player'?Number(state.seat):1;
    if(!board.pvpPrivateStateMasked||Number(board.pvpRecipientSeat)!==recipient){showError('Refusing unsafe battle snapshot.');return}
    if(Number(m.revision)<state.revision)return;
+   if(!force&&Number(m.revision)===state.revision&&state.snapshot)return;
    state.revision=Number(m.revision||0);state.snapshot=board;
    window.GL_PVP_LOCAL_SEAT=state.seat;
    window.GL_PVP_LOCAL_ROLE=state.role;
-   try{bridge.importSnapshot(board,{skipImportAnimations:true});window.GL_GAME_UI?.render?.();clearError()}
+   try{
+     bridge.importSnapshot(board,{skipImportAnimations:true});window.GL_GAME_UI?.render?.();clearError();
+     if(!state.pvpOpeningShown&&state.role==='player'&&state.status==='started'&&Number(m.revision)===2){
+       state.pvpOpeningShown=true;
+       window.GL_GAME_UI?.playPvPOpening?.();
+     }
+   }
    catch(e){showError('Battlefield synchronization failed: '+String(e.message||e))}
  }
  if(state.role==='spectator'){
@@ -96,23 +144,23 @@ function connect(){
  const clientId=session('client'),seatToken=session('seat');state.clientId=clientId;
  if(!clientId){location.replace('/');return}
  const role=session('role')||'player';state.role=role;
- state.name=localStorage.getItem('grandis_legacy_pvp_v380_name')||'Player';
+ state.name=localStorage.getItem('grandis_legacy_pvp_s0_v380_name')||localStorage.getItem('grandis_legacy_pvp_v380_name')||'Player';
  const qs=new URLSearchParams({client:clientId,name:state.name,role,buildId:BUILD_ID});if(seatToken)qs.set('seatToken',seatToken);
  const ws=new WebSocket((location.protocol==='https:'?'wss:':'ws:')+'//'+location.host+'/ws?'+qs);
  state.ws=ws;
  ws.onopen=()=>{if(ws!==state.ws)return;state.connected=true;state.disconnects=0;send('resync')};
  ws.onmessage=ev=>{if(ws!==state.ws)return;let msg;try{msg=JSON.parse(ev.data)}catch{return}
-   if(msg.type==='snapshot')update(msg);
+   if(msg.type==='snapshot')update(msg,{force:!!msg.forceImport});
    else if(msg.type==='intent-result'){
      clearTimeout(state.pendingTimeout);state.inflight=false;
-     if(msg.snapshot)update(msg.snapshot);
-     if(!msg.ok){state.queue.length=0;showError(msg.message||'Action rejected.')}else queueNext();
+     if(msg.snapshot)update(msg.snapshot,{force:!msg.ok});
+     if(!msg.ok){state.queue.length=0;pvpIntentError(msg.message);showError(msg.message||'Action rejected.')}else queueNext();
    }else if(msg.type==='error'){
      clearTimeout(state.pendingTimeout);state.inflight=false;state.queue.length=0;
-     if(msg.snapshot)update(msg.snapshot);showError(msg.message||'Server rejected action.');
+     if(msg.snapshot)update(msg.snapshot,{force:true});pvpIntentError(msg.message);showError(msg.message||'Server rejected action.');
    }else if(msg.type==='idle-timeout')showError(msg.message||'Timed out.');
  };
- ws.onclose=ev=>{if(ws!==state.ws)return;state.connected=false;state.inflight=false;clearTimeout(state.pendingTimeout);state.queue.length=0;
+ ws.onclose=ev=>{if(ws!==state.ws)return;pvpIntentError('Connection lost.');state.connected=false;state.inflight=false;clearTimeout(state.pendingTimeout);state.queue.length=0;
    if(ev.code===4003){showError('Server/client version mismatch. Refresh the app.');return}
    if(ev.code===4004||ev.code===4006){showError('Your seat session was replaced. Return to lobby to reconnect.');return}
    showError('Connection lost. Reconnecting…');const delay=Math.min(10000,800*Math.pow(1.5,Math.min(5,++state.disconnects)));
@@ -120,7 +168,18 @@ function connect(){
  };
  ws.onerror=()=>{};
 }
+// A visible player watching the opponent remains present without sending
+// gameplay intents. Do not keep a hidden/abandoned tab alive indefinitely.
+let lastInputActivity=0;
+function reportActivity(){
+  const n=Date.now();if(n-lastInputActivity<12000)return;lastInputActivity=n;
+  if(state.connected)send('activity');
+}
+for(const type of ['pointerdown','keydown','touchstart'])document.addEventListener(type,reportActivity,{passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reportActivity()});
+setInterval(()=>{if(document.visibilityState!=='hidden'&&state.connected)send('activity')},25000);
 window.GL_S0_PVP_NETWORK={state,connect,sendIntent:action};
+
 window.GL_PVP_HOST={getSnapshot:()=>state.snapshot,sendIntent:action,identity:()=>({seat:state.seat,role:state.role,localConnected:state.connected}),returnToLobby:()=>send('return-to-lobby'),chooseCoin:choice=>send('choose-coin-flip',{choice}),coinPresented:()=>send('coin-presented'),confirmCoin:()=>send('confirm-coin-flip')};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',connect);else connect();
 })();

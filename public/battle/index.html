@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Grandis Legacy — Season 0 Battlefield (RC32)</title>
+<title>Grandis Legacy — Season 0 Battlefield (RC34 PvP Optimized)</title>
 <link rel="icon" type="image/png" sizes="120x120" href="engine/assets/favicon.png">
 
 
@@ -223,6 +223,19 @@ button{font:inherit}
   .played{column-gap:5px;row-gap:5px}
 }
 
+/* Part 5 asset staging: compact sound popover expands upward from the existing sidebar slot. */
+.bottom-actions .gl-sound-control{position:relative;min-width:0;z-index:450}
+.bottom-actions .gl-sound-control>button{display:block;width:100%;height:22px;cursor:pointer}
+.gl-sound-panel{position:absolute;z-index:451;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:158px;display:flex;flex-direction:column;gap:2px;padding:8px;border:1px solid #bd9a45;border-radius:9px;background:rgba(6,17,28,.98);box-shadow:0 8px 24px rgba(0,0,0,.72)}
+.gl-sound-panel[hidden]{display:none!important}
+.gl-sound-row{display:flex;align-items:center;justify-content:space-between;min-height:33px;gap:10px;padding:3px 5px;color:#f3e1a8;font-size:11px;font-weight:800;line-height:1.2;cursor:pointer}
+.gl-sound-row input{position:absolute;width:1px;height:1px;opacity:0}
+.gl-sound-switch-track{position:relative;display:block;width:32px;height:18px;flex:0 0 32px;border-radius:20px;border:1px solid #566577;background:#25323e;transition:background .14s}
+.gl-sound-switch-track::after{content:"";position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#e4e9f1;transition:transform .14s}
+.gl-sound-row input:checked+.gl-sound-switch-track{background:#b1933c;border-color:#e6ce72}
+.gl-sound-row input:checked+.gl-sound-switch-track::after{transform:translateX(14px);background:#fff4cb}
+.gl-sound-row input:focus-visible+.gl-sound-switch-track{outline:2px solid #fff;outline-offset:2px}
+
 </style>
 
 <style id="gl-responsive-stage">
@@ -356,7 +369,7 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
       <button class="battle-log-btn" id="battleLogBtn" type="button">Battle Log</button>
       <div class="preview-overlay"><img id="hoverPreviewCard" class="preview-card" alt="Card preview"></div>
     </section>
-    <div class="bottom-actions"><span class="match-timer" id="matchTimer" aria-label="Match time">00:00</span><button>Sound On</button><button type="button" id="matchActionButton" class="danger">Surrender</button></div>
+    <div class="bottom-actions"><span class="match-timer" id="matchTimer" aria-label="Match time">00:00</span><div class="gl-sound-control" id="glSoundControl"><button type="button" id="glSoundButton" aria-haspopup="true" aria-expanded="false" aria-controls="glSoundPanel">Sound</button><div class="gl-sound-panel" id="glSoundPanel" hidden><label class="gl-sound-row"><span>Music</span><input type="checkbox" id="glMusicSwitch" role="switch" aria-label="Background music"><span class="gl-sound-switch-track" aria-hidden="true"></span></label><label class="gl-sound-row"><span>SFX</span><input type="checkbox" id="glSfxSwitch" role="switch" aria-label="Sound effects" checked><span class="gl-sound-switch-track" aria-hidden="true"></span></label></div></div><button type="button" id="matchActionButton" class="danger">Surrender</button></div>
     <section class="battlelog-panel" id="battleLogPanel" aria-hidden="true"><div class="history-head"><h3>Battle Log</h3><button class="history-close" id="battleLogClose" type="button">Close</button></div></section>
     <section class="history-panel" id="historyPanel" aria-hidden="true"><div class="history-head"><h3>Full Card History</h3><button class="history-close" id="historyClose" type="button">Close</button></div><div class="history-grid"></div></section>
   </aside>

@@ -1,6 +1,6 @@
 {
-  "name": "grandis-legacy-pvp-s0-s1-lifecycle-staging",
-  "version": "0.0.0-bridge-staging",
+  "name": "grandis-legacy-pvp-s0-rc34-github-release-candidate",
+  "version": "1.0.0-rc34-github-rc1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,13 +8,22 @@
     "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js",
     "test:transition": "npm run test:ws-gate",
     "check:parity": "node tests/s1-source-parity.mjs",
-    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:ws-gate",
+    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment",
     "test:s0-catalog": "npm run check:catalog",
     "check:catalog": "node tests/s0-catalog-static.mjs",
     "test:ws-gate": "python3 tests/ws-gate.py",
-    "test:lobby-init": "node tests/lobby-init.mjs"
+    "test:lobby-init": "node tests/lobby-init.mjs",
+    "test:rc34-rules": "node tests/rc34-engine-regression.cjs",
+    "test:atomic-mana": "node tests/rc34-atomic-mana.cjs",
+    "test:http": "node tests/http-static.mjs",
+    "build:precompress": "node scripts/precompress-static.mjs",
+    "test:privacy": "node tests/privacy-presentation.mjs",
+    "test:ids": "node tests/intent-id-uniqueness.mjs",
+    "test:assets": "node tests/asset-integrity.mjs",
+    "test:seat2-payment": "node tests/rc34-seat2-payment-response.mjs"
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "description": "Grandis Legacy PvP Season 0 RC34 server-authoritative single-room multiplayer release candidate"
 }

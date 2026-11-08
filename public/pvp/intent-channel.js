@@ -17,13 +17,14 @@ function create(opts={}){
   const clearT=typeof opts.clearTimeout==='function'?opts.clearTimeout:clearTimeout;
   const timeoutMs=Math.max(1000,Number(opts.timeoutMs||6000));
   let active=null,timer=null,sequence=0;
+  const actionNonce=(globalThis.crypto?.randomUUID?.()||now().toString(36)+'-'+Math.random().toString(36).slice(2));
 
   function clearTimer(){if(timer){clearT(timer);timer=null}}
   function makeId(name,base){
     sequence=(sequence+1)%1000000000;
     const client=String(opts.clientId?.()||'client');
     const clean=String(name||'action').replace(/[^A-Za-z0-9_.:-]/g,'').slice(0,48)||'action';
-    return client+'.'+String(base||0)+'.'+String(sequence)+'.'+clean;
+    return client+'.'+actionNonce+'.'+String(base||0)+'.'+String(sequence)+'.'+clean;
   }
   function finish(reason,error=''){
     const prev=active;active=null;clearTimer();

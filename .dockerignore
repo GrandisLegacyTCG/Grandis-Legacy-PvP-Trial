@@ -1,5 +1,12 @@
-node_modules
 .git
+.github
+.gitignore
+node_modules
+.env
 *.log
 .DS_Store
 tests
+scripts
+docs
+__pycache__
+*.zip

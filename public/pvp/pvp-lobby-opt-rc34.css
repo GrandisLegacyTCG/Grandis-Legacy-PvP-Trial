@@ -1,0 +1,211 @@
+/* Preview visual correction: faithful PvP S1 v3.80.17 lobby shell.
+   Season 0 provides Hero artwork and starter data ONLY. No VS AI lobby is reused. */
+html,body{margin:0;min-width:0;min-height:100%;background:#070e17;color:#f5f7fb}
+body{overflow:auto}
+.pvp-v260-lobby{position:relative;display:block;inset:auto;min-height:100dvh;overflow:visible;background-attachment:scroll}
+.pvp-v260-page{max-width:1600px;min-height:100dvh;margin:auto;}
+.pvp-v260-formation{width:100%;grid-template-columns:minmax(0,1fr) 27px minmax(0,1fr) 27px minmax(0,1fr);align-items:center}
+.pvp-v260-formation-wrap{max-width:760px}
+.pvp-v260-hero{max-width:230px;min-width:0;width:100%;padding:8px 8px 8px;border:1px solid rgba(150,183,203,.18);transition:box-shadow .16s ease,border-color .16s ease}
+.pvp-v260-hero:hover{border-color:#dcbf68;box-shadow:0 0 0 1px rgba(241,212,129,.2),0 14px 24px rgba(0,0,0,.3)}
+.pvp-v260-card{width:100%;padding:0;display:block;border-radius:7px;background:#0a111b;border:1px solid rgba(255,255,255,.1);cursor:pointer}
+.pvp-v260-card img{display:block;width:100%;height:auto!important;aspect-ratio:320/448;object-fit:cover;border-radius:6px;image-rendering:auto}
+.pvp-v260-position{font-size:13px;padding-top:7px;margin:0}
+.pvp-v260-swap-button{width:27px!important;height:27px!important;border:0;background:transparent;box-shadow:none}
+.pvp-v260-swap-button img{height:27px;width:27px;object-fit:contain;pointer-events:none}
+.pvp-v260-summary{min-height:270px}
+.pvp-v260-seat{cursor:default}
+.pvp-v260-seat.preview-seat{cursor:pointer}
+.pvp-v260-seat.preview-seat:hover{box-shadow:0 0 0 1px rgba(241,212,129,.28)}
+.pvp-v260-name-icon.ready{display:grid}
+#pvpLoadedDeckStatus{max-width:360px}
+#previewToast{position:fixed;z-index:10060;right:18px;bottom:14px;padding:12px 16px;border:1px solid rgba(241,212,129,.65);border-radius:10px;background:rgba(3,9,16,.97);color:#f1d481;font:600 12px system-ui;max-width:min(440px,90vw);opacity:0;pointer-events:none;transform:translateY(10px);transition:.2s ease}
+#previewToast.show{opacity:1;transform:none}
+
+.pvp-progression-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.82);z-index:10050}
+.pvp-progression-modal[hidden]{display:none!important}
+@media(min-width:1180px){
+ .pvp-v260-page{padding:16px 34px 20px}
+ .pvp-v260-deck-panel{padding:18px 24px}
+ .pvp-v260-title{margin-top:14px}
+ .pvp-v260-showcase{margin-top:16px;grid-template-columns:minmax(0,1fr) 200px}
+ .pvp-v260-formation-wrap{max-width:760px}
+ .pvp-v260-summary{min-height:300px}
+ .pvp-v260-room-panel{padding:20px 20px 16px}
+}
+@media(max-width:1160px){
+ .pvp-v260-page{padding:15px 18px 20px;min-height:100dvh}
+ .pvp-v260-topbar{grid-template-columns:170px 1fr}
+ .pvp-v260-logo{width:160px;height:54px}
+ .pvp-v260-layout{grid-template-columns:minmax(0,1fr) 300px;gap:12px}
+ .pvp-v260-deck-panel{padding:14px}
+ .pvp-v260-showcase{grid-template-columns:minmax(0,1fr) 172px;gap:10px}
+ .pvp-v260-summary{padding:10px}
+ .pvp-v260-summary dl>div{font-size:11px;min-height:24px}
+ .pvp-v260-hero{padding:6px}
+ .pvp-v260-position{font-size:11px;padding-top:5px}
+ .pvp-v260-room-panel{padding:16px}
+}
+@media(max-width:880px){
+ .pvp-v260-page{padding:16px 12px 24px}
+ .pvp-v260-layout{grid-template-columns:1fr}
+ .pvp-v260-showcase{grid-template-columns:minmax(0,1fr) 180px}
+ .pvp-v260-summary{min-height:250px}
+ .pvp-v260-room-panel{gap:4px}
+ .pvp-v260-room-footer{margin-top:8px}
+ .pvp-v260-topbar{display:flex;flex-wrap:wrap;gap:10px}
+}
+@media(max-width:560px){
+ .pvp-v260-page{padding:12px 10px 25px}
+ .pvp-v260-logo{width:145px;height:49px;flex:0 0 145px}
+ .pvp-v260-heading h1{font-size:15px}
+ .pvp-v260-heading p{font-size:11px}
+ .pvp-v260-deck-panel{padding:14px 10px}
+ .pvp-v260-picker{grid-template-columns:1fr;gap:7px}
+ .pvp-v260-picker>label{font-size:14px}
+ .pvp-v260-title h2{font-size:23px}
+ .pvp-v260-title p{font-size:11px}
+ .pvp-v260-showcase{display:block}
+ .pvp-v260-formation-wrap{max-width:100%}
+ .pvp-v260-formation{grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr) 22px minmax(0,1fr);gap:3px}
+ .pvp-v260-swap-button,.pvp-v260-swap-button img{width:22px!important;height:22px!important}
+ .pvp-v260-hero{padding:4px;border-radius:7px}
+ .pvp-v260-card{border-radius:5px}
+ .pvp-v260-position{font-size:10px;padding-top:4px}
+ .pvp-v260-summary{margin-top:12px;min-height:0}
+ .pvp-v260-summary dl{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}
+ .pvp-v260-footer{flex-wrap:wrap;gap:9px}
+ .pvp-v260-footer .pvp-v260-btn{width:100%}
+ .pvp-v260-title{display:block}
+ .pvp-v260-title p{margin-top:6px}
+ .pvp-v260-room-panel{padding:16px}
+ .pvp-v260-actions{grid-template-columns:1fr 1fr}
+ .pvp-progression-card{padding:10px!important}
+}
+
+
+/* Lobby-only revision: import belongs to the deck selector, never at panel bottom. */
+.pvp-v260-picker{grid-template-columns:142px minmax(0,1fr) 176px;gap:12px;align-items:center}
+.pvp-v260-picker>label{min-width:0}
+.pvp-v260-import-area{min-width:0;align-self:stretch;display:flex;align-items:center}
+.pvp-v260-import-button{width:100%;min-width:0;min-height:48px;padding:0 13px;gap:9px;border:1px solid #d6b966;border-radius:12px;background:linear-gradient(180deg,rgba(241,212,129,.095),rgba(241,212,129,.018));color:#f3d889;box-shadow:inset 0 1px 0 rgba(241,212,129,.11);font-size:12px;line-height:1.1;font-weight:900;letter-spacing:.045em;white-space:nowrap}
+.pvp-v260-import-button svg{width:17px;height:17px;flex:0 0 17px}
+.pvp-v260-import-button:hover:not(:disabled){border-color:#ffe6a2;background:rgba(241,212,129,.16)}
+.pvp-v260-import-button:focus-visible{outline:3px solid rgba(241,212,129,.42);outline-offset:3px}
+.pvp-v260-import-status{margin:8px 0 0 154px;color:#96dfaa;font-size:11px;line-height:1.35;font-weight:850}
+.pvp-v260-import-status:empty{display:none}
+@media(max-width:1050px){
+ .pvp-v260-picker{grid-template-columns:minmax(0,1fr) 176px;grid-template-areas:'label label' 'select import';column-gap:10px;row-gap:7px}
+ .pvp-v260-picker>label{grid-area:label;font-size:15px}
+ .pvp-v260-select{grid-area:select;min-width:0}
+ .pvp-v260-import-area{grid-area:import}
+ .pvp-v260-import-status{margin-left:0}
+}
+@media(max-width:560px){
+ .pvp-v260-picker{grid-template-columns:minmax(0,1fr);grid-template-areas:'label' 'select' 'import';row-gap:8px}
+ .pvp-v260-import-button{width:100%;min-height:44px;justify-content:center}
+ .pvp-v260-import-area{width:100%}
+ .pvp-v260-import-status{margin-top:7px}
+}
+
+
+/* Gold CTA + adaptive panel height: lobby UI preview v3.
+   Import uses the exact READY gradient; desktop panels wrap their content,
+   rather than stretching a full-viewport shell and leaving blank space below. */
+.pvp-v260-lobby .pvp-v260-import-button {
+  color:#11151c;
+  border-color:#f4d87e;
+  background:linear-gradient(180deg,#f5dc91 0%,#c49b43 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42), 0 2px 8px rgba(0,0,0,.18);
+  text-shadow:none;
+}
+.pvp-v260-lobby .pvp-v260-import-button:hover:not(:disabled) {
+  filter:brightness(1.08);
+  border-color:#f4d87e;
+  background:linear-gradient(180deg,#f5dc91 0%,#c49b43 100%);
+}
+.pvp-v260-lobby .pvp-v260-import-button svg { stroke:#11151c; }
+.pvp-v260-lobby .pvp-v260-page {
+  min-height:0;
+  height:auto;
+}
+.pvp-v260-lobby .pvp-v260-layout {
+  flex:0 0 auto;
+  min-height:0;
+  align-items:stretch;
+}
+.pvp-v260-lobby .pvp-v260-panel { min-height:0; }
+.pvp-v260-lobby .pvp-v260-room-footer { margin-top:auto; }
+/* On smaller viewports, avoid reserving empty vertical space for panels. */
+@media (max-width:880px) {
+  .pvp-v260-lobby .pvp-v260-layout { grid-template-columns:minmax(0,1fr); }
+  .pvp-v260-lobby .pvp-v260-room-panel { min-height:0; }
+  .pvp-v260-lobby .pvp-v260-room-footer { margin-top:16px; }
+}
+@media (min-width:881px) and (max-height:760px) {
+  .pvp-v260-lobby .pvp-v260-page { padding-top:10px; padding-bottom:10px; }
+  .pvp-v260-lobby .pvp-v260-topbar { min-height:51px; margin-bottom:7px; }
+  .pvp-v260-lobby .pvp-v260-logo { height:51px; }
+  .pvp-v260-lobby .pvp-v260-deck-panel { padding-top:12px; padding-bottom:12px; }
+  .pvp-v260-lobby .pvp-v260-title { margin-top:12px; }
+  .pvp-v260-lobby .pvp-v260-showcase { margin-top:12px; }
+  .pvp-v260-lobby .rank-control { margin-top:7px; }
+  .pvp-v260-lobby .pvp-v260-room-panel { padding-top:15px; padding-bottom:12px; }
+  .pvp-v260-lobby .pvp-v260-room-panel > h2 { margin-bottom:10px; }
+}
+@media (max-width:560px) {
+  .pvp-v260-lobby .pvp-v260-page { padding-bottom:12px; }
+  .pvp-v260-lobby .pvp-v260-picker { row-gap:7px; }
+  .pvp-v260-lobby .pvp-v260-import-button { min-height:44px; }
+  .pvp-v260-lobby .pvp-v260-title { margin-top:14px; }
+  .pvp-v260-lobby .pvp-v260-showcase { margin-top:12px; }
+}
+
+/* Production formation card markup is sourced from the live Season 0 lobby. */
+html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;position:static!important;transform:none!important}
+#pvpSetupOverlay.pvp-v260-lobby{position:relative!important;inset:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important;display:block!important;z-index:20000!important}
+#pvpSetupOverlay.pvp-v260-lobby:not(.open){display:none!important}
+#pvpSetupOverlay .pvp-v260-page{min-height:0!important;max-width:1600px!important;margin:auto!important;transform:none!important;height:auto!important}
+#pvpSetupOverlay .pvp-v260-layout{flex:0 0 auto!important;min-height:0!important}
+#pvpSetupOverlay .pvp-v260-panel{min-height:0!important}
+body> .app, .gl-engine-host{display:none!important}
+#pvpSetupOverlay #pvpFormationPreview{display:grid!important;grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr) 25px minmax(0,1fr)!important;gap:5px!important;align-items:center!important;width:100%!important;max-width:760px}
+#pvpSetupOverlay .formation-card{min-width:0!important;width:100%!important;max-width:230px!important;padding:7px!important;border:1px solid rgba(150,183,203,.18)!important;border-radius:11px!important;background:linear-gradient(180deg,#1c3040,#1a2b39)!important;box-shadow:0 10px 20px rgba(0,0,0,.18)!important;overflow:hidden!important;gap:4px!important}
+#pvpSetupOverlay .formation-card>button{display:block!important;width:100%!important;padding:0!important;margin:0!important;cursor:pointer!important}
+#pvpSetupOverlay .formation-card img{display:block!important;width:100%!important;height:auto!important;max-height:none!important;aspect-ratio:320/448!important;object-fit:cover!important;border-radius:6px!important;image-rendering:auto!important}
+#pvpSetupOverlay .formation-position{font-size:13px!important;line-height:1.2!important;padding-top:4px!important;color:var(--pvp-gold)!important}
+#pvpSetupOverlay .vsai-v643-swap-button{width:25px!important;height:25px!important;padding:0!important}
+#pvpSetupOverlay .vsai-v643-swap-button img{width:25px!important;height:25px!important}
+#pvpSetupOverlay .vsai-v643-rank-control{margin:10px auto 0!important}
+#pvpSetupOverlay .pvp-v260-import-button{font-family:"Noto Sans",sans-serif!important;font-size:12px!important;font-weight:900!important;color:#11151c!important;background:linear-gradient(180deg,#f5dc91,#c49b43)!important;min-height:48px!important;white-space:nowrap}
+#pvpSetupOverlay .pvp-v260-summary{min-height:0!important}
+#pvpSetupOverlay .pvp-v260-status:empty{display:none!important}
+@media(max-width:560px){#pvpSetupOverlay #pvpFormationPreview{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr) 20px minmax(0,1fr)!important;gap:3px!important}#pvpSetupOverlay .formation-card{padding:3px!important;border-radius:7px!important}#pvpSetupOverlay .formation-position{font-size:10px!important}#pvpSetupOverlay .vsai-v643-swap-button,#pvpSetupOverlay .vsai-v643-swap-button img{width:20px!important;height:20px!important}}
+/* Override the original PvP S1 1366x768 fixed-scale tablet fallback.
+   RC34 lobby is a content-first responsive room, not a rotated battlefield. */
+#pvpSetupOverlay .pvp-v260-page{
+ position:relative!important;left:auto!important;right:auto!important;top:auto!important;
+ width:100%!important;max-width:1600px!important;height:auto!important;min-height:0!important;
+ margin:0 auto!important;transform:none!important;transform-origin:center top!important;
+ display:flex!important;flex-direction:column!important;
+}
+@media(max-width:1160px){
+ #pvpSetupOverlay .pvp-v260-page{padding:14px 18px 22px!important}
+}
+@media(max-width:880px){
+ #pvpSetupOverlay .pvp-v260-page{padding:13px 12px 20px!important}
+ #pvpSetupOverlay .pvp-v260-layout{grid-template-columns:minmax(0,1fr)!important}
+}
+@media(max-width:560px){
+ #pvpSetupOverlay .pvp-v260-page{padding:12px 10px 16px!important}
+ #pvpSetupOverlay .pvp-v260-picker{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:'label' 'select' 'import'!important}
+ #pvpSetupOverlay .pvp-v260-showcase{display:block!important}
+ #pvpSetupOverlay .pvp-v260-room-panel{margin-top:0!important}
+}
+@media(max-width:560px){
+ #pvpSetupOverlay .pvp-v260-topbar{display:grid!important;grid-template-columns:145px minmax(0,1fr)!important;gap:9px!important;align-items:center!important}
+ #pvpSetupOverlay .pvp-v260-logo{display:block!important;width:145px!important;height:52px!important;flex:none!important}
+ #pvpSetupOverlay .pvp-v260-heading{min-width:0!important;width:auto!important;max-width:100%!important;flex:none!important;overflow-wrap:anywhere!important;padding:0!important}
+ #pvpSetupOverlay .pvp-v260-heading h1{font-size:14px!important;line-height:1.1!important}
+ #pvpSetupOverlay .pvp-v260-heading p{font-size:10px!important;line-height:1.25!important;white-space:normal!important;margin-top:5px!important}
+}

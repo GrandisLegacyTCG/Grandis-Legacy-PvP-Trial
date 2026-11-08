@@ -1,0 +1,246 @@
+{
+  "build": "VS AI Season 0 RC34 Patch Candidate",
+  "date": "2026-11-08T10:25:53.085Z",
+  "passed": 20,
+  "failed": 0,
+  "tests": [
+    {
+      "id": "F08",
+      "title": "all five official starter decks accepted",
+      "ok": true,
+      "details": {
+        "s0_starter_01_red_white": {
+          "ok": true,
+          "errors": []
+        },
+        "s0_starter_02_blue_red": {
+          "ok": true,
+          "errors": []
+        },
+        "s0_starter_03_yellow_blue": {
+          "ok": true,
+          "errors": []
+        },
+        "s0_starter_04_green_yellow": {
+          "ok": true,
+          "errors": []
+        },
+        "s0_starter_05_white_green": {
+          "ok": true,
+          "errors": []
+        }
+      }
+    },
+    {
+      "id": "F08",
+      "title": "main deck and starter illegal structures rejected",
+      "ok": true,
+      "details": {
+        "mainHero": [
+          "Deck validation failed: Main Deck may contain only Skill, Item, or Event. Invalid S0-WAR-H001."
+        ],
+        "mainLegacy": [
+          "Deck validation failed: Main Deck may contain only Skill, Item, or Event. Invalid S0-WAR-L001."
+        ],
+        "rankIIIStarter": [
+          "Deck validation failed: LEFT starter must be a Rank I Hero, not S0-WAR-H006.",
+          "Deck validation failed: LEFT starter must match its Legacy package Rank I Hero."
+        ],
+        "itemStarter": [
+          "Deck validation failed: LEFT starter must be a Rank I Hero, not S0-ITM-001.",
+          "Deck validation failed: LEFT starter must match its Legacy package Rank I Hero."
+        ],
+        "fakeLegacyExpanded": [
+          "Deck validation failed: Legacy Deck must contain exactly three complete Rank I-III + Legacy packages."
+        ]
+      }
+    },
+    {
+      "id": "ruling-F04",
+      "title": "Stun still permits Protection Item response",
+      "ok": true,
+      "details": {
+        "item": "S0-ITM-016",
+        "stunned": true,
+        "responseAvailable": true
+      }
+    },
+    {
+      "id": "F01",
+      "title": "lethal Poison pauses at Stoneblood before next lane",
+      "ok": true,
+      "details": {
+        "hpLeft": 30,
+        "hpCenter": 0,
+        "racial": 1,
+        "poisonTicksLeft": 1,
+        "pending": "legacy_defeat_choice"
+      }
+    },
+    {
+      "id": "F01",
+      "title": "lethal Poison opens Legacy first and queues Dwarf next",
+      "ok": true,
+      "details": {
+        "pending": "legacy_defeat_choice",
+        "otherHeroHP": 10
+      }
+    },
+    {
+      "id": "F01",
+      "title": "single Poison tick 10 and fixed-duration expiry",
+      "ok": true,
+      "details": {
+        "hp": 20
+      }
+    },
+    {
+      "id": "F01",
+      "title": "real auto-End pauses for Stoneblood and resumes to Legacy",
+      "ok": true,
+      "details": {
+        "afterStonebloodHP": 0,
+        "racialRemaining": 1,
+        "centerLegacy": true,
+        "leftTicks": 1,
+        "pending": "racial_stoneblood",
+        "phase": "Battle",
+        "turn": "AI"
+      }
+    },
+    {
+      "id": "F02",
+      "title": "two ready AI Tornado wait for each Response",
+      "ok": true,
+      "details": {
+        "leftHp": 30,
+        "centerHp": 30,
+        "remainingCasting": 0
+      }
+    },
+    {
+      "id": "F03",
+      "title": "Holy Barrier BLOCK uses Priest source not protected Hero",
+      "ok": true,
+      "details": {
+        "hp": 100,
+        "hand": 0
+      }
+    },
+    {
+      "id": "F03",
+      "title": "Swift Movement Dodge draws one card with payment",
+      "ok": true,
+      "details": {
+        "hand": [
+          "S0-WAR-001"
+        ],
+        "deck": [
+          "S0-CLE-026",
+          "S0-WAR-002"
+        ]
+      }
+    },
+    {
+      "id": "F03",
+      "title": "Shadow Switch dodge repositions to attack-facing lane",
+      "ok": true,
+      "details": {
+        "left": "S0-THF-H008",
+        "center": "S0-WAR-H001"
+      }
+    },
+    {
+      "id": "F03",
+      "title": "AI Escape Arrow pays mandatory extra card or cannot dodge",
+      "ok": true,
+      "details": {
+        "remainingHand": 0,
+        "discard": [
+          "S0-WAR-001",
+          "S0-ARC-003"
+        ]
+      }
+    },
+    {
+      "id": "F03",
+      "title": "Primal Defense opens Binding Light counter after payment",
+      "ok": true,
+      "details": {
+        "kind": "incoming_card",
+        "options": [
+          "S0-CLE-012"
+        ]
+      }
+    },
+    {
+      "id": "F03",
+      "title": "Binding Light counter window can PASS and finish Primal",
+      "ok": true,
+      "details": {
+        "hp": 100,
+        "hand": [
+          "S0-CLE-012"
+        ]
+      }
+    },
+    {
+      "id": "F06",
+      "title": "Legacy once key follows Hero after lane swap",
+      "ok": true,
+      "details": {
+        "key": "PLAYER|S0-WAR-L001|warrior_relic|PLAYER|2"
+      }
+    },
+    {
+      "id": "F07",
+      "title": "Stun prevents Bard/Maestro exchange, not Draw",
+      "ok": true,
+      "details": {
+        "bardId": "S0-CLE-H008"
+      }
+    },
+    {
+      "id": "F09",
+      "title": "REFLECT-only response allowed under PIERCING at correct ranks",
+      "ok": true,
+      "details": {
+        "high": [
+          "S0-WAR-029"
+        ],
+        "low": []
+      }
+    },
+    {
+      "id": "F10",
+      "title": "Enrage stays active through first use, expires at End",
+      "ok": true,
+      "details": {
+        "attachments": 0,
+        "expiredAtEnd": true
+      }
+    },
+    {
+      "id": "F11",
+      "title": "Sixth Sense distinguishes Defense from Tactical REACTION",
+      "ok": true,
+      "details": {
+        "tactical": false,
+        "defense": true
+      }
+    },
+    {
+      "id": "F12",
+      "title": "Legacy candidates include Skill just paid into Discard",
+      "ok": true,
+      "details": {
+        "choices": [
+          {
+            "card_id": "S0-ARC-001",
+            "discard_index": 0
+          }
+        ]
+      }
+    }
+  ]
+}

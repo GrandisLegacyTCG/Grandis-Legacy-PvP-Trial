@@ -13,6 +13,14 @@ const safeEvent = (event) => {
     if (Object.hasOwn(event, k)) out[k] = event[k];
   }
   if (event.type === 'CARD_DRAWN' && (event.side || event.actor_side) === 'PLAYER') out.card_id = event.card_id;
+  if (event.type === 'CARD_NEGATED') {
+    for (const k of ['counter_side','counter_card_id','target_side','target_card_id'])
+      if (Object.hasOwn(event,k)) out[k]=event[k];
+  }
+  if (event.type === 'RACIAL_TOKEN_USED') {
+    for (const k of ['ability_name','source_hero_card_id','token_cost'])
+      if (Object.hasOwn(event,k)) out[k]=event[k];
+  }
   if (event.type !== 'CARD_DRAWN' && ['CARD_PLAYED', 'ATTACK', 'RESPONSE', 'TRIBUTE', 'RANK_UP'].includes(event.type)) out.card_id = event.card_id;
   return out;
 };

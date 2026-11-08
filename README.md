@@ -1,43 +1,59 @@
-# Grandis Legacy PvP S0 RC32 — S1 lobby shell + networking only
+# Grandis Legacy PvP — Season 0 RC34 GitHub Release Candidate 1
 
-**Status:** deployment candidate (lobby blank-page bug fixed; not deployed). WebSocket contract and source/syntax checks PASS; full visual browser and actual Northflank gameplay are **NOT VERIFIED**.
+**Kode build:** `gl-s0-rc34-github-rc1-2026-11-08`  
+**Tujuan repo:** `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial` (**bukan** repo Season 1)  
+**Status:** **siap sebagai source untuk push GitHub + deploy uji coba ke host Node/Docker**. Belum lulus QA pertandingan lengkap melalui dua browser di hosting publik; **bukan FINAL / production release**.
 
-## Exact ownership boundary
+## Pembagian tugas
 
-| Stage | Presentation / UI | Content & rules |
-| --- | --- | --- |
-| Lobby layout, room seats, name/Ready/Spectate/Kick/Start Match | **PvP S1 v3.80.17 visual shell + multiplayer seat protocol** | Season 0 RC32 decks only |
-| **Deck Picker, Hero preview, Rank I–III, Formation Swap** | **Season 0 RC32 components and artwork** embedded inside the S1 lobby shell | S0 RC32 card database and actual selected deck |
-| **Opening Coin Flip (from the moment Start Match is accepted)** | **Season 0 RC32 coin UI, art, sound and animation** | Server chooses one authoritative coin outcome for both players |
-| Coin result and Start Game | **Season 0 RC32 coin result UI** | Server validates both client presentation acknowledgments |
-| Opening setup and battlefield | **Season 0 RC32** — no invented Season 0 Opening modal, no Hero-by-Hero lobby transition | Three Heroes, Opening Hand and 3 starting Mana cards committed by the Season 0 RC32 engine |
-| Rest of game | **Season 0 RC32 battlefield** | Season 0 RC32 engine and card effects; including RC32 Grand Finale and Poison Vial changes |
+| Bagian | Asal / tanggung jawab |
+|---|---|
+| Lobby, seat, READY, START, spectator, reconnect | Alur PvP Season 1 v3.80.17 + layout PvP Season 0 yang telah disetujui; IMPORT DECK emas, kartu Hero proporsional, panel adaptif. |
+| Rules, card data, gameplay & battlefield | Donor **VS AI Season 0 RC34**. Definisi kartu tetap identik dengan donor. Mode PvP tidak menjalankan pengambilan keputusan AI lokal. |
+| Game state, coin, RNG, giliran, Mana PAY, Response | **Server** Node.js, satu authoritative RC34 engine dan dua viewer-safe perspective. |
+| Artwork, animation, sound, optional BGM | **Browser**. BGM dapat dimatikan dan tidak dieksekusi engine server. |
 
-**Important:** PvP S1 v3.80.17 supplies ONLY the *lobby container/layout* and seat/Ready/Spectate/Kick/Start-Match networking pattern. Hero progression/formation controls now use RC32 component classes, layout and Swap art (vsai-v643-*), not S1 Hero widgets. It does **not** supply coin presentation, card effects, S1 deck lists, Hero identities or battlefield. `/` redirects to `/battle/` at the `coin-flip` state; previously it waited until `started`. This is a control-point change, not merely a CSS copy.
+## Optimasi dan perbaikan RC34 GitHub RC1
 
-The S0 RC32 coin appearance is adapted to multiplayer: Player 2 chooses heads/tails, server picks the result, the same outcome is shown to both clients. Neither browser is allowed to draw a random second outcome. After Start Game, the authoritative full RC32 battlefield is imported directly. We do not insert a custom summary/intro screen.
+- Lobby tanpa engine Season 1 yang besar; Hero dan Formation Season 0 tetap penuh.
+- Mana Shard dipilih lokal, lalu satu konfirmasi **PAY atomik** berisi UID fisik yang divalidasi server; Response juga memakai transaksi final serupa.
+- Render battlefield berdasarkan perubahan state (bukan memanggil full render setiap 120 ms). Animasi opening memiliki jalur tersendiri dari Draw reguler.
+- HTTP static memakai prebuilt Brotli/gzip, cache/ETag, streaming file; byte-range tersedia untuk MP3/WAV.
+- Memulihkan musik **Tavern Quest.mp3** dan **8 ikon aksi Hero** dari donor RC34 yang hilang pada kandidat optimized sebelumnya.
+- ID tindakan unik per dokumen setelah refresh untuk mencegah salah ACK; data event publik Counter/Racial dipertahankan sementara kartu pribadi tetap ditutup.
+- Dockerfile Node 22 tanpa dependency runtime eksternal, health check, menjalankan user nonroot. GitHub Actions menjalankan regression, WebSocket QA, asset checks, dan Docker build.
 
-## GitHub and Northflank staging
+**Tidak ada fitur kartu, status, artwork, atau aturan yang sengaja dipangkas.** Optimasi ini tidak membuktikan peningkatan FPS/latency pada hosting; itu harus diukur saat tes dua pemain.
 
-1. Upload **the extracted contents** of the ZIP into the **PvP S0** repository root. Do not overwrite the PvP S1 repository.
-2. On Northflank, use the supplied `Dockerfile`; expose application HTTP port **3000**, HTTPS/WebSocket pass-through via the Northflank public endpoint; use `/health` for readiness and run **one instance** (single-process in-memory match state).
-3. Open in two browser profiles or devices. Both connect to one room automatically, with no Room Code. Choose S0 decks and READY, then Player 1 clicks START MATCH.
-4. Check that both clients leave S1 lobby **at coin flip** and use **RC32 Coin Flip**. Player 2 chooses, both see the same result, then Start Game opens the RC32 battlefield with all three Heroes immediately present.
-5. Validate one real Attack/Response and complete a full match on Northflank. Do not call the build final until those pass.
+## Jalankan di komputer sendiri
 
-## QA
+- **Runtime:** Node.js 22 direkomendasikan (Node >=18 didukung oleh script); tidak ada `npm install` untuk menjalankan server.
+- **Test:** Node 22, Python 3 dengan `websocket-client==1.8.0` untuk tes WebSocket.
 
-`npm run check` requires Node.js 22+ plus Python 3 and the **QA-only** `websocket-client==1.8.0` package (`python3 -m pip install websocket-client==1.8.0`). It runs JS syntax checks, S1 lobby source-parity checks, S0 starter catalog checks, and a live two-seat RFC6455 WebSocket transition scenario. GitHub Actions installs the Python QA dependency automatically. The application server itself has no added Python runtime dependency.
+```bash
+node server.js
+# Buka http://localhost:3000/ pada dua browser/profil berbeda.
+# Cek http://localhost:3000/health
+```
 
-Current verification: **PASS** for source/syntax + local WebSocket two-seat lifecycle, S1 shell CSS hash unchanged, RC32 Hero formation markup/asset checks, Season 0 Hero/Hand/Mana, private-hand masking. **NOT VERIFIED**: browser visual parity, all RC32 opening audio in hosted browser, full combat win, Northflank live deployment, all card interactions. User-side local testing remains waived; this waiver does not count as PASS.
+Untuk verifikasi source dan file kompresi sebelum push:
 
-See `docs/TAKEOVER_S1_LOBBY_S0_FROM_COIN_2026-11-08.md`.
+```bash
+npm run build:precompress
+python3 -m pip install websocket-client==1.8.0
+npm run check
+```
 
-## 2026-11-08 — Blank lobby correction (staging)
+## Cara upload/deploy
 
-Removed a stale `openingPresented` reference from `public/pvp/pvp-host.js` that threw a `ReferenceError` before the lobby initialized. Added `tests/lobby-init.mjs` as part of `npm run check`; all checks PASS. Real Northflank/browser-over-HTTP playability remains NOT VERIFIED. See `docs/TAKEOVER_LOBBY_BLANK_FIX_2026-11-08.md`. No release ZIP produced.
+**Baca `docs/GITHUB_DEPLOY_RC34.md` sebelum upload.** Ekstrak ZIP lalu upload **semua isi folder proyek ke root repo**, termasuk folder tersembunyi `.github/workflows/`. **Jangan upload ZIP sebagai satu file di repo.** GitHub Pages adalah static hosting dan tidak menjalankan Node.js/WebSocket server; gunakan GitHub sebagai sumber code dan Northflank Combined Service (Dockerfile root, HTTP port 3000, satu instance) untuk tes multiplayer. Tidak ada push GitHub yang dilakukan oleh pembuat paket.
 
+## Hasil QA saat pembuatan paket
 
-## Complete deployment candidate (2026-11-08)
+`npm run check` lulus (pemeriksaan sintaks, lobby shell, lima starter Season 0, **20/20** regression engine RC34, Mana PAY + duplicate UID rejection, dua seat WebSocket/coin/first action, privasi spectator, HTTP Brotli/gzip/cache, delapan ikon dan 248 artwork, ID unik setelah reload, seat 2 Attack → PAY → Response PASS → damage). Ini **bukan** pengganti game lengkap melalui dua browser sungguhan.
 
-This bundle includes the blank-lobby fix and all repository files. See `docs/DEPLOYMENT_HANDOFF_2026-11-08.md`. GitHub push and Northflank deployment have **not** been performed; do not mistake a deployment-ready ZIP for a running service.
+**Masih perlu tes hosted:** seluruh alur opening, klik Mana UI kedua pemain dan warna Mana, response/reaction bertingkat, Rank Up/Legacy, reconnect, pengujian pertandingan panjang, UX mobile, HTTPS/WSS dan resource host. Browser automasi di lingkungan pembuatan tidak dapat navigasi ke halaman HTTP lokal karena kebijakan `ERR_BLOCKED_BY_ADMINISTRATOR`; QA visual sebelumnya menggunakan fixture DOM terkontrol saja. Docker daemon juga tidak tersedia pada mesin pembuatan, maka uji Docker image menunggu GitHub Actions setelah push.
+
+**Batas arsitektur:** server hanya mengelola **satu room/match in-memory** dan **satu container instance**. Restart menghilangkan state match aktif; scale horizontal tanpa shared state **belum didukung**. Ini deploy **uji coba**, belum sistem public multiparty skala besar.
+
+Dokumen tambahan: `docs/GITHUB_DEPLOY_RC34.md`, `docs/QA_STATUS_2026-11-08.md`, screenshot layout di `docs/`; catatan RC32 lama disimpan di `docs/archive_rc32/` dan **tidak** menggambarkan RC34 terkini.

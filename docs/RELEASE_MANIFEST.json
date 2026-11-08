@@ -1,0 +1,75 @@
+{
+  "release_id": "gl-s0-rc34-github-rc1-2026-11-08",
+  "target_repo": "GrandisLegacyTCG/Grandis-Legacy-PvP-Trial",
+  "status": "GitHub/Docker staging deploy package; live full-game E2E not verified",
+  "s0_card_art_files": 248,
+  "brotli_sidecars": 71,
+  "rc34_donor_static_data_sha256": "fc7e1aa59a609ebe59f4456cdf9a1d81ed3ba28549992394f00b4b447df9bf7b",
+  "static_definitions_match_rc34_donor": true,
+  "sha256": {
+    "README.md": {
+      "sha256": "38e12a099a3e062cb2068cdc9c700d122a765744fdc9f58813adfe13fd42ac89",
+      "bytes": 4801
+    },
+    "package.json": {
+      "sha256": "e383a35ae4ec184ba73a3c610f975bdd0476fb69ae7fb1bc58a1b01156dac527",
+      "bytes": 1714
+    },
+    "Dockerfile": {
+      "sha256": "81e6eb943ce5c4e2cc2ed8c58221822e08032763b37df27370b4da8a2367a6b7",
+      "bytes": 613
+    },
+    "server.js": {
+      "sha256": "45dad7736f602a8acc37e354ea12d018797d215a46b1ca496bb6f90c6672c8a3",
+      "bytes": 28965
+    },
+    ".github/workflows/qa.yml": {
+      "sha256": "9210524c39b42a4a5b6fc95728c38dca786fc1e74fd7dba1e873e25f1a7a16fa",
+      "bytes": 934
+    },
+    "public/index.html": {
+      "sha256": "bdb7dcdd26deeb15370c4962a063d0d8ed87c617510aee641ae5590bd29fa39b",
+      "bytes": 878
+    },
+    "public/pvp/pvp-host.js": {
+      "sha256": "d2d491941abed77e70df3d861211100c039840932a57b9d00910a1db97210287",
+      "bytes": 42544
+    },
+    "public/pvp/intent-channel.js": {
+      "sha256": "dd7183a5e4f9444f8f0c841765aff7993da991073ce0239b5bcddefe2ec9fae5",
+      "bytes": 3933
+    },
+    "public/battle/index.html": {
+      "sha256": "f397ae3b1ff2ee519a63687a307bcb4bb84de9e6bcd7c5ea6c3dc1e6224b1d49",
+      "bytes": 39463
+    },
+    "public/battle/shared-app/app-runtime.js": {
+      "sha256": "885a15b66268784678ca74e6544d907bdea106990f6abe227425bd6ebfb043b8",
+      "bytes": 233004
+    },
+    "public/battle/engine/shared-app/app.bundle.js": {
+      "sha256": "94ecea75b8e1e5a3c512cd0cdf9c7487567b84d78363ea56bd23403bc2108838",
+      "bytes": 1673381
+    },
+    "public/battle/engine/js/static-data.js": {
+      "sha256": "fc7e1aa59a609ebe59f4456cdf9a1d81ed3ba28549992394f00b4b447df9bf7b",
+      "bytes": 7067658
+    },
+    "public/battle/engine/assets/audio/Tavern Quest.mp3": {
+      "sha256": "98416937b2f44beda80528c320c76096929a13fe230d747c3a4064f62881098a",
+      "bytes": 4303201
+    },
+    "public/battle/runtime/pvp-network.js": {
+      "sha256": "205763c02f5f808bf396c7071e370472f7d9e8108d06dcbf99927575b2ee927d",
+      "bytes": 13051
+    },
+    "server/viewer-safe.mjs": {
+      "sha256": "a96117815d6d8584172f87d873e3cfc2ff7574b257ca33b1c6b2ec766c6bc736",
+      "bytes": 7570
+    },
+    "server/headless-rc32.mjs": {
+      "sha256": "5b830eddb61dda3624a855a80ccaddcc890e4bcdad6ec7f9f08b6182d0732997",
+      "bytes": 12188
+    }
+  }
+}

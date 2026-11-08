@@ -21,7 +21,11 @@ const activeStage=document.querySelector('.active-card-stage');
 const turnBox=document.querySelector('.sidebar > .sidebox:first-child');
 const battleLogPanel=document.getElementById('battleLogPanel');
 const appRoot=document.querySelector('.app');
-const soundBtn=document.querySelector('.bottom-actions button:not(.danger)');
+const soundBtn=document.getElementById('glSoundButton');
+const soundControl=document.getElementById('glSoundControl');
+const soundPanel=document.getElementById('glSoundPanel');
+const musicSwitch=document.getElementById('glMusicSwitch');
+const sfxSwitch=document.getElementById('glSfxSwitch');
 const matchActionBtn=document.getElementById('matchActionButton');
 const payBtn=document.createElement('button');payBtn.className='gl-pay-button';payBtn.type='button';payBtn.textContent='PAY';BF.appendChild(payBtn);
 const focusDimmer=document.createElement('div');focusDimmer.className='gl-focus-dimmer';focusDimmer.setAttribute('aria-hidden','true');appRoot.appendChild(focusDimmer);
@@ -224,7 +228,8 @@ function promoteTemporaryCardPreview(active){
   });
   if(active&&active.parentElement===document.body)document.body.appendChild(active);
 }
-function hideBattlefieldHoverPreview(){battlefieldHoverPreview.classList.remove('open','is-hero');battlefieldHoverPreview.setAttribute('aria-hidden','true');battlefieldHoverImg.removeAttribute('src')}
+let battlefieldHoverSource=null;
+function hideBattlefieldHoverPreview(){battlefieldHoverSource=null;battlefieldHoverPreview.classList.remove('open','is-hero');battlefieldHoverPreview.setAttribute('aria-hidden','true');battlefieldHoverImg.removeAttribute('src')}
 function placeBattlefieldHoverPreview(kind,anchor){
   if(!anchor||!battlefieldHoverPreview)return;
   const cs=getComputedStyle(battlefieldHoverPreview),w=parseFloat(cs.width)||259,h=parseFloat(cs.height)||362,g=8,vp=uiViewportSize(),vw=vp.width,vh=vp.height;
@@ -238,9 +243,10 @@ function placeBattlefieldHoverPreview(kind,anchor){
     const ar=uiRect(anchor),br=uiRect(BF),gap=12;
     const leftSpace=Math.max(0,ar.left-br.left),rightSpace=Math.max(0,br.right-ar.right),useRight=rightSpace>=leftSpace;
     left=useRight?ar.right+gap:ar.left-gap-w;top=ar.top+ar.height/2-h/2;
-  }else if(kind==='shard'){
-    const pool=anchor.closest?.('.mana-pool')||document.querySelector('.player-mana-pool');if(!pool)return;
-    const pr=uiRect(pool),clearance=30;left=pr.left+pr.width/2-w/2;top=pr.top-clearance-h;
+  }else if(kind==='shard'||kind==='opponentShard'){
+    const opponent=kind==='opponentShard';
+    const pool=anchor.closest?.('.mana-pool')||document.querySelector(opponent?'.opponent-mana-pool':'.player-mana-pool');if(!pool)return;
+    const pr=uiRect(pool),clearance=30;left=pr.left+pr.width/2-w/2;top=opponent?pr.bottom+clearance:pr.top-clearance-h;
   }else{
     const ar=uiRect(anchor);left=ar.right+12;top=ar.top+ar.height/2-h/2;
   }
@@ -249,8 +255,8 @@ function placeBattlefieldHoverPreview(kind,anchor){
 }
 function bindBattlefieldPreview(img,kind,anchor){
   if(!img)return;const key='glBattlefieldPreview'+String(kind||'card');if(img.dataset[key]==='1')return;img.dataset[key]='1';
-  const show=()=>{if(backgroundPreviewSuppressed(anchor||img))return;promoteTemporaryCardPreview(battlefieldHoverPreview);battlefieldHoverPreview.classList.toggle('is-hero',kind==='hero');battlefieldHoverImg.src=img.src;placeBattlefieldHoverPreview(kind,anchor||img);battlefieldHoverPreview.classList.add('open');battlefieldHoverPreview.setAttribute('aria-hidden','false')};
-  img.addEventListener('mouseenter',show);img.addEventListener('mousemove',()=>{if(!backgroundPreviewSuppressed(anchor||img))placeBattlefieldHoverPreview(kind,anchor||img)});img.addEventListener('mouseleave',hideBattlefieldHoverPreview);
+  const show=()=>{if(backgroundPreviewSuppressed(anchor||img))return;promoteTemporaryCardPreview(battlefieldHoverPreview);battlefieldHoverSource=img;battlefieldHoverPreview.classList.toggle('is-hero',kind==='hero');battlefieldHoverImg.src=img.src;placeBattlefieldHoverPreview(kind,anchor||img);battlefieldHoverPreview.classList.add('open');battlefieldHoverPreview.setAttribute('aria-hidden','false')};
+  img.addEventListener('mouseenter',show);img.addEventListener('mousemove',()=>{if(battlefieldHoverSource===img&&!backgroundPreviewSuppressed(anchor||img))placeBattlefieldHoverPreview(kind,anchor||img)});img.addEventListener('mouseleave',()=>{if(battlefieldHoverSource===img)hideBattlefieldHoverPreview()});
 }
 function formatMatchTime(ms){const total=Math.max(0,Math.floor(Number(ms||0)/1000)),m=Math.floor(total/60),sec=total%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
 function updateMatchTimer(){if(!matchTimer)return;const elapsed=matchStartedAt?(matchStoppedElapsed||Date.now()-matchStartedAt):0;matchTimer.textContent=formatMatchTime(elapsed);matchTimer.setAttribute('aria-label','Match time '+matchTimer.textContent)}
@@ -613,7 +619,43 @@ function renderInspectModal(){
   else{const e=document.createElement('div');e.className='gl-inspect-empty';e.textContent='This pile is empty.';body.appendChild(e)}
   confirm.textContent='CLOSE';confirm.disabled=false;confirm.onclick=closeInspectModal;
 }
-function syncSoundButton(){if(!soundBtn)return;const on=E()?.getSoundEnabled?.()!==false;soundBtn.textContent=on?'Sound ON':'Sound OFF';soundBtn.setAttribute('aria-pressed',on?'true':'false')}
+// Part 5: music remains OFF by default; the existing engine SFX switch remains ON by default.
+// Save user choices without coupling BGM to the card / battle / coin sound effect setting.
+const GL_S0_MUSIC_STORAGE_KEY='grandis_legacy_s0_background_music_v1';
+let glMusicEnabled=false;
+try{glMusicEnabled=window.localStorage?.getItem(GL_S0_MUSIC_STORAGE_KEY)==='on'}catch(_){}
+const glBackgroundMusic=(typeof Audio==='function')?new Audio('engine/assets/audio/Tavern Quest.mp3'):null;
+if(glBackgroundMusic){glBackgroundMusic.loop=true;glBackgroundMusic.volume=.36;glBackgroundMusic.preload='none'}
+function playS0BackgroundMusic(){
+  if(!glMusicEnabled||!glBackgroundMusic||!glBackgroundMusic.paused)return;
+  try{const p=glBackgroundMusic.play();if(p&&typeof p.catch==='function')p.catch(()=>{});}catch(_){}
+}
+function setS0MusicEnabled(enabled){
+  glMusicEnabled=!!enabled;
+  try{window.localStorage?.setItem(GL_S0_MUSIC_STORAGE_KEY,glMusicEnabled?'on':'off')}catch(_){}
+  if(musicSwitch)musicSwitch.checked=glMusicEnabled;
+  if(glMusicEnabled)playS0BackgroundMusic();
+  else if(glBackgroundMusic)glBackgroundMusic.pause();
+}
+function closeSoundSettings(){if(!soundPanel||!soundBtn)return;soundPanel.hidden=true;soundBtn.setAttribute('aria-expanded','false')}
+function syncSoundButton(){
+  if(!soundBtn)return;
+  soundBtn.textContent='Sound';
+  if(musicSwitch)musicSwitch.checked=glMusicEnabled;
+  if(sfxSwitch)sfxSwitch.checked=E()?.getSoundEnabled?.()!==false;
+}
+function initSoundSettings(){
+  if(!soundBtn||!soundPanel)return;
+  soundBtn.onclick=e=>{e.stopPropagation();const open=soundPanel.hidden;soundPanel.hidden=!open;soundBtn.setAttribute('aria-expanded',open?'true':'false')};
+  musicSwitch.onchange=()=>setS0MusicEnabled(musicSwitch.checked);
+  sfxSwitch.onchange=()=>{E()?.setSoundEnabled?.(sfxSwitch.checked);syncSoundButton()};
+  document.addEventListener('pointerdown',e=>{if(!soundControl.contains(e.target))closeSoundSettings()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!soundPanel.hidden)closeSoundSettings()});
+  // If a stored ON setting encounters browser autoplay blocking, a real gesture can unlock it.
+  document.addEventListener('pointerdown',playS0BackgroundMusic,{passive:true});
+  syncSoundButton();
+}
+
 function closeLobbyProgression(){progressionOverlay.classList.remove('open');progressionOverlay.querySelector('.gl-progression-row').innerHTML='';}
 progressionOverlay.querySelector('.gl-progression-close').onclick=closeLobbyProgression;
 progressionOverlay.addEventListener('click',e=>{if(e.target===progressionOverlay)closeLobbyProgression()});
@@ -710,6 +752,38 @@ function beginOpeningPresentation(){
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   requestAnimationFrame(()=>requestAnimationFrame(()=>{syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();appRoot?.classList.remove('gl-lobby-hidden');runOpeningHandGroups(r.handEvents||[],r.manaEvents||[])}));
 }
+/* PvP opening is PRESENTATION-ONLY. The server has already committed the six
+ * opening Hand pairs, three initial Mana Shards and first mandatory draw. The
+ * browser animates the same RC34 opening cadence without drawing a second time
+ * or ever invoking engine.beginFirstTurn. Both Hero teams render immediately. */
+function beginPvPOpeningPresentation(){
+  if(window.GL_APP_MODE!=='PVP'||openingPresentationActive)return false;
+  const game=st(),raw=(game?.presentationEvents||[]).filter(e=>e?.type==='CARD_DRAWN'&&e.reason==='OPENING_HAND');
+  if(!game||raw.length<12)return false;
+  resetPresentationState();
+  startMatchTimer();openingPresentationActive=true;lastTurnBannerKey='';
+  const events=raw.slice(0,12).map(e=>({...e,
+    group_index:Number.isFinite(Number(e.group_index))?Number(e.group_index):Math.max(0,Number(String(e.group_id||'').split('_').pop())-1)
+  }));
+  for(const e of events){
+    if(e.id)seenPresentationEvents.add(e.id);
+    const side=e.side==='AI'?'AI':'PLAYER';glHiddenCommittedDrawSlots[side].set(Number(e.hand_index),String(e.id||side+'-'+e.hand_index));
+  }
+  // Include the subsequent Draw Phase regen Shard in the hidden presentation
+  // mask, but reveal only the 3 starting Shards during the opening sequence.
+  const shardEvents=[];
+  for(const [side,pool] of [['PLAYER',game.playerManaPoolCards],['AI',game.aiManaPoolCards]]){
+    (pool||[]).forEach(sh=>{if(sh?.uid)glOpeningHiddenShardUids.add(side+'|'+String(sh.uid))});
+    (pool||[]).slice(0,3).forEach((sh,i)=>{if(sh?.uid)shardEvents.push({side,uid:sh.uid,group_index:i})});
+  }
+  handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(!openingPresentationActive)return;
+    syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();
+    runOpeningHandGroups(events,shardEvents);
+  }));
+  return true;
+}
 function runPairMotions(parts,duration,done){let left=parts.length;if(!left){done();return}parts.forEach((part,i)=>{const finish=()=>{left--;if(left<=0)done()};if(!flyBetween(part.src,part.from,part.to,duration,finish,i===0))finish()})}
 function runOpeningHandGroups(events,manaEvents){
   const groups=[];for(let i=0;i<6;i++)groups.push((events||[]).filter(e=>Number(e.group_index)===i));let gi=0;
@@ -717,7 +791,7 @@ function runOpeningHandGroups(events,manaEvents){
 }
 function runOpeningShardGroups(events){
   const groups=[];for(let i=0;i<3;i++)groups.push((events||[]).filter(e=>Number(e.group_index)===i));let gi=0;
-  const next=()=>{if(gi>=groups.length){glOpeningHiddenShardUids.clear();manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(()=>{previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;E().beginFirstTurn?.(openingFirstSide);setTimeout(renderNow,0)},180));return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',host=side==='PLAYER'?playerManaHost:aiManaHost,to=host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(e.uid))+'"]'),from=zoneEl(side,'Shard Deck');parts.push({src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{group.forEach(e=>glOpeningHiddenShardUids.delete((e.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid)));manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(next,20))})};next();
+  const next=()=>{if(gi>=groups.length){glOpeningHiddenShardUids.clear();manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(()=>{previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;if(window.GL_APP_MODE!=='PVP')E().beginFirstTurn?.(openingFirstSide);setTimeout(renderNow,0)},180));return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',host=side==='PLAYER'?playerManaHost:aiManaHost,to=host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(e.uid))+'"]'),from=zoneEl(side,'Shard Deck');parts.push({src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{group.forEach(e=>glOpeningHiddenShardUids.delete((e.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid)));manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(next,20))})};next();
 }
 function visualStateOf(s){
   const hero={};for(const side of ['PLAYER','AI']){hero[side]={};for(const lane of laneOrder){const h=sideHeroes(s,side)?.[lane];hero[side][lane]={card_id:h?.card_id||'',image_id:heroImageId(h)||'',legacy:!!h?.legacy_mode,hp:Number(h?.hp||0),exp_cards:Array.isArray(h?.exp_cards)?h.exp_cards.slice():[]}}}
@@ -828,7 +902,7 @@ function showNewCounterEvents(s){
     }
   });
 }
-function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if(openingPresentationActive||!s.turn||lastTurnBannerKey===key)return;lastTurnBannerKey=key;turnBanner.innerHTML='<strong>'+(s.turn==='PLAYER'?'YOUR TURN':'AI TURN')+'</strong><small>ROUND '+Number(s.round||1)+'</small>';turnBanner.classList.remove('show');void turnBanner.offsetWidth;turnBanner.classList.add('show');clearTimeout(showTurnBannerFor.t);showTurnBannerFor.t=setTimeout(()=>turnBanner.classList.remove('show'),900)}
+function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if(openingPresentationActive||!s.turn||lastTurnBannerKey===key)return;lastTurnBannerKey=key;turnBanner.innerHTML='<strong>'+(s.turn==='PLAYER'?'YOUR TURN':(window.GL_APP_MODE==='PVP'?'OPPONENT TURN':'AI TURN'))+'</strong><small>ROUND '+Number(s.round||1)+'</small>';turnBanner.classList.remove('show');void turnBanner.offsetWidth;turnBanner.classList.add('show');clearTimeout(showTurnBannerFor.t);showTurnBannerFor.t=setTimeout(()=>turnBanner.classList.remove('show'),900)}
 function buildPresentationPlan(s){
   showNewCounterEvents(s);
   const cur=visualStateOf(s),prev=previousVisualState,plan={draws:[],returns:[],shards:[],heroTransitions:[],moved:[]};
@@ -1138,6 +1212,9 @@ function renderPool(host,countEl,pool,side){
   if(blindOpponent) (p.selected_indices||[]).forEach(i=>blindSelected.add(Number(i)));
 
   host.classList.toggle('gl-blind-shard-layout',!!blindOpponent&&!blindInCenter);
+  // Replacing a Mana card destroys its DOM node without firing mouseleave.
+  // Close the transient hover before rebuilding either Mana Pool so a spent AI Shard never leaves a stuck preview.
+  if(battlefieldHoverSource&&host.contains(battlefieldHoverSource))hideBattlefieldHoverPreview();
   host.innerHTML='';const cards=[];
   // During centered blind choice the source Shard Pool is layout-locked. Randomization
   // exists only in the center clones; the real pool keeps its canonical/sorted positions.
@@ -1152,11 +1229,11 @@ function renderPool(host,countEl,pool,side){
     wrap.className='mana-card'+(selected.has(String(sh.uid))||isBlindSelected?' gl-selected':'')+(selectable.has(String(sh.uid))||(blindOpponent&&!blindInCenter)?' gl-class-choice':'')+(sh?.kind==='CLASS'&&!(blindOpponent&&!blindInCenter)?' gl-class-shard':'')+(openingHidden?' gl-presentation-hidden':'');
     wrap.dataset.uid=sh.uid||'';wrap.dataset.shardKind=sh?.kind||'';
     const im=document.createElement('img');
-    const opponentFaceDown=window.GL_APP_MODE==='PVP'&&side==='AI';
-    im.src=(opponentFaceDown||blindOpponent&&!blindInCenter)?'assets/ui/back-shard.webp':shardArt(sh);
-    im.alt=(opponentFaceDown||blindOpponent&&!blindInCenter)?'Face-down opponent Shard':((sh.class_name||'Mana')+' Shard');
+    const pvpOpponentFaceDown=window.GL_APP_MODE==='PVP'&&side==='AI';
+    im.src=(pvpOpponentFaceDown||blindOpponent&&!blindInCenter)?'assets/ui/back-shard.webp':shardArt(sh);
+    im.alt=(pvpOpponentFaceDown||blindOpponent&&!blindInCenter)?'Face-down opponent Shard':((sh.class_name||'Mana')+' Shard');
     wrap.appendChild(im);host.appendChild(wrap);cards.push(wrap);
-    if(!(blindOpponent&&!blindInCenter)&&!opponentFaceDown){if(side==='PLAYER')bindBattlefieldPreview(im,'shard',wrap);else bindPreview(im);}
+    if(!(blindOpponent&&!blindInCenter)&&!pvpOpponentFaceDown)bindBattlefieldPreview(im,side==='PLAYER'?'shard':'opponentShard',wrap);
     if(blindOpponent&&!blindInCenter){
       wrap.addEventListener('click',()=>{intent('selectOpponentManaChoice',[blindIdx])});
     }else if(selectable.has(String(sh.uid))&&!blindInCenter){
@@ -1878,6 +1955,17 @@ function bindHeroActionTip(button,action){
 // RC22: fit text inside the original Hero-side one-line button footprint.
 // The button column occupies only the already-reserved space to the right of
 // the Hero artwork. Short labels stay at the normal CSS font/auto width.
+const GL_S0_HERO_ACTION_ICON_DIR='assets/ui/hero-actions/';
+const GL_S0_RACIAL_ICONS={beastman:'Racial Beastman Button.png',dragonborn:'Racial Dragonborn Button.png',dwarf:'Racial Dwarf Button.png',elf:'Racial Elf Button.png',halfling:'Racial Halfling Button.png',human:'Racial Human Button.png'};
+function heroActionIconSrc(kind,hero){
+  if(kind==='class')return GL_S0_HERO_ACTION_ICON_DIR+'Support Button.png';
+  if(kind==='legacy')return GL_S0_HERO_ACTION_ICON_DIR+'Racial Legacy Button.png';
+  if(kind!=='racial')return '';
+  const def=rawCardDef(hero?.card_id||heroImageId(hero));
+  const race=String(def?.race||def?.identity?.race||'').toLowerCase().trim();
+  const icon=GL_S0_RACIAL_ICONS[race];
+  return icon?GL_S0_HERO_ACTION_ICON_DIR+icon:'';
+}
 function fitHeroActionFonts(host){
   if(!host?.isConnected)return;
   const width=host.getBoundingClientRect().width;
@@ -1885,7 +1973,7 @@ function fitHeroActionFonts(host){
   host.dataset.glFittedWidth=String(Math.round(width*10)/10);
   const canvas=fitHeroActionFonts._canvas||(fitHeroActionFonts._canvas=document.createElement('canvas'));
   const ctx=canvas.getContext('2d');if(!ctx)return;
-  host.querySelectorAll('.gl-hero-action').forEach(b=>{
+  host.querySelectorAll('.gl-hero-action:not(.gl-hero-action-icon)').forEach(b=>{
     b.classList.remove('gl-action-font-fitted');
     b.style.removeProperty('--gl-action-font-size');
     const st=getComputedStyle(b),base=(window.innerWidth<=820?8:8.75);
@@ -1917,7 +2005,7 @@ function renderHeroActions(laneEl,side,lane,s){
         const isRacial=!!o.racial_ability;
         const label=isRacial?(heroRacialAbilityName(hero)||String(o.label||'').split(' — ')[0]||'RACIAL TRAIT'):(o.label||cv(o.card_id)?.name||o.response_kind||'RESPONSE');
         if(isRacial&&(glowKey==='AUREX'||glowKey==='FINNIAN'))racialReady=true;
-        items.push({responseReady:true,key:'response:'+String(rw.response_window_token||rw.card_id||'')+':'+i+':'+String(o.card_id||'')+':'+lane,label,tooltip:heroActionHelp('response',hero,null,o)||'Use this response for the incoming Attack.',fn:()=>{responseRollbackSnapshot=B()?.getSnapshot?.()||null;confirmResponseOption(i)}});
+        items.push({kind:isRacial?'racial':null,responseReady:true,key:'response:'+String(rw.response_window_token||rw.card_id||'')+':'+i+':'+String(o.card_id||'')+':'+lane,label,tooltip:heroActionHelp('response',hero,null,o)||'Use this response for the incoming Attack.',fn:()=>{responseRollbackSnapshot=B()?.getSnapshot?.()||null;confirmResponseOption(i)}});
       }
     });
   }
@@ -1925,7 +2013,7 @@ function renderHeroActions(laneEl,side,lane,s){
   if(pendingOwner(p)==='PLAYER'&&p?.source_side==='PLAYER'&&p?.type!=='s0_bard_draw_choice'&&p?.source_lane===lane){
     if(p.type==='optional_magical_surge'){
       classReady=glowKey==='LUCIEN';const ability=heroClassAbilityName(hero)||(String(rawCardDef(hero?.card_id)?.identity?.class||'').toLowerCase()==='arcane duelist'?'Arcane Surge':'Mana Surge');
-      items.push({key:'magical-surge:use',label:ability||'MANA SURGE',tooltip:heroActionHelp('class',hero)||'Spend 1 additional Mana Shard to increase this Magical Attack damage.',fn:()=>intent('commitMagicalSurgeChoice',[true])},{key:'magical-surge:skip',label:'SKIP',tooltip:'Continue without activating this Surge ability.',fn:()=>intent('commitMagicalSurgeChoice',[false])});
+      items.push({kind:'class',key:'magical-surge:use',label:ability||'MANA SURGE',tooltip:heroActionHelp('class',hero)||'Spend 1 additional Mana Shard to increase this Magical Attack damage.',fn:()=>intent('commitMagicalSurgeChoice',[true])},{key:'magical-surge:skip',label:'SKIP',tooltip:'Continue without activating this Surge ability.',fn:()=>intent('commitMagicalSurgeChoice',[false])});
     }else if(p.type==='draw_replacement_choice'){
       // RC21: the mandatory draw-review decision lives solely in the center stage.
       // No duplicate inline redraw / SKIP buttons on the Hero during this decision.
@@ -1937,7 +2025,7 @@ function renderHeroActions(laneEl,side,lane,s){
         items.push({key:'bard:confirm:'+String((p.selected_indices||[]).length),label:'CONFIRM',disabled:!(p.selected_indices||[]).length,fn:()=>intent('commitS0BardDrawChoice',[false])});
         items.push({key:'bard:cancel',label:'CANCEL',fn:()=>intent('cancelS0BardDrawChoice',[])});
       }else{
-        items.push({key:'bard:activate',label:p.ability_name||heroClassAbilityName(hero)||'CLASS ABILITY',fn:()=>intent('activateS0BardDrawChoice',[])});
+        items.push({kind:'class',key:'bard:activate',label:p.ability_name||heroClassAbilityName(hero)||'CLASS ABILITY',fn:()=>intent('activateS0BardDrawChoice',[])});
         items.push({key:'bard:skip',label:'SKIP',fn:()=>intent('commitS0BardDrawChoice',[true])});
       }
     }
@@ -1946,21 +2034,21 @@ function renderHeroActions(laneEl,side,lane,s){
   if(!rw&&!s.pending&&s.turn==='PLAYER'){
     const a=E().getHeroActions(side,lane)||{};
     // Active abilities may still have their normal buttons, but owning one never turns the box on.
-    (a.racialAbilities||[]).forEach(x=>items.push({key:'racial:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||heroRacialAbilityName(hero)||'RACIAL TRAIT',tooltip:heroActionHelp('racial',hero,x),fn:()=>intent('beginActivatedRacialAbility',[side,lane,x.abilityId])}));
-    (a.classAbilities||[]).forEach(x=>items.push({key:'class:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||heroClassAbilityName(hero)||'CLASS SKILL',tooltip:heroActionHelp('class',hero,x),fn:()=>intent('beginActivatedHeroAbility',[side,lane,x.abilityId])}));
-    (a.legacyAbilities||[]).forEach(x=>items.push({key:'legacy:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||'LEGACY',tooltip:heroActionHelp('legacy',hero,x),fn:()=>intent('beginActivatedLegacyAbility',[side,lane,x.abilityId])}));
+    (a.racialAbilities||[]).forEach(x=>items.push({kind:'racial',key:'racial:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||heroRacialAbilityName(hero)||'RACIAL TRAIT',tooltip:heroActionHelp('racial',hero,x),fn:()=>intent('beginActivatedRacialAbility',[side,lane,x.abilityId])}));
+    (a.classAbilities||[]).forEach(x=>items.push({kind:'class',key:'class:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||heroClassAbilityName(hero)||'CLASS SKILL',tooltip:heroActionHelp('class',hero,x),fn:()=>intent('beginActivatedHeroAbility',[side,lane,x.abilityId])}));
+    (a.legacyAbilities||[]).forEach(x=>items.push({kind:'legacy',key:'legacy:'+String(x.abilityId||x.label||x.name||''),label:x.label||x.name||'LEGACY',tooltip:heroActionHelp('legacy',hero,x),fn:()=>intent('beginActivatedLegacyAbility',[side,lane,x.abilityId])}));
   }
   laneEl.classList.toggle('gl-class-ability-ready',classReady);
   laneEl.classList.toggle('gl-racial-trait-ready',racialReady);
   const existing=laneEl.querySelector(':scope > .gl-hero-actions');
   if(!items.length){if(existing){if(existing.contains(heroActionTipOwner))closeHeroActionTip();existing.remove();}return;}
-  const sig=JSON.stringify(items.map(x=>[x.key,x.label,x.tooltip||'',!!x.disabled,!!x.responseReady]));
+  const sig=JSON.stringify(items.map(x=>[x.key,x.label,x.kind||'',x.tooltip||'',!!x.disabled,!!x.responseReady,heroActionIconSrc(x.kind,hero)]));
   // Polling must not recreate a pressed button before its click event fires.
   if(existing?.dataset.glSig===sig){fitHeroActionFonts(existing);return;}
   if(existing){if(existing.contains(heroActionTipOwner))closeHeroActionTip();existing.remove();}
   const w=document.createElement('div');w.className='gl-hero-actions';w.dataset.glSig=sig;
-  items.forEach(x=>{const b=document.createElement('button');b.type='button';b.className='gl-hero-action'+(x.responseReady?' gl-response-ready':'');b.textContent=x.label;b.disabled=!!x.disabled;bindHeroActionTip(b,x);
-    if(String(x.label||'').length>14)b.classList.add('gl-long-action-name');
+  items.forEach(x=>{const b=document.createElement('button');b.type='button';b.className='gl-hero-action'+(x.responseReady?' gl-response-ready':'');const icon=heroActionIconSrc(x.kind,hero);if(icon){b.classList.add('gl-hero-action-icon');b.setAttribute('aria-label',x.label);const img=document.createElement('img');img.src=icon;img.alt='';img.className='gl-hero-action-image';img.draggable=false;b.appendChild(img)}else b.textContent=x.label;b.disabled=!!x.disabled;bindHeroActionTip(b,x);
+    if(!icon&&String(x.label||'').length>14)b.classList.add('gl-long-action-name');
     b.onclick=e=>{e.preventDefault();e.stopPropagation();closeHeroActionTip(b);x.fn()};w.appendChild(b)});
   laneEl.appendChild(w);fitHeroActionFonts(w);
 }
@@ -2329,7 +2417,7 @@ function renderPhase(s){
     else if(mode==='decline-swap'){if(p?.type==='optional_swap')intent('performOptionalSwapDecision',[false]);else if(p?.type==='optional_target_swap')intent('performOptionalTargetSwapDecision',[false])}
     else if(mode==='reposition')intent('openManualRepositionChoice',[]);
   };
-  const blocked=s.turn!=='PLAYER'||!!s.pending||!!s.responseWindow||!!uiResponseSourceChoice||s.gameOver||(s.phase==='Draw'&&window.GL_APP_MODE!=='PVP');nextBtn.disabled=blocked;nextBtn.textContent=s.pvpTurnReady?'START TURN':(s.phase==='End'?'END TURN':'NEXT PHASE');nextBtn.onclick=()=>intent(s.pvpTurnReady?'acknowledgePvpTurnStart':'advancePhase',[]);renderSwap(s);
+  const blocked=s.turn!=='PLAYER'||!!s.pending||!!s.responseWindow||!!uiResponseSourceChoice||s.gameOver||s.phase==='Draw';nextBtn.disabled=blocked;nextBtn.textContent=s.phase==='End'?'END TURN':'NEXT PHASE';nextBtn.onclick=()=>intent('advancePhase',[]);renderSwap(s);
 }
 function renderSwap(s){
   const p=s.pending,descriptors=[];
@@ -2392,7 +2480,7 @@ function renderDeckActions(){document.querySelectorAll('.gl-deck-actions').forEa
 function currentPhaseStamp(s){return [s?.turn||'',Number(s?.round||1),s?.phase||''].join('|')}
 function latestResolvedActionThisPhase(s){
   const stamp=currentPhaseStamp(s);
-  return allEvents(s).find(e=>[e.turn||'',Number(e.round||1),e.phase||''].join('|')===stamp&&e.card_id)||null;
+  return allEvents(s).reverse().find(e=>[e.turn||'',Number(e.round||1),e.phase||''].join('|')===stamp&&e.card_id)||null;
 }
 function renderSidebar(s,chain){
   turnBox.innerHTML=`<h3 class="gold">${s.turn==='PLAYER'?'Your Turn':'AI Turn'}</h3><div class="tiny">Round ${Number(s.round||1)} · ${s.turn==='PLAYER'?'Player':'AI'}<br>Phase: ${esc(phaseName(s.phase))}<br>Mana ${Number(s.mana||0)} / 12 · Regen +${Number(s.manaRegen||0)}<br>AI Mana ${Number(s.aiMana||0)} / 12 · Regen +${Number(s.aiManaRegen||0)}</div>`;
@@ -2419,11 +2507,21 @@ function topActive(s,chain){
   const pa=pendingActionInfo(s,p);if(pa)return pa;
   return chain[chain.length-1]||null;
 }
-function allEvents(s){const a=[];(s.playerPlayedEvents||[]).forEach(e=>a.push({...e,side:'PLAYER'}));(s.opponentPlayedEvents||[]).forEach(e=>a.push({...e,side:'AI'}));return a.sort((x,y)=>Number(y.timestamp||0)-Number(x.timestamp||0))}
+// RC33: card history uses actual recorded play order; timestamps alone can tie.
+function playedChronology(a,b){
+  const x=Number(a.played_event_order||0),y=Number(b.played_event_order||0);
+  if(x>0&&y>0&&x!==y)return x-y;
+  const dt=Number(a.timestamp||0)-Number(b.timestamp||0);
+  if(dt)return dt;
+  // Older saves lack an explicit sequence; use a stable fallback.
+  if(x!==y)return x-y;
+  return String(a.id||'').localeCompare(String(b.id||''));
+}
+function allEvents(s){const a=[];(s.playerPlayedEvents||[]).forEach(e=>a.push({...e,side:'PLAYER'}));(s.opponentPlayedEvents||[]).forEach(e=>a.push({...e,side:'AI'}));return a.sort(playedChronology)}
 function renderHistory(s,chain){
   const activeIds=new Set(chain.map(a=>a.card_id+'|'+a.side)),events=allEvents(s).filter(e=>e.card_id&&!activeIds.has(e.card_id+'|'+e.side));
   events.forEach(e=>{const k=e.id||[e.side,e.card_id,e.timestamp].join('|');if(!historyKnown.has(k)){historyKnown.add(k);resolvedHistory.push(e)}else{const old=resolvedHistory.find(x=>(x.id||[x.side,x.card_id,x.timestamp].join('|'))===k);if(old)Object.assign(old,e)}});
-  resolvedHistory.sort((a,b)=>Number(b.timestamp||0)-Number(a.timestamp||0));
+  resolvedHistory.sort(playedChronology);
   const draw=(host,arr,keepSix=false)=>{
     const sig=JSON.stringify(arr.map(e=>[e.id||'',e.side||'',e.card_id||'',Number(e.timestamp||0),e.resolution_state||'']))+'|six:'+String(!!keepSix);
     if(host.dataset.glHistorySig===sig)return false;hideSidebarHoverPreview();host.dataset.glHistorySig=sig;host.innerHTML='';
@@ -2431,7 +2529,10 @@ function renderHistory(s,chain){
     if(keepSix){for(let i=host.children.length;i<6;i++){const ph=document.createElement('div');ph.className='played-card gl-played-placeholder';host.appendChild(ph)}}
     return true;
   };
-  const changed=draw(playedGrid,resolvedHistory.slice(0,6),true)|draw(historyGrid,resolvedHistory,false);if(changed)requestAnimationFrame(fitPlayedCards);
+  // Card Played runs newest-first: the latest resolved card always occupies the top-left slot.
+  // The Battle Log intentionally keeps its separate oldest-to-newest, newest-at-bottom layout.
+  const newestFirst=resolvedHistory.slice().reverse();
+  const changed=draw(playedGrid,newestFirst.slice(0,6),true)|draw(historyGrid,newestFirst,false);if(changed)requestAnimationFrame(fitPlayedCards);
 }
 
 function renderLog(s){
@@ -2443,7 +2544,8 @@ function renderLog(s){
   const prevTop=battleLogPanel.scrollTop;
   const wasAtEnd=battleLogPanel.scrollHeight-battleLogPanel.clientHeight-prevTop<20;
   battleLogPanel.querySelectorAll('.logline').forEach(x=>x.remove());
-  lines.forEach(line=>{const d=document.createElement('div');d.className='logline';d.textContent=line;battleLogPanel.appendChild(d)});
+  // Engine logs are newest-first; render oldest-first without touching engine state.
+  lines.slice().reverse().forEach(line=>{const d=document.createElement('div');d.className='logline';d.textContent=line;battleLogPanel.appendChild(d)});
   battleLogPanel.dataset.glLogSignature=signature;
   battleLogPanel.scrollTop=wasAtEnd?battleLogPanel.scrollHeight:prevTop;
 }
@@ -2459,12 +2561,13 @@ function renderAllowedModal(s){
   const p=s.pending,allowed=['card_search_choice','legacy_defeat_choice','legacy_card_choice','crystal_ball_reorder'];
   if(!p||!allowed.includes(p.type)||pendingOwner(p)!=='PLAYER'||isDirectHandCardSearch(p)||isHandDiscardPending(p)){
     if(!p&&inspectState){renderInspectModal();return}
-    // The generic modal does not own the hover preview during Bard/Maestro's
-    // center-card selection. Do not erase that preview on every 120ms render.
-    // A real center-choice transition/exit still clears it in the center UI.
-    const centerPreviewOwnedByBard=p?.type==='s0_bard_draw_choice'&&
+    // The generic modal is polled every 120 ms but DOES NOT own the preview
+    // for any active center-choice card (including End Phase Hand Limit).
+    // Closing the center choice, a pointerleave or a genuine session change
+    // still clears the preview through the center-choice lifecycle.
+    const centerPreviewOwnedByCenterChoice=!!centerChoiceModeFor(s)&&
       classChoiceHoverOwner?.isConnected&&centerChoiceStage.contains(classChoiceHoverOwner);
-    if(!centerPreviewOwnedByBard)hideModalHoverPreview();
+    if(!centerPreviewOwnedByCenterChoice)hideModalHoverPreview();
     if(p)inspectState=null;
     choiceOverlay.classList.remove('open','gl-choice-main-deck-preview');activeModalType='';modalRenderKey='';return;
   }
@@ -2694,7 +2797,13 @@ function initStableBattlefieldReviewGestures(){
 
 
 
-function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open')};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};if(soundBtn)soundBtn.onclick=()=>{E().toggleSound?.();syncSoundButton()};matchActionBtn.onclick=()=>{const s=st();if(s?.gameOver){openGameResult();return}if(!lobbyIsOpen&&confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncMatchActionButton(st());syncSoundButton();}
-function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:renderNow,state:st,intent,openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal};}
+function initSidebarControls(){document.getElementById('fullHistoryBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('history-open');sidebar.classList.remove('battlelog-open')};document.getElementById('historyClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('history-open')};document.getElementById('battleLogBtn').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.add('battlelog-open');sidebar.classList.remove('history-open');requestAnimationFrame(()=>{battleLogPanel.scrollTop=battleLogPanel.scrollHeight})};document.getElementById('battleLogClose').onclick=()=>{hideSidebarHoverPreview();sidebar.classList.remove('battlelog-open')};initSoundSettings();matchActionBtn.onclick=()=>{const s=st();if(s?.gameOver){openGameResult();return}if(!lobbyIsOpen&&confirm('Surrender this match?'))intent('executeConfirmedSurrender',[])};syncMatchActionButton(st());syncSoundButton();}
+let pvpRenderQueued=false;
+function requestPvpRender(){
+  if(window.GL_APP_MODE!=='PVP'){renderNow();return;}
+  if(pvpRenderQueued)return;
+  pvpRenderQueued=true;requestAnimationFrame(()=>{pvpRenderQueued=false;renderNow()});
+}
+function boot(){if(!E()||!B()){setTimeout(boot,50);return}B().setExternalHumanUi?.(true);E().setExternalHumanUi?.(true);B().setRenderSuppressed(true);document.getElementById('glPendingAttackDirectionLayer')?.remove();clearAuthoredDummyState();configureStaticZones();initStableBattlefieldReviewGestures();initSidebarControls();lockPrimaryActionWidth();if(window.GL_APP_MODE==='PVP'){lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}else renderLobby();updateMatchTimer();setInterval(updateMatchTimer,250);if(window.GL_APP_MODE!=='PVP')setInterval(()=>{if(!lobbyIsOpen)renderNow()},120);window.addEventListener('resize',()=>requestAnimationFrame(()=>{if(lobbyIsOpen)return;syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);placePhaseIndicator(document.querySelector('.phase-label.active'),false);renderAttackLine(st(),chainActions(st()))}),{passive:true});window.GL_GAME_UI={render:requestPvpRender,state:st,intent,playPvPOpening:beginPvPOpeningPresentation,openingBusy:()=>openingPresentationActive,openLobby:()=>{lobbyIsOpen=true;renderLobby()},closeInspect:closeInspectModal};window.addEventListener('gl-pvp-intent-error',()=>{resetCenterChoiceVisualState();requestPvpRender()});}
 boot();
 })();

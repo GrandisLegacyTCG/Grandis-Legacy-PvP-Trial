@@ -28,4 +28,4 @@ assert.ok(host.includes('window.GL_S0_LOBBY_STARTERS||{}'));
 assert.ok(host.includes('window.GL_S0_LOBBY_CARD_DEFINITIONS||{}'));
 assert.ok(host.includes('battle/card-art/'));
 assert.ok(!host.includes('function starters(){try{return bridge()?.getStarterDeckOptions'));
-console.log(JSON.stringify({ok:true,source:'S0 RC32',starterDecks:5,deckHeroArt:true},null,2));
+console.log(JSON.stringify({ok:true,source:'S0 RC34 compatible catalog',starterDecks:5,deckHeroArt:true},null,2));

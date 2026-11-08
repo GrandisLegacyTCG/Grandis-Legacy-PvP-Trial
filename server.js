@@ -1,10 +1,11 @@
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
+import {createReadStream} from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, randomInt, createHash } from 'node:crypto';
 import { WebSocketServer, WebSocket } from './server/ws-compat.mjs';
-import { sourceHashes } from './server/v6916-authority.mjs';
+import {readFileSync} from 'node:fs';
 import { Season0HeadlessAuthority } from './server/headless-rc32.mjs';
 import { season0StarterCatalog } from './server/s0-pregame-catalog.mjs';
 import { viewerSafeBoard, assertViewerSafeBoard, makeBlindChoices } from './server/viewer-safe.mjs';
@@ -14,8 +15,9 @@ const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
 const VERSION='3.80.17';
-const BUILD_ID='gl-s0-v38017-lobby-rc32-coin-through-battle-2026-11-08';
-const BUILD_LABEL=`Grandis Legacy PvP · S1 v${VERSION} Lobby / S0 RC32 Battle`;
+const BUILD_ID='gl-s0-rc34-github-rc1-2026-11-08';
+const BUILD_LABEL=`Grandis Legacy PvP · Season 0 RC34 GitHub Release Candidate`;
+const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 const LOBBY_IDLE_MS=60*1000;
@@ -129,6 +131,10 @@ class Season0BattleAuthority {
     st.playerLegacy=Array.from({length:st.playerLegacyCount||st.playerLegacy?.length||0},()=> '__HIDDEN_CARD_BACK__');
     st.playerManaPoolCards=(st.playerManaPoolCards||[]).map((_,i)=>({uid:'SPECTATOR-SHARD-'+i,hidden:true,kind:'HIDDEN',class_name:'',owner_side:'PLAYER'}));
     delete st.playerLegacyPackageSlots;delete st.playerManaClasses;st.pending=st.pending?{type:st.pending.type,private_masked:true,decision_side:'UNKNOWN'}:null;
+    if(st.lastDrawnCardBySide){st.lastDrawnCardBySide.PLAYER='__HIDDEN_CARD_BACK__';st.lastDrawnCardBySide.AI='__HIDDEN_CARD_BACK__';}
+    // Presentation metadata must not reveal an unrevealed Draw to spectators.
+    st.presentationEvents=(st.presentationEvents||[]).map(ev=>ev&&ev.type==='CARD_DRAWN'?{...ev,card_id:'__HIDDEN_CARD_BACK__'}:ev);
+
     st.responseWindow=st.responseWindow?{kind:st.responseWindow.kind,private_masked:true}:null;
     return safe;
   }
@@ -267,6 +273,7 @@ setInterval(enforceIdleTimeouts,5000).unref?.();
 
 const server=http.createServer(async(req,res)=>{
   try{
+    if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405,{'allow':'GET, HEAD'});res.end('Method not allowed');return;}
     const url=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
     if(url.pathname==='/build-meta.js'){
       const js=`window.GL_PVP_BUILD_META=Object.freeze(${JSON.stringify({version:VERSION,versionLabel:BUILD_LABEL,buildId:BUILD_ID})});\n`;
@@ -275,13 +282,53 @@ const server=http.createServer(async(req,res)=>{
     }
     if(url.pathname==='/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
-      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lobby__s0-rc32-coin-and-battle',authoritySources:sourceHashes()}));return;
+      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lite-lobby__s0-rc34-authority',authoritySources:{'engine/shared-app/app.bundle.js':AUTHORITY_BUNDLE_SHA256}}));return;
     }
     let rel=decodeURIComponent(url.pathname);if(rel==='/'||rel==='')rel='/index.html';if(rel==='/battle'||rel==='/battle/')rel='/battle/index.html';
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);
     if(!file.startsWith(PUBLIC+path.sep)&&file!==PUBLIC){res.writeHead(403);res.end('Forbidden');return}
-    const s=await stat(file);if(!s.isFile())throw new Error('not-file');const data=await readFile(file);const ext=path.extname(file).toLowerCase();
-    const noStoreCode=ext==='.html'||ext==='.js'||ext==='.mjs';res.writeHead(200,{'content-type':mime[ext]||'application/octet-stream','content-length':data.length,'cache-control':noStoreCode?'no-store':'public, max-age=300'});res.end(data);
+    // HTTP delivery is independent of gameplay authority. Keep RC34 data intact.
+    if(/\.(br|gz)$/.test(file)){res.writeHead(403);res.end('Forbidden');return;}
+    const original=await stat(file);if(!original.isFile())throw new Error('not-file');
+    const ext=path.extname(file).toLowerCase(),compressible=['.js','.mjs','.css','.html','.json','.svg'].includes(ext);
+    const etag='"'+original.size.toString(16)+'-'+Math.round(original.mtimeMs).toString(16)+'"';
+    const noCache=['.html','.js','.mjs','.css','.json'].includes(ext);
+    const cacheControl=noCache?'public, max-age=0, must-revalidate':'public, max-age=86400';
+    const common={'content-type':mime[ext]||'application/octet-stream','cache-control':cacheControl,
+      'etag':etag,'x-content-type-options':'nosniff','vary':'Accept-Encoding'};
+    if(['.mp3','.wav'].includes(ext))common['accept-ranges']='bytes';
+    if(req.headers['if-none-match']===etag){res.writeHead(304,common);res.end();return;}
+    // Audio is browser-owned, not a gameplay-server workload. Honor HTTP byte
+    // ranges so a seek/resume does not need another full music download.
+    if(['.mp3','.wav'].includes(ext) && req.headers.range){
+      const r=/^bytes=(\d*)-(\d*)$/.exec(String(req.headers.range).trim());
+      let begin=0,end=original.size-1,valid=!!r && !!(r[1]||r[2]);
+      if(valid){
+        if(!r[1]){const length=Number(r[2]);valid=Number.isSafeInteger(length)&&length>0;
+          begin=Math.max(0,original.size-length);
+        }else{begin=Number(r[1]);valid=Number.isSafeInteger(begin)&&begin>=0;
+          if(r[2]){end=Number(r[2]);valid=valid&&Number.isSafeInteger(end);}
+        }
+        valid=valid && begin<original.size && end>=begin;
+        end=Math.min(end,original.size-1);
+      }
+      if(!valid){res.writeHead(416,{...common,'content-range':`bytes */${original.size}`});res.end();return;}
+      res.writeHead(206,{...common,'content-range':`bytes ${begin}-${end}/${original.size}`,'content-length':end-begin+1});
+      if(req.method==='HEAD'){res.end();return;}
+      const audio=createReadStream(file,{start:begin,end});audio.on('error',()=>res.destroy());audio.pipe(res);return;
+    }
+    let payload=file,encoding=null,info=original;
+    if(compressible&&original.size>=1024){
+      const accepted=String(req.headers['accept-encoding']||'');
+      for(const [suffix,label] of [['.br','br'],['.gz','gzip']]){
+        if(!new RegExp('(?:^|[,\\s])'+label+'(?:[,;\\s]|$)','i').test(accepted))continue;
+        try{const candidate=await stat(file+suffix);if(candidate.isFile()&&candidate.size<info.size){payload=file+suffix;encoding=label;info=candidate;break;}}catch{}
+      }
+    }
+    if(encoding)common['content-encoding']=encoding;
+    res.writeHead(200,{...common,'content-length':info.size});
+    if(req.method==='HEAD'){res.end();return;}
+    const stream=createReadStream(payload);stream.on('error',()=>res.destroy());stream.pipe(res);
   }catch{res.writeHead(404,{'content-type':'text/plain; charset=utf-8'});res.end('Not found')}
 });
 const wss=new WebSocketServer({server,path:'/ws',maxPayload:MAX_WS_PAYLOAD,perMessageDeflate:false});
@@ -312,3 +359,11 @@ wss.on('connection',(ws,req)=>{
   }catch(err){const code=err?.code||'CONNECT_REJECTED';send(ws,{type:'error',code,message:String(err?.message||err)});const closeCode=code==='CLIENT_BUILD_MISMATCH'?4003:code==='SEAT_TOKEN_MISMATCH'?4004:4001;const reason=code==='CLIENT_BUILD_MISMATCH'?'Client build mismatch':code==='SEAT_TOKEN_MISMATCH'?'Seat token mismatch':'Connection rejected';try{ws.close(closeCode,reason)}catch{}}
 });
 server.listen(PORT,HOST,()=>console.log(`[Grandis Legacy PvP v${VERSION}] Listening on http://${HOST}:${PORT}`));
+for (const signal of ['SIGTERM','SIGINT']) {
+  process.once(signal, () => {
+    console.log(`[shutdown] ${signal} received; closing PvP room.`);
+    for (const p of [...room.players.values(),...room.spectators.values()]) closeClientSocket(p,1001,'Server restarting');
+    server.close(() => process.exit(0));
+    setTimeout(() => process.exit(1), 5000).unref();
+  });
+}
