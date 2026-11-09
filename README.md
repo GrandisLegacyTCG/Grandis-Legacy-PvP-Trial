@@ -1,3 +1,13 @@
+# Grandis Legacy PvP RC36.8 - Mobile Orientation and Response Hotfix 2 (2026-11-09)
+
+**PvP Trial staging build.** The entire mobile gameplay presentation now shares a 1600x747 landscape stage, including popups, overlays and animations. A nonblocking WAITING FOR OPPONENT RESPONSE notice shows when the opponent owns the pending Response or payment decision. No gameplay, Mana Payment, or WebSocket protocol changes.
+
+**Deployment:** Docker image regenerates compressed assets from the modified source files so stale .br/.gz files in the repository are not served. Real two-device mobile QA remains required.
+
+See docs/RC36_8_MOBILE_ORIENTATION_RESPONSE_HOTFIX2_2026-11-09.md.
+
+---
+
 # Grandis Legacy PvP Season 0 — Gameplay Sync from VS AI RC36 Internal Patch 6 (RC36.8; 9 November 2026)
 
 **STATUS: STAGING / QA. No GitHub upload.** This package starts from **PvP RC36 Patch 4 UI Hotfix 1** and synchronizes only the latest donor's **functional Response source-selection correction**. Existing PvP lobby, battlefield, Coin Flip, mobile layout, audio, card art, network and Mana Payment are retained.
