@@ -1,0 +1,94 @@
+/* PvP RC36.8 Mobile presentation parity: all gameplay portals rotate WITH
+   the approved VS AI 1600x747 battlefield. Do not rotate only .app: that
+   leaves choice popups, Card Review, animations and response notices sideways.
+   The existing VS AI mobile Coin Flip / Lobby stage remains independent. */
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay body{
+  position:relative!important;
+  left:0!important;top:0!important;
+  width:1600px!important;height:747px!important;
+  min-width:1600px!important;min-height:747px!important;
+  max-width:none!important;max-height:none!important;
+  transform:var(--gl-stage-transform)!important;
+  transform-origin:0 0!important;
+  overflow:visible!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .app{
+  width:1600px!important;height:747px!important;
+  transform:none!important;transform-origin:0 0!important;
+}
+/* Fixed descendants now use the transformed body as their containing block.
+   Give full-screen portals the logical desktop viewport rather than physical
+   portrait-screen vw/vh dimensions. */
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay :is(
+  .gl-vsai-choice-overlay,.gl-played-detail-overlay,.gl-card-review-overlay,
+  .gl-progression-overlay,.gl-result-overlay,.gl-center-choice-stage,
+  .gl-center-focus-backdrop,.gl-animation-layer,.gl-battle-feedback-layer,
+  .gl-vsai-attack-direction-layer,.gl-lobby-overlay,.gl-coin-overlay){
+  max-width:1600px!important;max-height:747px!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay :is(
+  .gl-vsai-choice-overlay,.gl-played-detail-overlay,.gl-card-review-overlay,
+  .gl-progression-overlay,.gl-result-overlay,.gl-center-choice-stage,
+  .gl-center-focus-backdrop,.gl-animation-layer,.gl-battle-feedback-layer,
+  .gl-vsai-attack-direction-layer){
+  width:1600px!important;height:747px!important;
+  inset:0 auto auto 0!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-vsai-choice-overlay .choice-panel{
+  width:788px!important;min-width:0!important;max-width:94%!important;
+  max-height:calc(747px - 32px)!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-vsai-choice-overlay.gl-choice-main-deck-preview .choice-panel{
+  width:1068px!important;max-width:calc(1600px - 36px)!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-vsai-choice-overlay.gl-choice-main-deck-preview .gl-choice-list-pane{
+  max-height:calc(747px - 130px)!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-played-detail-panel,
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-progression-card,
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-result-card{
+  max-height:calc(747px - 32px)!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-card-review-panel{
+  width:1120px!important;max-width:1120px!important;
+  max-height:720px!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-card-review-overlay .gl-db158-review-frame{
+  height:650px!important;max-height:700px!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay body.gl-center-choice-active .gl-center-choice-stage{
+  max-width:1600px!important;max-height:747px!important;
+  gap:12px!important;padding:18px 20px!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay body.gl-center-choice-active .gl-center-choice-cards{
+  width:min(1220px,94%)!important;max-height:380px!important;
+  padding:22px 6px 4px!important;gap:10px!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay body.gl-center-choice-active .gl-center-choice-card{
+  width:min(76px,calc((1220px - 12px - 10px * (var(--gl-choice-count,8) - 1)) / var(--gl-choice-count,8)))!important;
+}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-center-choice-title{font-size:22px!important}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-hero-action-tip{max-width:315px!important}
+/* Requested PvP-only nonblocking status: no extra button, card HUD or animation. */
+.gl-pvp-opponent-response-notice{
+  position:absolute;z-index:1400;left:50%;top:calc(50% - 40px);
+  transform:translate(-50%,-50%);pointer-events:none;
+  display:block;max-width:70%;min-width:270px;box-sizing:border-box;
+  padding:9px 17px;border:1px solid rgba(245,207,88,.86);border-radius:9px;
+  background:rgba(5,16,27,.96);color:#ffe184;
+  box-shadow:0 6px 20px rgba(0,0,0,.66);
+  font:900 13px/1.25 Noto,Arial,sans-serif;
+  letter-spacing:.035em;text-align:center;white-space:nowrap;
+}
+.gl-pvp-opponent-response-notice[hidden]{display:none!important}
+
+/* Existing connection/action toasts use logical bounds on portrait phones as
+   well; they must never shrink to the 390px physical portrait viewport. */
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay #glPvpActionToast{max-width:520px!important;}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay #pvpS0ConnectionNotice{max-width:1000px!important;}
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay #glPvpNetStatus,
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay #glPvpPerfPanel{max-width:300px!important;}
+/* The logical stage is half-size on phones: keep the requested status legible. */
+html.gl-adaptive-stage.gl-pvp-mobile-gameplay .gl-pvp-opponent-response-notice{
+  font-size:19px!important;min-width:360px!important;
+}
