@@ -146,6 +146,27 @@ function toAtomicPayment(name,args){
   return packet;
 }
 
+// Presentation-only. Show the opponent-owned Response decision without
+// leaking private cards or introducing any network action.
+function updateOpponentResponseNotice(board){
+  const a=board?.appState;
+  const responseOwner=a?.responseWindow?.response_owner;
+  const opponentDecision=a?.pending?.decision_side==='AI' &&
+    a.pending.type==='response_payment_choice';
+  const waiting=state.connected&&state.role==='player'&&state.status==='started'&&
+    !a?.gameOver&&(responseOwner==='AI'||opponentDecision);
+  let notice=document.getElementById('glPvpOpponentResponseNotice');
+  if(!notice&&waiting){
+    const field=document.querySelector('.battlefield');if(!field?.appendChild)return;
+    notice=document.createElement('div');notice.id='glPvpOpponentResponseNotice';
+    notice.className='gl-pvp-opponent-response-notice';
+    notice.setAttribute('role','status');notice.setAttribute('aria-live','polite');
+    notice.textContent='WAITING FOR OPPONENT RESPONSE...';
+    notice.hidden=true;field.appendChild(notice);
+  }
+  if(notice)notice.hidden=!waiting;
+}
+
 function session(key){try{return sessionStorage.getItem(SESSION[key])||''}catch{return''}}
 function showError(message){
   let banner=document.getElementById('pvpS0ConnectionNotice');if(!banner){banner=document.createElement('div');banner.id='pvpS0ConnectionNotice';banner.style.cssText='position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:100000;padding:12px 20px;background:#14263b;color:#ffdc85;border:1px solid #d5aa48;border-radius:8px;font:600 13px sans-serif;max-width:90vw;text-align:center';document.body.appendChild(banner)}
@@ -239,14 +260,14 @@ function update(snap,{force=false,receivedAt=null}={}){
  const m=snap?.match||{},me=snap?.local||{};
  state.status=m.status||'setup';state.role=me.role||'spectator';state.seat=me.seat||null;
  window.GL_PVP_IDENTITY={playerName:String(me.name||'PLAYER'),opponentName:String((snap.players||[]).find(p=>Number(p.seat)!==Number(me.seat))?.name||'OPPONENT'),playerDeck:String(me.deckName||'Player Deck'),opponentDeck:String((snap.players||[]).find(p=>Number(p.seat)!==Number(me.seat))?.deckName||'Opponent Deck')};
- if(state.status==='setup'){window.GL_PVP_MANA_DRAFT?.clear?.();if(!EMBEDDED)location.replace('/');return}
+ if(state.status==='setup'){updateOpponentResponseNotice(null);window.GL_PVP_MANA_DRAFT?.clear?.();if(!EMBEDDED)location.replace('/');return}
  const coin=window.GL_S0_RC32_PVP_COIN;
- if(m.status==='coin-flip'){window.GL_PVP_MANA_DRAFT?.clear?.();
+ if(m.status==='coin-flip'){updateOpponentResponseNotice(null);window.GL_PVP_MANA_DRAFT?.clear?.();
    const key=String(m.chooserSeat)+'|'+String(me.seat||'spectator');
    if(key!==state.lastCoinChoiceKey){state.lastCoinChoiceKey=key;coin?.showChoice?.({canChoose:state.role==='player'&&Number(me.seat)===Number(m.chooserSeat)});}
    return;
  }
- if(m.status==='coin-result'){window.GL_PVP_MANA_DRAFT?.clear?.();
+ if(m.status==='coin-result'){updateOpponentResponseNotice(null);window.GL_PVP_MANA_DRAFT?.clear?.();
    const firstSeat=Number(m.firstSeat||1);
    coin?.showResult?.({choice:m.choice,outcome:m.outcome,firstSeat,localSeat:Number(me.seat||0),
      localWasChooser:Number(m.chooserSeat)===Number(me.seat),
@@ -261,13 +282,14 @@ function update(snap,{force=false,receivedAt=null}={}){
    const recipient=state.role==='player'?Number(state.seat):1;
    if(!board.pvpPrivateStateMasked||Number(board.pvpRecipientSeat)!==recipient){showError('Refusing unsafe battle snapshot.');return}
    if(Number(m.revision)<state.revision)return;
-   if(!force&&Number(m.revision)===state.revision&&state.snapshot)return;
+   if(!force&&Number(m.revision)===state.revision&&state.snapshot){updateOpponentResponseNotice(board);return;}
    const previousResponse=state.snapshot?.appState?.responseWindow;
    const incomingResponse=board.appState?.responseWindow;
    const responseJustOpened=incomingResponse?.response_owner==='PLAYER'&&
       (!previousResponse||previousResponse.response_owner!=='PLAYER'||
        String(previousResponse.response_window_token||'')!==String(incomingResponse.response_window_token||''));
    state.revision=Number(m.revision||0);state.snapshot=board;
+   updateOpponentResponseNotice(board);
    window.GL_PVP_LOCAL_SEAT=state.seat;
    window.GL_PVP_LOCAL_ROLE=state.role;
    try{
@@ -322,6 +344,7 @@ function update(snap,{force=false,receivedAt=null}={}){
    }
    catch(e){showError('Battlefield synchronization failed: '+String(e.message||e))}
  }
+ if(!board)updateOpponentResponseNotice(null);
  if(state.role==='spectator'){
    showError('Spectator mode — both players’ private cards are hidden; actions are disabled.');
  }
@@ -366,7 +389,7 @@ function connectEmbedded(){
     if(message.type==='bridge-transport'){
       state.connected=!!message.connected;
       proxy.readyState=state.connected?WebSocket.OPEN:0;
-      if(!state.connected){clearInFlight();state.queue.length=0;showError('Connection interrupted. Reconnecting through lobby...')}
+      if(!state.connected){updateOpponentResponseNotice(null);clearInFlight();state.queue.length=0;showError('Connection interrupted. Reconnecting through lobby...')}
       return;
     }
     if(message.type==='snapshot')state.connected=true;
@@ -389,7 +412,7 @@ function connect(){
  // Do not ask for a redundant second full state on a healthy connection.
  ws.onopen=()=>{if(ws!==state.ws)return;state.connected=true;state.disconnects=0};
  ws.onmessage=ev=>{if(ws!==state.ws)return;onServerMessage(ev)};
- ws.onclose=ev=>{if(ws!==state.ws)return;pvpIntentError('Connection lost.');state.connected=false;clearInFlight();state.queue.length=0;
+ ws.onclose=ev=>{if(ws!==state.ws)return;pvpIntentError('Connection lost.');state.connected=false;updateOpponentResponseNotice(null);clearInFlight();state.queue.length=0;
    if(ev.code===4003){showError('Server/client version mismatch. Refresh the app.');return}
    if(ev.code===4004||ev.code===4006){showError('Your seat session was replaced. Return to lobby to reconnect.');return}
    showError('Connection lost. Reconnecting…');const delay=Math.min(10000,800*Math.pow(1.5,Math.min(5,++state.disconnects)));
