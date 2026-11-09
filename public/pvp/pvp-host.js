@@ -401,7 +401,12 @@ function prefetchBattlefieldWhenReady(){
   schedule(()=>{
     if(!document.head)return;
     for(const href of BATTLE_PREFETCH){
-      const link=document.createElement('link');link.rel='prefetch';link.as='script';link.href=href+'?v='+encodeURIComponent(BUILD_ID);
+      const link=document.createElement('link');link.rel='prefetch';link.as='script';
+      // Prefetch the exact URL loaded by /battle/. Reuse the unchanged
+      // multi-megabyte engine/data in browser cache on small PvP hotfixes.
+      const version=href==='/battle/shared-app/app-runtime.js'?
+        'gl-s0-pvp-rc36p8-combat-hotfix3-2026-11-09':BUILD_ID;
+      link.href=href+'?v='+encodeURIComponent(version);
       document.head.appendChild(link);
     }
   },{timeout:1500});
