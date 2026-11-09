@@ -547,7 +547,7 @@ window.addEventListener('message',e=>{
     const h=Number(e.data.height);
     if(Number.isFinite(h)&&h>100){
       // Avoid stretching the Deck Builder card to fill empty background space.
-      const fit=Math.min(Math.ceil(h),Math.max(250,window.innerHeight-20));
+      const fit=Math.min(Math.ceil(h),Math.max(250,uiViewportSize().height-20));
       frame.style.setProperty('height',fit+'px','important');
     }
   }
@@ -569,14 +569,28 @@ playedDetailOverlay.querySelector('.gl-played-detail-close').onclick=closePlayed
 playedDetailOverlay.addEventListener('click',e=>{if(e.target===playedDetailOverlay)closePlayedDetail()});
 function adaptiveStageActive(){return document.documentElement.classList.contains('gl-adaptive-stage');}
 function currentUiScale(){return adaptiveStageActive()?1:(parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui-scale'))||1);}
-/* Viewport rectangles for screen-space portals (VFX, arrows, moving cards,
-   coin/review/choice overlays); never inverse-transform these coordinates. */
-function uiViewportSize(){return{width:Math.max(1,window.innerWidth||1),height:Math.max(1,window.innerHeight||1)};}
-function uiRect(el){return el?.getBoundingClientRect?.()||null;}
+/* Mobile body is transformed as one stage; map screen rectangles back to
+   1600 x 747 logical coordinates for all game VFX and body portals. */
+function pvpLandscapeStage(){return document.documentElement.classList.contains('gl-pvp-mobile-gameplay');}
+function uiViewportSize(){return pvpLandscapeStage()?{width:1600,height:747}:{width:Math.max(1,window.innerWidth||1),height:Math.max(1,window.innerHeight||1)};}
+function uiRect(el){
+  const r=el?.getBoundingClientRect?.();if(!r||!pvpLandscapeStage()||
+    typeof DOMMatrixReadOnly==='undefined'||typeof DOMPoint==='undefined')return r||null;
+  try{
+    const matrix=new DOMMatrixReadOnly(getComputedStyle(document.body).transform);
+    const inv=matrix.inverse();
+    const pts=[[r.left,r.top],[r.right,r.top],[r.left,r.bottom],[r.right,r.bottom]]
+      .map(([x,y])=>new DOMPoint(x,y).matrixTransform(inv));
+    const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
+    const left=Math.min(...xs),right=Math.max(...xs),top=Math.min(...ys),bottom=Math.max(...ys);
+    return{left,right,top,bottom,width:right-left,height:bottom-top,x:left,y:top};
+  }catch(_){return r;}
+}
 /* CSS layout offsets inside the scaled battlefield are expressed in the app's
    logical local coordinate system, not the viewport. */
 function uiLayoutRect(el){
   if(!el)return null;
+  if(pvpLandscapeStage())return uiRect(el);
   const r=el.getBoundingClientRect();
   const app=document.querySelector('.app');
   if(!adaptiveStageActive()||!app?.contains(el)||typeof DOMMatrixReadOnly==='undefined'||typeof DOMPoint==='undefined')return r;
@@ -2042,11 +2056,12 @@ function closeHeroActionTip(owner){
 }
 function positionHeroActionTip(button){
   if(!button?.isConnected)return closeHeroActionTip();
-  const b=button.getBoundingClientRect(),t=heroActionTip.getBoundingClientRect(),gap=10;
+  const b=uiRect(button),t=uiRect(heroActionTip),gap=10;
   let left=b.left-t.width-gap;
   if(left<8)left=b.right+gap;
-  if(left+t.width>innerWidth-8)left=Math.max(8,innerWidth-t.width-8);
-  const top=Math.max(8,Math.min(b.top+(b.height-t.height)/2,innerHeight-t.height-8));
+  const viewport=uiViewportSize();
+  if(left+t.width>viewport.width-8)left=Math.max(8,viewport.width-t.width-8);
+  const top=Math.max(8,Math.min(b.top+(b.height-t.height)/2,viewport.height-t.height-8));
   heroActionTip.style.left=Math.round(left)+'px';
   heroActionTip.style.top=Math.round(top)+'px';
 }
@@ -2085,7 +2100,7 @@ function heroActionIconSrc(kind,hero){
 }
 function fitHeroActionFonts(host){
   if(!host?.isConnected)return;
-  const width=host.getBoundingClientRect().width;
+  const width=uiLayoutRect(host).width;
   if(!width||host.dataset.glFittedWidth===String(Math.round(width*10)/10))return;
   host.dataset.glFittedWidth=String(Math.round(width*10)/10);
   const canvas=fitHeroActionFonts._canvas||(fitHeroActionFonts._canvas=document.createElement('canvas'));
