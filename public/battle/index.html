@@ -281,7 +281,8 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 .opponent-field .zone>.count,.opponent-field .opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
 </style>
 
-<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09">
+<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09">
+<link rel="stylesheet" href="runtime/pvp-mobile-landscape-fix.css?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09">
 
 </head>
 <body>
@@ -435,7 +436,21 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     publish(scale,cssW/scale,cssH/scale);
     refreshDependentGeometry();
   }
-  updateResponsiveScale();
+  // During live mobile gameplay, rotate all body-portaled popups/VFX together.
+  const app=document.querySelector('.app');
+  function syncGameOrientation(){
+    const active=root.classList.contains('gl-adaptive-stage')&&
+      !!app&&!app.classList.contains('gl-lobby-hidden')&&
+      !document.querySelector('.gl-coin-overlay.open, .gl-lobby-overlay.open');
+    if(root.classList.contains('gl-pvp-mobile-gameplay')!==active)
+      root.classList.toggle('gl-pvp-mobile-gameplay',active);
+  }
+  if(app)new MutationObserver(syncGameOrientation).observe(app,{attributes:true,attributeFilter:['class']});
+  new MutationObserver(syncGameOrientation).observe(root,{attributes:true,attributeFilter:['class']});
+  const syncLater=()=>requestAnimationFrame(syncGameOrientation);
+  updateResponsiveScale();syncLater();
+  window.addEventListener('resize',syncLater,{passive:true});
+  window.addEventListener('orientationchange',syncLater,{passive:true});
   window.addEventListener('resize',updateResponsiveScale,{passive:true});
   window.addEventListener('orientationchange',()=>setTimeout(updateResponsiveScale,50),{passive:true});
 })();
@@ -452,21 +467,21 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     <div id="glAnimationLayer"></div>
   </div>
   <script>window.GL_APP_MODE="PVP";window.GL_PVP_SHARED_BOARD_ACTIVE=true;window.GL_PVP_LOCAL_ROLE="player";</script>
-  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
   <script src="/build-meta.js"></script>
-  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
-  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09-gameplay-sync-rc36p6"></script>
-  <script src="shared-ui/mobile-landscape-lobby.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="shared-ui/mobile-landscape-lobby.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
   
 
 </body>
