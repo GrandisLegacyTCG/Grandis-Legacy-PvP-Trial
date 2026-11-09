@@ -36,6 +36,10 @@ function safeResponse(r) {
   if (r.response_owner === 'PLAYER') return r;
   const out = {};
   for (const k of ['kind','response_owner','target_side','target_lane','source_side','source_lane','card_id','damage','damage_type','attack_type','cannot_block','cannot_dodge']) if (Object.hasOwn(r,k)) out[k] = r[k];
+  // Public Area Attack positions, never private Response cards. Both clients
+  // must animate the same targets only once the full exchange has resolved.
+  if (r.kind === 'incoming_attack' && Array.isArray(r.affected_lanes))
+    out.affected_lanes = r.affected_lanes.filter(lane => ['LEFT','CENTER','RIGHT'].includes(lane));
   out.private_masked = true;
   return out;
 }
