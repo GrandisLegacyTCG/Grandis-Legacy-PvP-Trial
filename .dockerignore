@@ -6,7 +6,6 @@ node_modules
 *.log
 .DS_Store
 tests
-scripts
 docs
 __pycache__
 *.zip
