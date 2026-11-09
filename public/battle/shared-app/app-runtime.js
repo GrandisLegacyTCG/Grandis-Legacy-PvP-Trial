@@ -784,7 +784,7 @@ function s0PvpCoinResult(info={}){
 }
 function s0PvpCoinRelease(){coinOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}
 window.GL_S0_RC32_PVP_COIN={showChoice:s0PvpCoinChoice,showResult:s0PvpCoinResult,release:s0PvpCoinRelease};
-function resetPresentationState(){seenCounterMessages.clear();seenRacialMessages.clear();presentationNoticeQueue.length=0;presentationNoticeActive=false;clearTimeout(counterBannerTimer);counterBanner.classList.remove('show','is-racial');counterBanner.style.removeProperty('--gl-notice-duration');presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;glPendingDrawReservations.PLAYER.length=0;glPendingDrawReservations.AI.length=0;glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();glOpeningHiddenShardUids.clear();glExternalDrawSequence=Promise.resolve();glExternalManaDrawSequence=Promise.resolve();glExternallyPresentedShardUids.clear();resultShown=false;resultOverlay.classList.remove('open');syncMatchActionButton(null);closeLobbyProgression();resetMatchTimer()}
+function resetPresentationState(){pvpPendingAttackVisual=null;seenCounterMessages.clear();seenRacialMessages.clear();presentationNoticeQueue.length=0;presentationNoticeActive=false;clearTimeout(counterBannerTimer);counterBanner.classList.remove('show','is-racial');counterBanner.style.removeProperty('--gl-notice-duration');presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;glPendingDrawReservations.PLAYER.length=0;glPendingDrawReservations.AI.length=0;glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();glOpeningHiddenShardUids.clear();glExternalDrawSequence=Promise.resolve();glExternalManaDrawSequence=Promise.resolve();glExternallyPresentedShardUids.clear();resultShown=false;resultOverlay.classList.remove('open');syncMatchActionButton(null);closeLobbyProgression();resetMatchTimer()}
 function startMatchFromLobby(){
   lobbyErrorText='';const r=E().prepareLocalMatch?.();if(!r?.ok){lobbyErrorText=r?.error||'Could not start match.';renderLobby();return}
   resetPresentationState();lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('gl-lobby-hidden');renderCoinChoice();
@@ -845,7 +845,7 @@ function runOpeningShardGroups(events,serial=null){
   const next=()=>{if(!valid())return;if(gi>=groups.length){glOpeningHiddenShardUids.clear();manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(()=>{if(!valid())return;if(serial!==null)finishPvPOpeningPresentation(serial);else{previousVisualState=visualStateOf(st());presentationPrimed=true;openingPresentationActive=false;E().beginFirstTurn?.(openingFirstSide);setTimeout(renderNow,0)}},180));return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',host=side==='PLAYER'?playerManaHost:aiManaHost,to=host?.querySelector('.mana-card[data-uid="'+CSS.escape(String(e.uid))+'"]'),from=zoneEl(side,'Shard Deck');parts.push({src:'assets/ui/back-shard.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{if(!valid())return;group.forEach(e=>glOpeningHiddenShardUids.delete((e.side==='AI'?'AI':'PLAYER')+'|'+String(e.uid)));manaRenderKey='';renderMana();requestAnimationFrame(()=>setTimeout(next,20))})};next();
 }
 function visualStateOf(s){
-  const hero={};for(const side of ['PLAYER','AI']){hero[side]={};for(const lane of laneOrder){const h=sideHeroes(s,side)?.[lane];hero[side][lane]={card_id:h?.card_id||'',image_id:heroImageId(h)||'',legacy:!!h?.legacy_mode,hp:Number(h?.hp||0),exp_cards:Array.isArray(h?.exp_cards)?h.exp_cards.slice():[]}}}
+  const hero={};for(const side of ['PLAYER','AI']){hero[side]={};for(const lane of laneOrder){const h=sideHeroes(s,side)?.[lane];hero[side][lane]={card_id:h?.card_id||'',image_id:heroImageId(h)||'',legacy:!!h?.legacy_mode,hp:Number(h?.hp||0),exp_cards:Array.isArray(h?.exp_cards)?h.exp_cards.slice():[],statuses:(h?.statuses||[]).map(x=>({name:String(getStatusName(x)||''),duration:Number(x?.duration??1)})).filter(x=>x.name)}}}
   return{turn:s.turn,round:Number(s.round||1),phase:s.phase,hero,discard:{PLAYER:(s.playerDiscard||[]).slice(),AI:(s.aiDiscard||[]).slice()},playerMana:(s.playerManaPoolCards||[]).map(x=>String(x.uid)),aiMana:(s.aiManaPoolCards||[]).map(x=>String(x.uid)),presentation:(s.presentationEvents||[]).map(x=>cloneLite(x)).filter(Boolean)};
 }
 function multisetAdded(before,after){const counts=new Map();(before||[]).forEach(id=>counts.set(String(id),(counts.get(String(id))||0)+1));const out=[];(after||[]).forEach(id=>{const k=String(id),n=counts.get(k)||0;if(n>0)counts.set(k,n-1);else out.push(id)});return out;}
@@ -954,9 +954,133 @@ function showNewCounterEvents(s){
   });
 }
 function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if(openingPresentationActive||!s.turn||lastTurnBannerKey===key)return;lastTurnBannerKey=key;turnBanner.innerHTML='<strong>'+(s.turn==='PLAYER'?'YOUR TURN':(window.GL_APP_MODE==='PVP'?'OPPONENT TURN':'AI TURN'))+'</strong><small>ROUND '+Number(s.round||1)+'</small>';turnBanner.classList.remove('show');void turnBanner.offsetWidth;turnBanner.classList.add('show');clearTimeout(showTurnBannerFor.t);showTurnBannerFor.t=setTimeout(()=>turnBanner.classList.remove('show'),900)}
+/* PvP-only visual feedback: queue publicly declared affected positions during
+ * the response chain; animate them together only after authoritative resolution.
+ * No rule effects, secret Response cards or second network intent are involved. */
+let pvpPendingAttackVisual=null;
+function pvpAttackStatusIncrease(before,after){
+  const previous=new Map((before||[]).map(x=>[String(x.name||''),Math.max(0,Number(x.duration||0))]));
+  const names=[];
+  for(const x of after||[]){
+    const name=String(x.name||'');
+    if(!name||!['Poison','Burn','Bleed','Freeze','Stun','Sleep'].includes(name))continue;
+    if(Number(x.duration||0)>(previous.get(name)||0)&&!names.includes(name))names.push(name);
+  }
+  return names;
+}
+function pvpAttackVisualPlan(s,cur,prev){
+  if(window.GL_APP_MODE!=='PVP'||!s)return null;
+  const rw=s.responseWindow;
+  if(rw){
+    const a=rw.kind==='incoming_attack'?rw:
+      rw.original_attack_context?.kind==='incoming_attack'?rw.original_attack_context:null;
+    if(!a)return null; // Keep earlier Attack through nested card Responses.
+    const key=[a.card_id||'',a.source_side||'',a.source_lane||'',a.target_side||'',
+      Number(s.round||0)].join('|');
+    if(!pvpPendingAttackVisual||pvpPendingAttackVisual.key!==key)
+      pvpPendingAttackVisual={key,baseline:prev||cur,attack:null,targets:new Set()};
+    const track=pvpPendingAttackVisual;
+    const attack={card_id:String(a.card_id||''),source_side:a.source_side||'PLAYER',
+      source_lane:a.source_lane||'CENTER',target_side:a.target_side||'AI',
+      target_lane:a.target_lane||null,damage_type:a.damage_type||'Physical',
+      attack_type:a.attack_type||''};
+    track.attack=attack;
+    const direct=Array.isArray(a.affected_lanes)?a.affected_lanes:[];
+    for(const lane of direct)if(['LEFT','CENTER','RIGHT'].includes(lane))track.targets.add(lane);
+    const area=/area|all opponents/i.test(String(attack.attack_type));
+    if(!direct.length&&area){
+      const possible=/all opponents/i.test(String(attack.attack_type))?['LEFT','CENTER','RIGHT']:
+        attack.source_lane==='LEFT'?['LEFT','CENTER']:
+        attack.source_lane==='RIGHT'?['CENTER','RIGHT']:['LEFT','CENTER','RIGHT'];
+      for(const lane of possible)
+        if(!cur.hero?.[attack.target_side]?.[lane]?.legacy)track.targets.add(lane);
+    }
+    if(!track.targets.size&&['LEFT','CENTER','RIGHT'].includes(attack.target_lane))
+      track.targets.add(attack.target_lane);
+    return null;
+  }
+  if(!pvpPendingAttackVisual)return null;
+  if(['response_window','response_payment_choice','mana_shard_payment_choice'].includes(s.pending?.type))
+    return null;
+  const track=pvpPendingAttackVisual;pvpPendingAttackVisual=null;
+  const attack=track.attack;if(!attack)return null;
+  const targets=[...track.targets].map(lane=>{
+    const before=track.baseline?.hero?.[attack.target_side]?.[lane];
+    const after=cur.hero?.[attack.target_side]?.[lane];
+    if(!before||!after)return null;
+    return {side:attack.target_side,lane,
+      damage:Math.max(0,Number(before.hp||0)-Number(after.hp||0)),
+      statuses:pvpAttackStatusIncrease(before.statuses,after.statuses)};
+  }).filter(Boolean);
+  const beforeIds=new Set((track.baseline?.presentation||[]).map(x=>String(x?.id||'')));
+  const fullyCountered=(cur.presentation||[]).some(e=>e?.type==='CARD_NEGATED'&&
+    e.target_card_id===attack.card_id&&!beforeIds.has(String(e.id||'')));
+  if(fullyCountered&&targets.every(t=>t.damage===0&&t.statuses.length===0))return null;
+  return targets.length?{attack,targets}:null;
+}
+function playPvpCombatVisualBatch(batch){
+  if(!batch||window.GL_APP_MODE!=='PVP'||!batch.targets?.length)return false;
+  let layer=document.getElementById('glBattleFeedbackLayer');
+  if(!layer){layer=document.createElement('div');layer.id='glBattleFeedbackLayer';
+    layer.className='gl-battle-feedback-layer';layer.setAttribute('aria-hidden','true');
+    document.body.appendChild(layer);}
+  const isMagic=/magical/i.test(String(batch.attack.damage_type||''));
+  const src=isMagic?'engine/assets/battle/M.Attack.png':'engine/assets/battle/P.Attack.png';
+  const css=isMagic?'gl-battle-mattack':'gl-battle-pattack',created=[];
+  // All target VFX, damage shakes and freshly inflicted Status start together.
+  for(const target of batch.targets){
+    const hero=heroCardEl(target.side,target.lane);
+    const anchor=hero?.closest('.gl-hero-physical-stack')||hero;
+    const rect=uiRect(anchor);
+    if(!rect||rect.width<1||rect.height<1)continue;
+    const clip=document.createElement('div');clip.className='gl-battle-vfx-clip';
+    clip.style.left=rect.left+'px';clip.style.top=rect.top+'px';
+    clip.style.width=rect.width+'px';clip.style.height=rect.height+'px';
+    layer.appendChild(clip);created.push(clip);
+    const hit=document.createElement('img');hit.className='gl-battle-vfx '+css;
+    hit.src=src;hit.draggable=false;hit.style.width='72%';hit.style.height='72%';
+    hit.style.left='14%';hit.style.top='14%';clip.appendChild(hit);
+    const lane=uiLaneElement(target.side,target.lane);
+    if(target.damage>0&&lane){lane.classList.remove('gl-battle-damage-card');
+      void lane.offsetWidth;lane.classList.add('gl-battle-damage-card');
+      setTimeout(()=>lane.classList.remove('gl-battle-damage-card'),550);}
+    for(const status of target.statuses||[]){
+      if(status==='Sleep'){
+        for(const corner of ['first','second']){
+          const node=document.createElement('span');
+          node.className='gl-battle-sleep-marker '+(corner==='second'?'second':'');
+          node.textContent='Z';clip.appendChild(node);
+        }
+        continue;
+      }
+      const corners=/^(Poison|Burn)$/.test(status)?['first','second']:['first'];
+      for(const corner of corners){
+        const node=document.createElement('img');
+        node.className='gl-battle-vfx gl-battle-status-icon gl-battle-status-twin '+
+          (corner==='second'?'gl-battle-heal--right':'gl-battle-heal--left');
+        node.src='engine/assets/status-icons/Icon-'+status+'.png';node.alt='';
+        node.draggable=false;node.style.width='34%';node.style.height='34%';
+        const burn=status==='Burn';
+        node.style.left=corner==='second'?(burn?'9%':'60%'):(burn?'60%':'9%');
+        node.style.top=corner==='second'?'9%':'56%';clip.appendChild(node);
+      }
+    }
+  }
+  if(!created.length)return false;
+  if(E()?.getSoundEnabled?.()&&typeof Audio!=='undefined'){
+    try{const snd=new Audio(isMagic?'engine/assets/audio/battle/M.Atk.mp3':
+      'engine/assets/audio/battle/P.Atk.mp3');
+      snd.volume=.58;const promise=snd.play();promise?.catch?.(()=>{});}
+    catch(_){/* Browser blocked audio autoplay. */}
+  }
+  setTimeout(()=>created.forEach(node=>node.remove()),1150);
+  return true;
+}
+
 function buildPresentationPlan(s){
   showNewCounterEvents(s);
-  const cur=visualStateOf(s),prev=previousVisualState,plan={draws:[],returns:[],shards:[],heroTransitions:[],moved:[]};
+  const cur=visualStateOf(s),prev=previousVisualState,plan={draws:[],returns:[],shards:[],heroTransitions:[],moved:[],combatBatch:null};
+  plan.combatBatch=pvpAttackVisualPlan(s,cur,prev);
   if(openingPresentationActive){(cur.presentation||[]).forEach(e=>{if(e?.id&&e.reason==='OPENING_HAND')seenPresentationEvents.add(e.id)});previousVisualState=cur;return plan;}
   (cur.presentation||[]).forEach(e=>{if(!e?.id||seenPresentationEvents.has(e.id))return;seenPresentationEvents.add(e.id);if(presentationPrimed&&e.type==='CARD_DRAWN')plan.draws.push(e);if(presentationPrimed&&e.type==='CARD_RETURNED_TO_DECK')plan.returns.push(e)});
   if(prev&&presentationPrimed){
@@ -984,6 +1108,7 @@ function preparePresentationTargets(plan){
 }
 function runPresentationPlan(plan,s){
   showTurnBannerFor(s);
+  if(plan.combatBatch)playPvpCombatVisualBatch(plan.combatBatch);
   const draws=(plan.draws||[]).slice(),returns=(plan.returns||[]).flatMap(e=>Array.from({length:Math.min(24,Math.max(0,Math.floor(Number(e.count)||0)))},()=>({side:e.side}))),shards=(plan.shards||[]).slice(),rankTransitions=(plan.heroTransitions||[]).filter(x=>x.kind==='rank'),legacyTransitions=(plan.heroTransitions||[]).filter(x=>x.kind==='legacy');
   function runShardSequence(index){
     if(index>=shards.length)return;
@@ -1921,7 +2046,10 @@ function renderHero(side,lane,h,s){
   const tributePanelAction=(engineSelectable&&p?.type==='tribute_target')||directTributeHeroReady(p,side,lane);
   const responsePanelAction=responseSelectable?()=>selectResponseRouteHero(side,lane):null;
   const tributeClickAction=tributePanelAction?()=>runTributeLikeHeroAction(p,side,lane):null;
-  const panelClickAction=responsePanelAction||tributeClickAction;
+  // Legal Single Target/Source Hero selection must work from the entire lane,
+  // not solely the small Hero art or exhausted/rotated image hitbox.
+  const legalHeroPanelAction=engineSelectable?()=>intent('chooseHeroFromBoard',[side,lane]):null;
+  const panelClickAction=responsePanelAction||tributeClickAction||legalHeroPanelAction;
   laneEl.onclick=panelClickAction?e=>{
     // Card art handles its own single/double clicks; interactive controls
     // keep their existing behavior. Decorative overlays route to the lane.
