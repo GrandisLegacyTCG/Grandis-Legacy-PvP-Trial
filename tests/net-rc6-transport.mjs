@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 const src=readFileSync('public/battle/runtime/pvp-network.js','utf8');
-const buildId='gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09';
+const buildId='gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09';
 const packets=[],paint=[],timers=[],sockets=[];
 let imported=null,importCount=0,nowMs=10000;
 class Sock{
