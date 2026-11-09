@@ -45,7 +45,7 @@ button{font:inherit}
 
 /* Hands: default 85% visible. */
 .hand{position:relative;display:flex;justify-content:center;overflow:hidden;min-height:calc(var(--hand-h) * .85 + 7px);z-index:40}
-.hand.top{align-items:flex-start}.hand.bottom{align-items:flex-end}
+.hand.top{align-items:flex-start;overflow:visible}.hand.bottom{align-items:flex-end}
 .hand-track{height:calc(var(--hand-h) * .85 + 7px);display:flex;justify-content:center;align-items:flex-end;gap:0;overflow:visible;min-width:0;padding:0 10px}
 .hand.top .hand-track{align-items:flex-start}
 .hand.top .hand-track{transform:translateX(var(--opponent-hand-align-shift,0px))}
@@ -170,12 +170,7 @@ button{font:inherit}
 .bottom-hud .hand-track{pointer-events:auto}
 .mana-pool{position:absolute;width:21.5%;height:var(--zone-h);border:1px solid rgba(244,211,94,.28);border-radius:8px;background:linear-gradient(180deg,rgba(9,19,30,.92),rgba(4,10,17,.96));box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);display:flex;align-items:center;padding:3px 6px;z-index:65;overflow:visible}
 .player-mana-pool{left:4px;top:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2))}
-/* PvP: opponent Mana is a visible face-down pool at the top-right HUD.
-   It cannot be positioned from the opponent field height: on short/mobile
-   canvases the old bottom-based offset put the pool above the field and
-   behind the opponent hand. The parent is now .battlefield itself. */
-.opponent-mana-pool{right:4px;top:4px;bottom:auto;z-index:96}
-.opponent-mana-pool .gl-pool-badge{position:absolute;right:3px;bottom:-15px;z-index:8;padding:2px 6px;border:1px solid rgba(243,207,88,.42);border-radius:4px;background:rgba(5,17,29,.95);font:900 8px/1.1 Noto,Arial,sans-serif;letter-spacing:.07em;color:#ffdf8c;white-space:nowrap;pointer-events:none}
+.opponent-mana-pool{right:4px;bottom:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2))}
 .mana-pool .count{right:-4px;top:-4px}
 .mana-cards{position:relative;height:100%;width:100%;min-width:0;overflow:hidden;padding-left:2px;padding-right:2px}.mana-card{position:absolute;top:50%;left:2px;width:var(--std-w);height:var(--std-h);margin:0;transform:translateY(-50%);filter:drop-shadow(0 3px 5px rgba(0,0,0,.55));transition:left .14s ease}.mana-card img{width:100%;height:100%;object-fit:cover;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
 .mana-controls{position:absolute;left:calc(21.5% + 12px);top:calc(2px + (var(--zone-h) * 2) + (var(--rail-gap) * 2) + (var(--zone-h) - 49px)/2);display:flex;flex-direction:column;gap:5px;z-index:85}.mana-controls button{width:27px;height:22px;border:1px solid #315b7f;border-radius:5px;background:#0a2238;color:#dff0ff;font-size:12px;font-weight:900;line-height:1;box-shadow:0 3px 8px rgba(0,0,0,.45)}
@@ -231,7 +226,7 @@ button{font:inherit}
 /* Part 5 asset staging: compact sound popover expands upward from the existing sidebar slot. */
 .bottom-actions .gl-sound-control{position:relative;min-width:0;z-index:450}
 .bottom-actions .gl-sound-control>button{display:block;width:100%;height:22px;cursor:pointer}
-.gl-sound-panel{position:absolute;z-index:451;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:158px;display:flex;flex-direction:column;gap:2px;padding:8px;border:1px solid #bd9a45;border-radius:9px;background:rgba(6,17,28,.98);box-shadow:0 8px 24px rgba(0,0,0,.72)}
+.gl-sound-panel{position:absolute;z-index:451;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:205px;display:flex;flex-direction:column;gap:2px;padding:8px;border:1px solid #bd9a45;border-radius:9px;background:rgba(6,17,28,.98);box-shadow:0 8px 24px rgba(0,0,0,.72)}
 .gl-sound-panel[hidden]{display:none!important}
 .gl-sound-row{display:flex;align-items:center;justify-content:space-between;min-height:33px;gap:10px;padding:3px 5px;color:#f3e1a8;font-size:11px;font-weight:800;line-height:1.2;cursor:pointer}
 .gl-sound-row input{position:absolute;width:1px;height:1px;opacity:0}
@@ -283,24 +278,10 @@ html.gl-adaptive-stage .played-box{padding-top:7px;padding-bottom:6px;gap:5px}
 html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 
 /* Opponent counter geometry remains the approved desktop geometry on every device. */
-.opponent-field .zone>.count,.opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
+.opponent-field .zone>.count,.opponent-field .opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
 </style>
 
-<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09">
-<style id="gl-pvp-touch-accessibility">
-/* Never scale down the accessibility action dock with the battlefield. */
-#glPvPTouchDock{display:none;position:fixed;z-index:2147483500;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 20px);padding:6px 8px 8px;border:1px solid #af8c43;border-radius:11px;background:rgba(5,17,29,.97);box-shadow:0 8px 26px #000b;color:#e9dcab;text-align:center;font:700 12px/1.15 system-ui,sans-serif;user-select:none}
-#glPvPTouchDock[hidden]{display:none!important}
-#glPvPTouchDock .gl-pvp-touch-help{display:block;font-size:10px;letter-spacing:.08em;margin-bottom:5px;color:#c4b781}
-#glPvPTouchDock .gl-pvp-touch-buttons{display:flex;justify-content:center;gap:7px}
-#glPvPTouchDock .gl-pvp-touch-button{flex:1 1 auto;min-width:76px;min-height:46px;padding:9px 12px;border:1px solid #bf9c47;border-radius:8px;background:#122b41;color:#ffe6ab;font:800 13px/1.12 system-ui,sans-serif;touch-action:manipulation;cursor:pointer;white-space:nowrap}
-#glPvPTouchDock .gl-pvp-touch-button.is-primary{background:linear-gradient(180deg,#f6d671,#d6ae34);color:#171d26;border-color:#ffd981}
-#glPvPTouchDock .gl-pvp-touch-button:focus-visible{outline:3px solid white;outline-offset:2px}
-@media (any-pointer:coarse), (pointer:coarse){#glPvPTouchDock:not([hidden]){display:block}}
-@media (max-width:450px){#glPvPTouchDock{width:calc(100vw - 20px)}#glPvPTouchDock .gl-pvp-touch-button{min-width:0;padding:8px 7px;font-size:12px}}
-.hand.bottom .hand-card.gl-pvp-touch-selected{z-index:90}
-.hand.bottom .hand-card.gl-pvp-touch-selected .card-actions{opacity:1;pointer-events:auto}
-</style>
+<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09">
 
 </head>
 <body>
@@ -328,14 +309,11 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
         <div class="zone"><img src="assets/ui/back-shard.webp" alt="Opponent Shard Deck"><span class="count">0</span><span class="zone-label">MANA<br>DECK</span></div>
         <div class="zone"><img src="assets/ui/back-legacy.webp" alt="Opponent Legacy Deck"><span class="count">0</span><span class="zone-label">LEGACY<br>DECK</span></div>
       </div>
+      <div class="mana-pool opponent-mana-pool">
+        <div class="mana-cards" id="opponentManaCards"></div>
+        <span class="count" id="opponentManaCount">0</span>
+      </div>
     </section>
-
-    <!-- Independent of opponent field geometry: always visible on mobile and desktop. -->
-    <div class="mana-pool opponent-mana-pool" aria-label="Opponent Mana Pool (face-down Shards)">
-      <div class="mana-cards" id="opponentManaCards"></div>
-      <span class="count" id="opponentManaCount">0</span>
-      <span class="gl-pool-badge" aria-hidden="true">OPPONENT MANA</span>
-    </div>
 
     <section class="phase" aria-label="Turn phase tracker">
       <div class="phase-turn"><div class="turn"></div></div>
@@ -474,20 +452,21 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     <div id="glAnimationLayer"></div>
   </div>
   <script>window.GL_APP_MODE="PVP";window.GL_PVP_SHARED_BOARD_ACTIVE=true;window.GL_PVP_LOCAL_ROLE="player";</script>
-  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
   <script src="/build-meta.js"></script>
-  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
-  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
+  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09-gameplay-sync-rc36p6"></script>
+  <script src="shared-ui/mobile-landscape-lobby.js?v=gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09"></script>
   
 
 </body>

@@ -3,7 +3,7 @@ import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 
 const source=readFileSync('public/pvp/pvp-host.js','utf8');
-const BUILD_ID='gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09';
+const BUILD_ID='gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09';
 const nodes=new Map(),messages=[],listeners=new Map(),sockets=[],posted=[];
 const hasClass=new Set();
 function el(tag='div'){

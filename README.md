@@ -1,3 +1,36 @@
+# Grandis Legacy PvP Season 0 — Gameplay Sync from VS AI RC36 Internal Patch 6 (RC36.8; 9 November 2026)
+
+**STATUS: STAGING / QA. No GitHub upload.** This package starts from **PvP RC36 Patch 4 UI Hotfix 1** and synchronizes only the latest donor's **functional Response source-selection correction**. Existing PvP lobby, battlefield, Coin Flip, mobile layout, audio, card art, network and Mana Payment are retained.
+
+- **Defense source lane (behavior, not visual redesign):** when a legal team-wide Defense such as **Blessing of Divinity** is available, the player can select its legal Crusader/Paladin source by clicking empty/decorative space anywhere inside that Hero lane, even if the Hero is visually rotated because it is Exhausted. Only source lanes offered by the engine respond. This does **not** authorize an exhausted Hero to perform an illegal action.
+- **Defense targeting unchanged:** team-wide Defense applies to **all allies**. **Holy Barrier** still requires choosing its legal source and then the attacked Hero to protect. Double-click Card Review, Tribute, attachment buttons and other controls remain independent.
+- **No changes to actual rules:** a file-by-file comparison of donor RC36.6 (Internal Patch 4) and RC36.8 (Internal Patch 6) shows the gameplay engine, card data, AI policy and all other binaries are identical. Only donor `shared-app/app-runtime.js` (the click interaction), `shared-ui/battlefield-ui.css` (UI-only PLAY/EXP and lobby warning) and documentation differ. **Donor CSS is intentionally not imported.** Rank Up stays 300/700 EXP.
+- **Networking preserved:** client/server authority, WebSocket protocol, RC5 atomic Mana Payment, RC6 Stage 2 Response transport, BGM-disabled/SFX-enabled configuration and build ID remain unchanged. The modified browser runtime has a new query string to avoid reuse of its previous immutable-cached script.
+- **QA:** `npm run check` PASS, including the new production-handler VM cases for two Blessing source paths, two-stage Holy Barrier, legal-source constraints, interactive-child isolation and Tribute. Build/precompressed assets verified. Live two-device hosted gameplay is still not verified.
+
+Details: `docs/RC36_PATCH6_GAMEPLAY_SYNC_2026-11-09.md`.
+
+---
+
+# Grandis Legacy PvP Season 0 - RC36 Patch 4 UI Hotfix 1 (9 November 2026)
+
+**STATUS: STAGING / QA — manual GitHub upload; not yet validated on two real browsers.**
+
+This is a targeted **VS AI RC36 Patch 4 UI parity recovery** on top of the existing PvP RC36 Patch 4 / Network RC6 Stage 2 source. No new gameplay HUD, actions, card design, music, or AI authority were added.
+
+- **Hero Review:** lobby Hero clicks now use the same VS AI Deck Builder v1.58 read-only review, including HERO LINEAGES and rank selection. A 55-card Hero/Legacy catalog is read from the installed Season 0 static card definitions; regular battle assets are reused from `/battle/`.
+- **Coin Flip:** removed the extra `RETURN TO LOBBY` button, restored single coin result visual and synced the latest approved Heads/Tails image assets. Mobile Coin Flip uses the VS AI landscape script.
+- **Fatal empty battlefield:** removed a JavaScript boot exception caused by trying to attach `onchange` to the missing Music control. PvP retains SFX only, deliberately omits BGM.
+- **Extra opponent Mana:** removed the new top-right opponent Mana badge/panel and restored the original VS AI pool position in the opponent field. PvP remains able to show face-down opponent Mana as required by game rules.
+- **Mobile lobby:** reuses the exact same desktop two-column lobby DOM/geometry via a scaled landscape canvas, rotated for portrait phones instead of an alternative stacked design. No new lobby controls.
+- **RFC6455 fallback:** corrected the existing lite WebSocket parsing edge case when a 16-bit payload length equals exactly 127 bytes. This was reproduced when a longer unique build ID pushed the normal deck-selection command across this boundary. Native `ws` production transport is unchanged.
+
+**QA:** `npm run check` and `npm run test:rc36-ui-hotfix` pass locally; `npm run build:precompress` produces updated compressed static assets. Real two-device visual/network testing and Northflank deployment remain unverified. Source of truth is attached PvP RC36 Patch 4 and VS AI RC36 Patch 4; a separate newer PvP Patch 5 archive was not provided.
+
+Full details: `docs/RC36_PATCH4_UI_HOTFIX1_2026-11-09.md`.
+
+---
+
 # Grandis Legacy PvP Season 0 — RC36 Patch 4 / Network RC6 Stage 2 Lightweight
 
 **STATUS: STAGING BUILD — full source ready for manual GitHub upload and Northflank QA; not certified production/final.**

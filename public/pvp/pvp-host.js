@@ -315,28 +315,55 @@ function returnToLobby(){return send('return-to-lobby')?{ok:true,pending:true}:{
 // Lobby-only boundary: never load or execute a Season 1/0 gameplay engine in the
 // room. The authoritative RC34 battle is loaded only after /battle/ navigation.
 function setDeck(key){state.customDeck=null;state.customDeckName='';state.deckKey=key;state.rank=1;state.formation=baseFormation(starterDeck(key));persist('deck',key);persist('custom','');persist('customName','');if(state.connected&&local()?.role!=='spectator')send('set-deck',{deckKey:key,formation:currentFormation()});renderLobby()}
-function openS0CardPreview(id){
-  // RC36-style compact Hero Card Review in the lightweight lobby. No heavy
-  // gameplay engine is loaded for the sole purpose of inspecting a Hero.
-  document.getElementById('pvpS0CardPreview')?.remove();
-  const c=cardDef(id),identity=c?.identity||{},rows=c?.printed?.rows||[];
-  const title=cardName(id),rank=Number(c?.rank_numeric||0),race=String(c?.race||identity.race||''),cls=String(c?.display_class||identity.class||'');
-  const points=[rank?'RANK '+['I','II','III'][rank-1]:null,race,cls,Number.isFinite(Number(c?.hp))?'HP '+Number(c.hp):null].filter(Boolean);
-  const details=rows.length?rows.map(row=>'<section class="pvp-card-review-row"><strong>'+esc(row.label||'Ability')+'</strong><p>'+esc(row.text||'')+'</p></section>').join(''):
-    '<section class="pvp-card-review-row"><p>'+esc(c?.printed?.text||c?.card_text||'No card text available.')+'</p></section>';
-  const p=document.createElement('div');p.id='pvpS0CardPreview';p.className='pvp-progression-modal';
-  p.innerHTML='<section class="pvp-progression-card pvp-card-review" role="dialog" aria-modal="true" aria-labelledby="pvpCardReviewTitle"><header><div><span>HERO CARD REVIEW · SEASON 0</span><h2 id="pvpCardReviewTitle">'+esc(title)+'</h2></div><button id="pvpS0CardPreviewClose" class="pvp-progression-close" type="button">Close</button></header><div class="pvp-card-review-body"><img loading="lazy" src="'+esc(localCardArt(id))+'" alt="'+esc(title)+'"><div class="pvp-card-review-details"><div class="pvp-card-review-tags">'+points.map(x=>'<span>'+esc(x)+'</span>').join('')+'</div>'+details+'</div></div></section>';
-  document.body.appendChild(p);
-  const close=()=>{p.remove();document.removeEventListener('keydown',onKey)};
-  const onKey=e=>{if(e.key==='Escape')close()};
-  p.querySelector('button').onclick=close;
-  p.onclick=e=>{if(e.target===p)close()};
-  document.addEventListener('keydown',onKey);
-  p.querySelector('button')?.focus();
+// VS AI RC36 Deck Builder v1.58 Card Review, including HERO LINEAGES footer.
+// The lobby uses a read-only 55-card source-authoritative catalog: no AI/game engine.
+let lobbyReviewProgressionIds=[];
+let lobbyReviewOverlay=null;
+function ensureLobbyReview(){
+  if(lobbyReviewOverlay)return lobbyReviewOverlay;
+  const el=document.createElement('div');el.className='gl-card-review-overlay';el.id='pvpS0CardPreview';
+  el.innerHTML='<section class="gl-card-review-panel" role="dialog" aria-modal="true" aria-label="Card Review"><div class="gl-card-review-body"></div></section>';
+  document.body.appendChild(el);
+  el.addEventListener('click',e=>{if(e.target===el||e.target.closest('.gl-card-review-close'))closeS0CardPreview()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&el.classList.contains('open'))closeS0CardPreview()});
+  window.addEventListener('message',e=>{
+    const frame=el.querySelector('.gl-db158-review-frame');
+    if(!frame||e.source!==frame.contentWindow||e.origin!==location.origin)return;
+    if(e.data?.kind==='GL_S0_REVIEW_CLOSE'){closeS0CardPreview();return}
+    if(e.data?.kind==='GL_S0_REVIEW_RANK'&&el.classList.contains('open')){
+      const next=String(e.data.cardId||'');
+      if(lobbyReviewProgressionIds.includes(next))openS0CardPreview(next,{keepLobbyLineage:true});
+    }
+    if(e.data?.kind==='GL_S0_REVIEW_FIT'&&el.classList.contains('open')){
+      const h=Number(e.data.height);
+      if(Number.isFinite(h)&&h>100){
+        const logicalHeight=document.documentElement.classList.contains('gl-pvp-mobile-desktop')?760:window.innerHeight;
+        frame.style.setProperty('height',Math.min(Math.ceil(h),Math.max(250,logicalHeight-20))+'px','important');
+      }
+    }
+  });
+  lobbyReviewOverlay=el;return el;
+}
+function closeS0CardPreview(){
+  lobbyReviewProgressionIds=[];
+  if(lobbyReviewOverlay){lobbyReviewOverlay.classList.remove('open');lobbyReviewOverlay.querySelector('.gl-card-review-body')?.replaceChildren()}
+}
+function openS0CardPreview(cardId,options=null){
+  if(!cardId)return;
+  const el=ensureLobbyReview(),body=el.querySelector('.gl-card-review-body');
+  if(options?.lobbyLineageIds)lobbyReviewProgressionIds=options.lobbyLineageIds.slice(0,3);
+  else if(!options?.keepLobbyLineage)lobbyReviewProgressionIds=[];
+  if(!window.GL_DB158_REVIEW?.mount?.(body,cardId,lobbyReviewProgressionIds)){
+    body.innerHTML='<button type="button" class="gl-card-review-close">Close</button><img class="gl-card-review-image" src="'+esc(localCardArt(cardId))+'" alt="'+esc(cardName(cardId))+'">';
+  }
+  el.classList.add('open');
 }
 function swapFormation(a,b){const lanes=['LEFT','CENTER','RIGHT'],f=currentFormation(),x=lanes[a],y=lanes[b];if(!x||!y)return;[f[x],f[y]]=[f[y],f[x]];state.formation=f;if(state.customDeck)send('set-deck',{customDeck:state.customDeck,deckName:state.customDeckName,formation:f});else send('set-deck',{deckKey:state.deckKey,formation:f});renderLobby()}
 function closeProgression(){document.getElementById('pvpHeroProgressionModal')?.remove()}
-async function openProgression(rankOne){closeProgression();const ids=heroProgressionIds(currentDeck(),rankOne);if(ids.length<3)return;const modal=document.createElement('div');modal.id='pvpHeroProgressionModal';modal.className='pvp-progression-modal';const cards=ids.map((id,i)=>'<article class="pvp-v260-hero pvp-progression-hero '+(i===0?'current':'')+'"><button class="pvp-v260-card pvp-progression-static-card" type="button" data-preview="'+esc(id)+'"><img src="'+esc(cardSrc(id))+'" alt="'+esc(cardName(id))+'"></button><div class="pvp-v260-position">RANK '+['I','II','III'][i]+'</div></article>');modal.innerHTML='<section class="pvp-progression-card"><header><div><span>HERO PROGRESSION</span><h2>'+esc(cardName(ids[0]))+'</h2></div><button id="pvpHeroProgressionClose" class="pvp-progression-close" type="button">Close</button></header><div class="pvp-progression-row">'+cards[0]+'<span class="pvp-progression-arrow">→</span>'+cards[1]+'<span class="pvp-progression-arrow">→</span>'+cards[2]+'</div><p>Select a Rank card to open full Hero Card Review.</p></section>';document.body.appendChild(modal);$('pvpHeroProgressionClose').onclick=closeProgression;modal.onclick=e=>{const b=e.target.closest?.('[data-preview]');if(b){e.preventDefault();e.stopPropagation();openS0CardPreview(b.dataset.preview);return}if(e.target===modal)closeProgression()}}
+function openProgression(rankOne){
+  const ids=heroProgressionIds(currentDeck(),rankOne);
+  openS0CardPreview(ids[0]||rankOne,{lobbyLineageIds:ids});
+}
 /* The Hero Preview and Formation controls follow the native RC32 VS AI
  * setupFormationCard()/deckSetupSide() component (source: app.bundle.js).
  * The S1 lobby only supplies the surrounding shell and multiplayer seat UI.

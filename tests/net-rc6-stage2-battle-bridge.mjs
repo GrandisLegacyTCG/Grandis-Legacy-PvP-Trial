@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 const source=readFileSync('public/battle/runtime/pvp-network.js','utf8');
-const BUILD_ID='gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09';
+const BUILD_ID='gl-s0-pvp-rc36p4-net-rc6s2-ui-hotfix1-2026-11-09';
 const sent=[];let listener=null,imports=0,board=null,createdSockets=0;
 const parent={postMessage(m,origin){sent.push({m,origin})}};
 class Sock{static OPEN=1;constructor(){createdSockets++;throw Error('Embedded stage must never open its own WebSocket')}}

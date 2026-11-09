@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js && node --check public/battle/runtime/pvp-touch-actions.js && node --check public/battle/runtime/pvp-mana-draft.js",
+    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js && node --check public/battle/runtime/pvp-touch-actions.js && node --check public/battle/runtime/pvp-mana-draft.js && node --check public/pvp/pvp-mobile-desktop.js && node --check public/pvp/db158-card-review.js && node --check server/ws-lite.mjs",
     "test:transition": "npm run test:ws-gate",
     "check:parity": "node tests/s1-source-parity.mjs",
-    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog && npm run test:browser-response && npm run test:postmatch && npm run test:touch-static && npm run test:quickplay-tuneup && npm run test:mana-transport && npm run test:net-rc6 && npm run test:net-rc6-live && npm run test:net-stage2-socket && npm run test:net-stage2-response",
+    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog && npm run test:browser-response && npm run test:postmatch && npm run test:touch-static && npm run test:quickplay-tuneup && npm run test:mana-transport && npm run test:net-rc6 && npm run test:net-rc6-live && npm run test:net-stage2-socket && npm run test:net-stage2-response && npm run test:rc36-ui-hotfix && npm run test:rc36-defense-source",
     "test:s0-catalog": "npm run check:catalog",
     "check:catalog": "node tests/s0-catalog-static.mjs",
     "test:ws-gate": "python3 tests/ws-gate.py",
@@ -33,7 +33,9 @@
     "test:net-rc6": "node tests/net-rc6-transport.mjs",
     "test:net-rc6-live": "python3 tests/net-rc6-live-ws.py",
     "test:net-stage2-socket": "node tests/net-rc6-stage2-single-socket.mjs && node tests/net-rc6-stage2-battle-bridge.mjs",
-    "test:net-stage2-response": "node tests/net-rc6-stage2-batch.mjs"
+    "test:net-stage2-response": "node tests/net-rc6-stage2-batch.mjs",
+    "test:rc36-ui-hotfix": "node tests/rc36-ui-hotfix.mjs",
+    "test:rc36-defense-source": "node tests/rc36-patch6-defense-source.mjs"
   },
   "engines": {
     "node": ">=18"

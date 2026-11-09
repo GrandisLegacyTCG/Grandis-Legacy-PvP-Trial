@@ -1,0 +1,92 @@
+{
+  "name": "Grandis Legacy PvP Season 0 RC36 Patch4 UI Hotfix1",
+  "date": "2026-11-09",
+  "baseline": "Grandis_Legacy_PvP_S0_RC36_Patch4_Network_RC6_Stage2_Lightweight_2026-11-09.zip",
+  "state": "staging-qa",
+  "changed_sources": {
+    "README.md": {
+      "sha256": "7354ba4fc398c368bf33aea6098983354521ccbec9c36e57956457a2c5961d2a",
+      "bytes": 22428
+    },
+    "docs/RC36_PATCH4_UI_HOTFIX1_2026-11-09.md": {
+      "sha256": "6949ee12871926facfe03b416f07eaf1f35b5b6d25babc33e4158a11f817fed5",
+      "bytes": 4556
+    },
+    "package.json": {
+      "sha256": "b8911d08fbd6ba18b1d96625289f07fe702a78ee782e7d9cac106193912ece06",
+      "bytes": 3450
+    },
+    "public/assets/ui/Racial-Token-Head.webp": {
+      "sha256": "b1d2653653393c60fd00e5b769df0e8cddb26ccb063de4cf888c1d39dc7657ae",
+      "bytes": 76930
+    },
+    "public/assets/ui/Racial-Token-Tail.webp": {
+      "sha256": "867e6c6d1d330ddf7b28e87e31375a8c5a71aa46bb54d054b965e8c5d72b110c",
+      "bytes": 61782
+    },
+    "public/battle/index.html": {
+      "sha256": "231c42abe6248e9d938e3f726787d2f62a0686b3d5dfac6547302538a4c65c9d",
+      "bytes": 40157
+    },
+    "public/battle/shared-app/app-runtime.js": {
+      "sha256": "459401cb25b11ff7174b811bc5b19220988e31f67135f73d227c2a6fdcf05143",
+      "bytes": 241272
+    },
+    "public/battle/shared-ui/mobile-landscape-lobby.js": {
+      "sha256": "c21fcc3913ae6aebe1988bf42a4aaeadff34762caad772ad0ae52b459d781a9d",
+      "bytes": 3904
+    },
+    "public/index.html": {
+      "sha256": "ca0e137c30d49359a15673f026212c97f8e18f259d751c020a430e00825b031a",
+      "bytes": 1207
+    },
+    "public/lobby/pvp-card-review-rc36.css": {
+      "sha256": "880bad6e6d4ab0b8c30ada5b9248cd7d2808d13c9e42a1ef8f47cb5060b61eb1",
+      "bytes": 2823
+    },
+    "public/lobby/pvp-mobile-desktop.css": {
+      "sha256": "cea39eca3d378375d52adc84a5b154408aebd4dfd493da49d5e995b63d04376d",
+      "bytes": 6241
+    },
+    "public/pvp/db158-card-review.js": {
+      "sha256": "e05c79b49d5a77d44dad3ff39a85b36ccc6b62aa1c8d1d2ff2bccdcb100937c1",
+      "bytes": 11125
+    },
+    "public/pvp/pvp-host.js": {
+      "sha256": "fc299bf9f6c7f0e25b2a320cea04f3eee9692b4a6511cc8a7830ef255b9f1fc0",
+      "bytes": 47926
+    },
+    "public/pvp/pvp-mobile-desktop.js": {
+      "sha256": "4704d42c1536b06c9c3a2659f779720aa47abd034c2a4a4413ea16ce96556c65",
+      "bytes": 3103
+    },
+    "public/pvp/s0-lobby-review-catalog.js": {
+      "sha256": "3e749c1edc483c75aa0a9bcd431fa2d597aa8b9d995f1ff3b59ef028173313b8",
+      "bytes": 462027
+    },
+    "server.js": {
+      "sha256": "23d80f59584d6b27cf099b99d8a80b45cfc88f54e56b1e7f5e0ad81b89a90280",
+      "bytes": 36106
+    },
+    "server/ws-lite.mjs": {
+      "sha256": "1e29b60b2ce0ee357df98518db12a2b5063c5a224635df478d7588f8c5862047",
+      "bytes": 5045
+    },
+    "tests/net-rc6-stage2-battle-bridge.mjs": {
+      "sha256": "f0fc50ae4b92e7a23378e83c0d4aac9bb4930fb035c0bd30ecc0de6c5d3fa10d",
+      "bytes": 3683
+    },
+    "tests/net-rc6-stage2-single-socket.mjs": {
+      "sha256": "8f114725ceea498c4cf71f8b3e849e43434e0851694c37663a1312cd9a6616cc",
+      "bytes": 5984
+    },
+    "tests/net-rc6-transport.mjs": {
+      "sha256": "e4e6462e61fbf27870bb362c950487eded670b58b4a64767b414f5b832369807",
+      "bytes": 4446
+    },
+    "tests/rc36-ui-hotfix.mjs": {
+      "sha256": "d8d05efb7ab6324a2c820c3e531896a3f79c15a8589f6e3037a7fd743c2b4567",
+      "bytes": 3984
+    }
+  }
+}

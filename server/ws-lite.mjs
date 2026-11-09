@@ -47,8 +47,11 @@ export function attachWebSocket(server, onClient, {path='/ws', maxBytes=200_000}
         const b0=buffer[0],b1=buffer[1],opcode=b0&15,fin=!!(b0&0x80),masked=!!(b1&0x80);
         if((b0&0x70)||!masked||!fin){fail();return;}
         let len=b1&127,header=2;
+        // RFC6455 length discriminator must be read only from the original second
+        // header byte. A 16-bit length of exactly 127 is still a 16-bit frame,
+        // not a new 64-bit discriminator (which would close the socket).
         if(len===126){if(buffer.length<4)return;len=buffer.readUInt16BE(2);header=4;}
-        if(len===127){if(buffer.length<10)return;const l=buffer.readBigUInt64BE(2);if(l>BigInt(maxBytes)){fail(1009);return;}len=Number(l);header=10;}
+        else if(len===127){if(buffer.length<10)return;const l=buffer.readBigUInt64BE(2);if(l>BigInt(maxBytes)){fail(1009);return;}len=Number(l);header=10;}
         if(len>maxBytes || (opcode>=8 && len>125)){fail(1009);return;}
         if(buffer.length<header+4+len)return;
         const mask=buffer.subarray(header,header+4),payload=Buffer.from(buffer.subarray(header+4,header+4+len));

@@ -1,0 +1,115 @@
+/* Mobile PvP Lobby = exact desktop DOM and layout, scaled as a single stage.
+   Mode is enabled only when lobby is open on a touch handset. No new UI. */
+html.gl-pvp-mobile-desktop #pvpSetupOverlay.pvp-v260-lobby.open{
+  position:fixed!important;left:0!important;top:0!important;right:auto!important;bottom:auto!important;
+  inset:auto!important;width:1180px!important;height:590px!important;min-height:0!important;
+  max-height:none!important;overflow:auto!important;display:block!important;
+  transform:var(--gl-pvp-mobile-transform)!important;
+  transform-origin:0 0!important;background-attachment:scroll!important;
+  overscroll-behavior:contain!important;z-index:20000!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-page{
+  position:relative!important;left:auto!important;top:auto!important;
+  width:1180px!important;max-width:1180px!important;min-height:590px!important;
+  height:auto!important;margin:0!important;padding:12px 26px 14px!important;
+  display:flex!important;flex-direction:column!important;transform:none!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-topbar{
+  min-height:58px!important;display:grid!important;
+  grid-template-columns:194px minmax(280px,1fr)!important;
+  gap:20px!important;margin-bottom:10px!important;align-items:start!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-logo{
+  width:190px!important;height:58px!important;flex:none!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-heading{
+  padding-top:6px!important;overflow-wrap:normal!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-heading h1{font-size:17px!important;line-height:1!important}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-heading p{font-size:13px!important;line-height:normal!important;margin-top:7px!important}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-layout{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 340px!important;
+  gap:14px!important;align-items:stretch!important;flex:1!important;min-height:0!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-deck-panel{
+  padding:12px 18px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-picker{
+  display:grid!important;grid-template-columns:142px minmax(0,1fr) 176px!important;
+  grid-template-areas:none!important;column-gap:12px!important;row-gap:0!important;
+  align-items:center!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-picker>label{
+  grid-area:auto!important;font-size:17px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-select{
+  grid-area:auto!important;min-width:0!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-import-area{
+  grid-area:auto!important;width:auto!important;min-width:0!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-import-button{
+  min-height:48px!important;width:100%!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-import-status{margin:8px 0 0 154px!important}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-title{
+  display:flex!important;align-items:baseline!important;gap:16px!important;margin-top:12px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-title h2{font-size:25px!important}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-title p{font-size:13px!important;margin:0!important}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-showcase{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 200px!important;
+  align-items:stretch!important;gap:12px!important;margin-top:12px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-formation-wrap{
+  max-width:760px!important;width:100%!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay #pvpFormationPreview{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr) 25px minmax(0,1fr)!important;
+  gap:5px!important;width:100%!important;max-width:760px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .formation-card{
+  padding:7px!important;border-radius:11px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .formation-position{
+  font-size:13px!important;line-height:1.2!important;padding-top:4px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .vsai-v643-swap-button,
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .vsai-v643-swap-button img{
+  width:25px!important;height:25px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-summary{
+  min-height:0!important;margin-top:0!important;padding:12px 14px 10px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-summary dl{
+  display:flex!important;grid-template-columns:none!important;flex-direction:column!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-summary dl>div{
+  min-height:25px!important;font-size:12px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-footer{
+  display:flex!important;flex-wrap:nowrap!important;margin-top:auto!important;padding-top:9px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-footer .pvp-v260-btn{width:auto!important}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-room-panel{
+  margin:0!important;padding:15px 18px 12px!important;
+}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-room-footer{margin-top:auto!important}
+html.gl-pvp-mobile-desktop #pvpSetupOverlay .pvp-v260-actions{
+  display:grid!important;grid-template-columns:1fr 1fr!important;
+}
+/* Review uses the same desktop Deck Builder dialog in the logical canvas. */
+html.gl-pvp-mobile-desktop #pvpS0CardPreview.gl-card-review-overlay.open{
+  display:flex!important;position:fixed!important;inset:auto!important;
+  left:0!important;top:0!important;width:1180px!important;height:590px!important;
+  transform:var(--gl-pvp-mobile-transform)!important;transform-origin:0 0!important;
+  padding:9px!important;overflow:hidden!important;
+  z-index:27000!important;
+}
+html.gl-pvp-mobile-desktop #pvpS0CardPreview .gl-card-review-panel{
+  width:1120px!important;max-width:1120px!important;
+  max-height:570px!important;
+}
+html.gl-pvp-mobile-desktop #pvpS0CardPreview .gl-db158-review-frame{
+  width:100%!important;max-width:none!important;height:570px!important;
+}

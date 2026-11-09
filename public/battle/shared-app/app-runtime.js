@@ -678,7 +678,7 @@ function syncSoundButton(){
 function initSoundSettings(){
   if(!soundBtn||!soundPanel)return;
   soundBtn.onclick=e=>{e.stopPropagation();const open=soundPanel.hidden;soundPanel.hidden=!open;soundBtn.setAttribute('aria-expanded',open?'true':'false')};
-  musicSwitch.onchange=()=>setS0MusicEnabled(musicSwitch.checked);
+  if(musicSwitch)musicSwitch.onchange=()=>setS0MusicEnabled(musicSwitch.checked);
   sfxSwitch.onchange=()=>{E()?.setSoundEnabled?.(sfxSwitch.checked);syncSoundButton()};
   document.addEventListener('pointerdown',e=>{if(!soundControl.contains(e.target))closeSoundSettings()});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!soundPanel.hidden)closeSoundSettings()});
@@ -742,7 +742,7 @@ function s0PvpDrawCoinResult(info){
   const body=coinOverlay.querySelector('.gl-coin-body'),won=Number(info.firstSeat)===Number(info.localSeat);
   openingChoice=info.choice==='TAILS'?'TAILS':'HEADS';openingOutcome=info.outcome==='TAILS'?'TAILS':'HEADS';openingFirstSide=won?'PLAYER':'AI';
   const winner=won?'YOU WON THE COIN FLIP':esc(info.winnerName||'OPPONENT')+' WON THE COIN FLIP';
-  body.innerHTML='<div class="gl-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+winner+'</strong><p>'+(won?'You will take the first turn.':'Your opponent will take the first turn.')+'</p></div><div class="gl-coin-result"><div><span>'+(info.localWasChooser?'Your choice':'Player 2 choice')+'</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+openingChoice+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+openingOutcome+'"></div></div><button class="gl-coin-start" type="button" '+(info.canStart?'':'disabled')+'>'+(info.canStart?'Start Game':'Waiting for other player…')+'</button>';
+  body.innerHTML='<div class="gl-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+winner+'</strong><p>'+(won?'You will take the first turn.':'Your opponent will take the first turn.')+'</p></div><div class="gl-coin-result gl-coin-single-result"><img src="'+coinFaceSrc(openingOutcome)+'" alt="Coin result: '+openingOutcome+'"></div><button class="gl-coin-start" type="button" '+(info.canStart?'':'disabled')+'>'+(info.canStart?'Start Game':'Waiting for other player…')+'</button>';
   const button=body.querySelector('.gl-coin-start');
   if(info.canStart)button.onclick=()=>{button.disabled=true;window.GL_PVP_HOST?.confirmCoin?.()};
   coinOverlay.classList.add('open');
@@ -770,15 +770,6 @@ function s0PvpCoinResult(info={}){
 }
 function s0PvpCoinRelease(){coinOverlay.classList.remove('open');appRoot?.classList.remove('gl-lobby-hidden');}
 window.GL_S0_RC32_PVP_COIN={showChoice:s0PvpCoinChoice,showResult:s0PvpCoinResult,release:s0PvpCoinRelease};
-// A lost coin-animation acknowledgement must never require restarting the room.
-if(window.GL_APP_MODE==='PVP'&&coinOverlay){
-  const cancelCoin=document.createElement('button');cancelCoin.type='button';
-  cancelCoin.id='glPvpCancelCoin';cancelCoin.textContent='RETURN TO LOBBY';
-  cancelCoin.style.cssText='position:absolute;bottom:16px;right:16px;z-index:10001;padding:8px 14px;border:1px solid #cfad50;border-radius:7px;background:#14263b;color:#ffe0a1;font-weight:800;cursor:pointer';
-  cancelCoin.addEventListener('click',()=>{if(window.confirm('Cancel this Coin Flip for both players and return to the lobby?'))window.GL_PVP_HOST?.abortPregame?.()});
-  coinOverlay.appendChild(cancelCoin);
-}
-
 function resetPresentationState(){seenCounterMessages.clear();seenRacialMessages.clear();presentationNoticeQueue.length=0;presentationNoticeActive=false;clearTimeout(counterBannerTimer);counterBanner.classList.remove('show','is-racial');counterBanner.style.removeProperty('--gl-notice-duration');presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;glPendingDrawReservations.PLAYER.length=0;glPendingDrawReservations.AI.length=0;glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();glOpeningHiddenShardUids.clear();glExternalDrawSequence=Promise.resolve();glExternalManaDrawSequence=Promise.resolve();glExternallyPresentedShardUids.clear();resultShown=false;resultOverlay.classList.remove('open');syncMatchActionButton(null);closeLobbyProgression();resetMatchTimer()}
 function startMatchFromLobby(){
   lobbyErrorText='';const r=E().prepareLocalMatch?.();if(!r?.ok){lobbyErrorText=r?.error||'Could not start match.';renderLobby();return}
@@ -1908,11 +1899,21 @@ function renderHero(side,lane,h,s){
   else if(engineSelectable&&p?.type==='tribute_target')heroSingleAction=()=>runTributeLikeHeroAction(p,side,lane);
   else if(engineSelectable)heroSingleAction=()=>intent('chooseHeroFromBoard',[side,lane]);
   hc.onclick=heroSingleAction?e=>{e.preventDefault();e.stopPropagation();if(e.detail>1){clearTimeout(hc._glSingleClickTimer);hc._glSingleClickTimer=null;return}clearTimeout(hc._glSingleClickTimer);hc._glSingleClickTimer=setTimeout(()=>{hc._glSingleClickTimer=null;heroSingleAction()},210)}:null;
-  // Tribute-like targeting uses one presentation path whether the player clicks the
-  // Hero card itself or empty space in the legal Hero panel. This prevents EXP from
-  // committing without the Hand -> Hero motion on normal Tribute or Relentless Leveling.
+  // RC36.8 gameplay-interaction sync: the full LEGAL Hero lane accepts a
+  // Response source click, including its HP/EXP/status overlays. An exhausted
+  // Crusader/Paladin remains a legal Defense source when the engine offers it.
+  // The engine's response options remain the only legality authority; the
+  // existing single-target / team-wide Defense routing is not changed.
   const tributePanelAction=(engineSelectable&&p?.type==='tribute_target')||directTributeHeroReady(p,side,lane);
-  laneEl.onclick=tributePanelAction?e=>{if(e.target.closest('.hero-card,.attachment-card,.gl-legacy-under-hero,button'))return;e.preventDefault();e.stopPropagation();runTributeLikeHeroAction(p,side,lane)}:null;
+  const responsePanelAction=responseSelectable?()=>selectResponseRouteHero(side,lane):null;
+  const tributeClickAction=tributePanelAction?()=>runTributeLikeHeroAction(p,side,lane):null;
+  const panelClickAction=responsePanelAction||tributeClickAction;
+  laneEl.onclick=panelClickAction?e=>{
+    // Card art handles its own single/double clicks; interactive controls
+    // keep their existing behavior. Decorative overlays route to the lane.
+    if(e.target.closest('.hero-card,.attachment-card,.gl-legacy-under-hero,.gl-hero-actions,button,a,[role="button"]'))return;
+    e.preventDefault();e.stopPropagation();panelClickAction();
+  }:null;
   hc.ondblclick=e=>{e.preventDefault();e.stopPropagation();clearTimeout(hc._glSingleClickTimer);hc._glSingleClickTimer=null;openCardReview(id)};
   img.draggable=false;
   const delayExhaust=heroCombatHeld(side,lane,s),exhaustedVisual=!!(h?.exhausted&&!delayExhaust);

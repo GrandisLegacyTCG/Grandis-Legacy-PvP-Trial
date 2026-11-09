@@ -1,10 +1,62 @@
-/* PvP RC36 Patch 4: native responsive Hero Card Review (lobby remains engine-free). */
-.pvp-card-review{width:min(92vw,820px)!important;max-width:820px!important;max-height:calc(100dvh - 26px)!important;overflow:auto!important;text-align:left!important}
-.pvp-card-review-body{display:grid;grid-template-columns:minmax(160px,270px) minmax(0,1fr);gap:18px;align-items:start}
-.pvp-card-review-body>img{display:block;width:100%;max-height:69dvh;object-fit:contain;border-radius:9px}
-.pvp-card-review-details{max-height:69dvh;overflow:auto;color:#e1e8f4;font-size:13px;line-height:1.55}
-.pvp-card-review-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
-.pvp-card-review-tags span{border:1px solid #ba984f;color:#f4d88a;border-radius:6px;padding:3px 7px;font-size:11px;font-weight:800}
-.pvp-card-review-row{background:rgba(11,25,38,.92);border:1px solid rgba(214,181,106,.3);border-radius:7px;padding:9px 11px;margin:7px 0}
-.pvp-card-review-row strong{color:#f9dc95}.pvp-card-review-row p{margin:5px 0 0;white-space:pre-line}
-@media(max-width:620px){.pvp-card-review{width:96vw!important;max-height:95dvh!important}.pvp-card-review-body{grid-template-columns:1fr;gap:10px}.pvp-card-review-body>img{height:min(43dvh,360px);width:auto;max-width:100%;margin:auto}.pvp-card-review-details{max-height:39dvh}.pvp-card-review-row{font-size:12px}}
+/* Original VS AI RC36 review overlay visual rules; no custom PvP redesign. */
+.gl-card-review-overlay{
+  position:fixed;inset:0;z-index:27000;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(0,0,0,.76);color:#edf4fb;
+}
+.gl-card-review-overlay.open{display:flex}
+.gl-card-review-panel{
+  width:min(520px,92vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #6a5a19;border-radius:16px;background:#101923;box-shadow:0 18px 70px rgba(0,0,0,.62);
+}
+.gl-card-review-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;
+  border-bottom:1px solid #263d55;background:#0b131c;
+}
+.gl-card-review-head h2{margin:0;color:#f4d35e;font-size:16px}
+.gl-card-review-close{
+  height:28px;padding:0 12px;border:1px solid #45627e;border-radius:8px;background:#132234;
+  color:#edf4fb;font-size:10px;font-weight:900;cursor:pointer;
+}
+.gl-card-review-body{min-height:0;overflow:auto;padding:14px;display:grid;place-items:center}
+.gl-card-review-image{display:block;width:min(360px,74vw);height:auto;max-height:76vh;object-fit:contain;border-radius:10px}
+
+
+.gl-card-review-panel{display:block!important}
+/* RC19: restore a single contained Deck Builder review, no fullscreen iframe
+   or extra gray wrapper. The source iframe reports its actual card height. */
+.gl-card-review-overlay{padding:clamp(8px,2vh,18px)!important}
+.gl-card-review-panel{
+  width:min(1120px,94vw)!important;
+  max-width:94vw!important;
+  height:auto!important;
+  max-height:calc(100dvh - 20px)!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+.gl-card-review-body{width:100%!important;height:auto!important;overflow:hidden!important}
+.gl-card-review-overlay .gl-db158-review-frame{
+  width:100%!important;height:min(650px,calc(100dvh - 20px))!important;
+  min-height:0!important;background:transparent!important;
+}
+@media(max-width:760px){
+  .gl-card-review-panel{width:calc(100vw - 12px)!important;max-width:calc(100vw - 12px)!important;height:auto!important}
+}
+
+
+/* RC20 Card Review: no extraneous gray frame, 1px rim or bottom strip.
+   The dark content panel (#242630) is the original Deck Builder card itself. */
+.gl-card-review-overlay .gl-card-review-panel,
+.gl-card-review-overlay .gl-card-review-body,
+.gl-card-review-overlay .gl-db158-review-frame{
+  background:transparent!important;border:0!important;outline:0!important;
+  box-shadow:none!important;
+}
+.gl-card-review-overlay .gl-db158-review-frame{display:block!important;vertical-align:top!important;}
+
+/* RC20: force light iframe canvas (transparent outside the rounded Deck Builder card). */
+.gl-card-review-overlay .gl-db158-review-frame{color-scheme:light!important;}
+
+
