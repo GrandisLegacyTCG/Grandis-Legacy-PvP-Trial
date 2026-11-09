@@ -32,14 +32,14 @@ export function attachWebSocket(server, onClient, {path='/ws', maxBytes=200_000}
     const listeners={message:[],close:[]};
     function frame(data, opcode=1) {
       if(closed||socket.destroyed)return false;
-      const payload=opcode===1?Buffer.from(JSON.stringify(data)):Buffer.from(data);
+      const payload=opcode===1?Buffer.from(typeof data==='string'?data:JSON.stringify(data),'utf8'):Buffer.from(data);
       let header;
       if(payload.length<126){header=Buffer.from([0x80|opcode,payload.length]);}
       else if(payload.length<65536){header=Buffer.alloc(4);header[0]=0x80|opcode;header[1]=126;header.writeUInt16BE(payload.length,2);}
       else{header=Buffer.alloc(10);header[0]=0x80|opcode;header[1]=127;header.writeBigUInt64BE(BigInt(payload.length),2);}
-      socket.write(Buffer.concat([header,payload]));return true;
+      return socket.write(Buffer.concat([header,payload]));
     }
-    const client={send:payload=>frame(payload),close:(code=1000,reason='')=>{if(closed)return;const r=Buffer.from(reason).subarray(0,120),b=Buffer.alloc(2+r.length);b.writeUInt16BE(code);r.copy(b,2);frame(b,8);socket.end();},on:(kind,fn)=>{if(listeners[kind])listeners[kind].push(fn)},remoteAddress:socket.remoteAddress};
+    const client={send:payload=>frame(payload),get bufferedAmount(){return socket.writableLength},close:(code=1000,reason='')=>{if(closed)return;const r=Buffer.from(reason).subarray(0,120),b=Buffer.alloc(2+r.length);b.writeUInt16BE(code);r.copy(b,2);frame(b,8);socket.end();},on:(kind,fn)=>{if(listeners[kind])listeners[kind].push(fn)},remoteAddress:socket.remoteAddress};
     function shutdown(){if(closed)return;closed=true;for(const fn of listeners.close)try{fn()}catch{}}
     function fail(code=1002){client.close(code);socket.destroy();}
     function consume(){
@@ -58,7 +58,7 @@ export function attachWebSocket(server, onClient, {path='/ws', maxBytes=200_000}
         if(opcode===9){frame(payload,10);continue;}
         if(opcode===10)continue;
         if(opcode!==1){fail(1003);return;}
-        try{const msg=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(payload));for(const fn of listeners.message)fn(msg);}catch{client.send({type:'error',message:'Malformed JSON message.'});}
+        try{const text=new TextDecoder('utf-8',{fatal:true}).decode(payload);for(const fn of listeners.message)fn(text);}catch{client.close(1007,'Invalid UTF-8 text');return;}
       }
     }
     socket.on('data', chunk=>{buffer=Buffer.concat([buffer,chunk]);if(buffer.length>maxBytes+32){fail(1009);return;}consume();});

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Grandis Legacy — Season 0 Battlefield (RC34 PvP Optimized)</title>
+<title>Grandis Legacy — Season 0 PvP (RC36 Patch 4)</title>
 <link rel="icon" type="image/png" sizes="120x120" href="engine/assets/favicon.png">
 
 
@@ -286,7 +286,7 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 .opponent-field .zone>.count,.opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
 </style>
 
-<link rel="stylesheet" href="shared-ui/battlefield-ui.css">
+<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09">
 <style id="gl-pvp-touch-accessibility">
 /* Never scale down the accessibility action dock with the battlefield. */
 #glPvPTouchDock{display:none;position:fixed;z-index:2147483500;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 20px);padding:6px 8px 8px;border:1px solid #af8c43;border-radius:11px;background:rgba(5,17,29,.97);box-shadow:0 8px 26px #000b;color:#e9dcab;text-align:center;font:700 12px/1.15 system-ui,sans-serif;user-select:none}
@@ -392,7 +392,7 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
       <button class="battle-log-btn" id="battleLogBtn" type="button">Battle Log</button>
       <div class="preview-overlay"><img id="hoverPreviewCard" class="preview-card" alt="Card preview"></div>
     </section>
-    <div class="bottom-actions"><span class="match-timer" id="matchTimer" aria-label="Match time">00:00</span><div class="gl-sound-control" id="glSoundControl"><button type="button" id="glSoundButton" aria-haspopup="true" aria-expanded="false" aria-controls="glSoundPanel">Sound</button><div class="gl-sound-panel" id="glSoundPanel" hidden><label class="gl-sound-row"><span>Music</span><input type="checkbox" id="glMusicSwitch" role="switch" aria-label="Background music"><span class="gl-sound-switch-track" aria-hidden="true"></span></label><label class="gl-sound-row"><span>SFX</span><input type="checkbox" id="glSfxSwitch" role="switch" aria-label="Sound effects" checked><span class="gl-sound-switch-track" aria-hidden="true"></span></label></div></div><button type="button" id="matchActionButton" class="danger">Surrender</button></div>
+    <div class="bottom-actions"><span class="match-timer" id="matchTimer" aria-label="Match time">00:00</span><div class="gl-sound-control" id="glSoundControl"><button type="button" id="glSoundButton" aria-haspopup="true" aria-expanded="false" aria-controls="glSoundPanel">Sound</button><div class="gl-sound-panel" id="glSoundPanel" hidden><label class="gl-sound-row"><span>SFX</span><input type="checkbox" id="glSfxSwitch" role="switch" aria-label="Sound effects" checked><span class="gl-sound-switch-track" aria-hidden="true"></span></label></div></div><button type="button" id="matchActionButton" class="danger">Surrender</button></div>
     <section class="battlelog-panel" id="battleLogPanel" aria-hidden="true"><div class="history-head"><h3>Battle Log</h3><button class="history-close" id="battleLogClose" type="button">Close</button></div></section>
     <section class="history-panel" id="historyPanel" aria-hidden="true"><div class="history-head"><h3>Full Card History</h3><button class="history-close" id="historyClose" type="button">Close</button></div><div class="history-grid"></div></section>
   </aside>
@@ -474,21 +474,21 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     <div id="glAnimationLayer"></div>
   </div>
   <script>window.GL_APP_MODE="PVP";window.GL_PVP_SHARED_BOARD_ACTIVE=true;window.GL_PVP_LOCAL_ROLE="player";</script>
-  <script src="engine/shared-ui/battlefield-ui.js"></script>
-  <script src="engine/js/static-data.js"></script>
-  <script src="runtime/overrides/grand-finale-designer-nerf.js"></script>
-  <script src="engine/js/runtime-authority.js"></script>
-  <script src="engine/shared-app/active-starters.js"></script>
-  <script src="shared-app/db158-card-review.js"></script>
-  <script src="engine/shared-app/app.bundle.js"></script>
-  <script src="runtime/adapters/authority-adapter.js"></script>
-  <script src="runtime/adapters/local-ai-adapter.js"></script>
-  <script src="runtime/adapters/pvp-adapter.js"></script>
+  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
   <script src="/build-meta.js"></script>
-  <script src="runtime/pvp-mana-draft.js"></script>
-  <script src="runtime/pvp-network.js"></script>
-  <script src="shared-app/app-runtime.js"></script>
-  <script src="runtime/pvp-touch-actions.js"></script>
+  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09"></script>
+  
 
 </body>
 </html>

@@ -8,11 +8,12 @@ export class WebSocketServer {
     attachWebSocket(server,(raw,req)=>{
       const events={message:[],close:[],error:[]};
       const ws={readyState:WebSocket.OPEN,
-        send(message){try{raw.send(JSON.parse(String(message)))}catch{}},
+        get bufferedAmount(){return raw.bufferedAmount||0},
+        send(message){return raw.send(String(message))},
         close(code=1000,reason=''){ws.readyState=3;raw.close(code,reason)},
         on(type,handler){if(events[type])events[type].push(handler);return ws}
       };
-      raw.on('message',msg=>{for(const h of events.message)h(Buffer.from(JSON.stringify(msg)))});
+      raw.on('message',text=>{for(const h of events.message)h(Buffer.from(text,'utf8'))});
       raw.on('close',()=>{ws.readyState=3;for(const h of events.close)h()});
       for(const h of this.#handlers)h(ws,req);
     },{path,maxBytes:maxPayload});

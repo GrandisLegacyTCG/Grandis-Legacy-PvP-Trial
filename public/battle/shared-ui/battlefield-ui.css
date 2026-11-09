@@ -1687,3 +1687,253 @@ body.gl-center-discard .gl-center-choice-cards{
 @keyframes glResponsePassReminder{0%,100%{box-shadow:0 0 0 0 rgba(255,211,92,.14);filter:brightness(1)}50%{box-shadow:0 0 0 4px rgba(255,211,92,.65),0 0 16px rgba(255,211,92,.65);filter:brightness(1.33)}}
 .phase-action.gl-pass.gl-response-pass-attention{animation:glResponsePassReminder 1.15s ease-in-out infinite;border-color:#ffdc7c!important}
 @media(prefers-reduced-motion:reduce){.phase-action.gl-pass.gl-response-pass-attention{animation:none!important;box-shadow:0 0 0 2px rgba(255,211,92,.65)!important}}
+
+/* Part 5: approved square assets for the Racial / Class / Legacy Hero-side action buttons. */
+.gl-hero-actions .gl-hero-action.gl-hero-action-icon{width:30px!important;min-width:30px!important;max-width:30px!important;height:30px!important;min-height:30px!important;max-height:30px!important;box-sizing:border-box!important;padding:0!important;border:0!important;border-radius:6px!important;background:transparent!important;overflow:visible!important;line-height:1!important;box-shadow:none!important}
+.gl-hero-action-icon .gl-hero-action-image{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;pointer-events:none!important}
+.gl-hero-action-icon:hover .gl-hero-action-image,.gl-hero-action-icon:focus-visible .gl-hero-action-image{filter:brightness(1.24)}
+.gl-hero-action-icon.gl-response-ready:not(:disabled) .gl-hero-action-image{filter:drop-shadow(0 0 6px #ffe47c)}
+.gl-hero-actions .gl-hero-action.gl-hero-action-icon.gl-response-ready:not(:disabled){background:transparent!important;border:0!important;box-shadow:none!important}
+.gl-hero-action-icon:focus-visible{outline:2px solid #f4d35e!important;outline-offset:2px!important}
+
+
+/* RC33: return racial/class/legacy artwork to its original 30×30px size.
+   The previous 36px override has been removed; the base icon rule applies. */
+/* RC33 Part 5: previews are top-level fixed portals, above dimmers/modals.
+   Their pointer-events must stay disabled to preserve actual battlefield inputs. */
+.gl-battlefield-hover-preview.open,
+.gl-sidebar-hover-preview.open,
+.gl-modal-hover-preview.open,
+#hoverCardZoom.is-visible:not(.is-click-zoom){z-index:2147483600!important;pointer-events:none!important;}
+#hoverCardZoom.is-click-zoom{z-index:2147483600!important;}
+
+/* ========================================================================== */
+/* VS AI RC34.2 - one desktop-derived mobile landscape Lobby, device unlocked. */
+/* The real Lobby is .gl-lobby-overlay (NOT the hidden engine deck-setup DOM). */
+/* Layout is 1180x545 logical px and is scaled/rotated in the viewport by JS.  */
+/* No device orientation APIs or gameplay selectors are modified.               */
+/* ========================================================================== */
+html.gl-mobile-landscape-stage,
+html.gl-mobile-landscape-stage body{
+  width:100%!important;height:100%!important;
+  overflow:hidden!important;overscroll-behavior:none!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-overlay.open{
+  position:fixed!important;
+  top:0!important;left:0!important;right:auto!important;bottom:auto!important;
+  width:1180px!important;height:545px!important;
+  min-width:1180px!important;min-height:545px!important;
+  max-width:none!important;max-height:none!important;
+  padding:0!important;
+  overflow:hidden!important;
+  touch-action:manipulation!important;
+  transform:var(--gl-mobile-lobby-transform)!important;
+  transform-origin:0 0!important;
+  background-position:center center!important;
+  background-attachment:scroll!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-panel{
+  display:grid!important;
+  width:100%!important;height:100%!important;
+  min-height:0!important;max-height:none!important;
+  grid-template-rows:56px auto minmax(0,1fr) 54px!important;
+  gap:10px!important;
+  padding:12px 23px 10px!important;
+  overflow:hidden!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-head{
+  width:100%!important;height:56px!important;min-height:56px!important;
+  gap:16px!important;padding:0!important;margin:0!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-logo{
+  width:184px!important;height:54px!important;object-fit:contain!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-head h1{
+  font-size:19px!important;line-height:1.1!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-error{
+  margin:0!important;padding:6px 10px!important;max-height:44px!important;
+  overflow:auto!important;font-size:12px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-decks{
+  width:100%!important;min-height:0!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:13px!important;padding:0!important;
+  align-items:start!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-deck{
+  padding:13px 14px 12px!important;min-width:0!important;
+  border-radius:13px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-deck>header{
+  height:28px!important;min-height:28px!important;margin:0 0 10px!important;
+  align-items:center!important;gap:8px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-deck>header h2{
+  margin:0!important;font-size:22px!important;white-space:nowrap!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-valid{
+  padding:4px 9px!important;font-size:11px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-picker{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 126px!important;
+  gap:9px!important;margin:0 0 11px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-picker select,
+html.gl-mobile-landscape-lobby .gl-lobby-picker>button{
+  height:42px!important;min-height:42px!important;
+  font-size:14px!important;min-width:0!important;border-radius:10px!important;
+  line-height:1.1!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-picker select{padding:0 10px!important}
+html.gl-mobile-landscape-lobby .gl-lobby-picker>button{padding:0 8px!important;white-space:nowrap!important}
+html.gl-mobile-landscape-lobby .gl-lobby-formation{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr) 36px minmax(0,1fr)!important;
+  gap:7px!important;margin:0!important;
+  align-items:center!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-hero{
+  min-width:0!important;padding:7px 7px 8px!important;
+  border-radius:10px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-hero>button{
+  display:grid!important;place-items:center!important;
+  width:100%!important;min-width:0!important;height:176px!important;
+  padding:0!important;overflow:visible!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-hero img{
+  display:block!important;width:auto!important;max-width:100%!important;
+  height:176px!important;max-height:176px!important;
+  aspect-ratio:5/7!important;object-fit:contain!important;
+  margin:0 auto!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-hero small{
+  display:block!important;margin:6px 0 0!important;
+  font-size:14px!important;white-space:nowrap!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-swap,
+html.gl-mobile-landscape-lobby .gl-lobby-swap img{
+  width:36px!important;height:36px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-rank-control{
+  margin:10px auto 0!important;
+  grid-template-columns:39px 85px 39px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-rank-control button,
+html.gl-mobile-landscape-lobby .gl-lobby-rank-control strong{
+  height:39px!important;min-height:39px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-foot{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:100%!important;height:54px!important;
+  padding:0!important;margin:0!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-start{
+  min-width:270px!important;height:48px!important;
+  padding:0 23px!important;font-size:17px!important;
+}
+
+/* In-Lobby Card Review is also aligned to the same rotated stage; otherwise
+   it would open sideways relative to the Lobby on rotation-locked phones. */
+html.gl-mobile-landscape-lobby .gl-card-review-overlay.open,
+html.gl-mobile-landscape-lobby .gl-progression-overlay.open{
+  position:fixed!important;top:0!important;left:0!important;
+  right:auto!important;bottom:auto!important;
+  width:1180px!important;height:545px!important;
+  min-width:1180px!important;min-height:545px!important;
+  max-height:none!important;
+  transform:var(--gl-mobile-lobby-transform)!important;
+  transform-origin:0 0!important;
+}
+html.gl-mobile-landscape-lobby .gl-card-review-panel{
+  width:min(1080px,96%)!important;height:min(510px,95%)!important;
+  max-height:95%!important;
+}
+html.gl-mobile-landscape-lobby .gl-progression-card{
+  width:min(980px,95%)!important;max-height:93%!important;
+}
+
+/* Opening Coin Flip remains landscape immediately after Start Match. This is
+   presentation-only: Heads/Tails logic and gameplay are unchanged. */
+html.gl-mobile-landscape-coin .gl-coin-overlay.open{
+  position:fixed!important;top:0!important;left:0!important;
+  right:auto!important;bottom:auto!important;
+  width:1180px!important;height:545px!important;
+  min-width:1180px!important;min-height:545px!important;
+  max-width:none!important;max-height:none!important;
+  padding:16px!important;
+  transform:var(--gl-mobile-lobby-transform)!important;
+  transform-origin:0 0!important;
+}
+html.gl-mobile-landscape-coin .gl-coin-card{
+  width:480px!important;max-width:94%!important;
+  max-height:95%!important;overflow-y:auto!important;
+}
+
+/* RC34.4: approved text-only mode buttons; original desktop Lobby and mobile canvas retained. */
+.gl-lobby-foot{justify-content:space-between!important;gap:18px!important}
+.gl-lobby-difficulties{display:flex;align-items:center;gap:14px;margin:0;padding:0;border:0;background:transparent;box-shadow:none}
+.gl-lobby-difficulty{font-family:Noto,"Noto Sans",Arial,sans-serif!important;display:grid;place-items:center;min-width:188px;height:56px;padding:0 24px;border:1px solid #2d4354;border-radius:12px;background:linear-gradient(180deg,#172b3b,#102132);color:#f3f5fa;font-size:16px;font-weight:800;line-height:1.2;white-space:nowrap;cursor:pointer;transition:background .14s,border-color .14s,box-shadow .14s}
+.gl-lobby-difficulty:hover{border-color:#af995f;background:linear-gradient(180deg,#24384b,#14283b)}
+.gl-lobby-difficulty.is-selected{color:#fff1c9;border-color:#f7d377;background:linear-gradient(180deg,#60491e,#2a261f);box-shadow:0 0 9px rgba(255,197,81,.55),inset 0 1px rgba(255,231,167,.28)}
+.gl-lobby-difficulty:focus-visible{outline:2px solid #ffe397;outline-offset:3px}
+html.gl-mobile-landscape-lobby .gl-lobby-foot{justify-content:space-between!important}
+html.gl-mobile-landscape-lobby .gl-lobby-difficulties{gap:12px}
+html.gl-mobile-landscape-lobby .gl-lobby-difficulty{height:48px;min-width:172px;font-size:16px;padding:0 17px}
+
+/* RC35.6: RC32's compact EXP nameplate style, not a 30x30 square.
+   One horizontal text label: 100 EXP ... 700 EXP. The runtime omits 0 EXP. */
+.hero-lane>.gl-hero-exp-indicator{
+  position:absolute!important;left:6px!important;bottom:6px!important;top:auto!important;
+  width:max-content!important;min-width:49px!important;max-width:calc(100% - 12px)!important;
+  height:18px!important;min-height:18px!important;padding:0 6px!important;
+  z-index:226!important;pointer-events:none!important;display:inline-flex!important;
+  align-items:center!important;justify-content:center!important;
+  border:1px solid #8c7120!important;border-radius:5px!important;
+  background:#171205!important;color:#f4ca52!important;
+  font-family:Noto,"Noto Sans",Arial,sans-serif!important;font-size:9px!important;
+  font-weight:900!important;letter-spacing:0!important;line-height:16px!important;
+  white-space:nowrap!important;box-shadow:0 2px 8px rgba(0,0,0,.58)!important;
+}
+.gl-coin-result.gl-coin-single-result{display:flex!important;align-items:center!important;justify-content:center!important;grid-template-columns:none!important;gap:0!important;}
+.gl-coin-result.gl-coin-single-result>img{width:142px!important;height:142px!important;max-width:42vw!important;max-height:32vh!important;object-fit:contain!important;}
+
+/* RC36 conditional Attack disclosure: two lines only; native Noto Sans.
+   Anchored to the actual battlefield so locked-rotation mobile remains aligned. */
+.gl-conditional-attack{
+ position:absolute;top:17%;left:50%;transform:translate(-50%,-50%);
+ z-index:11858;display:flex;flex-direction:column;align-items:center;gap:3px;
+ max-width:84%;min-width:225px;padding:8px 16px;border-radius:9px;
+ border:1px solid rgba(241,203,89,.8);background:rgba(4,12,22,.94);
+ box-shadow:0 8px 24px rgba(0,0,0,.63),0 0 9px rgba(239,198,68,.15);
+ text-align:center;font-family:Noto,Arial,sans-serif;line-height:1.2;
+ color:#f4e0a0;pointer-events:none;opacity:0;visibility:hidden;
+ transition:opacity .22s ease,visibility .22s ease;
+}
+.gl-conditional-attack.show{opacity:1;visibility:visible}
+.gl-conditional-attack-name{font-size:14px;font-weight:900;color:#ffe27b;white-space:nowrap}
+.gl-conditional-attack-summary{font-size:12px;font-weight:750;color:#f4f7fb;white-space:nowrap}
+
+/* RC36.3: pre-Defense damage disclosure stays readable for the ENTIRE Response. */
+.response-conditional-attack{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  width:100%;box-sizing:border-box;margin:8px 0 5px;padding:8px 6px;
+  border:1px solid rgba(241,203,89,.75);border-radius:8px;
+  background:rgba(7,19,33,.96);color:#f4e0a0;text-align:center;
+  font-family:Noto,"Noto Sans",Arial,sans-serif;line-height:1.25;
+}
+.response-conditional-attack strong{font-size:13px;font-weight:900;color:#ffe27b}
+.response-conditional-attack span{font-size:12px;font-weight:800;color:#fff}
+.response-conditional-attack small{font-size:10px;color:#c6d5e1}
+
+
+/* RC36 internal UI polish: PLAY always paints above colliding card artwork.
+   Parent stacking context matters: raising only the button cannot cross a
+   neighboring transformed hand-card. Keep modals/Response over the hand. */
+.hand.bottom .hand-card.gl-has-action{z-index:92!important}
+.hand.bottom .hand-card.gl-has-action.is-selected{z-index:270!important}
+.hand.bottom .hand-card.gl-has-action:focus-within{z-index:280!important}
+.hand.bottom .hand-card.gl-has-action:is(:hover,.is-hovered){z-index:290!important}
+.hand.bottom .hand-card.gl-has-action>.card-actions{z-index:300!important;overflow:visible!important}
+.hand.bottom .hand-card.gl-has-action>.card-actions>button.play{position:relative!important;z-index:301!important;pointer-events:auto!important}

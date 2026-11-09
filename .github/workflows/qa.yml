@@ -1,4 +1,4 @@
-name: Grandis Legacy PvP S0 RC34 - source and network QA
+name: Grandis Legacy PvP S0 - NET RC6 Stage 2
 on:
   push:
   pull_request:
@@ -8,7 +8,9 @@ permissions:
 jobs:
   qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    env:
+      PVP_REQUIRE_WS: "1"
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -22,9 +24,17 @@ jobs:
           python-version: '3.12'
       - name: Install WebSocket QA dependency
         run: python -m pip install websocket-client==1.8.0
+      - name: Install production Node dependencies (S1 ws transport)
+        run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Build deterministic static compression
         run: npm run build:precompress
-      - name: RC34 rules, multiplayer, Mana, privacy, assets, HTTP
+      - name: RC34 rules, RC6 Stage 2 socket bridge, atomic Response, privacy, assets, HTTP
         run: npm run check
       - name: Verify Docker image can build
-        run: docker build --pull -t grandis-legacy-pvp-s0-rc34:ci .
+        run: docker build --pull -t grandis-legacy-pvp-s0-net-rc6:ci .
+      - name: Verify native ws transport in Docker
+        run: |
+          docker run -d --rm --name gl-pvp-net-rc6 -p 3066:3000 grandis-legacy-pvp-s0-net-rc6:ci
+          sleep 5
+          node -e "fetch('http://127.0.0.1:3066/health').then(r=>r.json()).then(x=>{if(!x.ok||x.transport!=='ws')process.exit(1);console.log(x.transport,x.buildId)}).catch(()=>process.exit(1))"
+          docker stop gl-pvp-net-rc6

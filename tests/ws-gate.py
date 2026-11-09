@@ -12,7 +12,7 @@ try:
       meta=json.load(urllib.request.urlopen(BASE+'/health',timeout=.6));break
     except Exception: time.sleep(.08)
   else: raise AssertionError('Server did not start')
-  assert meta['architecture']=='s1-v38017-lite-lobby__s0-rc34-authority'
+  assert meta['architecture']=='s1-v38017-lite-lobby__s0-rc36-patch4-authority'
   build=meta['buildId']
   lobby=(ROOT/'public/pvp/pvp-host.js').read_text()
   s0ui=(ROOT/'public/battle/shared-app/app-runtime.js').read_text()
@@ -67,6 +67,12 @@ try:
   assert expected_next, f'Unexpected initial phase: {initial_phase}'
   acting=a if d['match']['firstSeat']==1 else b
   other=b if acting is a else a
+  # Stage 2: server must reject arbitrary two-action batches without mutating
+  # the turn. This is the wire-level counterpart to the valid engine Response test.
+  send(acting,'runtime-intent-batch',clientActionId='qa-illegal-batch',baseRevision=2,
+       steps=[{'name':'advancePhase','args':[]},{'name':'advancePhase','args':[]}])
+  rejected=until(acting,lambda m:m['type']=='intent-result' and m.get('clientActionId')=='qa-illegal-batch','reject-unapproved-batch')
+  assert rejected['ok'] is False and rejected['revision']==2, 'Unapproved batch advanced game state'
   send(acting,'runtime-intent',clientActionId='qa-first-deploy',baseRevision=2,intent='advancePhase',args=[])
   action=until(acting,lambda m:m['type']=='intent-result' and m.get('clientActionId')=='qa-first-deploy','first-turn-advance')
   assert action['ok'] and action['snapshot']['match']['revision']==3 and action['snapshot']['match']['board']['appState']['phase']==expected_next, str({k:action.get(k) for k in ['ok','message','revision']})+' '+str(action.get('snapshot',{}).get('match',{}).get('board',{}).get('appState',{}).get('phase'))

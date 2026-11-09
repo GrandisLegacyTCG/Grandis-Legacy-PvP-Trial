@@ -1,0 +1,29 @@
+{
+  "stage": "GL PvP S0 Network RC6 Stage 1",
+  "buildId": "gl-s0-net-rc6-stage1-2026-11-09",
+  "runtime_gameplay_engine": "Season 0 RC34 retained from PvP RC5",
+  "rc36_engine_integrated": false,
+  "rc36_ui_integrated": false,
+  "artwork_and_sfx_unchanged": true,
+  "mana_payment": "RC5 retained",
+  "sources": {
+    "vs_ai_donor": {
+      "filename": "Grandis_Legacy_VS_AI_Season0_v1.0_RC36_2026-11-09.zip",
+      "label": "VS AI Season 0 RC36 (internal RC36.3)",
+      "sha256": "5983da9e9c00ae64dad7e4ec224b06ec62bebc478620cca6a623692df6acc1f7",
+      "bytes": 56413611
+    },
+    "current_pvp_donor": {
+      "filename": "Grandis_Legacy_PvP_S0_RC34_GITHUB_RC5_MANA_TRANSPORT_2026-11-09.zip",
+      "label": "PvP Season 0 RC34 RC5",
+      "sha256": "b5e90b733efe952d3038cdd1a6054aa91fc2215faeb49b3bee04336539bb7736",
+      "bytes": 58525820
+    },
+    "s1_networking_reference": {
+      "filename": "Grandis_Legacy_PvP_v3.80.17_2026-10-13.zip",
+      "label": "PvP Season 1 v3.80.17",
+      "sha256": "72174b18dd0f4915f793fe390525a9a45e0ff4ddad18010a073251f476da6794",
+      "bytes": 36919823
+    }
+  }
+}

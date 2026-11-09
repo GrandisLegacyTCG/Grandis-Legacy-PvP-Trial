@@ -1,4 +1,4 @@
-/* Grandis Legacy Season 0 — Card Review: official Player Rulebook v2.9 EN (2026-11-01), pp.13–14.
+/* Grandis Legacy Season 0 — Card Review: official Player Rulebook v3.0 EN (2026-11-07), pp.13–14.
    The card-artwork RULES footer is transcribed from the Season 0 R3.4 printed artworks.
    MANA BURN / MANA STEAL wording is intentionally unchanged, per designer instruction.
    MANA COST +1/+2 are printed card-specific labels, not Rulebook keywords.
@@ -18,9 +18,9 @@
   'REVIVE':'Return the Legacy Card to the Legacy Deck. The Hero regains HP as stated on the Revive Card.',
   'INVINCIBLE':'The Hero cannot take damage from an opponent or receive new Status from an opponent. Existing Status remains active.',
   'ALL OPPONENTS':'Affects all opposing active Heroes, ignoring normal Area of Attack.',
-  'REFLECT':'When this Hero is attacked, deal damage to the attacker as stated on the card.',
+  'REFLECT':'When this Hero is hit by an Attack, deal damage to the attacker as stated on the card.',
   'MANA BURN':"Remove the stated number of Mana cards from your opponent's Mana Pool.",
-  'MANA STEAL':"Remove the stated number of Mana cards from your opponent's Mana Pool, then take the same number of Mana cards from your Mana Deck into your Mana Pool.",
+  'MANA STEAL':"Remove up to X Mana Shards from your opponent's Mana Pool. Then take as many as possible, up to the number removed, from your Mana Deck into your Mana Pool.",
   'MANA COST +1':'The required Mana is 1 higher than the printed Mana Cost.',
   'MANA COST +2':'The required Mana is 2 higher than the printed Mana Cost.'
  });
@@ -47,11 +47,38 @@
   'S0-EVT-003':'You can only have 1 of this card in your deck.',
   'S0-EVT-008':'You can only have 1 of this card in your deck.'
  });
+// Numeric callouts are copied from the official R3.5 artwork and
+// Deck Builder v1.63. This changes the Card Review popup only.
+// Do not change the actual Item effect magnitudes in the game engine.
+const ITEM_PRINTED_METRICS=Object.freeze({
+ 'S0-ITM-001':Object.freeze({label:'HEALING DONE',value:'30'}),
+ 'S0-ITM-002':Object.freeze({label:'HEALING DONE',value:'50'}),
+ 'S0-ITM-007':Object.freeze({label:'DAMAGE REDUCTION',value:'40'}),
+ 'S0-ITM-016':Object.freeze({label:'DAMAGE REDUCTION',value:'40'})
+});
+function applyItemPrintedMetric(card,rootNode){
+ if(card?.family!=='Item')return;
+ const metric=ITEM_PRINTED_METRICS[card.id];
+ const row=rootNode.querySelector('.review-effect-row.item-effect-row');
+ if(!metric||!row||row.classList.contains('has-metric'))return;
+ const classCell=row.children[0],rankCell=row.children[1];
+ const effectCell=row.querySelector('.review-effect-info');
+ if(!classCell||!rankCell||!effectCell)return;
+ // Exactly the existing Skill metric markup/classes and layout. No new UI template.
+ classCell.classList.add('review-effect-class');
+ rankCell.classList.add('review-effect-rank');
+ const metricCell=node('div','review-effect-metric');
+ metricCell.append(node('span','',metric.label),node('strong','',metric.value));
+ row.insertBefore(metricCell,effectCell);
+ row.classList.remove('no-metric');
+ row.classList.add('has-metric');
+ effectCell.classList.remove('full-span');
+}
  const KEYS=Object.keys(EXPLANATIONS);
- // Player Rulebook v2.9 EN, p.14: verbatim status descriptions; no engine logic changes.
+ // Player Rulebook v3.0 EN, p.14: verbatim status descriptions; no engine logic changes.
  const STATUSES=Object.freeze({
   'Bleed':'This Hero cannot receive Healing. Bleed does not deal damage.',
-  'Burn':'This Hero takes 10 additional damage from Attacks that deal damage.',
+  'Burn':'Whenever a played Card or activated Ability deals damage to this Hero, increase that damage by 10.',
   'Freeze':'This Hero cannot DODGE or swap positions.',
   'Poison':"This Hero takes 10 damage during its owner's End Phase.",
   'Sleep':'This Hero cannot use Skill or Event Cards, except Skills with DODGE. It wakes up when hit by another Attack.',
@@ -194,6 +221,15 @@
    inlineKeywords(p);
   }
   if(allKeywords.size)rootNode.append(renderExplanation([...allKeywords]));
+  // Hero Review is also a Card Review: show status glossary whenever a
+  // Racial Trait / Class Ability references a Status. Previously only
+  // Skill, Item and Event Reviews displayed these explanations.
+  const statusNames=new Set();
+  for(const p of rootNode.querySelectorAll('.review-hero-block p,.review-hero-dual-section p,.rank-up-review p')){
+   for(const status of statusTags(p.textContent||''))statusNames.add(status);
+   emphasizeStatus(p);
+  }
+  if(statusNames.size)rootNode.append(renderStatuses([...statusNames]));
  }
  function syncPrintedFooterRules(card,rootNode){
   const rule=PRINTED_FOOTER_RULES[card?.id];
@@ -210,6 +246,7 @@
  }
  function enhance(card,rootNode){
   if(!card||!rootNode||card.family==='Hero'||card.family==='LegacyModeDefinition')return;
+  applyItemPrintedMetric(card,rootNode);
   const rows=Array.isArray(card.rows)&&card.rows.length?card.rows:[{effect_text:card.text||''}];
   const originalChunks=[...rootNode.children];
   const conditions=printedConditions(card,rows);

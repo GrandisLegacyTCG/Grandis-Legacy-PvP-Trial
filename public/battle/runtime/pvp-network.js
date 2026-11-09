@@ -11,9 +11,13 @@ const bridge=window.GL_LOCAL_AI_BRIDGE,engine=window.GL_GAME_ENGINE,registry=win
 if(!bridge||!engine||!registry)throw Error('Season 0 RC34 game runtime is unavailable.');
 const native=Object.create(engine);
 const SESSION={client:'grandis_legacy_pvp_v3801_tab_client_id',seat:'grandis_legacy_pvp_v3801_tab_seat_token',role:'grandis_legacy_pvp_v3801_tab_role'};
-const state={ws:null,snapshot:null,seat:null,role:'player',status:'connecting',revision:0,inflight:false,inflightActionId:null,queue:[],seq:0,connected:false,pendingTimeout:null,reconnectTimer:null,disconnects:0,clientId:'',name:'',lastCoinChoiceKey:''};
+const state={ws:null,snapshot:null,seat:null,role:'player',status:'connecting',revision:0,inflight:false,inflightActionId:null,queue:[],seq:0,connected:false,rttMs:null,lastPingAt:0,lastActivityPingAt:0,lastResponsePaintMs:null,lastBoardImportMs:null,pendingTimeout:null,reconnectTimer:null,disconnects:0,clientId:'',name:'',lastCoinChoiceKey:''};
 const meta=window.GL_PVP_BUILD_META||{};
 const BUILD_ID=String(meta.buildId||'');
+
+const BATTLE_CHANNEL='gl-pvp-battle-transport-v1';
+const EMBEDDED=(()=>{try{return window.parent!==window&&new URLSearchParams(location.search).get('embedded')==='1'}catch{return false}})();
+
 // Unique to this document, including after reload. The server stores recently
 // acknowledged ids to make retries safe; never reuse an id across page loads.
 const ACTION_NONCE=(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
@@ -24,6 +28,28 @@ const isTuneUpDecision=p=>p?.type==='card_search_choice'&&p.source_card_id==='S0
 const performanceSamples=[];
 const clock=()=>globalThis.performance?.now?.()||Date.now();
 const perfEnabled=(()=>{try{return new URLSearchParams(location.search).has('pvpPerf')}catch{return false}})();
+let startupLatencyRecorded=false;
+function debugPerfText(message){
+  if(!perfEnabled||!document.body)return;
+  let panel=document.getElementById('glPvpNetStatus');
+  if(!panel){
+    panel=document.createElement('aside');panel.id='glPvpNetStatus';
+    panel.style.cssText='position:fixed;top:9px;right:8px;z-index:2147483549;pointer-events:none;max-width:290px;padding:5px 8px;border:1px solid #47abb8;border-radius:6px;background:rgba(2,14,24,.94);color:#e6faff;font:700 10px/1.4 monospace';
+    document.body.appendChild(panel);
+  }
+  panel.textContent=message;
+}
+function recordFirstGamePacket(){
+  if(startupLatencyRecorded)return;
+  startupLatencyRecorded=true;
+  let started=0;
+  try{started=Number(sessionStorage.getItem('gl_pvp_net_rc6_start_click_at')||0)}catch{}
+  if(started>0&&Date.now()-started<120000){
+    const elapsed=Date.now()-started;
+    if(perfEnabled){console.debug('[GL PvP START to first battle packet]',elapsed+' ms');debugPerfText('START to first battle packet: '+elapsed+'ms')}
+    try{sessionStorage.removeItem('gl_pvp_net_rc6_start_click_at')}catch{}
+  }
+}
 let toastTimer=0,slowActionTimer=0;
 function actionToast(message,{error=false,duration=3200}={}){
   if(!document.body)return;
@@ -184,7 +210,17 @@ function dispatch(name,args=[]){
  }
  const id=state.clientId+'.s0.'+ACTION_NONCE+'.'+(++state.seq);
  const sentAt=clock();
- if(!send('runtime-intent',{clientActionId:id,baseRevision:state.revision,intent:name,args:clone(args)}))return {ok:false,error:'WebSocket unavailable.'};
+ // Use the approved S1-style two-step atomic Response transaction.
+ // Selection + confirmation produces ONE server round-trip and ONE revision.
+ const isResponsePair=name==='selectAndConfirmResponse';
+ const optionIndex=Number(args?.[0]);
+ if(isResponsePair&&(!Number.isInteger(optionIndex)||optionIndex<0||
+     optionIndex>=(s?.responseWindow?.options||[]).length))return {ok:false,error:'Invalid Response option.'};
+ const outbound=isResponsePair?{
+   type:'runtime-intent-batch',clientActionId:id,baseRevision:state.revision,
+   steps:[{name:'responseSelectNoStuck',args:[optionIndex]},{name:'confirmSelectedResponse',args:[]}]
+ }:{type:'runtime-intent',clientActionId:id,baseRevision:state.revision,intent:name,args:clone(args)};
+ if(!send(outbound.type,outbound))return {ok:false,error:'WebSocket unavailable.'};
  state.inflight=true;state.inflightActionId=id;
  state.actionTiming={id,intent:name,phase:s?.phase||'',sentAt};
  clearTimeout(slowActionTimer);
@@ -199,11 +235,11 @@ registry.register('s0-pvp',{mode:'PVP',engine:()=>native,bridge:()=>bridge});
 registry.use('s0-pvp');
 window.GL_PVP_SHARED_BOARD_ACTIVE=true;
 window.GL_PVP_LOCAL_ROLE='player';
-function update(snap,{force=false}={}){
+function update(snap,{force=false,receivedAt=null}={}){
  const m=snap?.match||{},me=snap?.local||{};
  state.status=m.status||'setup';state.role=me.role||'spectator';state.seat=me.seat||null;
  window.GL_PVP_IDENTITY={playerName:String(me.name||'PLAYER'),opponentName:String((snap.players||[]).find(p=>Number(p.seat)!==Number(me.seat))?.name||'OPPONENT'),playerDeck:String(me.deckName||'Player Deck'),opponentDeck:String((snap.players||[]).find(p=>Number(p.seat)!==Number(me.seat))?.deckName||'Opponent Deck')};
- if(state.status==='setup'){window.GL_PVP_MANA_DRAFT?.clear?.();location.replace('/');return}
+ if(state.status==='setup'){window.GL_PVP_MANA_DRAFT?.clear?.();if(!EMBEDDED)location.replace('/');return}
  const coin=window.GL_S0_RC32_PVP_COIN;
  if(m.status==='coin-flip'){window.GL_PVP_MANA_DRAFT?.clear?.();
    const key=String(m.chooserSeat)+'|'+String(me.seat||'spectator');
@@ -226,12 +262,18 @@ function update(snap,{force=false}={}){
    if(!board.pvpPrivateStateMasked||Number(board.pvpRecipientSeat)!==recipient){showError('Refusing unsafe battle snapshot.');return}
    if(Number(m.revision)<state.revision)return;
    if(!force&&Number(m.revision)===state.revision&&state.snapshot)return;
+   const previousResponse=state.snapshot?.appState?.responseWindow;
+   const incomingResponse=board.appState?.responseWindow;
+   const responseJustOpened=incomingResponse?.response_owner==='PLAYER'&&
+      (!previousResponse||previousResponse.response_owner!=='PLAYER'||
+       String(previousResponse.response_window_token||'')!==String(incomingResponse.response_window_token||''));
    state.revision=Number(m.revision||0);state.snapshot=board;
    window.GL_PVP_LOCAL_SEAT=state.seat;
    window.GL_PVP_LOCAL_ROLE=state.role;
    try{
      const renderStarted=clock();
      bridge.importSnapshot(board,{skipImportAnimations:true});
+     state.lastBoardImportMs=Math.round((clock()-renderStarted)*10)/10;
      // Reconcile the browser-only selection with each authoritative revision.
      window.GL_PVP_MANA_DRAFT?.sync(board.appState,state.revision,engine.getManaPlan?.()?.surge||null);
      // Show the payment prompt BEFORE the heavier scheduled board render.
@@ -241,6 +283,20 @@ function update(snap,{force=false}={}){
        window.GL_GAME_UI?.renderManaDraft?.();
      }
      window.GL_GAME_UI?.render?.();clearError();
+     if(responseJustOpened&&typeof globalThis.requestAnimationFrame==='function'){
+       const revision=state.revision,packetAt=Number(receivedAt??renderStarted);
+       requestAnimationFrame(()=>requestAnimationFrame(()=>{
+         if(state.revision!==revision)return;
+         const paintMs=Math.round((clock()-packetAt)*10)/10;
+         state.lastResponsePaintMs=paintMs;
+         const row={type:'response-visible',revision,paintMs,importMs:state.lastBoardImportMs,at:Date.now()};
+         performanceSamples.push(row);if(performanceSamples.length>50)performanceSamples.shift();
+         if(perfEnabled){
+           console.debug('[GL PvP Response paint]',row);
+           debugPerfText('RTT '+(state.rttMs??'?')+'ms | Response paint '+paintMs+'ms | import '+state.lastBoardImportMs+'ms');
+         }
+       }));
+     }
      if(state.playFlowStartedAt&&board.appState?.pending?.decision_side==='PLAYER'&&
         ['mana_shard_payment_choice','response_payment_choice'].includes(board.appState?.pending?.type)){
        const start=state.playFlowStartedAt;state.playFlowStartedAt=null;
@@ -271,17 +327,9 @@ function update(snap,{force=false}={}){
  }
  if(m.status==='finished')window.GL_PVP_POSTMATCH_EXPIRES_AT=Date.parse(m.postMatchCleanupAt||'')||0;
 }
-function connect(){
- const clientId=session('client'),seatToken=session('seat');state.clientId=clientId;
- if(!clientId){location.replace('/');return}
- const role=session('role')||'player';state.role=role;
- state.name=localStorage.getItem('grandis_legacy_pvp_s0_v380_name')||localStorage.getItem('grandis_legacy_pvp_v380_name')||'Player';
- const qs=new URLSearchParams({client:clientId,name:state.name,role,buildId:BUILD_ID});if(seatToken)qs.set('seatToken',seatToken);
- const ws=new WebSocket((location.protocol==='https:'?'wss:':'ws:')+'//'+location.host+'/ws?'+qs);
- state.ws=ws;
- ws.onopen=()=>{if(ws!==state.ws)return;state.connected=true;state.disconnects=0;send('resync')};
- ws.onmessage=ev=>{if(ws!==state.ws)return;let msg;try{msg=JSON.parse(ev.data)}catch{return}
-   if(msg.type==='snapshot')update(msg,{force:!!msg.forceImport});
+function onServerMessage(ev){
+const receivedAt=clock();let msg;try{msg=JSON.parse(ev.data)}catch{return}
+   if(msg.type==='snapshot'){recordFirstGamePacket();update(msg,{force:!!msg.forceImport,receivedAt})}
    else if(msg.type==='intent-result'){
      // Delayed/duplicated ACKs never own the currently pending request.
      if(!state.inflightActionId||String(msg.clientActionId)!==state.inflightActionId){
@@ -292,12 +340,55 @@ function connect(){
      clearInFlight();
      if(msg.snapshot)update(msg.snapshot,{force:!msg.ok});
      if(!msg.ok){state.queue.length=0;pvpIntentError(msg.message);showError(msg.message||'Action rejected.');window.GL_PVP_MANA_DRAFT?.clear?.()}
+   }else if(msg.type==='pong'){
+     const sent=Number(msg.clientTime||0),now=Date.now();
+     if(sent>0&&sent<=now&&now-sent<60000){const value=now-sent;state.rttMs=state.rttMs==null?value:Math.round(state.rttMs*.65+value*.35)}
    }else if(msg.type==='error'){
      // Non-intent errors have no action ID. Never release an unrelated intent.
      if(msg.snapshot)update(msg.snapshot,{force:true});
      pvpIntentError(msg.message);showError(msg.message||'Server rejected action.');
    }else if(msg.type==='idle-timeout'||msg.type==='pregame-recovered')showError(msg.message||'Timed out.');
- };
+ }
+
+function connectEmbedded(){
+  // One REAL WebSocket lives in the lobby parent. The battlefield receives
+  // the same authoritative packets via same-origin postMessage, no reconnect.
+  const proxy={readyState:0,send(raw){
+    let message;try{message=JSON.parse(raw)}catch{return}
+    window.parent.postMessage({channel:BATTLE_CHANNEL,kind:'send',message},location.origin);
+  }};
+  state.ws=proxy;
+  state.clientId=session('client');state.role=session('role')||'player';
+  state.name=localStorage.getItem('grandis_legacy_pvp_s0_v380_name')||localStorage.getItem('grandis_legacy_pvp_v380_name')||'Player';
+  const onParent=event=>{
+    if(event.source!==window.parent||event.origin!==location.origin||event.data?.channel!==BATTLE_CHANNEL||event.data.kind!=='server')return;
+    const message=event.data.message;if(!message||typeof message!=='object')return;
+    if(message.type==='bridge-transport'){
+      state.connected=!!message.connected;
+      proxy.readyState=state.connected?WebSocket.OPEN:0;
+      if(!state.connected){clearInFlight();state.queue.length=0;showError('Connection interrupted. Reconnecting through lobby...')}
+      return;
+    }
+    if(message.type==='snapshot')state.connected=true;
+    onServerMessage({data:JSON.stringify(message)});
+  };
+  window.addEventListener('message',onParent);
+  window.parent.postMessage({channel:BATTLE_CHANNEL,kind:'ready'},location.origin);
+}
+function connect(){
+ if(EMBEDDED){connectEmbedded();return}
+
+ const clientId=session('client'),seatToken=session('seat');state.clientId=clientId;
+ if(!clientId){location.replace('/');return}
+ const role=session('role')||'player';state.role=role;
+ state.name=localStorage.getItem('grandis_legacy_pvp_s0_v380_name')||localStorage.getItem('grandis_legacy_pvp_v380_name')||'Player';
+ const qs=new URLSearchParams({client:clientId,name:state.name,role,buildId:BUILD_ID});if(seatToken)qs.set('seatToken',seatToken);
+ const ws=new WebSocket((location.protocol==='https:'?'wss:':'ws:')+'//'+location.host+'/ws?'+qs);
+ state.ws=ws;
+ // Server immediately supplies one forceImport snapshot on every handshake.
+ // Do not ask for a redundant second full state on a healthy connection.
+ ws.onopen=()=>{if(ws!==state.ws)return;state.connected=true;state.disconnects=0};
+ ws.onmessage=ev=>{if(ws!==state.ws)return;onServerMessage(ev)};
  ws.onclose=ev=>{if(ws!==state.ws)return;pvpIntentError('Connection lost.');state.connected=false;clearInFlight();state.queue.length=0;
    if(ev.code===4003){showError('Server/client version mismatch. Refresh the app.');return}
    if(ev.code===4004||ev.code===4006){showError('Your seat session was replaced. Return to lobby to reconnect.');return}
@@ -315,12 +406,16 @@ function reportActivity(){
 }
 for(const type of ['pointerdown','keydown','touchstart'])document.addEventListener(type,reportActivity,{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reportActivity()});
-setInterval(()=>{if(state.connected){
-  // A hidden tab may have heavily throttled timers; keep a transport ping
-  // separate from real user activity. It cannot indefinitely extend a turn.
-  send('ping',{clientTime:Date.now()});
-  if(document.visibilityState!=='hidden')send('activity');
-}},25000);
+if(!EMBEDDED)setInterval(()=>{if(state.connected){
+  // Low-frequency lightweight RTT sample, as in S1. Keep input/activity
+  // tracking separate so a transport pong never counts as gameplay activity.
+  const current=Date.now();
+  state.lastPingAt=current;
+  send('ping',{clientTime:current,reportedRtt:state.rttMs});
+  if(document.visibilityState!=='hidden'&&current-state.lastActivityPingAt>=24000){
+    state.lastActivityPingAt=current;send('activity');
+  }
+}},8000);
 window.GL_S0_PVP_NETWORK={state,connect,sendIntent:action,performanceSamples,manaDraft:window.GL_PVP_MANA_DRAFT};
 
 window.GL_PVP_HOST={getSnapshot:()=>state.snapshot,sendIntent:action,identity:()=>({seat:state.seat,role:state.role,localConnected:state.connected}),returnToLobby:()=>send('return-to-lobby'),abortPregame:()=>send('return-to-lobby'),chooseCoin:choice=>send('choose-coin-flip',{choice}),coinPresented:()=>send('coin-presented'),confirmCoin:()=>send('confirm-coin-flip')};

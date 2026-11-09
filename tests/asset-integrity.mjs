@@ -19,7 +19,7 @@ const artwork=readdirSync(join(root,'battle/card-art')).filter(x=>/^S0-.*\.webp$
 assert.ok(artwork.length>=240,'Some Season 0 card artwork is missing');
 for(const p of [
  'assets/lobby/grandis-legacy-logo.webp','engine/assets/lobby/Swap.png',
- 'battle/engine/assets/audio/Tavern Quest.mp3','battle/engine/assets/audio/battle/P.Atk.mp3',
+ 'battle/engine/assets/audio/Card Sound.mp3','battle/engine/assets/audio/battle/P.Atk.mp3',
  'battle/engine/assets/audio/battle/M.Atk.mp3','battle/assets/ui/back-shard.webp',
  ...['Racial Beastman Button.png','Racial Dragonborn Button.png','Racial Dwarf Button.png',
  'Racial Elf Button.png','Racial Halfling Button.png','Racial Human Button.png',

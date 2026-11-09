@@ -252,11 +252,18 @@ function promoteTemporaryCardPreview(active){
   if(active&&active.parentElement===document.body)document.body.appendChild(active);
 }
 let battlefieldHoverSource=null;
-function hideBattlefieldHoverPreview(){battlefieldHoverSource=null;battlefieldHoverPreview.classList.remove('open','is-hero');battlefieldHoverPreview.setAttribute('aria-hidden','true');battlefieldHoverImg.removeAttribute('src')}
+function hideBattlefieldHoverPreview(){battlefieldHoverSource=null;battlefieldHoverPreview.classList.remove('open','is-hero');battlefieldHoverPreview.style.removeProperty('width');battlefieldHoverPreview.style.removeProperty('height');battlefieldHoverPreview.setAttribute('aria-hidden','true');battlefieldHoverImg.removeAttribute('src')}
 function placeBattlefieldHoverPreview(kind,anchor){
   if(!anchor||!battlefieldHoverPreview)return;
-  const cs=getComputedStyle(battlefieldHoverPreview),w=parseFloat(cs.width)||259,h=parseFloat(cs.height)||362,g=8,vp=uiViewportSize(),vw=vp.width,vh=vp.height;
-  let left=g,top=g;
+  const cs=getComputedStyle(battlefieldHoverPreview),g=8,vp=uiViewportSize(),vw=vp.width,vh=vp.height;
+  let w=parseFloat(cs.width)||259,h=parseFloat(cs.height)||362,left=g,top=g;
+  // Adopt RC36 viewport-fit for Hero previews; keep them within actual visual viewport.
+  const fit=Math.min(1,Math.max(.1,(vh-2*g)/h),Math.max(.1,(vw-2*g)/w));
+  if(kind==='hero'||vw<640||vh<430){
+    w=Math.max(1,Math.floor(w*fit));h=Math.max(1,Math.floor(h*fit));
+    battlefieldHoverPreview.style.setProperty('width',w+'px','important');
+    battlefieldHoverPreview.style.setProperty('height',h+'px','important');
+  }
   if(kind==='hand'){
     const playerBox=uiRect(document.querySelector('.player-name'));if(!playerBox)return;
     const centerX=playerBox.left+playerBox.width/2;left=centerX-w/2+68;top=playerBox.top-6-h;
@@ -647,8 +654,8 @@ function renderInspectModal(){
 // Save user choices without coupling BGM to the card / battle / coin sound effect setting.
 const GL_S0_MUSIC_STORAGE_KEY='grandis_legacy_s0_background_music_v1';
 let glMusicEnabled=false;
-try{glMusicEnabled=window.localStorage?.getItem(GL_S0_MUSIC_STORAGE_KEY)==='on'}catch(_){}
-const glBackgroundMusic=(typeof Audio==='function')?new Audio('engine/assets/audio/Tavern Quest.mp3'):null;
+try{glMusicEnabled=window.GL_APP_MODE!=='PVP'&&window.localStorage?.getItem(GL_S0_MUSIC_STORAGE_KEY)==='on'}catch(_){}
+const glBackgroundMusic=(window.GL_APP_MODE!=='PVP'&&typeof Audio==='function')?new Audio('engine/assets/audio/Tavern Quest.mp3'):null;
 if(glBackgroundMusic){glBackgroundMusic.loop=true;glBackgroundMusic.volume=.36;glBackgroundMusic.preload='none'}
 function playS0BackgroundMusic(){
   if(!glMusicEnabled||!glBackgroundMusic||!glBackgroundMusic.paused)return;
@@ -1872,6 +1879,19 @@ function renderHero(side,lane,h,s){
     hp.classList.toggle('is-warning',hpPct>40&&hpPct<=60);hp.classList.toggle('is-low',hpPct<=40);
     hp.style.setProperty('--hp-ratio',String(hpPct/100));
     hp.innerHTML='<span class="gl-hp-text">'+Math.round(hpNow)+'/'+Math.round(hpMax)+'</span><span class="gl-hp-track"><span class="gl-hp-fill"></span></span>';
+  }
+  // RC35.6: return to the compact RC32-style rectangular EXP label.
+  // Keep the existing physical EXP stack; hide this total when it is zero or Legacy.
+  let expBadge=laneEl.querySelector(':scope > .gl-hero-exp-indicator');
+  const expTotal=Math.max(0,Math.floor(Number(h?.exp_total||0)));
+  if(legacyMode||expTotal===0){if(expBadge)expBadge.remove();}
+  else{
+    if(!expBadge){expBadge=document.createElement('span');expBadge.className='gl-hero-exp-indicator';laneEl.appendChild(expBadge);}
+    const label=expTotal+' EXP';
+    if(expBadge.textContent!==label)expBadge.textContent=label;
+    expBadge.setAttribute('aria-label',label);
+    const rank=Number(h?.rank||1),goal=rank<=1?300:(rank===2?700:null);
+    expBadge.title=goal===null?label+' (Rank III)':label+' / '+goal+' to next Rank';
   }
   // Draw This Turn moved into the existing Hero-information ! tooltip in Stage 1.5.10.
   laneEl.querySelector(':scope > .gl-draw-this-turn')?.remove();

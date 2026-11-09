@@ -11,6 +11,7 @@ const events = new Map();
 const window = {
   GL_PVP_BUILD_META: { versionLabel: 'Grandis Legacy PvP', buildId: 'test-build' },
   GL_PVP_CONFIG: {},
+  addEventListener() {},
   GL_CREATE_PVP_AUTHORITY_ADAPTER: () => ({}),
   GL_AUTHORITY_ADAPTER: { register() {}, use() {} }
 };

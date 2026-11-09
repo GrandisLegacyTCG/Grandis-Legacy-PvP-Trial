@@ -4,7 +4,17 @@ import {createReadStream} from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, randomInt, createHash } from 'node:crypto';
-import { WebSocketServer, WebSocket } from './server/ws-compat.mjs';
+import { WebSocketServer as LiteWebSocketServer, WebSocket as LiteWebSocket } from './server/ws-compat.mjs';
+// Season 1 uses ws. Production installs the same transport; the built-in
+// RFC6455 adapter remains available for offline QA and isolated development.
+let WebSocketServer=LiteWebSocketServer,WebSocket=LiteWebSocket,WS_BACKEND='lite';
+try {
+  const nativeWs=await import('ws');
+  WebSocketServer=nativeWs.WebSocketServer;WebSocket=nativeWs.WebSocket;WS_BACKEND='ws';
+} catch(error) {
+  if(process.env.PVP_REQUIRE_WS==='1')throw new Error('Production requires ws transport: '+String(error.message||error));
+}
+
 import {readFileSync} from 'node:fs';
 import { Season0HeadlessAuthority } from './server/headless-rc32.mjs';
 import { season0StarterCatalog } from './server/s0-pregame-catalog.mjs';
@@ -14,12 +24,14 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='3.80.17';
-const BUILD_ID='gl-s0-rc34-github-rc5-2026-11-09';
-const BUILD_LABEL=`Grandis Legacy PvP · Season 0 RC34 Mana Transport RC5`;
+const VERSION='S0-RC36-PATCH4-PVP-NET-RC6-STAGE2';
+const BUILD_ID='gl-s0-pvp-rc36p4-net-rc6s2-2026-11-09';
+const BUILD_LABEL=`Grandis Legacy PvP · S0 RC36 Patch 4 PvP · Network RC6 Stage 2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
+const MAX_WS_BUFFERED_BYTES=2*1024*1024;
+const ROOM_NETWORK_STATS={slowClientDisconnects:0};
 const LOBBY_IDLE_MS=60*1000;
 // The owner of the active decision is the only person subject to a match
 // idle deadline. A waiting opponent is never silently surrendered.
@@ -78,7 +90,17 @@ function viewFor(client){
   const match={...clone(room.match),postMatchCleanupAt:room.match.status==='finished'&&room.match.finishedAt?new Date(Date.parse(room.match.finishedAt)+POST_MATCH_CLEANUP_MS).toISOString():null,revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&(allPlayerSeatsAck(room.match.coinPresented||[])||room.match.presentationGraceOpen),board};
   return{type:'snapshot',version:VERSION,buildId:BUILD_ID,serverTime:now(),local,players:sortedPlayers().map(publicPlayer),spectators:[...room.spectators.values()].map(publicSpectator),match};
 }
-function send(ws,payload){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(payload))}
+// Do not accumulate infinite per-player snapshots if a mobile socket stalls.
+// Reconnect sends one fresh authoritative view; old queued views are obsolete.
+function send(ws,payload){
+  if(ws?.readyState!==WebSocket.OPEN)return false;
+  if(Number(ws.bufferedAmount||0)>MAX_WS_BUFFERED_BYTES){
+    ROOM_NETWORK_STATS.slowClientDisconnects++;
+    try{ws.close(4008,'Slow connection; resynchronize')}catch{}
+    return false;
+  }
+  try{ws.send(JSON.stringify(payload));return true}catch{return false}
+}
 function broadcast(exceptClient=null){for(const p of [...room.players.values(),...room.spectators.values()])if(p!==exceptClient&&p.connected&&p.ws)send(p.ws,viewFor(p))}
 function fail(client,message,code='REQUEST_REJECTED'){send(client?.ws,{type:'error',code,message:String(message||'Request rejected.'),serverTime:now(),snapshot:viewFor(client)})}
 function intentResult(client,{clientActionId='',ok=true,code=null,message='',appliedRevision=null,serverActionMs=null}={}){
@@ -122,7 +144,7 @@ function season0DeckFor(player){
   return deck;
 }
 class Season0BattleAuthority {
-  constructor(){this.engine=new Season0HeadlessAuthority(path.join(PUBLIC,'battle'))}
+  constructor(){this.engine=new Season0HeadlessAuthority(path.join(PUBLIC,'battle'));this.safeRevision=-1;this.safeBoards=new Map()}
   static prepare(p1,p2){
     const a=new Season0BattleAuthority();
     a.deckHeroIds={1:['LEFT','CENTER','RIGHT'].map(k=>season0DeckFor(p1).default_formation[k]),2:['LEFT','CENTER','RIGHT'].map(k=>season0DeckFor(p2).default_formation[k])};
@@ -136,12 +158,19 @@ class Season0BattleAuthority {
   get revision(){return this.engine.revision}
   get canonical(){return this.engine._canonicalForServerOnly()}
   canSeatAct(seat){return this.engine.canSeatAct(seat)}
+  // Cache only recipient-safe state, never the full hidden canonical board.
+  // A fresh cache is built on every gameplay revision. Spectator masking MUST
+  // operate on a separate clone and cannot mutate the Player 1 cache.
+  boardCache(){if(this.safeRevision!==this.revision){this.safeRevision=this.revision;this.safeBoards.clear()}return this.safeBoards}
   viewForSeat(seat){
+    if(![1,2].includes(Number(seat)))throw new Error('Invalid viewer seat.');
+    const cache=this.boardCache();if(cache.has(seat))return cache.get(seat);
     const safe=viewerSafeBoard(this.engine._viewForMaskingOnly(seat),{seat,revision:this.revision,secret:BLIND_SECRET});
-    assertViewerSafeBoard(safe);return safe;
+    assertViewerSafeBoard(safe);cache.set(seat,safe);return safe;
   }
   viewForSpectator(){
-    const safe=this.viewForSeat(1),st=safe.appState;
+    const cache=this.boardCache();if(cache.has('spectator'))return cache.get('spectator');
+    const safe=clone(this.viewForSeat(1)),st=safe.appState;
     // A spectator must not see EITHER player's unpublished hand or Mana.
     st.playerHand=Array.from({length:st.playerHandCount||st.playerHand?.length||0},()=> '__HIDDEN_CARD_BACK__');
     st.playerLegacy=Array.from({length:st.playerLegacyCount||st.playerLegacy?.length||0},()=> '__HIDDEN_CARD_BACK__');
@@ -152,6 +181,7 @@ class Season0BattleAuthority {
     st.presentationEvents=(st.presentationEvents||[]).map(ev=>ev&&ev.type==='CARD_DRAWN'?{...ev,card_id:'__HIDDEN_CARD_BACK__'}:ev);
 
     st.responseWindow=st.responseWindow?{kind:st.responseWindow.kind,private_masked:true}:null;
+    assertViewerSafeBoard(safe);cache.set('spectator',safe);
     return safe;
   }
   applyIntent(seat,name,args=[]){
@@ -163,7 +193,7 @@ class Season0BattleAuthority {
     }
     return this.engine.applyIntent(seat,name,args);
   }
-  applyIntentBatch(){throw new Error('Batch intents are not supported by the Season 0 game authority; send actions separately.');}
+  applyIntentBatch(seat,steps){return this.engine.applyIntentBatch(seat,steps);}
 }
 const BLIND_SECRET=randomBytes(32);
 function startMatch(client){
@@ -215,7 +245,7 @@ function applyIntent(client,msg,batch=false){
   const isSurrender=!batch&&String(msg.intent)==='executeConfirmedSurrender';
   const base=Number(msg.baseRevision);if(!isSurrender&&base!==room.authority.revision)throw Object.assign(new Error('STALE_REVISION'),{code:'STALE_REVISION'});
   if(batch){
-    const steps=Array.isArray(msg.steps)?msg.steps.slice(0,2):[];if(!steps.length)throw new Error('Intent batch is empty.');
+    const steps=Array.isArray(msg.steps)?msg.steps:[];if(steps.length!==2)throw new Error('Exactly two approved atomic steps are required.');
     room.authority.applyIntentBatch(client.seat,steps);
   }else{
     const name=safeText(msg.intent,100);if(!name)throw new Error('Intent name is required.');
@@ -255,7 +285,7 @@ function handle(client,msg){
   if(!['ping','resync'].includes(String(msg.type||'')))client.lastActivityAt=Date.now();
   switch(msg.type){
     case 'activity': client.lastActivityAt=Date.now(); return false;
-    case 'ping': {const reported=Number(msg.reportedRtt);if(Number.isFinite(reported)&&reported>=0&&reported<=60000)client.rttMs=Math.round(reported);client.lastSeenAt=Date.now();send(client.ws,{type:'pong',serverTime:now(),clientTime:Number(msg.clientTime)||0,connections:connectionRows()}); return false;}
+    case 'ping': {const reported=Number(msg.reportedRtt);if(msg.reportedRtt!=null&&Number.isFinite(reported)&&reported>=0&&reported<=60000)client.rttMs=Math.round(reported);client.lastSeenAt=Date.now();send(client.ws,{type:'pong',serverTime:now(),clientTime:Number(msg.clientTime)||0,connections:connectionRows()}); return false;}
     case 'resync': send(client.ws,{...viewFor(client),forceImport:true}); return false;
     case 'rename': client.lastActivityAt=Date.now(); if(room.match.status!=='setup')throw new Error('Name is locked after match start.'); client.name=safeText(msg.name,25)||client.name;client.ready=false;break;
     case 'switch-role':{
@@ -345,7 +375,7 @@ const server=http.createServer(async(req,res)=>{
     }
     if(url.pathname==='/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
-      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lite-lobby__s0-rc34-authority',authoritySources:{'engine/shared-app/app.bundle.js':AUTHORITY_BUNDLE_SHA256}}));return;
+      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lite-lobby__s0-rc36-patch4-authority',transport:WS_BACKEND,authoritySources:{'engine/shared-app/app.bundle.js':AUTHORITY_BUNDLE_SHA256}}));return;
     }
     let rel=decodeURIComponent(url.pathname);if(rel==='/'||rel==='')rel='/index.html';if(rel==='/battle'||rel==='/battle/')rel='/battle/index.html';
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);
@@ -356,7 +386,11 @@ const server=http.createServer(async(req,res)=>{
     const ext=path.extname(file).toLowerCase(),compressible=['.js','.mjs','.css','.html','.json','.svg'].includes(ext);
     const etag='"'+original.size.toString(16)+'-'+Math.round(original.mtimeMs).toString(16)+'"';
     const noCache=['.html','.js','.mjs','.css','.json'].includes(ext);
-    const cacheControl=noCache?'public, max-age=0, must-revalidate':'public, max-age=86400';
+    // Versioned URLs can be cached through the lobby -> battlefield switch.
+    // A new build ID changes every gameplay script URL, avoiding stale code.
+    const fingerprinted=url.searchParams.get('v')===BUILD_ID&&['.js','.mjs','.css','.json'].includes(ext);
+    const cacheControl=fingerprinted?'public, max-age=86400, immutable':
+      noCache?'public, max-age=0, must-revalidate':'public, max-age=86400';
     const common={'content-type':mime[ext]||'application/octet-stream','cache-control':cacheControl,
       'etag':etag,'x-content-type-options':'nosniff','vary':'Accept-Encoding'};
     if(['.mp3','.wav'].includes(ext))common['accept-ranges']='bytes';
@@ -394,7 +428,17 @@ const server=http.createServer(async(req,res)=>{
     const stream=createReadStream(payload);stream.on('error',()=>res.destroy());stream.pipe(res);
   }catch{res.writeHead(404,{'content-type':'text/plain; charset=utf-8'});res.end('Not found')}
 });
-const wss=new WebSocketServer({server,path:'/ws',maxPayload:MAX_WS_PAYLOAD,perMessageDeflate:false});
+function allowedWsOrigin(req){
+  const origin=String(req.headers.origin||'');if(!origin)return true;
+  const allowlist=String(process.env.PVP_ALLOWED_ORIGINS||'').split(',').map(s=>s.trim()).filter(Boolean);
+  try{
+    const parsed=new URL(origin);
+    return ['http:','https:'].includes(parsed.protocol)&&
+      (allowlist.length?allowlist.includes(origin):parsed.host===String(req.headers.host||''));
+  }catch{return false}
+}
+const wss=new WebSocketServer({server,path:'/ws',maxPayload:MAX_WS_PAYLOAD,perMessageDeflate:false,
+  verifyClient:({req})=>allowedWsOrigin(req)});
 wss.on('connection',(ws,req)=>{
   let client=null;
   try{
@@ -411,7 +455,7 @@ wss.on('connection',(ws,req)=>{
     }else{
       if(room.spectators.size>=MAX_SPECTATORS)throw new Error('Spectator capacity reached.');client={clientId,name,role:'spectator',ready:false,connected:true,ws,lastActivityAt:Date.now()};room.spectators.set(clientId,client);
     }
-    send(ws,viewFor(client));broadcast(client);
+    send(ws,{...viewFor(client),forceImport:true});broadcast(client);
     ws.on('message',raw=>{let msg=null;try{msg=JSON.parse(String(raw));const changed=handle(client,msg);if(changed){const gameplay=['runtime-intent','runtime-intent-batch','surrender-match'].includes(String(msg?.type||''));broadcast(gameplay?client:null)}}catch(err){
       const code=err?.code||'REQUEST_REJECTED',actionId=safeText(msg?.clientActionId,160),isGameplay=!!actionId&&['runtime-intent','runtime-intent-batch','surrender-match'].includes(String(msg?.type||''));
       if(isGameplay)intentResult(client,{clientActionId:actionId,ok:false,code,message:String(err?.message||err),appliedRevision:room.authority?.revision||0});

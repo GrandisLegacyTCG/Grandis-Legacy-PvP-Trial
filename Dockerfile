@@ -1,11 +1,13 @@
-# Single-process RC34 server: HTTP static files + room state + WebSocket.
-# No npm install is required; runtime dependencies are Node.js built-ins.
+# Single-process PvP server: HTTP static files + room state + S1 native ws.
+# Production installs the pinned ws dependency; no browser framework/runtime is needed.
 FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000 \
-    HOST=0.0.0.0
-COPY --chown=node:node package.json server.js ./
+    HOST=0.0.0.0 \
+    PVP_REQUIRE_WS=1
+COPY --chown=node:node package.json package-lock.json server.js ./
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 COPY --chown=node:node server ./server
 COPY --chown=node:node public ./public
 USER node

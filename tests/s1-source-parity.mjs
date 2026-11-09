@@ -12,7 +12,7 @@ const bundle=raw('battle/engine/shared-app/app.bundle.js').toString();
 assert.doesNotMatch(lobby,/engine\/js\/static-data\.js|engine\/shared-app\/app\.bundle\.js|app-runtime\.js/,'Lobby must not load game engine');
 assert.match(lobby,/pvp-lobby-opt-rc34\.css/);
 assert.match(host,/IMPORT DECK/);assert.match(host,/pvp-v260-gold pvp-v260-import-button/);
-assert.match(host,/location.replace\('\/battle\/'\)/);
+assert.match(host,/ensureBattleFrame\(\)/,'Gameplay must use the same-document bridge');
 assert.match(host,/vsai-v643-formation-grid/);
 assert.ok(existsSync(resolve(base,'battle/index.html')));
 assert.match(bundle,/commitExactManaPaymentChoice/);assert.match(bundle,/commitExactResponsePaymentChoice/);

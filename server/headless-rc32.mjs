@@ -140,6 +140,16 @@ const STARTERS = new Set([
   's0_starter_05_white_green'
 ]);
 const clone = value => structuredClone(value);
+
+// S1-inspired, opt-in atomic two-step transactions. No generic scripting:
+// only a step pair validated against the CURRENT canonical decision is allowed.
+const APPROVED_BATCH_PAIRS = new Map([
+  ['responseSelectNoStuck>confirmSelectedResponse','response_window'],
+  ['selectStatusRemovalChoice>handleChoiceConfirm','status_removal_choice'],
+  ['selectSaintPurifyChoice>handleChoiceConfirm','saint_purify_choice'],
+  ['selectCardSearchChoice>handleChoiceConfirm','card_search_choice']
+]);
+
 /** Transport envelope hygiene only. RC32 engine remains the deck-legality authority.
  * Builder v1.62 exports both nested and flattened deck fields. Reject a
  * contradictory document instead of silently validating the wrong copy. */
@@ -402,6 +412,58 @@ export class Season0HeadlessAuthority {
       throw error;
     }
     return {ok: true, revision: this.#revision};
+  }
+  /** Season 1-style two-step Response transaction, committed once or not at all. */
+  applyIntentBatch(seat, steps = []) {
+    if (!this.#started || this.#revision < 2) throw new Error('Opening is not finished.');
+    if (![1, 2].includes(seat) || !this.canSeatAct(seat)) throw new Error('Not your decision window.');
+    if (!Array.isArray(steps) || steps.length !== 2) throw new Error('Exactly two atomic steps are required.');
+    const pair=steps.map(x=>String(x?.name||'')).join('>');
+    const expected=APPROVED_BATCH_PAIRS.get(pair);
+    if (!expected) throw new Error('INTENT_BATCH_NOT_ALLOWED');
+    for (const step of steps) {
+      if (!Array.isArray(step?.args) || step.args.length > 8 ||
+          typeof step.name !== 'string' || !/^[a-zA-Z][a-zA-Z0-9]{0,75}$/.test(step.name))
+        throw new Error('Invalid atomic step.');
+    }
+    this.#restore(seat);
+    const local=()=>this.#bridge.getCanonicalSnapshot(1).appState;
+    const first=local();
+    if (expected==='response_window') {
+      const index=steps[0].args[0];
+      if (first?.responseWindow?.response_owner!=='PLAYER' ||
+          !Number.isInteger(index) || index<0 || index>=(first.responseWindow.options||[]).length)
+        throw new Error('Response option is not available.');
+    } else {
+      if (first?.pending?.type!==expected || first?.pending?.decision_side!=='PLAYER' ||
+          !Number.isInteger(steps[0].args[0]) || steps[0].args[0]<0 ||
+          (expected==='card_search_choice'&&first.pending.resolve_to!=='discard_then_draw_three'))
+        throw new Error('Atomic choice is not available.');
+    }
+    const rollback=this.#canonical,initialRevision=this.#revision;
+    const before=JSON.stringify(this.#bridge.getCanonicalSnapshot(seat).appState);
+    try {
+      for (const step of steps) {
+        const current=local();
+        const owner=current?.pending?.decision_side || current?.pending?.response_owner;
+        if (owner && owner!=='PLAYER' &&
+            !(current?.pending?.type==='response_window'&&current?.responseWindow?.response_owner==='PLAYER'))
+          throw new Error('Atomic transaction crossed an opponent decision.');
+        if (current?.responseWindow?.response_owner && current.responseWindow.response_owner!=='PLAYER')
+          throw new Error('Atomic transaction crossed an opponent Response.');
+        applyOptimizedPvpIntent({bridge:this.#bridge,readPending:()=>local().pending,name:step.name,args:clone(step.args)});
+      }
+      const next=clone(this.#bridge.getCanonicalSnapshot(seat));
+      if (JSON.stringify(next.appState)===before)throw new Error('Atomic transaction made no progress.');
+      this.#canonical=next;this.#revision+=1;this.#bridgeSeat=seat;this.#bridgeRevision=this.#revision;
+      this.#settleServerContinuations();
+      return {ok:true,revision:this.#revision};
+    } catch(error) {
+      // Restore on next action. Never publish a partially applied step.
+      this.#canonical=rollback;this.#bridgeSeat=null;this.#bridgeRevision=-1;
+      this.#revision=initialRevision;
+      throw error;
+    }
   }
 }
 

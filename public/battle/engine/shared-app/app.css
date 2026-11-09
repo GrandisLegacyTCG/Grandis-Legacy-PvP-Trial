@@ -6577,3 +6577,6 @@ html.gl-ui-tablet.gl-tablet-landscape-desktop body.deck-setup-active .deck-setup
 html.gl-tablet-portrait-mobile .v96-app.mobile-restored-layout .zone[data-zone-type="Shard Deck"] .zoneCard>.gl-resource-count{
   top:-5px!important;right:-5px!important;transform:none!important;
 }
+
+/* RC35.5: the local fallback coin flow uses the same single-outcome art as the primary lobby. */
+.gl-opening-coin-result.gl-coin-single-result{display:flex!important;justify-content:center!important;align-items:center!important;gap:0!important}

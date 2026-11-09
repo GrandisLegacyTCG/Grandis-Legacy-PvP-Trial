@@ -1,3 +1,98 @@
+# Grandis Legacy PvP Season 0 — RC36 Patch 4 / Network RC6 Stage 2 Lightweight
+
+**STATUS: STAGING BUILD — full source ready for manual GitHub upload and Northflank QA; not certified production/final.**
+
+This release integrates the newest locally available **VS AI RC36 Internal Patch 4 (RC36.6)** gameplay engine and Season 0 card/runtime resources into the **PvP Network RC6 Stage 2** authoritative two-player architecture. It retains the user-validated **RC5 local Mana draft and atomic PAY**, batch Response selection/confirmation, one parent WebSocket between lobby and embedded battlefield, viewer-safe hidden zones, reconnect, and postmatch cleanup. **Rank-Up stays official 300/700 EXP, not the separate 200/500 TRIAL.**
+
+### Release-specific changes
+
+- RC36.6 engine/card definitions and assets + RC36 battlefield CSS, mobile appearance, hover preview scaling and compact EXP badge integrated with the existing secure PvP renderer. `public/battle/shared-app/app-runtime.js` intentionally remains PvP-specific; this is not a full donor renderer replacement.
+- Ported RC5 atomic physical Mana/Response payment API into the RC36 engine and preserved all mirrored P1/P2 bookkeeping keys, preventing the seat-2 Provoke/End deadlock observed in initial integration.
+- BGM files removed and gameplay BGM disabled; SFX retained (Card Sound, attack/defense/heal/dodge and coin).
+- Removed intrusive floating `TOUCH ACTIONS` panel from gameplay; added rank-select Hero Card Review (image + class/race/HP/printed abilities) in PvP lobby, with mobile-friendly responsive CSS.
+- **Local AI turns are never run in PvP**. Some donor AI planning helper functions remain in the minified/shared engine source because safely extracting them requires a separate dependency audit. No AI opponent is spawned or given decision authority.
+- Event-driven PvP battlefield rendering remains; VS AI 120ms full redraw loop is conditioned out in PvP.
+- Normal mode uses one WebSocket via same-origin embedded battlefield; standalone `/battle/` remains available for recovery.
+
+### Verification
+
+`npm run build:precompress` and `npm run check` **PASS** locally, including RC36-donor engine parity checks, mirrored seat Response/physical Mana, Provoke liveness, nested/atomic Response tests, lobby, catalog, privacy, replay/ACK, Postmatch, and S1-inspired bridge/network adapters. Transport inside these offline tests is the compatibility lite fallback; **Docker production requires locked native `ws@8.21.0` installed by `npm ci`.**
+
+**Limitations:** Hosted two-device PvP end-to-end gameplay, true mobile pinch-zoom/card-preview visibility, all RC36 card-effect branches, iframe rendering on real mobile/tablets, and actual Northflank latency have NOT been validated. Treat as a staging candidate and test with two independent profiles before release. Source/QA fixes do not prove a lag-free hosted game.
+
+Deployment: `npm ci && npm run build:precompress && npm run check && npm start`, or Docker using the included Dockerfile. Use the PvP Trial repository; **GitHub was not modified by the assistant.**
+
+Details: `docs/RC36_PATCH4_PVP_INTEGRATION_QA_2026-11-09.md`.
+
+---
+
+## Historical release documentation (RC6 Stage 2 and earlier)
+
+# Grandis Legacy PvP S0 - Network RC6 Stage 2 (9 November 2026)
+
+**STATUS: STAGING / QA CANDIDATE ONLY. RC36 gameplay/UI is NOT integrated yet.**
+
+Baseline: **Season 0 PvP RC34 RC5** gameplay and approved Mana Payment; **Season 1 PvP v3.80.17** transport/Response reference; **VS AI RC36.3** is reserved for the next donor integration.
+
+### Stage 2 changes
+
+1. **No extra WebSocket at START MATCH from the normal `/` lobby path**: the lightweight lobby owns the real WebSocket while a same-origin `/battle/?embedded=1` iframe runs RC34 coin, opening and gameplay. An explicit `postMessage` channel transfers viewer-safe snapshots and permitted intents. The parent checks both sender window and origin. If the embedded battlefield fails to become ready after 25 seconds, players can choose the standalone `/battle/` recovery route. Direct navigation to `/battle/` retains a standalone fallback connection.
+2. **One authoritative transaction for Response selection + confirmation** (`responseSelectNoStuck` > `confirmSelectedResponse`), using the S1-approved two-step batch pattern. Server whitelist + ownership check, all-or-nothing canonical snapshot commit and a single revision. Existing RC5 Mana Payment is unchanged.
+3. Reuse the RC6 Stage 1 `ws` transport, backpressure limit, viewer-safe snapshot cache, RTT/ACK/Response paint diagnostics, and prefetch after READY.
+4. Removed unnecessary lobby-side early gameplay sound execution during active match; S0 battlefield plays presentation SFX.
+
+### QA and limitations
+
+- `npm run check` **PASS**: the inherited RC34/RC5 regression suite, server-side batch on both seats, wrong-pair rejection/rollback, in-process parent/child bridge contract, private snapshots, reconnect, and 60-second cleanup. The wire test confirms unauthorized batches cannot advance a match.
+- `npm run build:precompress` **PASS** and modified JS compressed assets were byte-verified.
+- **NOT yet verified in a live two-browser hosted match**: full iframe behavior on actual devices, Coin/Opening timing, nested Response, Northflank latency, native `ws` in Docker. The local browser is restricted from navigating to HTTP test pages. The local `lite` WebSocket fallback was tested; production Docker requires `ws` installed with `npm ci`.
+- The test verifies a one-socket *design and control flow*, not a measured latency improvement on Northflank. The gameplay engine remains **RC34**; AI extraction, background-music removal, RC36.3 UI integration, mobile scaling and lobby Card Review are not in this stage.
+
+### Usage
+
+`npm ci && npm run build:precompress && npm run check && npm start`
+
+Point two separate browser profiles to `/`. Do not deploy to GitHub Pages (it cannot run Node/WebSocket); use the PvP-Trial GitHub repo + one Northflank Docker instance, port 3000, `/health` for readiness. Never replace the S1 PvP repository. Manual push only; no GitHub upload was performed.
+
+**See** `docs/NET_RC6_STAGE2_QA_2026-11-09.md` and `docs/GITHUB_DEPLOY_NET_RC6_STAGE2_2026-11-09.md`.
+
+---
+
+## Historical Stage 1 / RC5 notes (not the release identity)
+
+# Grandis Legacy PvP S0 - Network RC6 Stage 1 (9 November 2026)
+
+**STATUS: NETWORKING STAGING CANDIDATE, NOT FINAL / NOT YET RC36 GAMEPLAY.**
+
+Source versions verified from local original ZIPs (details and SHA-256 in `docs/NET_RC6_SOURCE_VERSIONS_2026-11-09.json`):
+
+- **VS AI Season 0:** `v1.0 RC36` with **internal RC36.3** patch, the selected FUTURE gameplay/UI donor.
+- **PvP Season 0 active runtime in this stage:** `RC34 RC5` (retained so network changes can be isolated). The user-tested RC5 Mana Payment remains untouched.
+- **PvP Season 1 networking reference:** `v3.80.17`, using native `ws`.
+
+## What is changed in NET RC6 Stage 1
+
+1. **Production WebSocket transport uses `ws@8.21.0`**, exact locked artifact from the S1 reference. The original lite transport remains available **only as an offline/dev fallback**; Docker explicitly requires native `ws`.
+2. **One handshake snapshot per client.** The server sends one authoritative `forceImport` snapshot; battlefield no longer immediately requests an unnecessary duplicate `resync`.
+3. **Avoid repeated JSON encode/decode** in the lite fallback, protect slow sockets from unbounded snapshot buffering, and cache **only viewer-safe boards per revision**; spectator data stays independently redacted.
+4. **Measured connection RTT and Response-to-paint latency.** `?pvpPerf=1` exposes timing at the battlefield, including server ACK, board import, RTT, and visible Response.
+5. **Versioned, immutable cached battlefield scripts + optional prefetch after READY**, so the expensive page transition can reuse cached JS more often without stale assets across build IDs.
+6. Preserve existing **RC5 one-inflight-ACK action gate, local/atomic Mana Payment, Response compound choices, privacy validation, reconnect, deadlock recovery and postmatch cleanup**.
+
+**Not changed yet:** RC34 gameplay engine/rules; RC36 UI; Local AI bundle separation; background music removal; touch-action dock; mobile/tablet layout; one-document S1-style lobby-to-game transition. They are explicitly deferred until the RC36 integration or a later stage. Existing PvP uses no Local AI decision-making on the server.
+
+## Run locally
+
+`npm ci && npm run build:precompress && npm run check && npm start`
+
+`GET /health` should report `transport: "ws"` after npm ci. The offline test environment runs the built-in `lite` fallback because npm registry access is unavailable there; this is **not proof of native ws performance or Docker deployment**.
+
+For GitHub/Northflank instructions: `docs/GITHUB_DEPLOY_NET_RC6_2026-11-09.md`. Full QA: `docs/NET_RC6_QA_2026-11-09.md`.
+
+---
+
+## Historical RC34 RC5 README (retained for traceability)
+
 # Grandis Legacy PvP — Season 0 RC34 GitHub Release Candidate 5 (S1-style Mana Transport)
 
 **Kode build:** `gl-s0-rc34-github-rc5-2026-11-09`  
