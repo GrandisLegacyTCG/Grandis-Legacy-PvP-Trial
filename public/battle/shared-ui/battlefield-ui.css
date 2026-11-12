@@ -530,6 +530,13 @@
   width:100%;margin-top:18px;min-height:46px;height:auto;padding:0 20px;border:1px solid #dfbb42;border-radius:10px;
   background:linear-gradient(180deg,#f4cf55,#bd8f1f);color:#07131d;font-size:15px;font-weight:950;letter-spacing:.04em;cursor:pointer;
 }
+/* RC38: the Coin Flip winner chooses FIRST or SECOND; omit the old
+   redundant Opening Coin Flip title on the result screen (reference screenshot). */
+.gl-coin-overlay.gl-pvp-coin-result #glCoinTitle{display:none!important}
+.gl-coin-turn-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.gl-coin-turn-actions .gl-coin-start{margin-top:0;width:100%;min-width:0;padding:8px 6px}
+.gl-coin-pvp-waiting{margin-top:16px!important;border-radius:10px;padding:10px 12px;background:rgba(27,75,112,.5);font-weight:800}
+@media(max-width:430px){.gl-coin-turn-actions{gap:8px}.gl-coin-turn-actions .gl-coin-start{font-size:13px}}
 .gl-coin-start:hover,.gl-coin-start:focus-visible{filter:brightness(1.08)}
 .gl-coin-start:disabled{opacity:.58;cursor:wait}
 .gl-coin-flip-stage{min-height:172px;display:grid;place-items:center;perspective:520px;overflow:visible}
@@ -1417,6 +1424,9 @@ body.gl-center-choice-active .gl-modal-hover-preview.open{z-index:2147483000!imp
 .gl-counter-banner.is-racial{background:rgba(12,25,29,.97);border-color:#d5af58;box-shadow:0 8px 38px #000a,0 0 18px #d5af5844}
 .gl-counter-banner.is-racial strong{color:#ffe09a;text-shadow:0 0 10px #9b803c}
 .gl-counter-banner.is-racial small{color:#e8edeb}
+.gl-counter-banner.is-mana{background:rgba(13,25,39,.97);border-color:#9ec6ee;box-shadow:0 8px 38px #000a,0 0 18px #7ca7d855}
+.gl-counter-banner.is-mana strong{color:#cae3ff;text-shadow:0 0 10px #629ed5}
+.gl-counter-banner.is-mana small{color:#edf4ff}
 @keyframes glNegationBanner{0%{opacity:0;transform:translate(-50%,-50%) scale(.94)}12%,79%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.02)}}
 .gl-played-negated-badge{position:absolute;right:0;bottom:0;background:#611b21;color:#fff;border-radius:4px;padding:3px 4px;font-size:8px;font-weight:900;z-index:3}
 @media(prefers-reduced-motion:reduce){.gl-counter-banner.show{animation:none;opacity:1}}
@@ -1937,3 +1947,141 @@ html.gl-mobile-landscape-lobby .gl-lobby-difficulty{height:48px;min-width:172px;
 .hand.bottom .hand-card.gl-has-action:is(:hover,.is-hovered){z-index:290!important}
 .hand.bottom .hand-card.gl-has-action>.card-actions{z-index:300!important;overflow:visible!important}
 .hand.bottom .hand-card.gl-has-action>.card-actions>button.play{position:relative!important;z-index:301!important;pointer-events:auto!important}
+
+
+/* Synced from VS AI RC38 (11 Nov 2026) — UI-only CSS deltas. */
+/* RC36 Internal Patch 5 — PLAY/EXP collision, fix the actual stacking context.
+   The Hero EXP label paints at z=226 in the battlefield. The earlier patch
+   raised only the card/button INSIDE .bottom-hud (z=60), so it could never
+   paint above EXP. Promote the HUD's stacking context while legal Hand actions
+   are present; keep Response's existing z=980 and modal layers unchanged. */
+.battlefield .bottom-hud:has(.hand.bottom .hand-card.gl-has-action){
+  z-index:320;
+}
+
+/* RC36 Internal Patch 6 — Lobby warning is an overlay ONLY.
+   Patch 5 positioned the warning absolutely, but made the deck grid an
+   independent overflow-y:auto scrollport whenever it appeared, so the
+   scrollbar still showed and the bottom controls were displaced/clipped.
+   Use one identical 3-row grid whether the warning is shown or not; the
+   warning never participates in Grid layout, moves Heroes, or steals clicks. */
+.gl-lobby-panel{
+  position:relative!important;
+  grid-template-rows:auto minmax(0,1fr) auto!important;
+}
+.gl-lobby-panel>.gl-lobby-head{grid-row:1!important;}
+.gl-lobby-panel>.gl-lobby-decks{
+  grid-row:2!important;min-height:0!important;
+  overflow:visible!important;
+}
+.gl-lobby-panel>.gl-lobby-foot{
+  grid-row:3!important;position:relative!important;z-index:2!important;
+}
+.gl-lobby-panel>.gl-lobby-error{
+  position:absolute!important;
+  top:86px!important;left:50px!important;right:50px!important;
+  width:auto!important;margin:0!important;z-index:200!important;
+  pointer-events:none!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-panel{
+  grid-template-rows:56px minmax(0,1fr) 54px!important;
+}
+html.gl-mobile-landscape-lobby .gl-lobby-panel>.gl-lobby-error{
+  top:70px!important;left:23px!important;right:23px!important;
+}
+
+
+
+/* Trial-only Card Played readability: Result is grouped by each resolved Hero.
+   Presentation metadata is produced by the existing Response resolver. */
+.gl-played-detail-body .played-result-sections{display:grid;gap:12px;margin-top:8px}
+.gl-played-detail-body .played-result-general{padding:0 2px}
+.gl-played-detail-body .played-result-general ul{margin:2px 0 0}
+.gl-played-detail-body .played-result-hero{padding:12px 13px;border:1px solid rgba(113,148,177,.3);border-radius:10px;background:rgba(16,36,52,.75)}
+.gl-played-detail-body .played-result-hero-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid rgba(142,164,185,.2)}
+.gl-played-detail-body .played-result-hero-head h4{margin:0;color:#f4d35e;font-size:13px;line-height:1.35;font-weight:850}
+.gl-played-detail-body .played-result-hero-head span{color:#aebdcb;font-size:10px;letter-spacing:.07em;font-weight:800}
+.gl-played-detail-body .played-result-hero ul{margin:0;padding-left:18px}
+.gl-played-detail-body .played-result-hero li{margin-bottom:4px}
+.gl-played-detail-body .played-result-hero li:last-child{margin-bottom:0;color:#f0f5fb;font-weight:650}
+
+/* Trial v2.7 - Saint Heal status choice must be visible in external UI. */
+body.gl-center-purify .gl-center-choice-cards{justify-content:center;align-items:center;gap:16px}
+body.gl-center-purify .gl-center-choice-card{
+  width:clamp(110px,12vw,160px)!important;max-height:220px;flex:0 0 auto!important;
+  background:linear-gradient(160deg,#182c3d,#071321);border:2px solid rgba(233,199,93,.65);
+  border-radius:10px;overflow:visible;
+}
+body.gl-center-purify .gl-center-choice-front img,
+body.gl-center-purify .gl-center-choice-back img{
+  width:62%!important;height:58%!important;object-fit:contain!important;
+  margin:auto auto 33px!important;filter:drop-shadow(0 2px 8px rgba(0,0,0,.75));
+}
+body.gl-center-purify .gl-purify-status-caption{
+  position:absolute;bottom:7px;left:4px;right:4px;z-index:5;pointer-events:none;
+  color:#f8dda3;font-size:clamp(12px,1.5vw,17px);font-weight:800;text-align:center;
+  text-shadow:0 2px 4px #000;
+}
+body.gl-center-purify .gl-center-choice-card.is-selected{border-color:#fce383;box-shadow:0 0 0 3px rgba(245,210,93,.4),0 0 20px rgba(245,210,93,.18)}
+
+/* TRIAL v2.13: interactive lower-left EXP nameplate with strict Hand-hover lock. */
+.hero-lane > button.gl-hero-exp-indicator{
+  pointer-events:auto!important;cursor:pointer!important;appearance:none!important;
+  -webkit-appearance:none!important;text-align:center!important;
+}
+.hero-lane > button.gl-hero-exp-indicator:focus-visible{
+  outline:2px solid #fff2bb!important;outline-offset:2px!important;
+}
+.hero-lane > button.gl-hero-exp-indicator:disabled{
+  opacity:.48!important;cursor:not-allowed!important;filter:grayscale(.36)!important;
+  pointer-events:auto!important;
+}
+.gl-exp-inspector-overlay{position:fixed;inset:0;z-index:26500;display:none;
+  align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.80);color:#ecf4fa}
+.gl-exp-inspector-overlay.open{display:flex}
+.gl-exp-inspector-panel{width:min(820px,94vw);max-height:90vh;display:flex;flex-direction:column;
+  background:#101923;border:1px solid #a58833;border-radius:15px;overflow:hidden;
+  box-shadow:0 20px 70px rgba(0,0,0,.66);font-family:Noto,Arial,sans-serif}
+.gl-exp-inspector-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:#0b131c;padding:12px 16px;border-bottom:1px solid #29445c}
+.gl-exp-inspector-eyebrow{font-size:10px;font-weight:900;letter-spacing:.09em;color:#9db2c5}
+.gl-exp-inspector-head h2{font-size:16px;color:#f5d265;margin:3px 0 0;line-height:1.25}
+.gl-exp-inspector-close{background:#142538;color:#f8fbfe;border:1px solid #45627e;
+  border-radius:8px;cursor:pointer;padding:7px 14px;font-size:11px;font-weight:900}
+.gl-exp-inspector-close:focus-visible,.gl-exp-inspector-card:focus-visible{outline:2px solid #ffda77;outline-offset:2px}
+.gl-exp-inspector-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;
+  padding:12px 16px;border-bottom:1px solid #29445c}
+.gl-exp-inspector-summary > div{display:grid;gap:4px;padding:9px;
+  background:#0a1826;border:1px solid #2b455b;border-radius:8px;min-width:0}
+.gl-exp-inspector-summary span{font-size:9px;letter-spacing:.045em;color:#adc1cf;font-weight:900}
+.gl-exp-inspector-summary strong{font-size:18px;font-weight:900;color:#f5d265}
+.gl-exp-inspector-list{min-height:0;overflow:auto;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px;padding:15px;align-content:start}
+.gl-exp-inspector-card{display:flex;flex-direction:column;align-items:center;gap:5px;
+  background:#091827;border:1px solid #304a63;border-radius:10px;cursor:pointer;
+  color:#eaf2fa;padding:8px;min-width:0;text-align:center}
+.gl-exp-inspector-card:hover{background:#183046;border-color:#a98a39}
+.gl-exp-inspector-card img{display:block;width:100%;max-width:124px;aspect-ratio:5/7;object-fit:contain;border-radius:6px}
+.gl-exp-inspector-card strong{font-size:11px;line-height:1.25;overflow-wrap:anywhere}
+.gl-exp-inspector-card span{font-size:9px;line-height:1.3;color:#d5bc6e;overflow-wrap:anywhere}
+.gl-exp-inspector-empty{grid-column:1/-1;text-align:center;padding:24px 12px;
+  color:#aabbd0;font-size:13px;border:1px dashed #48617a;border-radius:10px;margin:0}
+.gl-exp-inspector-foot{margin:0;padding:8px 16px 13px;font-size:10px;line-height:1.3;color:#b0c2d0}
+@media(max-width:650px){
+ .gl-exp-inspector-overlay{padding:6px}
+ .gl-exp-inspector-panel{width:99vw;max-height:98vh}
+ .gl-exp-inspector-summary{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px;gap:5px}
+ .gl-exp-inspector-head{padding:9px}
+ .gl-exp-inspector-list{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;padding:9px}
+}
+
+
+
+/* RC38: explicit, non-blocking Mana reduction feedback for effects and abilities.
+   Normal card Mana Payment still uses the existing exact Shard chooser. */
+.gl-mana-loss-notice-host{position:fixed;z-index:11800;display:flex;flex-direction:column;gap:5px;width:205px;max-width:calc(100vw - 16px);pointer-events:none;contain:layout style}
+.gl-mana-loss-notice{display:flex;flex-direction:column;gap:3px;padding:7px 10px;border:1px solid rgba(238,175,89,.84);border-left:4px solid #e9a749;border-radius:7px;background:rgba(24,16,14,.96);box-shadow:0 4px 16px rgba(0,0,0,.65);font-family:Noto,Arial,sans-serif;color:#fff1ca;animation:glManaLossAppear .18s ease-out;font-size:10px;line-height:1.25;letter-spacing:.01em}
+.gl-mana-loss-notice strong{font-size:11px;letter-spacing:.03em;color:#ffe2a0;font-weight:900}
+.gl-mana-loss-notice span{font-size:9px;color:#f4dbb7;word-break:break-word}
+@keyframes glManaLossAppear{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.gl-mana-loss-notice{animation:none}}

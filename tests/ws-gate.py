@@ -12,7 +12,7 @@ try:
       meta=json.load(urllib.request.urlopen(BASE+'/health',timeout=.6));break
     except Exception: time.sleep(.08)
   else: raise AssertionError('Server did not start')
-  assert meta['architecture']=='s1-v38017-lite-lobby__s0-rc36-patch4-authority'
+  assert meta['architecture']=='s1-v38017-lite-lobby__s0-rc39-authority'
   build=meta['buildId']
   lobby=(ROOT/'public/pvp/pvp-host.js').read_text()
   s0ui=(ROOT/'public/battle/shared-app/app-runtime.js').read_text()
@@ -53,13 +53,20 @@ try:
   for ws,label in [(a,'p1-result'),(b,'p2-result')]:
     d=until(ws,lambda d:d['type']=='snapshot' and d['match']['status']=='coin-result',label)
     assert d['match']['board'] is None
+  winner=d['match']['winnerSeat']
+  assert d['match']['firstSeat'] is None and winner in (1,2), 'Winner must choose turn order'
+  # A nonwinner must never steal the turn-order decision.
+  loser=a if winner==2 else b
+  send(loser,'choose-turn-order',order='FIRST')
+  denial=until(loser,lambda d:d['type']=='error' and 'Coin Flip winner' in d.get('message',''),'reject nonwinner order')
+  assert denial['code']=='REQUEST_REJECTED',denial
   send(a,'coin-presented');send(b,'coin-presented')
-  for ws,label in [(a,'p1-ack'),(b,'p2-ack')]:until(ws,lambda d:d['type']=='snapshot' and d['match']['canStartOpening'],label)
-  send(a,'confirm-coin-flip')
+  send(a if winner==1 else b,'choose-turn-order',order='SECOND')
   for ws,label in [(a,'p1-start'),(b,'p2-start')]:
     d=until(ws,lambda d:d['type']=='snapshot' and d['match']['status']=='started',label)
     s=d['match']['board']['appState']
-    assert s['openingFlowCompleted'] and len(s['playerHand'])>=6 and len(s['playerManaPoolCards'])>=3
+    assert s['openingFlowCompleted'] and len(s['playerHand'])>=5 and len(s['playerManaPoolCards'])>=3
+    assert d['match']['turnOrder']=='SECOND' and d['match']['firstSeat']!=winner
     assert all(s['playerHeroes'][pos]['card_id'].startswith('S0-') for pos in ['LEFT','CENTER','RIGHT'])
     assert all(x=='__HIDDEN_CARD_BACK__' for x in s['aiHand'])
   initial_phase=d['match']['board']['appState']['phase']

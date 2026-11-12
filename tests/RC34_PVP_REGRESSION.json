@@ -1,6 +1,6 @@
 {
   "build": "VS AI Season 0 RC34 Patch Candidate",
-  "date": "2026-11-09T10:01:26.409Z",
+  "date": "2026-11-11T15:20:28.962Z",
   "passed": 20,
   "failed": 0,
   "tests": [
@@ -37,9 +37,11 @@
       "ok": true,
       "details": {
         "mainHero": [
+          "Deck validation failed: Season 0 main_deck must contain exactly 50 cards, found 51.",
           "Deck validation failed: Main Deck may contain only Skill, Item, or Event. Invalid S0-WAR-H001."
         ],
         "mainLegacy": [
+          "Deck validation failed: Season 0 main_deck must contain exactly 50 cards, found 51.",
           "Deck validation failed: Main Deck may contain only Skill, Item, or Event. Invalid S0-WAR-L001."
         ],
         "rankIIIStarter": [
@@ -136,8 +138,8 @@
           "S0-WAR-001"
         ],
         "deck": [
-          "S0-WAR-002",
-          "S0-CLE-026"
+          "S0-CLE-026",
+          "S0-WAR-002"
         ]
       }
     },

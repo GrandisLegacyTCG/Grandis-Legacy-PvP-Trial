@@ -41,11 +41,12 @@
     var ult=((c.requirement||{}).ultimate||{});
     var code=c.class_group||c.card_id.split('-')[1]||'';
     var baseClass={WAR:'Warrior',MAG:'Mage',ARC:'Archer',CLE:'Cleric',THF:'Thief'}[code]||'';
-    return {id:c.card_id,name:c.name,family:c.family==='Legacy'?'LegacyModeDefinition':c.family,
+    var reviewName=c.name;
+    return {id:c.card_id,name:reviewName,family:c.family==='Legacy'?'LegacyModeDefinition':c.family,
       classification:c.classification||c.action_category||'',classGroup:ident.class||c.display_class||c.class_family||baseClass||'',
       rank:rank,rankNumeric:rank,race:c.race||ident.race||'',hp:c.hp,
       image:'card-art/'+c.card_id+'.webp',cost:cost,text:reviewedText,rows:rows,
-      ultimate:{isUltimate:!!c.is_ultimate,owner:c.card_id==='S0-CLE-031'
+      ultimate:{isUltimate:!!c.is_ultimate,owner:c.card_id==='S0-ARC-018'?'Fenrir Ironfang':c.card_id==='S0-CLE-031'
         ?'Only Melody can use this card or tribute it with a White Mana Shard for EXP.'
         :(ult.owner||'')},
       requiredBaseClasses:reviewedClasses,
@@ -64,8 +65,32 @@
       '<div class="review-layout"><div class="review-art-column"><img id="reviewArt" class="review-art" alt="Card review"></div><div class="review-detail-column"><div id="reviewStats" class="review-stats"></div><div id="reviewRows" class="review-rows"></div></div></div>'+
       '<div id="reviewProgression" class="review-progression" hidden><span>HERO LINEAGES</span><div id="reviewProgressionCards" class="review-progression-cards"></div></div></div></div>'+
       '<script src="assets/review-db158/js/s0-review-clarity.js"><\/script><script src="assets/review-db158/js/review-renderer-v158.js"><\/script>'+
-      '<script>(function(){const card='+serialized+';const lineage='+serializedLineage+';window.GL_S0_REVIEW_RENDER(card);if(lineage.length){const panel=document.getElementById("reviewProgression"),host=document.getElementById("reviewProgressionCards");panel.hidden=false;lineage.forEach(function(x){const b=document.createElement("button");b.type="button";b.className="review-progression-card"+(x.id===card.id?" active":"");b.dataset.reviewRankId=x.id;b.setAttribute("aria-label","Review "+x.name);const img=document.createElement("img");img.src=x.image;img.alt=x.name;img.draggable=false;b.appendChild(img);b.addEventListener("click",function(){parent.postMessage({kind:"GL_S0_REVIEW_RANK",cardId:x.id},"*")});host.appendChild(b);});}function close(){parent.postMessage({kind:"GL_S0_REVIEW_CLOSE"},"*")}document.getElementById("reviewClose").addEventListener("click",close);document.addEventListener("keydown",function(e){if(e.key==="Escape"){e.preventDefault();close();}});function reportHeight(){var card=document.querySelector("#cardReviewDialog .review-card");if(!card)return;parent.postMessage({kind:"GL_S0_REVIEW_FIT",height:Math.ceil(card.getBoundingClientRect().bottom)},"*");}requestAnimationFrame(reportHeight);setTimeout(reportHeight,80);setTimeout(reportHeight,350);document.fonts.ready.then(reportHeight);var img=document.getElementById("reviewArt");if(img&&!img.complete)img.addEventListener("load",reportHeight,{once:true});if(window.ResizeObserver)new ResizeObserver(reportHeight).observe(document.querySelector(".review-card"));window.addEventListener("resize",reportHeight);})();<\/script></body></html>';
+      '<script>(function(){const card='+serialized+';const lineage='+serializedLineage+';window.GL_S0_REVIEW_RENDER(card);if(lineage.length){const panel=document.getElementById("reviewProgression"),host=document.getElementById("reviewProgressionCards");panel.hidden=false;lineage.forEach(function(x){const b=document.createElement("button");b.type="button";b.className="review-progression-card"+(x.id===card.id?" active":"");b.dataset.reviewRankId=x.id;b.setAttribute("aria-label","Review "+x.name);const img=document.createElement("img");img.src=x.image;img.alt=x.name;img.draggable=false;b.appendChild(img);b.addEventListener("click",function(){parent.postMessage({kind:"GL_S0_REVIEW_RANK",cardId:x.id},"*")});host.appendChild(b);});}function close(){parent.postMessage({kind:"GL_S0_REVIEW_CLOSE"},"*")}document.getElementById("reviewClose").addEventListener("click",close);document.addEventListener("keydown",function(e){if(e.key==="Escape"){e.preventDefault();close();}});function reportHeight(){var card=document.querySelector("#cardReviewDialog .review-card");if(!card)return;parent.postMessage({kind:"GL_S0_REVIEW_FIT",height:Math.ceil(card.getBoundingClientRect().bottom)},"*");}requestAnimationFrame(reportHeight);setTimeout(reportHeight,80);setTimeout(reportHeight,350);document.fonts.ready.then(reportHeight);var img=document.getElementById("reviewArt");if(img&&!img.complete)img.addEventListener("load",reportHeight,{once:true});if(window.ResizeObserver)new ResizeObserver(reportHeight).observe(document.querySelector(".review-card"));window.addEventListener("resize",reportHeight);})();<\/script>'+ 
+      '<script>(function(){window.addEventListener("message",function(ev){if(ev.source!==parent||ev.origin!==location.origin||ev.data?.kind!=="GL_S0_REVIEW_UPDATE")return;var data=ev.data,card=data.card;if(!card||!window.GL_S0_REVIEW_RENDER)return;window.GL_S0_REVIEW_RENDER(card);var footer=document.getElementById("reviewProgression"),host=document.getElementById("reviewProgressionCards"),lineage=Array.isArray(data.lineage)?data.lineage:[];footer.hidden=!lineage.length;host.replaceChildren();lineage.forEach(function(x){var b=document.createElement("button");b.type="button";b.className="review-progression-card"+(x.id===card.id?" active":"");b.dataset.reviewRankId=x.id;b.setAttribute("aria-label","Review "+x.name);var im=document.createElement("img");im.src=x.image;im.alt=x.name;im.draggable=false;b.appendChild(im);b.addEventListener("click",function(){parent.postMessage({kind:"GL_S0_REVIEW_RANK",cardId:x.id},location.origin)});host.appendChild(b)});document.documentElement.scrollTop=0;document.body.scrollTop=0;requestAnimationFrame(function(){var row=document.querySelector("#cardReviewDialog .review-card");if(row)parent.postMessage({kind:"GL_S0_REVIEW_FIT",height:Math.ceil(row.getBoundingClientRect().bottom)},location.origin)})})})();<\/script></body></html>';
   }
-  function mount(el,cardId,progressionIds){var c=getCard(cardId);if(!el||!c)return false;el.innerHTML='';var frame=g.document.createElement('iframe');frame.className='gl-db158-review-frame';frame.style.colorScheme='light';frame.setAttribute('title',c.name+' — Deck Builder v1.58 card review');frame.setAttribute('loading','eager');frame.setAttribute('scrolling',Array.isArray(progressionIds)&&progressionIds.length?'auto':'no');frame.setAttribute('aria-label',c.name+' card review');frame.srcdoc=documentHtml(c,progressionIds);el.appendChild(frame);return true;}
+  function mount(el,cardId,progressionIds){
+    var c=getCard(cardId);if(!el||!c)return false;
+    var ids=Array.isArray(progressionIds)?progressionIds:[];
+    var key=cardId+'|'+ids.join('|');
+    var existing=el.querySelector('.gl-db158-review-frame');
+    if(existing){
+      existing.setAttribute('title',c.name+' — Deck Builder v1.58 card review');
+      existing.setAttribute('scrolling',ids.length?'auto':'no');
+      existing.setAttribute('aria-label',c.name+' card review');
+      if(existing.dataset.glReviewKey===key)return true;
+      existing.dataset.glReviewKey=key;
+      existing.glReviewPayload={kind:'GL_S0_REVIEW_UPDATE',card:c,lineage:ids.map(getCard).filter(Boolean).map(x=>({id:x.id,name:x.name,image:x.image}))};
+      if(existing.glReviewReady)existing.contentWindow?.postMessage(existing.glReviewPayload,g.location.origin);
+      return true;
+    }
+    var frame=g.document.createElement('iframe');frame.className='gl-db158-review-frame';
+    frame.style.colorScheme='light';frame.dataset.glReviewKey=key;
+    frame.setAttribute('title',c.name+' — Deck Builder v1.58 card review');
+    frame.setAttribute('loading','eager');frame.setAttribute('scrolling',ids.length?'auto':'no');
+    frame.setAttribute('aria-label',c.name+' card review');
+    frame.glReviewPayload={kind:'GL_S0_REVIEW_UPDATE',card:c,lineage:ids.map(getCard).filter(Boolean).map(x=>({id:x.id,name:x.name,image:x.image}))};
+    frame.addEventListener('load',function(){frame.glReviewReady=true;if(frame.isConnected)frame.contentWindow?.postMessage(frame.glReviewPayload,g.location.origin)},{once:true});
+    frame.srcdoc=documentHtml(c,ids);el.appendChild(frame);return true;
+  }
   g.GL_DB158_REVIEW={mount:mount,getCard:getCard,documentHtml:documentHtml,source:'OSA Season 0 DEV45',view:'Deck Builder v1.58',heroFooter:'lobby-only'};
 })(window);

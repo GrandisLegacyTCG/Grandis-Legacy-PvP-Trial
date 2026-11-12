@@ -8,6 +8,8 @@ const clone = (v) => structuredClone(v);
 const hidden = (n) => Array.from({length: Math.max(0, Math.min(1000, Number(n) || 0))}, () => HIDDEN);
 const safeEvent = (event) => {
   if (!event || typeof event !== 'object') return null;
+  // Only the affected player receives their resolved loss notification.
+  if(event.type==='MANA_LOSS_COMMITTED'&&event.side!=='PLAYER')return null;
   const out = {};
   for (const k of ['id', 'type', 'side', 'actor_side', 'reason', 'group_id', 'group_index', 'hand_index', 'timestamp']) {
     if (Object.hasOwn(event, k)) out[k] = event[k];
@@ -19,6 +21,30 @@ const safeEvent = (event) => {
   }
   if (event.type === 'RACIAL_TOKEN_USED') {
     for (const k of ['ability_name','source_hero_card_id','token_cost'])
+      if (Object.hasOwn(event,k)) out[k]=event[k];
+  }
+  // Rank Up's committed EXP was already placed beneath the public Hero.
+  // Publish only the exact public card IDs required to play synchronized VFX;
+  // never serialize private Hand, undisclosed draws, Shard UID or engine state.
+  if (event.type === 'RANK_UP_COMMITTED') {
+    for (const k of ['lane','from_card_id','to_card_id','rank','return_quota','automatic_return'])
+      if (Object.hasOwn(event,k)) out[k]=event[k];
+    out.exp_card_ids = Array.isArray(event.exp_card_ids)
+      ? event.exp_card_ids.filter(id=>typeof id==='string'&&/^S0-[A-Z0-9-]+$/.test(id)).slice(0,32) : [];
+  }
+  if(event.type==='MANA_LOSS_COMMITTED'){
+    out.source_side=event.source_side==='PLAYER'?'PLAYER':'AI';
+    out.effect_name=String(event.effect_name||'Ability').slice(0,100);
+    out.removed_count=Math.max(0,Math.min(12,Math.trunc(Number(event.removed_count)||0)));
+    out.shard_details=String(event.shard_details||'').slice(0,220);
+    out.loss_kind=event.source_side==='PLAYER'?'ABILITY_SPEND':'OPPONENT_REMOVE';
+    out.removed_shards=(Array.isArray(event.removed_shards)?event.removed_shards:[]).slice(0,12).map(sh=>({
+      kind:sh?.kind==='CLASS'?'CLASS':'MANA',
+      class_name:sh?.kind==='CLASS'?String(sh.class_name||'').slice(0,40):''
+    }));
+  }
+  if (event.type === 'TRIAL_EXP_RETURNED_TO_HAND') {
+    for (const k of ['lane','card_id','rank_up_id','choice_animated'])
       if (Object.hasOwn(event,k)) out[k]=event[k];
   }
   if (event.type !== 'CARD_DRAWN' && ['CARD_PLAYED', 'ATTACK', 'RESPONSE', 'TRIBUTE', 'RANK_UP'].includes(event.type)) out.card_id = event.card_id;
@@ -36,10 +62,11 @@ function safeResponse(r) {
   if (r.response_owner === 'PLAYER') return r;
   const out = {};
   for (const k of ['kind','response_owner','target_side','target_lane','source_side','source_lane','card_id','damage','damage_type','attack_type','cannot_block','cannot_dodge']) if (Object.hasOwn(r,k)) out[k] = r[k];
-  // Public Area Attack positions, never private Response cards. Both clients
-  // must animate the same targets only once the full exchange has resolved.
-  if (r.kind === 'incoming_attack' && Array.isArray(r.affected_lanes))
-    out.affected_lanes = r.affected_lanes.filter(lane => ['LEFT','CENTER','RIGHT'].includes(lane));
+  // These are public target positions already declared by the attacking card.
+  // Keeping them lets the defender animate multi-target damage only after the
+  // authoritative Response chain resolves; do not expose any Response option.
+  if(r.kind==='incoming_attack'&&Array.isArray(r.affected_lanes))
+    out.affected_lanes=r.affected_lanes.filter(l=>['LEFT','CENTER','RIGHT'].includes(l));
   out.private_masked = true;
   return out;
 }
@@ -75,8 +102,16 @@ export function viewerSafeBoard(raw, {revision, secret, seat} = {}) {
     st[`${prefix}ManaDeckCount`] = Array.isArray(st[md]) ? st[md].length : Number(st[`${prefix}ManaDeckCount`]||0);
     st[md] = Array.from({length:st[`${prefix}ManaDeckCount`]},(_,i)=>({hidden:true,slot_index:i}));
   }
-  // Physical opponent Mana Shards are facedown; neither color nor UID is public.
-  st.aiManaPoolCards = (st.aiManaPoolCards || []).map((_,i)=>({uid:`PVP-OPPONENT-FACEDOWN-${i}`,hidden:true,kind:'HIDDEN',class_name:'',owner_side:'AI'}));
+  // RC38 visible Mana Pool: Mana Shard faces (Regular / Color Class) are public
+  // while the canonical physical UID and private Mana Deck order are NOT.
+  // Blind Mana selection remains server-owned and randomly mapped by handle.
+  st.aiManaPoolCards = (st.aiManaPoolCards || []).map((sh,i)=>({
+    uid:`PVP-OPPONENT-PUBLIC-${i}`,
+    kind:sh?.kind==='CLASS'?'CLASS':'MANA',
+    class_name:sh?.kind==='CLASS'?String(sh.class_name||''):'',
+    owner_side:'AI',
+    hidden:false
+  }));
   if (st.lastDrawnCardBySide) st.lastDrawnCardBySide.AI = HIDDEN;
   // Private logs and ledgers may carry card IDs that never entered public play.
   for (const key of ['lastActualDrawEvent','lastOpponentAction','drawPresentationPending','opponentPlayedEvents','pvpActionEventsBySide','pvpBattleFeedbackEvents']) delete st[key];
@@ -107,7 +142,7 @@ export function assertViewerSafeBoard(view) {
   if ((st.playerDeck||[]).some(id=>id!==HIDDEN) || (st.aiDeck||[]).some(id=>id!==HIDDEN)) throw new Error('Deck order leaked.');
   if ((st.aiLegacy||[]).some(id=>id!==HIDDEN)) throw new Error('Opponent Legacy leaked.');
   if(st.aiLegacyPackageSlots||st.aiManaClasses)throw new Error('Opponent deck construction leaked.');
-  if((st.aiManaPoolCards||[]).some(c=>!c?.hidden||c.kind!=='HIDDEN'||c.class_name))throw new Error('Opponent physical Mana identity leaked.');
+  if((st.aiManaPoolCards||[]).some(c=>!/^PVP-OPPONENT-PUBLIC-\d+$/.test(String(c.uid||''))||c.hidden!==false||!['MANA','CLASS'].includes(c.kind)||(c.kind==='MANA'&&c.class_name)))throw new Error('Opponent Mana view invalid or physical UID leaked.');
   for(const k of ['playerManaDeck','aiManaDeck']) if ((st[k]||[]).some(c=>c?.hidden!==true)) throw new Error('Mana Deck order leaked.');
   if(st.pending?.private_masked && Object.keys(st.pending).some(k=>!['type','decision_side','private_masked'].includes(k)))throw new Error('Private pending leaked.');
   if(st.pending?.type==='opponent_mana_selection'&&st.pending.candidates?.some(c=>!c.choice_handle||c.uid!==c.choice_handle||c.kind||c.class_name))throw new Error('Opponent Shard choice leaked.');

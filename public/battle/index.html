@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Grandis Legacy — Season 0 PvP (RC36 Patch 4)</title>
+<title>Grandis Legacy — Season 0 PvP RC39 Beta 2 · Artwork R3.7</title>
 <link rel="icon" type="image/png" sizes="120x120" href="engine/assets/favicon.png">
 
 
@@ -236,6 +236,16 @@ button{font:inherit}
 .gl-sound-row input:checked+.gl-sound-switch-track::after{transform:translateX(14px);background:#fff4cb}
 .gl-sound-row input:focus-visible+.gl-sound-switch-track{outline:2px solid #fff;outline-offset:2px}
 
+/* RC38: affected-PLAYER-only mana loss result; non-blocking, after reveal/resolve. */
+.gl-mana-loss-notice{position:fixed;left:clamp(14px,3vw,48px);bottom:clamp(100px,16vh,180px);z-index:999990;
+  max-width:min(420px,88vw);min-width:230px;display:flex;flex-direction:column;gap:6px;
+  padding:13px 17px;border:1px solid #e0ba65;border-radius:11px;
+  background:linear-gradient(145deg,rgba(9,28,45,.98),rgba(19,28,38,.98));
+  box-shadow:0 13px 34px rgba(0,0,0,.6);color:#f5eeda;font-size:14px;line-height:1.35;
+  pointer-events:none;animation:glManaNoticeIn .2s ease-out both;}
+.gl-mana-loss-notice strong{font-weight:900;font-size:17px;color:#ffd77a}
+.gl-mana-loss-notice span{font-size:12px;color:#c6d6df}
+@keyframes glManaNoticeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 </style>
 
 <style id="gl-responsive-stage">
@@ -281,8 +291,8 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 .opponent-field .zone>.count,.opponent-field .opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
 </style>
 
-<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09">
-<link rel="stylesheet" href="runtime/pvp-mobile-landscape-fix.css?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09">
+<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12">
+<link rel="stylesheet" href="runtime/pvp-mobile-landscape-fix.css?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12">
 
 </head>
 <body>
@@ -436,7 +446,10 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     publish(scale,cssW/scale,cssH/scale);
     refreshDependentGeometry();
   }
-  // During live mobile gameplay, rotate all body-portaled popups/VFX together.
+  // Portrait phones rotate the ENTIRE live game, not just .app: this keeps
+  // Body-portaled dialogs, Card Review, payment stage and battle VFX upright
+  // relative to the battlefield. Coin Flip and pregame keep the existing
+  // VS AI landscape-lobby presentation until the gameplay stage is visible.
   const app=document.querySelector('.app');
   function syncGameOrientation(){
     const active=root.classList.contains('gl-adaptive-stage')&&
@@ -467,21 +480,21 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     <div id="glAnimationLayer"></div>
   </div>
   <script>window.GL_APP_MODE="PVP";window.GL_PVP_SHARED_BOARD_ACTIVE=true;window.GL_PVP_LOCAL_ROLE="player";</script>
-  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
   <script src="/build-meta.js"></script>
-  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
-  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc36p8-combat-hotfix3-2026-11-09"></script>
-  <script src="shared-ui/mobile-landscape-lobby.js?v=gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09"></script>
+  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
+  <script src="shared-ui/mobile-landscape-lobby.js?v=gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12"></script>
   
 
 </body>

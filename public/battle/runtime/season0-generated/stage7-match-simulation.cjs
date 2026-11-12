@@ -8,7 +8,7 @@ for(const file of ['engine/js/static-data.js','engine/js/runtime-authority.js','
  }
  vm.runInContext(src,cx,{timeout:60000,filename:file});
 }
-const bridge=cx.GL_LOCAL_AI_BRIDGE,engine=cx.GL_GAME_ENGINE,h=cx.__S7;bridge.setRenderSuppressed(true);
+const bridge=cx.GL_LOCAL_AI_BRIDGE,engine=cx.GL_GAME_ENGINE,h=cx.__S7;bridge.setRenderSuppressed(true);bridge.setAIDifficulty('intermediate',false); // Current RC38: Starter 4-5 require Intermediate.
 const selectedDecks=['s0_starter_01_red_white','s0_starter_02_blue_red','s0_starter_03_yellow_blue','s0_starter_04_green_yellow','s0_starter_05_white_green'];
 const result={mode:'ACTUAL_APP_ENGINE_NODE_VM_NO_BROWSER',date:'2026-11-04',human_policy:'PASS_ALL_RESPONSES_AND_ACTIONS',browser_verified:false,matches:[],rounds:[],errors:[]};
 for(let m=0;m<selectedDecks.length;m++){

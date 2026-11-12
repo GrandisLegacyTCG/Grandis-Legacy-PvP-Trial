@@ -2597,7 +2597,7 @@
       "family": "Hero",
       "globalModifiersAndPrerequisites": [],
       "isUltimate": false,
-      "name": "Korvak Ironfang",
+      "name": "Fenrir Ironfang",
       "printedCost": null,
       "printedFullText": null,
       "sourceRecipe": {
@@ -2769,7 +2769,7 @@
       "family": "Hero",
       "globalModifiersAndPrerequisites": [],
       "isUltimate": false,
-      "name": "Korvak Ironfang",
+      "name": "Fenrir Ironfang",
       "printedCost": null,
       "printedFullText": null,
       "sourceRecipe": {
@@ -2946,7 +2946,7 @@
       "family": "Hero",
       "globalModifiersAndPrerequisites": [],
       "isUltimate": false,
-      "name": "Korvak Ironfang",
+      "name": "Fenrir Ironfang",
       "printedCost": null,
       "printedFullText": null,
       "sourceRecipe": {
@@ -6876,12 +6876,12 @@
             ],
             "printedDamageOrBlock": null,
             "sourceExtractedParameters": [],
-            "sourceText": "Increase this Hero's Healing done by +20.",
+            "sourceText": "Increase this Hero's Healing done by +10.",
             "statuses": [],
             "timingPhrases": []
           },
           "sourceRow": "classAbility",
-          "text": "Increase this Hero's Healing done by +20.",
+          "text": "Increase this Hero's Healing done by +10.",
           "variant": "CLASS_ABILITY"
         },
         {
@@ -7317,12 +7317,12 @@
             ],
             "printedDamageOrBlock": null,
             "sourceExtractedParameters": [],
-            "sourceText": "Increase this Hero's Healing done by +20.",
+            "sourceText": "Increase this Hero's Healing done by +10.",
             "statuses": [],
             "timingPhrases": []
           },
           "sourceRow": "classAbility",
-          "text": "Increase this Hero's Healing done by +20.",
+          "text": "Increase this Hero's Healing done by +10.",
           "variant": "CLASS_ABILITY"
         },
         {

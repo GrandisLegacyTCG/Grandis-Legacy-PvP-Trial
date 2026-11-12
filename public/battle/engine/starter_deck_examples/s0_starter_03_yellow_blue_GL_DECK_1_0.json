@@ -2,14 +2,9 @@
   "schema_version": "GL-DECK-1.0",
   "season": "S0",
   "deck_name": "Yellow-Blue Deck",
-  "format": "Grandis Legacy Season 0 / Rulebook v2.9 / exactly 50-card Main Deck",
+  "format": "Grandis Legacy Season 0 / Rulebook v3.2 / exactly 50-card Main Deck",
   "main_deck_count": 50,
   "main_deck": [
-    {
-      "card_id": "S0-EVT-001",
-      "card_name": "Begin Anew",
-      "quantity": 1
-    },
     {
       "card_id": "S0-EVT-002",
       "card_name": "Market Bargain",
@@ -23,16 +18,6 @@
     {
       "card_id": "S0-EVT-007",
       "card_name": "Intercept",
-      "quantity": 1
-    },
-    {
-      "card_id": "S0-EVT-008",
-      "card_name": "Forged Alliance",
-      "quantity": 1
-    },
-    {
-      "card_id": "S0-EVT-009",
-      "card_name": "Tactical Adaptation",
       "quantity": 1
     },
     {
@@ -61,19 +46,9 @@
       "quantity": 1
     },
     {
-      "card_id": "S0-MAG-003",
-      "card_name": "Fireball",
-      "quantity": 1
-    },
-    {
       "card_id": "S0-MAG-005",
       "card_name": "Mirror Image",
       "quantity": 2
-    },
-    {
-      "card_id": "S0-MAG-006",
-      "card_name": "Meditation",
-      "quantity": 1
     },
     {
       "card_id": "S0-MAG-008",
@@ -128,16 +103,6 @@
     {
       "card_id": "S0-THF-003",
       "card_name": "Evasion",
-      "quantity": 2
-    },
-    {
-      "card_id": "S0-THF-004",
-      "card_name": "Smoke Screen",
-      "quantity": 1
-    },
-    {
-      "card_id": "S0-THF-011",
-      "card_name": "Poison Mist",
       "quantity": 1
     },
     {
@@ -158,7 +123,7 @@
     {
       "card_id": "S0-THF-025",
       "card_name": "Sword Combo",
-      "quantity": 1
+      "quantity": 2
     },
     {
       "card_id": "S0-MAG-013",
@@ -181,28 +146,58 @@
       "quantity": 1
     },
     {
-      "card_id": "S0-THF-005",
-      "card_name": "Steal",
-      "quantity": 1
-    },
-    {
       "card_id": "S0-THF-019",
       "card_name": "Lethal Venom",
       "quantity": 1
     },
     {
-      "card_id": "S0-ITM-001",
-      "card_name": "Health Potion",
-      "quantity": 1
-    },
-    {
-      "card_id": "S0-ITM-010",
-      "card_name": "Arcane Scroll",
-      "quantity": 1
-    },
-    {
       "card_id": "S0-EVT-004",
       "card_name": "Relentless Leveling",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-022",
+      "card_name": "Deflection",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-020",
+      "card_name": "Dash Slash",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-EVT-010",
+      "card_name": "Déjà vu",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-MAG-003",
+      "card_name": "Fireball",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-THF-005",
+      "card_name": "Steal",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-004",
+      "card_name": "Smoke Screen",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-013",
+      "card_name": "Venom Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-015",
+      "card_name": "Venom Sovereign",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-014",
+      "card_name": "Viper's Fang",
       "quantity": 1
     }
   ],
@@ -212,13 +207,13 @@
       "quantity": 10
     },
     {
-      "class_name": "Mage",
       "kind": "CLASS",
+      "class_name": "Mage",
       "quantity": 1
     },
     {
-      "class_name": "Thief",
       "kind": "CLASS",
+      "class_name": "Thief",
       "quantity": 1
     }
   ],
@@ -336,19 +331,21 @@
     }
   ],
   "default_formation": {
-    "CENTER": "S0-THF-H007",
     "LEFT": "S0-THF-H004",
+    "CENTER": "S0-THF-H007",
     "RIGHT": "S0-MAG-H004"
   },
   "is_valid": true,
   "validation_issues": [],
   "validation_warnings": [],
-  "source_database_version": "OSA Season 0 DEV45 / current Starter Deck Authority DEV34 / Deck Builder v1.58",
+  "source_database_version": "R3.6",
   "source_file": "engine/starter_deck_examples/s0_starter_03_yellow_blue_GL_DECK_1_0.json",
-  "source_authority": "Generated/Season0-Current/season0-current-starters.dev34.json",
-  "source_export_sha256": "621583f44f633e77622f33c4d9faebdf90a7b23db8c0f4cea22d9888a2883611",
-  "source_approval_basis": "Deck Builder v1.58 script header states Approved Season 0 starter decks 1-5; user directed using latest Deck Builder starters as reference",
+  "source_authority": "Designer Deck Builder v1.64 export (2026-11-11); artwork R3.6; game rules Player Rulebook v3.2",
+  "source_export_sha256": "4ce0cad5b98196bcebe0f6f653350de49ec59a0cc0ee72c51e712753cd8d1547",
+  "source_approval_basis": "Designer supplied 2026-11-11",
   "active_starter_id": "s0_starter_03_yellow_blue",
   "active_starter_slot": 3,
-  "generated_only": true
+  "generated_only": true,
+  "source_deck_builder": "v1.64",
+  "source_exported_at": "2026-11-11T10:35:13.431Z"
 }

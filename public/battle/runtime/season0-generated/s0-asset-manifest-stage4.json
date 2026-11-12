@@ -10,9 +10,10 @@
       "verified_local_full_path": "card-art/S0-ARC-001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "3e06660f9cf0dd81e84850cb1d6db4fece75f3f3f01004568ce7f4dc691a473b",
+      "sha256": "dd7035bfc7e8b4df7060cd9df35ac956df62d5c916bcf5dfb85b8c4997971bc2",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-001.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-002": {
       "card_id": "S0-ARC-002",
@@ -21,9 +22,10 @@
       "verified_local_full_path": "card-art/S0-ARC-002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "935c1133486a74a264940ab39372eed484361228c8b24c07c2b3421977d305e4",
+      "sha256": "c0b1acddd913921f70e91086f95f5a2f92fe7b1f6e30c80753ba8f53d59386de",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-002.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-003": {
       "card_id": "S0-ARC-003",
@@ -32,9 +34,10 @@
       "verified_local_full_path": "card-art/S0-ARC-003.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "aca3b4c78c987dc5ed5d3a6422e03f0db1a06f4c77bdff3a98ba5dffc8a218b7",
+      "sha256": "e33bef36b7cd56593331968c69f024cc7ca7198c134ae7846d6d9a5939f3323e",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-003.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-004": {
       "card_id": "S0-ARC-004",
@@ -43,9 +46,10 @@
       "verified_local_full_path": "card-art/S0-ARC-004.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "213a5dccf4df537ac4f174c1b7bd0df84b1c6be85bd0bdafc3142bd516ceb345",
+      "sha256": "f775c154dd0065d19e602a4e31133a278658592e7a19eb959f341dc38d8c7e94",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-004.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-005": {
       "card_id": "S0-ARC-005",
@@ -54,9 +58,10 @@
       "verified_local_full_path": "card-art/S0-ARC-005.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "a55da0b904ab40e9adc5fd35cdb9d34e567d3564f10b29318912a4f1043b1898",
+      "sha256": "316ed2a30d1d7ef49bdd99af2e30f75943fe2eb64fbb723dc32c26b34e3d7ec8",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-005.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-006": {
       "card_id": "S0-ARC-006",
@@ -65,9 +70,10 @@
       "verified_local_full_path": "card-art/S0-ARC-006.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "d5a8703dec30c804050b12b4fbd68942bbe8a2096636e65a9320b12430932ed6",
+      "sha256": "8693e428649c38a1710875225ded4e0f1b38c915e37f548340c723782f57d019",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-006.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-007": {
       "card_id": "S0-ARC-007",
@@ -76,9 +82,10 @@
       "verified_local_full_path": "card-art/S0-ARC-007.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "8e8a0e1b2bb8c1f720773b8edacc594b495c749093b7188e506b05d8565af881",
+      "sha256": "66f8e126336b82dda816e7b325b645355124d996090fd22bc89b251f1261f455",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-007.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-008": {
       "card_id": "S0-ARC-008",
@@ -87,9 +94,10 @@
       "verified_local_full_path": "card-art/S0-ARC-008.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "fccc422484ea299a60bde6c70f15dd300112fa038b9d3b235b971feb67fbbf22",
+      "sha256": "1c17e902a478f9d4143380aaafa9c67410d58c72dae139c27efb0bbaae95c53f",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-008.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-009": {
       "card_id": "S0-ARC-009",
@@ -98,9 +106,10 @@
       "verified_local_full_path": "card-art/S0-ARC-009.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "51f369110bc0225f81a34812c8ec33dec2d7e37312e5da403d50b876ae812b17",
+      "sha256": "4aeafe4158856d3d5f36fdd0f2647825b33cdc0c21f84881e5c9a7a1b1e97e33",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-009.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-010": {
       "card_id": "S0-ARC-010",
@@ -109,9 +118,10 @@
       "verified_local_full_path": "card-art/S0-ARC-010.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "8a2ca04b566eef665270a53f24014cf858945b49b82d663f6ab5afa931ff4d40",
+      "sha256": "5c0c7fbc14727f33da4c8ad3be4f4d5cbfec77c8c6a73bc1a2409de8edce3d92",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-010.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-011": {
       "card_id": "S0-ARC-011",
@@ -120,9 +130,10 @@
       "verified_local_full_path": "card-art/S0-ARC-011.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "0e8fbd97f58ca9202620e494c0150dfc3a73bfeff2827592596cf39af501001f",
+      "sha256": "e7027274e922efd9d22a07679f1454673e988585d519baa67d5c68392856ce23",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-011.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-012": {
       "card_id": "S0-ARC-012",
@@ -131,9 +142,10 @@
       "verified_local_full_path": "card-art/S0-ARC-012.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "545fe88c8ed4f82074f5f76a2286905249f96f0791380bd0c64a792966d44ba3",
+      "sha256": "bff16a6072f3717bbf4912b7f04bf65a16e27b8923e7da3ea435efaa1d82f270",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-012.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-013": {
       "card_id": "S0-ARC-013",
@@ -142,9 +154,10 @@
       "verified_local_full_path": "card-art/S0-ARC-013.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "d0db24c8887c3a55c31c83d2dafee1aa0f782e74b5eb8b96c2887876b20e7bd0",
+      "sha256": "b02b05142e82229d1223d14ad499d6ca1db2b308f23e410a4fb369477118b34f",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-013.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-014": {
       "card_id": "S0-ARC-014",
@@ -164,9 +177,10 @@
       "verified_local_full_path": "card-art/S0-ARC-015.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "60b6d311e3a987a1bb7a127f7d1234004552aca9f75206f112930a101a30d565",
+      "sha256": "746269d350052c294b71855cdc8d53a35cb38ec18f0847c23ed590e74536f39a",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-015.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-016": {
       "card_id": "S0-ARC-016",
@@ -175,9 +189,10 @@
       "verified_local_full_path": "card-art/S0-ARC-016.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "46fdc3eaab62bc2b8651122ea4338a796d6068235616f306f098aeecddad79b8",
+      "sha256": "fb4506a0b56ff3c7776bf66fc79a5c256e37d34b39087f84b4e1536f821a1268",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-016.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-017": {
       "card_id": "S0-ARC-017",
@@ -186,9 +201,10 @@
       "verified_local_full_path": "card-art/S0-ARC-017.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "7ad2290b5bdd708f076dfdcbe7760dad3d7f8f7557eff8dd3cbe4e59a7accdf2",
+      "sha256": "a07a8d78f3df4fdf866521d44027cc7573016a8bae9178e6a4763368371ef8ea",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-017.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-018": {
       "card_id": "S0-ARC-018",
@@ -197,9 +213,10 @@
       "verified_local_full_path": "card-art/S0-ARC-018.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "fcd9640df186078bf643febe7fb183f3339dd5f57ca76fc19b59b1951678ac77",
+      "sha256": "b828402732e19926f1d64d83b14688c2c6de967bac7c00241691d630684d604c",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-018.webp",
-      "status": "ACTIVE_SHA256_VERIFIED"
+      "status": "ACTIVE_SHA256_VERIFIED",
+      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
     },
     "S0-ARC-019": {
       "card_id": "S0-ARC-019",
@@ -351,7 +368,7 @@
       "verified_local_full_path": "card-art/S0-ARC-H001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "729e4a81bb98c5e02316fb3ab1a9ea90a4058cb786a195a90d55c93565900458",
+      "sha256": "fe20725d2e837860b6171c4d45fc371e3727a0854760008e0338d8e6aff2ec4e",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H001.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -362,7 +379,7 @@
       "verified_local_full_path": "card-art/S0-ARC-H002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "e79f04c3d116e1b0950cd4857db5f75ebfb83cf4e992f3b3930dc10520f840bd",
+      "sha256": "8c1ac609e4c520f1d597a25fd171852b6990efe8846ca0716d96010e0dd05a6e",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H002.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -373,7 +390,7 @@
       "verified_local_full_path": "card-art/S0-ARC-H003.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "3f3777c6fb71372cee45813231413045916487ddc63fef0a67b754eb7c1b7302",
+      "sha256": "735a0d03d16f599f729dbb68337b764775e04c51487f7d210e3b36462a4c6a59",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H003.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -395,7 +412,7 @@
       "verified_local_full_path": "card-art/S0-ARC-H005.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "b5b92846cdf72a8e4c8eb44774a1e3d9491eacbb7f85a38785ff4811d2b35369",
+      "sha256": "442255c8a6131df844f2fa0bd01faf1f918020474193b248483710005d04adcf",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H005.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -406,7 +423,7 @@
       "verified_local_full_path": "card-art/S0-ARC-H006.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "d238b497efb303a5fb238a4deaf0f9ed2a13b1631fbb0898d8354f924f3e8f56",
+      "sha256": "25ef7bfebcb6d225fdfb6723975d3b8205e5c2a9b9cc6a88423d28aaae487e8a",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H006.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -428,7 +445,7 @@
       "verified_local_full_path": "card-art/S0-ARC-H008.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "20ee82faa79dd3030c5c62d0ac25b8c9b02f14f50e84ba72228d09d7ee3ce6bc",
+      "sha256": "2e5331c35114093725f66bf2bf823805d503566803d982a15188659fd79b95ad",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H008.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -439,7 +456,7 @@
       "verified_local_full_path": "card-art/S0-ARC-H009.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "a83715139abb62b7b89a8be33609c4cbc809c659cf3a881fc1c0c2ab8b178a19",
+      "sha256": "c573c9848caaa7ca907272019e7155e63fc35c60e2d43fe2ad2aaffedf6213ad",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H009.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -802,7 +819,7 @@
       "verified_local_full_path": "card-art/S0-CLE-031.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "c4ec5a43fc12409f4054b0b0d5025068567ad493c4eb99b38f494cf62b8a728d",
+      "sha256": "1d05629b76b52da42cbb384ece2ea37e505432aa580ad9cdb12dc44ca69d9489",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-031.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -824,7 +841,7 @@
       "verified_local_full_path": "card-art/S0-CLE-H002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "0bd7ed7e9f8f2f582c728583759444ddef2066f88e2193741928b44c19b07f13",
+      "sha256": "9fd90bdc24bf9f71493c0ba3957107eee5045679df90c0a94f3cdd93508e6dce",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H002.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -835,7 +852,7 @@
       "verified_local_full_path": "card-art/S0-CLE-H003.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "80e717f10c7ea9d714111c2ec69868a83376500a7c6feb3b2ad61f2e3a5bdd3b",
+      "sha256": "b69abdb55ce2902127ec07dbeeeff51f3f7b7745455693c7600c5f8dee4d7cc6",
       "osa_source_path": "Authority/Game/Season0-Visual/DEV43-Approved-Hero-Artwork/S0-CLE-H003.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -857,7 +874,7 @@
       "verified_local_full_path": "card-art/S0-CLE-H005.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "7662276a2771ab5d67b19be6f22be0923ceb9911b0b3d6d5a3fd9275ab3074a3",
+      "sha256": "9720526b6c24bf4871af2e37c7aaa7e3ea34e5bbcf38678fffa5b24fce3e5393",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H005.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -868,7 +885,7 @@
       "verified_local_full_path": "card-art/S0-CLE-H006.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "336acedfc7e1dada5cc2b0cdaa46637596896a5361a530708dddf9d549d27bac",
+      "sha256": "333e99b5688ea3138fb92e6dcf9a48ea583226e25bb0fd79253435038277011b",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H006.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -890,7 +907,7 @@
       "verified_local_full_path": "card-art/S0-CLE-H008.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "8ab7087a24267d2d45258dad6f42653d6718bb813a3d62dcef175da1e5f6f730",
+      "sha256": "5cef413c0cc2614cfdef70c9675145dbc7784b9c59a9c8b604d0a01abf935ad7",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H008.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -901,7 +918,7 @@
       "verified_local_full_path": "card-art/S0-CLE-H009.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "cae83ca82737d57fb5cd9c809ab7f5e8b51e30f071d9f2b4bda62199af8d9813",
+      "sha256": "77098e678e22b53c96f5cc9122bf8befd9c433130c9de0d9216ff886d9782f4f",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H009.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1176,7 +1193,7 @@
       "verified_local_full_path": "card-art/S0-ITM-011.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "2428b0817bc0c41efe16654139f530e0e7a03b85fc75fb369b84ba4aba34a871",
+      "sha256": "a0e9be117240dc78a411c37b4289913749710b9edb1d1c8331353056e283bbe1",
       "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-011.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1638,7 +1655,7 @@
       "verified_local_full_path": "card-art/S0-MAG-H002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "89cf47608905432e715ef21c803737af6b76e608d230c77ab6c085f66a98384d",
+      "sha256": "b3e0d8a7d0007bd070a63a4b90ea2a3d85ad1172378084fcbaa558c14269b3b6",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H002.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1649,7 +1666,7 @@
       "verified_local_full_path": "card-art/S0-MAG-H003.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "7ebcf5606dec0f0b9f04381648b5221cabc6042b6e7faa6c373e88141908f3ef",
+      "sha256": "5aa8f1bc425a75f92aeefa614c6e901d03d5f8b58ec0e83e1cc428c71b6445b2",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H003.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1671,7 +1688,7 @@
       "verified_local_full_path": "card-art/S0-MAG-H005.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "6bea0d89007aa4cd189e726c1128e73b75f6932ec6be2ff15a80972702032222",
+      "sha256": "80bb1e8a68941d5ae6ceae531aaa6c10782430bb22b8217399c340f43e311c41",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H005.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1682,7 +1699,7 @@
       "verified_local_full_path": "card-art/S0-MAG-H006.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "a0972b4f86d78b4426c9d2b20f501abfe666d4f076fa7ef7a971f4bc2bbbe333",
+      "sha256": "3012d672f8262f03ea4777b798078f082ea08da0df46124535c9dd770b0fd86c",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H006.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1704,7 +1721,7 @@
       "verified_local_full_path": "card-art/S0-MAG-H008.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "3e8920a868f8489e032ce02524037ee2856a9f8d6b45c1a5fb11a73a8ab1173f",
+      "sha256": "f6bf66a71b0e01663c93e89a3aa410c5e5111310397fc197a18cc834a0bc859f",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H008.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1715,7 +1732,7 @@
       "verified_local_full_path": "card-art/S0-MAG-H009.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "260244fc26997062985bb3bfe1bf3024df1b85f6138f05adddd9098c78c971de",
+      "sha256": "a16ef602e9067f52089e8b9b498f92b3f314b5169d8b283017ae342da2c90506",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H009.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1748,7 +1765,7 @@
       "verified_local_full_path": "card-art/S0-MAN-001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "199c10d5ab55a3b07a69700fd425259ae5aa0c46d1d9ebe52b5ac1cc4fffed35",
+      "sha256": "dbe605ae204d057eacfe0ec9c662051f9b4abf622b269e16178d091d3348b0aa",
       "osa_source_path": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-001-Regular Mana Shard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1759,7 +1776,7 @@
       "verified_local_full_path": "card-art/S0-MAN-002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "cd7f34d47edb64179ab64b9d5fcc370fac40c9a9522b0d488c6d6626d5e0ad49",
+      "sha256": "13ad7876790a931536ec5bea0220cb36d6266ebd7c36fadb652ef4bc80b00b74",
       "osa_source_path": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-002-Red Mana Shard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1770,7 +1787,7 @@
       "verified_local_full_path": "card-art/S0-MAN-003.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "025bf4b6da89e71d640fc6285e2fb478efb860ba07a78f87a4fe365f4a1dbba0",
+      "sha256": "02b10180cc3e43b7fc61eb0ade795b6416a40bae4dca82875c5626dce5b1089f",
       "osa_source_path": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-003-Blue Mana Shard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1781,7 +1798,7 @@
       "verified_local_full_path": "card-art/S0-MAN-004.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "3b19691333e313e9e2554d887f183444d18d91c68631a9a940d8c7cb3b8913f8",
+      "sha256": "8d5718499f0de6fa3a449bcf6be0b37e044785cb81a8971c2321532b9ffc45e9",
       "osa_source_path": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-004-White Mana Shard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1792,7 +1809,7 @@
       "verified_local_full_path": "card-art/S0-MAN-005.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "c2336579f2eaebd67ed4a9643d81d56552a31c6727fb24d4dfb0a62c0951bd0b",
+      "sha256": "b27d1a32fc036d771dac3091a2c1a726822eb4e0fbbd8e0f2731551e40b889c9",
       "osa_source_path": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-005-Yellow Mana Shard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -1803,7 +1820,7 @@
       "verified_local_full_path": "card-art/S0-MAN-006.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "b6990966c0453b2a167b48bb2ae42d61303d7886bd3431b11625fe9ea87db646",
+      "sha256": "6707d8179cf96627f0773adf9883ef4c8d137897c4e84f5f72682069fee40fa1",
       "osa_source_path": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-006-Green Mana Shard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2155,7 +2172,7 @@
       "verified_local_full_path": "card-art/S0-THF-H001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "1c26523517085c41f01d73fe18f5f4aff301875ca18dbef045cba6a891b1e3bd",
+      "sha256": "1dccfda1beb2213897a0ac288c9ec67c29139430bb9149784aa5cf1ae1b24eb7",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H001.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2166,7 +2183,7 @@
       "verified_local_full_path": "card-art/S0-THF-H002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "82ca204c8df59ee33c5a22a9d845d41504ae43e02c4d18e0c780ac20fc23eb6f",
+      "sha256": "23078977dd19df459efcc29592cf41ae3b52f4cfc59eb1d68790e2b5e12047fc",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H002.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2177,7 +2194,7 @@
       "verified_local_full_path": "card-art/S0-THF-H003.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "16dac3c126ede8d919da8d280d7215323a6bb99edf5524c6e3bd0c06f7c4bd3e",
+      "sha256": "6cf249aea998168c9b524753af9352f9e458652904575651b959ee52b81e6a1e",
       "osa_source_path": "Authority/Game/Season0-Visual/DEV43-Approved-Hero-Artwork/S0-THF-H003.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2188,7 +2205,7 @@
       "verified_local_full_path": "card-art/S0-THF-H004.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "f3db111481f62c10f14a7d1ffec7046d457348798e5387a725c6a1810185f67e",
+      "sha256": "9737d8f8e97bc1a4069ab246d34c5ea15490085fa9b75233f2024f0d1ae685ea",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H004.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2199,7 +2216,7 @@
       "verified_local_full_path": "card-art/S0-THF-H005.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "5e111e84841ee37825ce218f1c090aebe583b33cb87681f5771bab438612e314",
+      "sha256": "f205c245990ae1bd047e5462b1a19cd1162c4dfe77e7b4510a130575eaae8a99",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H005.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2210,7 +2227,7 @@
       "verified_local_full_path": "card-art/S0-THF-H006.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "027f30cdbe42e3f0a892a75c13967b03702191092eaaefafbc80d0ffa6a1eb19",
+      "sha256": "f7f0bfc294439936a0c43f05d2fc877f148607ff3226572555bc53fa3c602c4c",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H006.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2221,7 +2238,7 @@
       "verified_local_full_path": "card-art/S0-THF-H007.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "5f0d7a47f91be7fb71b04333a334b274f7d9798d0ae08e48aa41f1d75530089d",
+      "sha256": "5f7c209f9479badafde0b0da62e8b72a5c1efc12124a30ed077b1ced5804f02e",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H007.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2232,7 +2249,7 @@
       "verified_local_full_path": "card-art/S0-THF-H008.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "e761dbefe3b9248df0111ac4f8f2d622d6344538bf106fb91476cdff41dbde77",
+      "sha256": "0d294d8fdc9192ecb3b38da3634bb745136107840b7ed093594dc6113d00b1aa",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H008.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2243,7 +2260,7 @@
       "verified_local_full_path": "card-art/S0-THF-H009.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "28ae13d35ac883bfd1b05fc9a784b3838a33de7f7c4148a6e028edec623ff4c7",
+      "sha256": "44650654d5f693c24827f7f1a1c217cd604d12cbebb2bdc35e700b899e807be9",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H009.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2628,7 +2645,7 @@
       "verified_local_full_path": "card-art/S0-WAR-H002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "f5311192738b92d9b9695346e19a9e8524768d8708d104ad597541bf4ff8ffd3",
+      "sha256": "827d703d80629fde5009ce88d623431813221e34e7768a6e050f6da84dc3783e",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H002.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2639,7 +2656,7 @@
       "verified_local_full_path": "card-art/S0-WAR-H003.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "572e87cbe6e367777330ca4ff8862532241e015906c60bc64e38efab03fc5ffa",
+      "sha256": "54a11bf2ccd4474585f8270605753df97a04d7468a1015e472a518262d011de1",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H003.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2661,7 +2678,7 @@
       "verified_local_full_path": "card-art/S0-WAR-H005.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "c4a3a748fd33074b65e6099311df4e181ca132ed4501ea36bea50640c4b37d5d",
+      "sha256": "70864609a2adb269e3caaf9678561f6001628049f3d36bb3ce635d57df0ca089",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H005.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2672,7 +2689,7 @@
       "verified_local_full_path": "card-art/S0-WAR-H006.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "1efe65e2cf26db153c03d29c7011e93937b9c0369ce0b482db78666633bbdc11",
+      "sha256": "395db6eabbcbb839158c6777ad98613507ccfe5151d7ec24744668e20ee850d4",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H006.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2694,7 +2711,7 @@
       "verified_local_full_path": "card-art/S0-WAR-H008.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "93b0ee56d0a9db7d83621b83b25208f21d6068362c140c577fe21c75c9acee58",
+      "sha256": "268623aa5e6c5424d129b3413024ac919a35e3276b13123d437d167c1a074b60",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H008.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2705,7 +2722,7 @@
       "verified_local_full_path": "card-art/S0-WAR-H009.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "e5b3fefe6d8d5db1d5871264f0195bf965dd125abdea67eb489723813744f69b",
+      "sha256": "db90962302127177fa2a4ae6026faa59916cfa0960ba22a8710060a04083d5fc",
       "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H009.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
@@ -2761,5 +2778,14 @@
       "sha256": "817b05bd2642020bebd0b7365fa44e46fffc05ad2e0616dc3cec53f1bc8efbe3",
       "osa_source_path": "Authority/Game/Season0-Visual/CardBacks/Current/back-mana.webp"
     }
+  },
+  "rc39_main_deck_artwork": {
+    "release": "RC39",
+    "main_deck_authority": "GL_S0_MainDeck_R3.7.rar",
+    "main_deck_card_count": 187,
+    "main_deck_art_changed_vs_rc38": 17,
+    "legacy_deck_artwork": "R3.6 unchanged",
+    "hashes": "per-card sha256 updated in cards table",
+    "builder_artwork_crosscheck": "Grandis_Legacy_Deck_Builder_v1.65_2026-11-12.zip: 187/187 exact matches"
   }
 }

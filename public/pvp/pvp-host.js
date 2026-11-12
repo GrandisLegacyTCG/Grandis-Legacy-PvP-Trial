@@ -17,8 +17,16 @@ const INTENT_BATCH_LIMIT=2;
 // gameplay and match result. The same-origin battlefield iframe owns ONLY
 // rendering and input; all packets pass through this existing connection.
 const BATTLE_CHANNEL='gl-pvp-battle-transport-v1';
-const BATTLE_PACKET_TYPES=new Set(['runtime-intent','runtime-intent-batch','surrender-match','resync','ping','activity','choose-coin-flip','coin-presented','confirm-coin-flip','return-to-lobby']);
-let battleFrame=null,battleReady=false,battleFailureTimer=null;
+const BATTLE_PACKET_TYPES=new Set(['runtime-intent','runtime-intent-batch','surrender-match','resync','ping','activity','choose-coin-flip','choose-turn-order','coin-presented','confirm-coin-flip','return-to-lobby']);
+let battleFrame=null,battleReady=false,battleFailureTimer=null,battleFrameWarm=false;
+let battleWarmScheduled=false;
+// Read-only timing diagnostics (DevTools or ?pvpPerf=1). No gameplay protocol.
+const startupPerf={startClickAt:0,coinSnapshotMs:null,frameCreatedAt:0,battleReadyMs:null,prewarmed:false};
+window.GL_PVP_STARTUP_PERF=startupPerf;
+const perfNow=()=>globalThis.performance?.now?.()||Date.now();
+function reportStartupPerf(label,elapsed){
+  if(new URLSearchParams(location.search).has('pvpPerf'))console.debug('[PvP startup]',label,Math.round(elapsed*10)/10+'ms');
+}
 function clearBattleFailure(){
   clearTimeout(battleFailureTimer);battleFailureTimer=null;
   document.getElementById('glPvpBattleRecovery')?.remove();
@@ -39,18 +47,37 @@ function toBattle(message){
   battleFrame.contentWindow.postMessage({channel:BATTLE_CHANNEL,kind:'server',message},location.origin);
 }
 function setBattleTransportOnline(connected){toBattle({type:'bridge-transport',connected:!!connected})}
-function ensureBattleFrame(){
-  if(battleFrame)return;
+function revealBattleFrame(){
+  if(!battleFrame)return;
+  if(battleFrameWarm){
+    // The browser has already parsed the RC38 battlefield during READY idle.
+    battleFrame.style.visibility='visible';
+    battleFrame.style.pointerEvents='auto';
+    battleFrame.inert=false;
+    battleFrameWarm=false;
+  }
+  // Recovery timer counts ACTIVE load only, never time spent in the lobby.
+  if(!battleReady&&!battleFailureTimer)
+    battleFailureTimer=setTimeout(()=>offerBattleRecovery(battleFrame),25000);
+}
+function ensureBattleFrame({warm=false}={}){
+  if(battleFrame){if(!warm)revealBattleFrame();return;}
   const frame=document.createElement('iframe');frame.id='glPvpBattleStage';frame.title='Grandis Legacy PvP Battlefield';
   frame.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;background:#071522;z-index:2147483000;display:block;';
+  // A hidden same-origin iframe PRELOADS/parses the actual battlefield before
+  // START MATCH, but it must neither cover the lobby nor accept input.
+  battleFrameWarm=!!warm;
+  if(warm){frame.style.visibility='hidden';frame.style.pointerEvents='none';frame.inert=true;}
+  startupPerf.prewarmed=!!warm;
+  startupPerf.frameCreatedAt=perfNow();
   // No other-origin content or cross-window socket control is permitted.
   frame.src='/battle/?embedded=1'+(new URLSearchParams(location.search).has('pvpPerf')?'&pvpPerf=1':'');
   battleReady=false;battleFrame=frame;document.body.appendChild(frame);
-  battleFailureTimer=setTimeout(()=>offerBattleRecovery(frame),25000);
+  if(!warm)revealBattleFrame();
 }
 function removeBattleFrame(){
   clearBattleFailure();
-  const previous=battleFrame;battleFrame=null;battleReady=false;
+  const previous=battleFrame;battleFrame=null;battleReady=false;battleFrameWarm=false;
   if(previous)previous.remove();
 }
 window.addEventListener('message',event=>{
@@ -59,6 +86,8 @@ window.addEventListener('message',event=>{
   if(!packet||packet.channel!==BATTLE_CHANNEL)return;
   if(packet.kind==='ready'){
     clearBattleFailure();battleReady=true;
+    startupPerf.battleReadyMs=Math.round(perfNow()-startupPerf.frameCreatedAt);
+    if(startupPerf.startClickAt)reportStartupPerf('START click to battlefield ready',perfNow()-startupPerf.startClickAt);
     setBattleTransportOnline(state.connected);
     if(state.snapshot)toBattle({...state.snapshot,type:'snapshot',forceImport:true});
   }else if(packet.kind==='send'){
@@ -257,9 +286,15 @@ function onSnapshot(msg,opts={}){
   else if(msg.local?.deckKey){state.deckKey=msg.local.deckKey;state.customDeck=null;state.customDeckName='';state.formation=msg.local.formation||state.formation;persist('deck',state.deckKey);persist('custom','');persist('customName','')}
   else if(msg.local?.hasDeck&&msg.local?.deckName&&!state.customDeck){state.deckKey='';state.customDeckName=msg.local.deckName;state.formation=msg.local.formation||state.formation}
   if(['coin-flip','coin-result','started','finished'].includes(msg?.match?.status)){
+    if(msg.match.status==='coin-flip'&&startupPerf.startClickAt){
+      startupPerf.coinSnapshotMs=Math.round(perfNow()-startupPerf.startClickAt);
+      reportStartupPerf('START click to coin snapshot',startupPerf.coinSnapshotMs);
+    }
     ensureBattleFrame();toBattle(msg);return;
   }
-  if(battleFrame)removeBattleFrame();
+  // A prewarmed iframe must survive ordinary setup/READY room snapshots;
+  // dispose it on UNREADY/spectate or when returning from an active match.
+  if(battleFrame&&(!battleFrameWarm||!canWarmBattleFrame()))removeBattleFrame();
   renderLobby();syncPresentation(prevStatus,opts);syncSetupSelection();notify();
   if(!presentation()&&msg.match?.status!=='setup')setTimeout(()=>syncPresentation(prevStatus),80);
 }
@@ -276,8 +311,8 @@ function connect(force=false){
   clearReconnectTimer();
   if(state.ws)try{state.ws.close(4000,'rejoin')}catch{}
   let ws;try{ws=new WebSocket(wsUrl())}catch{scheduleReconnect();return}state.ws=ws;
-  ws.onopen=()=>{if(state.ws!==ws)return;state.connected=true;setBattleTransportOnline(true);state.connectionError='';state.sessionInvalid=false;state.reconnectDelay=1200;startHeartbeat();if(!battleFrame)renderLobby();publishConnection()};
-  ws.onclose=ev=>{if(state.ws!==ws)return;setBattleTransportOnline(false);clearHeartbeat();state.connected=false;state.rttMs=null;publishConnection();clearIntent('Connection closed before the authoritative action completed.');const code=Number(ev?.code||0);
+  ws.onopen=()=>{if(state.ws!==ws)return;state.connected=true;setBattleTransportOnline(true);state.connectionError='';state.sessionInvalid=false;state.reconnectDelay=1200;startHeartbeat();if(!battleFrame||battleFrameWarm)renderLobby();publishConnection()};
+  ws.onclose=ev=>{if(state.ws!==ws)return;setBattleTransportOnline(false);clearHeartbeat();state.connected=false;state.rttMs=null;if(battleFrameWarm)removeBattleFrame();publishConnection();clearIntent('Connection closed before the authoritative action completed.');const code=Number(ev?.code||0);
     if(code===4003){recoverBuildMismatch();return}
     if(code===4002){state.role='spectator';state.seatToken='';persistSession('role','spectator');persistSession('seat','');renderLobby();scheduleReconnect(250);return}
     if(code===4006){/* Another tab/page took over this exact seat session. Fork this tab into a fresh player identity instead of fighting for the same socket forever. */forkConnectionIdentity();state.role='player';persistSession('role','player');state.connectionError='';renderLobby();scheduleReconnect(250);return}
@@ -285,17 +320,17 @@ function connect(force=false){
     if(code===4001){state.sessionInvalid=true;state.connectionError='Connection was rejected. Reconnect to retry with a fresh tab session.';renderLobby();return}
     if(!battleFrame)renderLobby();scheduleReconnect();
   };
-  ws.onerror=()=>{if(state.ws!==ws)return;state.connected=false;publishConnection();if(!battleFrame)renderLobby()};
+  ws.onerror=()=>{if(state.ws!==ws)return;state.connected=false;publishConnection();if(battleFrameWarm)removeBattleFrame();if(!battleFrame)renderLobby()};
   ws.onmessage=ev=>{if(state.ws!==ws)return;let m;try{m=JSON.parse(ev.data)}catch{return}
     if(m.type==='snapshot')onSnapshot(m,{force:!!m.forceImport});
     else if(m.type==='intent-result'){
-      if(battleFrame){if(m.snapshot)state.snapshot=m.snapshot;toBattle(m);return}
+      if(battleFrame&&!battleFrameWarm){if(m.snapshot)state.snapshot=m.snapshot;toBattle(m);return}
       const result=ensureIntentChannel().handleResult(m);
       if(m.snapshot)onSnapshot(m.snapshot,{force:true});
       if(!result.matched&&m.ok===false)intentError(m.message||'Authoritative PvP request failed.');
     }
     else if(m.type==='intent-ack'){/* Legacy rolling-deploy compatibility only. v3.80.16 completes actions with intent-result + snapshot. */}
-    else if(m.type==='error'){if(battleFrame){if(m.snapshot)state.snapshot=m.snapshot;toBattle(m);return}const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot,{force:true});else{renderLobby();window.GL_GAME_UI?.render?.()}}
+    else if(m.type==='error'){if(battleFrame&&!battleFrameWarm){if(m.snapshot)state.snapshot=m.snapshot;toBattle(m);return}const message=String(m.message||'Authoritative PvP request failed.');if(m.code==='CLIENT_BUILD_MISMATCH'||/CLIENT_BUILD_MISMATCH/.test(message)){recoverBuildMismatch();return}if(m.code==='SEAT_TOKEN_MISMATCH'){/* close code 4004 will fork this tab into a fresh session */state.connectionError='Seat session changed. Opening a fresh tab session…'}clearIntent(message);console.warn('[PvP]',m.code,message);if(m.snapshot)onSnapshot(m.snapshot,{force:true});else{renderLobby();window.GL_GAME_UI?.render?.()}}
     else if(m.type==='idle-timeout'){if(battleFrame)toBattle(m);state.idleNotice=String(m.message||'');if(m.scope==='lobby'){state.role='spectator';state.seatToken='';persistSession('role','spectator');persistSession('seat','')}renderLobby();}
     else if(m.type==='pong'){if(battleFrame)toBattle(m);const sent=Number(m.clientTime||state.pingSentAt||0);if(sent>0){const rtt=Math.max(0,Date.now()-sent);state.rttMs=state.rttMs==null?rtt:Math.round(state.rttMs*.65+rtt*.35)}state.peerConnections.clear();for(const row of (m.connections||[])){if(Number.isFinite(Number(row?.seat)))state.peerConnections.set(Number(row.seat),{connected:!!row.connected,rttMs:Number.isFinite(Number(row.rttMs))?Number(row.rttMs):null})}publishConnection()}
     else console.warn('[PvP] Unknown server message',m)
@@ -306,6 +341,8 @@ function chooseCoin(choice){return send('choose-coin-flip',{choice:String(choice
 function coinPresented(){return send('coin-presented')}
 function confirmCoin(){return send('confirm-coin-flip')}
 function startMatch(){
+  startupPerf.startClickAt=perfNow();startupPerf.coinSnapshotMs=null;
+  if(battleFrameWarm&&battleReady)reportStartupPerf('Battlefield prewarmed (ready before START)',0);
   try{sessionStorage.setItem('gl_pvp_net_rc6_start_click_at',String(Date.now()))}catch{}
   return send('start-match');
 }
@@ -346,7 +383,7 @@ function ensureLobbyReview(){
 }
 function closeS0CardPreview(){
   lobbyReviewProgressionIds=[];
-  if(lobbyReviewOverlay){lobbyReviewOverlay.classList.remove('open');lobbyReviewOverlay.querySelector('.gl-card-review-body')?.replaceChildren()}
+  if(lobbyReviewOverlay)lobbyReviewOverlay.classList.remove('open'); // retain the iframe renderer and loaded CSS
 }
 function openS0CardPreview(cardId,options=null){
   if(!cardId)return;
@@ -394,6 +431,27 @@ const BATTLE_PREFETCH=[
   '/battle/engine/shared-ui/battlefield-ui.js'
 ];
 let battlePrefetchStarted=false;
+function canWarmBattleFrame(){
+  return state.connected&&state.snapshot?.match?.status==='setup'&&
+    local()?.role==='player'&&!!local()?.ready&&
+    document.visibilityState!=='hidden'&&
+    // Do not allocate a second heavyweight DOM during an open card preview.
+    !document.getElementById('pvpS0CardPreview')?.classList?.contains('open')&&
+    !(typeof navigator!=='undefined'&&navigator.connection?.saveData)&&
+    !(typeof navigator!=='undefined'&&Number(navigator.deviceMemory)>0&&Number(navigator.deviceMemory)<=2);
+}
+function scheduleWarmBattleFrame(){
+  if(battleFrame||battleWarmScheduled||!canWarmBattleFrame())return;
+  battleWarmScheduled=true;
+  // Initial deck rendering and lobby controls get the first paint; large
+  // engine parse happens in the following idle window, never synchronously
+  // inside JOIN / READY / START handlers.
+  const schedule=window.requestIdleCallback||((cb)=>setTimeout(cb,800));
+  schedule(()=>{
+    battleWarmScheduled=false;
+    if(!battleFrame&&canWarmBattleFrame())ensureBattleFrame({warm:true});
+  },{timeout:2400});
+}
 function prefetchBattlefieldWhenReady(){
   if(battlePrefetchStarted||!local()?.ready||document.visibilityState==='hidden')return;
   battlePrefetchStarted=true;
@@ -401,26 +459,43 @@ function prefetchBattlefieldWhenReady(){
   schedule(()=>{
     if(!document.head)return;
     for(const href of BATTLE_PREFETCH){
-      const link=document.createElement('link');link.rel='prefetch';link.as='script';
-      // Prefetch the exact URL loaded by /battle/. Reuse the unchanged
-      // multi-megabyte engine/data in browser cache on small PvP hotfixes.
-      const version=href==='/battle/shared-app/app-runtime.js'?
-        'gl-s0-pvp-rc36p8-combat-hotfix3-2026-11-09':BUILD_ID;
-      link.href=href+'?v='+encodeURIComponent(version);
+      const link=document.createElement('link');link.rel='prefetch';link.as='script';link.href=href+'?v='+encodeURIComponent(BUILD_ID);
       document.head.appendChild(link);
     }
   },{timeout:1500});
 }
+let lobbyLastDeckVisualKey='',lobbyLastDeckPickerKey='';
 function renderLobby(){
   ensureLobby();syncLobbyScale();const active=['coin-flip','coin-result','opening','started','finished'].includes(match()?.status),wrap=$('pvpSetupOverlay');wrap.classList.toggle('open',!active);if(active)return;
   const keys=optionKeys(),meNow=local();if(state.deckKey&&!starters()[state.deckKey]){state.deckKey="";state.formation=null;persist("deck","")}if(!state.deckKey&&!state.customDeck&&!meNow?.hasDeck&&keys[0]){state.deckKey=keys[0];state.formation=baseFormation(starterDeck(keys[0]));persist('deck',state.deckKey);if(state.connected&&meNow?.role==='player')send('set-deck',{deckKey:state.deckKey,formation:state.formation})}
-  const sel=$('pvpSetupDeck'),serverCustom=!!(meNow?.hasDeck&&!meNow?.deckKey&&!state.customDeck);sel.innerHTML=keys.map(k=>'<option value="'+esc(k)+'" '+(k===state.deckKey?'selected':'')+'>'+esc(starters()[k]?.label||k)+'</option>').join('')+((state.customDeck||serverCustom)?'<option selected value="">'+esc(state.customDeckName||meNow?.deckName||'Imported Deck')+'</option>':'');
-  const d=currentDeck(),stats=deckStats(d);if(d)preloadDeckAssets(d);$('pvpDeckTitle').textContent=deckTitle(d);$('pvpDeckClassLine').textContent=deckClassLine(d);$('pvpFormationPreview').innerHTML=formationHtml();$('pvpFormationPreview').querySelectorAll('[data-swap-left]').forEach(b=>b.onclick=()=>swapFormation(Number(b.dataset.swapLeft),Number(b.dataset.swapRight)));$('pvpRankLabel').textContent='RANK '+['I','II','III'][state.rank-1];
-  $('pvpDeckStats').innerHTML='<div><dt>Heroes</dt><dd>'+stats.heroes+'</dd></div><div><dt>Legacies</dt><dd>'+stats.legacies+'</dd></div><div class="total legacy-total"><dt>Legacy Deck</dt><dd>'+(d?.legacy_deck_expanded?.length||0)+'</dd></div><div class="deck-section-start"><dt>Skills</dt><dd>'+stats.skills+'</dd></div><div><dt>Items</dt><dd>'+stats.items+'</dd></div><div><dt>Events</dt><dd>'+stats.events+'</dd></div><div class="total main-total"><dt>Main Deck</dt><dd>'+stats.main+'</dd></div>';
-  $('pvpSetupPeople').innerHTML=seatHtml(1)+seatHtml(2);$('pvpSetupName').value=state.name||'';const me=local(),spec=me?.role==='spectator';prefetchBattlefieldWhenReady();$('pvpSetupReadyButton').textContent=me?.ready?'UNREADY':'READY';$('pvpSetupReadyButton').disabled=!state.connected||spec||(!d&&!me?.hasDeck);$('pvpSetupSpectatorButton').textContent=spec?'JOIN AS PLAYER':'SPECTATE';$('pvpSetupStartButton').disabled=!(me?.seat===1&&(state.snapshot?.players||[]).length===2&&(state.snapshot?.players||[]).every(p=>p.connected&&p.ready&&p.hasDeck));$('pvpSetupReconnectButton').textContent=state.sessionInvalid?'NEW SESSION':'RECONNECT';$('pvpSetupHint').textContent=state.idleNotice||(state.fatalBuildMismatch?'Client update required. Refresh this page.':state.connectionError||(!state.connected?'Connecting to PvP service…':spec?'Spectator mode is read-only. Both Hands remain hidden.':me?.seat===1?'Waiting for both players to be ready.':'Ready up when your deck is selected.'));const ic=$('pvpNameStateIcon');ic.className='pvp-v260-name-icon'+(spec?' spectate':me?.ready?' ready':'');
+  const sel=$('pvpSetupDeck'),serverCustom=!!(meNow?.hasDeck&&!meNow?.deckKey&&!state.customDeck);
+  const pickerKey=[state.deckKey,state.customDeckName,serverCustom?meNow?.deckName:'',!!state.customDeck].join('|');
+  if(lobbyLastDeckPickerKey!==pickerKey){
+    lobbyLastDeckPickerKey=pickerKey;
+    sel.innerHTML=keys.map(k=>'<option value="'+esc(k)+'" '+(k===state.deckKey?'selected':'')+'>'+esc(starters()[k]?.label||k)+'</option>').join('')+((state.customDeck||serverCustom)?'<option selected value="">'+esc(state.customDeckName||meNow?.deckName||'Imported Deck')+'</option>':'');
+  }
+  const d=currentDeck(),formation=currentFormation();
+  const heroIds=['LEFT','CENTER','RIGHT'].map(k=>formation[k]||'');
+  // Full card IDs/quantities are part of the memo key so importing a different
+  // custom deck with the same title/count never reuses stale Hero/Deck stats.
+  const deckKey=JSON.stringify([state.deckKey,state.customDeckName,state.rank,heroIds,
+    !!state.customDeck,(d?.main_deck||[]).map(c=>[c.card_id,Number(c.quantity||1)]),
+    (d?.legacy_deck_expanded||[]).map(c=>c.card_id),d?.deck_name||d?.display_name||'']);
+  if(lobbyLastDeckVisualKey!==deckKey){
+    lobbyLastDeckVisualKey=deckKey;
+    const stats=deckStats(d);
+    if(d)preloadDeckAssets(d);
+    $('pvpDeckTitle').textContent=deckTitle(d);
+    $('pvpDeckClassLine').textContent=deckClassLine(d);
+    $('pvpFormationPreview').innerHTML=formationHtml();
+    $('pvpFormationPreview').querySelectorAll('[data-swap-left]').forEach(b=>b.onclick=()=>swapFormation(Number(b.dataset.swapLeft),Number(b.dataset.swapRight)));
+    $('pvpRankLabel').textContent='RANK '+['I','II','III'][state.rank-1];
+    $('pvpDeckStats').innerHTML='<div><dt>Heroes</dt><dd>'+stats.heroes+'</dd></div><div><dt>Legacies</dt><dd>'+stats.legacies+'</dd></div><div class="total legacy-total"><dt>Legacy Deck</dt><dd>'+(d?.legacy_deck_expanded?.length||0)+'</dd></div><div class="deck-section-start"><dt>Skills</dt><dd>'+stats.skills+'</dd></div><div><dt>Items</dt><dd>'+stats.items+'</dd></div><div><dt>Events</dt><dd>'+stats.events+'</dd></div><div class="total main-total"><dt>Main Deck</dt><dd>'+stats.main+'</dd></div>';
+  }
+  $('pvpSetupPeople').innerHTML=seatHtml(1)+seatHtml(2);if(document.activeElement!==$('pvpSetupName'))$('pvpSetupName').value=state.name||'';const me=local(),spec=me?.role==='spectator';prefetchBattlefieldWhenReady();scheduleWarmBattleFrame();$('pvpSetupReadyButton').textContent=me?.ready?'UNREADY':'READY';$('pvpSetupReadyButton').disabled=!state.connected||spec||(!d&&!me?.hasDeck);$('pvpSetupSpectatorButton').textContent=spec?'JOIN AS PLAYER':'SPECTATE';$('pvpSetupStartButton').disabled=!(me?.seat===1&&(state.snapshot?.players||[]).length===2&&(state.snapshot?.players||[]).every(p=>p.connected&&p.ready&&p.hasDeck));$('pvpSetupReconnectButton').textContent=state.sessionInvalid?'NEW SESSION':'RECONNECT';$('pvpSetupHint').textContent=state.idleNotice||(state.fatalBuildMismatch?'Client update required. Refresh this page.':state.connectionError||(!state.connected?'Connecting to PvP service…':spec?'Spectator mode is read-only. Both Hands remain hidden.':me?.seat===1?'Waiting for both players to be ready.':'Ready up when your deck is selected.'));const ic=$('pvpNameStateIcon');ic.className='pvp-v260-name-icon'+(spec?' spectate':me?.ready?' ready':'');
 }
 function boot(){state.clientId=makeClientId();try{const u=new URL(location.href),explicitDeck=u.searchParams.get('deck')||'';state.name=safeName(u.searchParams.get('name')||stored('name')||'Player');state.role=(u.searchParams.get('role')||sessionStored('role')||'player')==='spectator'?'spectator':'player';state.seatToken=sessionStored('seat')||'';const rawCustom=localStorage.getItem(STORE.custom)||'';if(rawCustom&&!explicitDeck){try{state.customDeck=JSON.parse(rawCustom);state.customDeckName=localStorage.getItem(STORE.customName)||state.customDeck?.display_name||state.customDeck?.deck_name||'Imported Deck';state.formation=baseFormation(state.customDeck)}catch{persist('custom','');persist('customName','')}}state.deckKey=explicitDeck||(!state.customDeck?stored('deck'):'')||''}catch{}persist('name',state.name);persistSession('role',state.role);window.GL_PVP_LOCAL_ROLE=state.role;installImageDecodeGuard();installActivityTracking();ensureLobby();renderLobby();window.addEventListener('resize',syncLobbyScale,{passive:true});connect(false)}
 
-window.GL_PVP_HOST={version:VERSION,buildId:BUILD_ID,getSnapshot:()=>state.snapshot,subscribe(fn){state.listeners.add(fn);return()=>state.listeners.delete(fn)},sendIntent,sendIntentBatch,startMatch,chooseCoin,coinPresented,confirmCoin,matchClock,surrender,returnToLobby,identity,reconnect:()=>connect(true),getConnection:()=>({connected:state.connected,buildMismatch:state.fatalBuildMismatch,rttMs:Number.isFinite(Number(state.rttMs))?Number(state.rttMs):null,peers:[...state.peerConnections.entries()].map(([seat,v])=>({seat,...v}))})};
+window.GL_PVP_HOST={version:VERSION,buildId:BUILD_ID,getSnapshot:()=>state.snapshot,subscribe(fn){state.listeners.add(fn);return()=>state.listeners.delete(fn)},sendIntent,sendIntentBatch,startMatch,chooseCoin,chooseTurnOrder:order=>send('choose-turn-order',{order}),coinPresented,confirmCoin,matchClock,surrender,returnToLobby,identity,reconnect:()=>connect(true),getConnection:()=>({connected:state.connected,buildMismatch:state.fatalBuildMismatch,rttMs:Number.isFinite(Number(state.rttMs))?Number(state.rttMs):null,peers:[...state.peerConnections.entries()].map(([seat,v])=>({seat,...v}))})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();

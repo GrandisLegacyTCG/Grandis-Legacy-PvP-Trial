@@ -2,13 +2,13 @@
   "schema_version": "GL-DECK-1.0",
   "season": "S0",
   "deck_name": "Red-White Deck",
-  "format": "Grandis Legacy Season 0 / Rulebook v2.9 / exactly 50-card Main Deck",
+  "format": "Grandis Legacy Season 0 / Rulebook v3.2 / exactly 50-card Main Deck",
   "main_deck_count": 50,
   "main_deck": [
     {
       "card_id": "S0-CLE-002",
       "card_name": "Brilliant Radiance",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": "S0-CLE-007",
@@ -18,7 +18,7 @@
     {
       "card_id": "S0-CLE-011",
       "card_name": "Flash Heal",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": "S0-EVT-002",
@@ -66,24 +66,14 @@
       "quantity": 1
     },
     {
-      "card_id": "S0-EVT-008",
-      "card_name": "Forged Alliance",
-      "quantity": 1
-    },
-    {
       "card_id": "S0-ITM-019",
       "card_name": "Warp Scroll",
       "quantity": 1
     },
     {
-      "card_id": "S0-ITM-001",
-      "card_name": "Health Potion",
-      "quantity": 1
-    },
-    {
       "card_id": "S0-CLE-010",
       "card_name": "Holy Barrier",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": "S0-CLE-015",
@@ -118,7 +108,7 @@
     {
       "card_id": "S0-CLE-024",
       "card_name": "Divine Judgement",
-      "quantity": 1
+      "quantity": 2
     },
     {
       "card_id": "S0-CLE-023",
@@ -138,7 +128,7 @@
     {
       "card_id": "S0-WAR-009",
       "card_name": "Rage Swing",
-      "quantity": 3
+      "quantity": 2
     },
     {
       "card_id": "S0-WAR-010",
@@ -153,7 +143,7 @@
     {
       "card_id": "S0-WAR-012",
       "card_name": "Deflect",
-      "quantity": 3
+      "quantity": 2
     },
     {
       "card_id": "S0-WAR-014",
@@ -168,7 +158,7 @@
     {
       "card_id": "S0-WAR-017",
       "card_name": "Fiery Thrust",
-      "quantity": 1
+      "quantity": 2
     },
     {
       "card_id": "S0-WAR-019",
@@ -178,7 +168,7 @@
     {
       "card_id": "S0-WAR-021",
       "card_name": "Shield Bash",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": "S0-WAR-022",
@@ -194,6 +184,36 @@
       "card_id": "S0-WAR-023",
       "card_name": "Unbroken Stand",
       "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-006",
+      "card_name": "Sacred Bolt",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-008",
+      "card_name": "Holy Fire",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-002",
+      "card_name": "Power Slash",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-008",
+      "card_name": "Wild Swing",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-WAR-004",
+      "card_name": "Cover Up",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-012",
+      "card_name": "Binding Light",
+      "quantity": 1
     }
   ],
   "mana_deck": [
@@ -202,13 +222,13 @@
       "quantity": 10
     },
     {
-      "class_name": "Cleric",
       "kind": "CLASS",
+      "class_name": "Cleric",
       "quantity": 1
     },
     {
-      "class_name": "Warrior",
       "kind": "CLASS",
+      "class_name": "Warrior",
       "quantity": 1
     }
   ],
@@ -326,19 +346,21 @@
     }
   ],
   "default_formation": {
-    "CENTER": "S0-WAR-H007",
     "LEFT": "S0-WAR-H004",
+    "CENTER": "S0-WAR-H007",
     "RIGHT": "S0-CLE-H004"
   },
   "is_valid": true,
   "validation_issues": [],
   "validation_warnings": [],
-  "source_database_version": "OSA Season 0 DEV45 / current Starter Deck Authority DEV34 / Deck Builder v1.58",
+  "source_database_version": "R3.6",
   "source_file": "engine/starter_deck_examples/s0_starter_01_red_white_GL_DECK_1_0.json",
-  "source_authority": "Generated/Season0-Current/season0-current-starters.dev34.json",
-  "source_export_sha256": "3a5bb07aa4b38794cb8069d3bdfd372d6c09b9c8c8ac907b1ef5c8a7a2d650e0",
-  "source_approval_basis": "Deck Builder v1.58 script header states Approved Season 0 starter decks 1-5; user directed using latest Deck Builder starters as reference",
+  "source_authority": "Designer Deck Builder v1.64 export (2026-11-11); artwork R3.6; game rules Player Rulebook v3.2",
+  "source_export_sha256": "d9e2e6c98c2d43667943b48772670e4088c6eabd65f4aa954642fc2e2a560975",
+  "source_approval_basis": "Designer supplied 2026-11-11",
   "active_starter_id": "s0_starter_01_red_white",
   "active_starter_slot": 1,
-  "generated_only": true
+  "generated_only": true,
+  "source_deck_builder": "v1.64",
+  "source_exported_at": "2026-11-11T10:31:05.182Z"
 }

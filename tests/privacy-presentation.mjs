@@ -24,7 +24,9 @@ assertViewerSafeBoard(safe);
 const st=safe.appState;
 assert.deepEqual(st.aiHand,[HIDDEN]);
 assert.equal(st.lastDrawnCardBySide.AI,HIDDEN);
-assert.deepEqual(st.aiManaPoolCards.map(x=>[x.hidden,x.kind]),[[true,'HIDDEN']]);
+assert.deepEqual(st.aiManaPoolCards.map(x=>[x.hidden,x.kind,x.class_name]),[[false,'CLASS','Mage']]);
+assert.equal(st.aiManaPoolCards[0].uid,'PVP-OPPONENT-PUBLIC-0');
+assert.notEqual(st.aiManaPoolCards[0].uid,'opponentManaUID');
 assert.equal(st.presentationEvents[0].card_id,'S0-WAR-001');
 assert.equal(st.presentationEvents[1].card_id,undefined);
 assert.deepEqual(st.presentationEvents[2],{

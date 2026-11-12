@@ -189,7 +189,7 @@
       "name": "Holy Grace",
       "definition": {
         "name": "Holy Grace",
-        "text": "Increase this Hero's Healing done by +20."
+        "text": "Increase this Hero's Healing done by +10."
       },
       "used_by_card_ids": [
         "S0-CLE-H002",
@@ -202,7 +202,7 @@
       "name": "Holy Rejuvenation",
       "definition": {
         "name": "Holy Rejuvenation",
-        "text": "Increase this Hero's Healing done by +20 and remove 1 negative status from the healed ally."
+        "text": "Increase this Hero's Healing done by +10 and remove 1 negative status from the healed ally."
       },
       "used_by_card_ids": [
         "S0-CLE-H003",
@@ -387,7 +387,7 @@
   "hero_compositions": [
     {
       "card_id": "S0-ARC-H001",
-      "hero_name": "Korvak Ironfang",
+      "hero_name": "Fenrir Ironfang",
       "race": "Beastman",
       "class": "Archer",
       "rank": "Rank I",
@@ -396,7 +396,7 @@
     },
     {
       "card_id": "S0-ARC-H002",
-      "hero_name": "Korvak Ironfang",
+      "hero_name": "Fenrir Ironfang",
       "race": "Beastman",
       "class": "Marksman",
       "rank": "Rank II",
@@ -405,7 +405,7 @@
     },
     {
       "card_id": "S0-ARC-H003",
-      "hero_name": "Korvak Ironfang",
+      "hero_name": "Fenrir Ironfang",
       "race": "Beastman",
       "class": "Grand Ranger",
       "rank": "Rank III",
@@ -793,8 +793,8 @@
   ],
   "hero_profiles": [
     {
-      "hero_id": "S0-KORVAK-IRONFANG",
-      "name": "Korvak Ironfang",
+      "hero_id": "S0-FENRIR-IRONFANG",
+      "name": "Fenrir Ironfang",
       "race": "Beastman",
       "rank_cards": [
         {

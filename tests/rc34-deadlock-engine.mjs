@@ -17,7 +17,7 @@ for(const first of [1,2]){
   assert.equal(authority.canSeatAct(first),true,'Only turn owner can act after opening');
   assert.equal(authority.canSeatAct(first===1?2:1),false,'Non-owner cannot act outside Response');
   const opener=first===1?'player':'ai';
-  assert.equal(st[opener+'Hand'].length,7,'Mandatory Draw must have happened exactly once');
+  assert.equal(st[opener+'Hand'].length,5,'Rulebook v3.2: first player skips mandatory Draw; opening Hand remains five');
   assert.equal(st[opener==='player'?'playerManaPoolCards':'aiManaPoolCards'].length,4,'Mana Regen must happen exactly once');
   let turnSwitches=0;
   for(let step=0;step<110;step++){

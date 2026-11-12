@@ -41,11 +41,13 @@
     var ult=((c.requirement||{}).ultimate||{});
     var code=c.class_group||c.card_id.split('-')[1]||'';
     var baseClass={WAR:'Warrior',MAG:'Mage',ARC:'Archer',CLE:'Cleric',THF:'Thief'}[code]||'';
-    return {id:c.card_id,name:c.name,family:c.family==='Legacy'?'LegacyModeDefinition':c.family,
+    // RC38 R3.6 uses the canonical Fenrir Ironfang name.
+    var reviewName=c.name;
+    return {id:c.card_id,name:reviewName,family:c.family==='Legacy'?'LegacyModeDefinition':c.family,
       classification:c.classification||c.action_category||'',classGroup:ident.class||c.display_class||c.class_family||baseClass||'',
       rank:rank,rankNumeric:rank,race:c.race||ident.race||'',hp:c.hp,
       image:'card-art/'+c.card_id+'.webp',cost:cost,text:reviewedText,rows:rows,
-      ultimate:{isUltimate:!!c.is_ultimate,owner:c.card_id==='S0-CLE-031'
+      ultimate:{isUltimate:!!c.is_ultimate,owner:c.card_id==='S0-ARC-018'?'Fenrir Ironfang':c.card_id==='S0-CLE-031'
         ?'Only Melody can use this card or tribute it with a White Mana Shard for EXP.'
         :(ult.owner||'')},
       requiredBaseClasses:reviewedClasses,

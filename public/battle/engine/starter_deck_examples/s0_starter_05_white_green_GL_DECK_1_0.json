@@ -2,13 +2,13 @@
   "schema_version": "GL-DECK-1.0",
   "season": "S0",
   "deck_name": "White-Green Deck",
-  "format": "Grandis Legacy Season 0 / Rulebook v2.9 / exactly 50-card Main Deck",
+  "format": "Grandis Legacy Season 0 / Rulebook v3.2 / exactly 50-card Main Deck",
   "main_deck_count": 50,
   "main_deck": [
     {
       "card_id": "S0-ARC-026",
       "card_name": "Zol",
-      "quantity": 3
+      "quantity": 2
     },
     {
       "card_id": "S0-CLE-026",
@@ -56,11 +56,6 @@
       "quantity": 2
     },
     {
-      "card_id": "S0-ARC-008",
-      "card_name": "Aim Shot",
-      "quantity": 1
-    },
-    {
       "card_id": "S0-ARC-010",
       "card_name": "Arrow Barrage",
       "quantity": 2
@@ -93,17 +88,12 @@
     {
       "card_id": "S0-CLE-010",
       "card_name": "Holy Barrier",
-      "quantity": 2
-    },
-    {
-      "card_id": "S0-CLE-015",
-      "card_name": "Resurrection",
       "quantity": 1
     },
     {
       "card_id": "S0-CLE-011",
       "card_name": "Flash Heal",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": "S0-CLE-018",
@@ -118,11 +108,6 @@
     {
       "card_id": "S0-EVT-003",
       "card_name": "Scouting",
-      "quantity": 1
-    },
-    {
-      "card_id": "S0-EVT-004",
-      "card_name": "Relentless Leveling",
       "quantity": 1
     },
     {
@@ -153,7 +138,7 @@
     {
       "card_id": "S0-ITM-002",
       "card_name": "Greater Health Potion",
-      "quantity": 1
+      "quantity": 2
     },
     {
       "card_id": "S0-EVT-008",
@@ -161,13 +146,33 @@
       "quantity": 1
     },
     {
-      "card_id": "S0-ITM-005",
-      "card_name": "Mana Potion",
+      "card_id": "S0-CLE-029",
+      "card_name": "Tune Up",
       "quantity": 1
     },
     {
-      "card_id": "S0-ITM-001",
-      "card_name": "Health Potion",
+      "card_id": "S0-ARC-027",
+      "card_name": "Sleeping Dart",
+      "quantity": 2
+    },
+    {
+      "card_id": "S0-CLE-008",
+      "card_name": "Holy Fire",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-008",
+      "card_name": "Aim Shot",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-CLE-006",
+      "card_name": "Sacred Bolt",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-028",
+      "card_name": "Midnight Lullaby",
       "quantity": 1
     }
   ],
@@ -177,13 +182,13 @@
       "quantity": 10
     },
     {
-      "class_name": "Archer",
       "kind": "CLASS",
+      "class_name": "Archer",
       "quantity": 1
     },
     {
-      "class_name": "Cleric",
       "kind": "CLASS",
+      "class_name": "Cleric",
       "quantity": 1
     }
   ],
@@ -211,7 +216,7 @@
       "progression": "S0-ARC-H001",
       "legacy": "S0-ARC-L001",
       "package_id": "S0-STARTER-05-PACKAGE-3",
-      "package_name": "Korvak Ironfang + Golden Arrows"
+      "package_name": "Fenrir Ironfang + Golden Arrows"
     }
   ],
   "legacy_deck_expanded": [
@@ -273,47 +278,49 @@
     },
     {
       "card_id": "S0-ARC-H001",
-      "card_name": "Korvak Ironfang",
+      "card_name": "Fenrir Ironfang",
       "card_type": "Hero",
       "package_id": "S0-STARTER-05-PACKAGE-3",
-      "package_name": "Korvak Ironfang + Golden Arrows"
+      "package_name": "Fenrir Ironfang + Golden Arrows"
     },
     {
       "card_id": "S0-ARC-H002",
-      "card_name": "Korvak Ironfang",
+      "card_name": "Fenrir Ironfang",
       "card_type": "Hero",
       "package_id": "S0-STARTER-05-PACKAGE-3",
-      "package_name": "Korvak Ironfang + Golden Arrows"
+      "package_name": "Fenrir Ironfang + Golden Arrows"
     },
     {
       "card_id": "S0-ARC-H003",
-      "card_name": "Korvak Ironfang",
+      "card_name": "Fenrir Ironfang",
       "card_type": "Hero",
       "package_id": "S0-STARTER-05-PACKAGE-3",
-      "package_name": "Korvak Ironfang + Golden Arrows"
+      "package_name": "Fenrir Ironfang + Golden Arrows"
     },
     {
       "card_id": "S0-ARC-L001",
       "card_name": "Golden Arrows",
       "card_type": "Legacy",
       "package_id": "S0-STARTER-05-PACKAGE-3",
-      "package_name": "Korvak Ironfang + Golden Arrows"
+      "package_name": "Fenrir Ironfang + Golden Arrows"
     }
   ],
   "default_formation": {
-    "CENTER": "S0-CLE-H007",
     "LEFT": "S0-CLE-H001",
+    "CENTER": "S0-CLE-H007",
     "RIGHT": "S0-ARC-H001"
   },
   "is_valid": true,
   "validation_issues": [],
   "validation_warnings": [],
-  "source_database_version": "OSA Season 0 DEV45 / current Starter Deck Authority DEV34 / Deck Builder v1.58",
+  "source_database_version": "R3.6",
   "source_file": "engine/starter_deck_examples/s0_starter_05_white_green_GL_DECK_1_0.json",
-  "source_authority": "Generated/Season0-Current/season0-current-starters.dev34.json",
-  "source_export_sha256": "6a0227359ef21a2ca637b3b1c03f798dbfbc7021cfc315d2018db4df1e750f49",
-  "source_approval_basis": "Deck Builder v1.58 script header states Approved Season 0 starter decks 1-5; user directed using latest Deck Builder starters as reference",
+  "source_authority": "Designer Deck Builder v1.64 export (2026-11-11); artwork R3.6; game rules Player Rulebook v3.2",
+  "source_export_sha256": "41ff98f860c7882036becba17048f31911d1d49760e1e57b882f918848be728c",
+  "source_approval_basis": "Designer supplied 2026-11-11",
   "active_starter_id": "s0_starter_05_white_green",
   "active_starter_slot": 5,
-  "generated_only": true
+  "generated_only": true,
+  "source_deck_builder": "v1.64",
+  "source_exported_at": "2026-11-11T10:41:10.667Z"
 }

@@ -11,6 +11,125 @@ import { join } from 'node:path';
 import { webcrypto } from 'node:crypto';
 import vm from 'node:vm';
 /**
+ * RC38 PvP Beta 2 Batch 3: apply client-only UI selections as ONE atomic
+ * authoritative intent. Only known, already-open choice windows are supported.
+ * Never trust client card identities, Hero state, costs or selection results.
+ * The Season 0 engine performs every actual selection and resolution.
+ * Season0HeadlessAuthority.applyIntent() owns the snapshot rollback boundary.
+ */
+const OWNED_TYPES = new Set([
+  'trial_rankup_return_exp', 'scouting_exp_selection', 'hand_limit_discard',
+  's0_bard_draw_choice', 'crystal_ball_reorder', 'legacy_card_choice'
+]);
+const index = (n, length) => Number.isInteger(n) && n >= 0 && n < length;
+const exact = (array, need, length) => Array.isArray(array) &&
+  Number.isInteger(need) && need >= 0 && need <= length && length <= 50 &&
+  array.length === need && array.every(n => index(n, length)) &&
+  new Set(array).size === array.length;
+
+export function applyExactLocalChoiceDraft({bridge, readPending, payload}) {
+  if (!bridge || typeof readPending !== 'function' || !payload ||
+      typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Invalid local choice draft.');
+  }
+  const kind = payload.kind;
+  const p = readPending();
+  if (!OWNED_TYPES.has(kind) || p?.type !== kind ||
+      p.decision_side !== 'PLAYER' || (p.side && p.side !== 'PLAYER')) {
+    throw new Error('Local choice draft is unavailable for this player.');
+  }
+  const run = (name, args = []) => {
+    const result = bridge.applyServerIntent(name, args);
+    if (!result?.ok) throw new Error(String(result?.error || `${name} rejected`).slice(0, 220));
+    return result;
+  };
+  const unchanged = (field) => (p[field] || []).length === 0;
+  const selected = payload.selected;
+
+  if (kind === 'trial_rankup_return_exp') {
+    const candidates = p.candidates || [], need = Math.min(Number(p.quota || 0), candidates.length);
+    if (!p.committed || p.commit_stage !== 'post_commit' || !unchanged('selected_indices') ||
+        need < 1 || need > 3 || !exact(selected, need, candidates.length)) {
+      throw new Error('Invalid Rank Up EXP draft.');
+    }
+    for (const idx of selected) run('trialSelectRankUpReturn', [idx]);
+    if (!exact(readPending()?.selected_indices, need, candidates.length))
+      throw new Error('Rank Up EXP draft failed authoritative selection.');
+    return run('handleChoiceConfirm', []);
+  }
+  if (kind === 'scouting_exp_selection') {
+    if (!p.committed || p.commit_stage !== 'post_commit' ||
+        p.selected_exp_choice != null || !index(payload.index, (p.exp_choices || []).length)) {
+      throw new Error('Invalid Scouting EXP draft.');
+    }
+    run('selectScoutingExpChoice', [payload.index]);
+    if (readPending()?.selected_exp_choice !== payload.index)
+      throw new Error('Scouting EXP draft was not applied.');
+    return run('handleChoiceConfirm', []);
+  }
+  if (kind === 'hand_limit_discard') {
+    const need = Number(p.required), hand = bridge.getCanonicalSnapshot(1)?.appState?.playerHand || [];
+    if (!unchanged('selected') || need < 1 ||
+        !exact(selected, need, hand.length)) {
+      throw new Error('Invalid Hand Limit draft.');
+    }
+    for (const idx of selected) run('toggleDiscardIndex', [idx]);
+    if (!exact(readPending()?.selected, need, hand.length))
+      throw new Error('Hand Limit selection did not match the requested count.');
+    return run('handleChoiceConfirm', []);
+  }
+  if (kind === 's0_bard_draw_choice') {
+    const hand = bridge.getCanonicalSnapshot(1)?.appState?.playerHand || [];
+    const max = Math.min(Number(p.max_count || 0), hand.length);
+    if (!unchanged('selected_indices') || max < 1 || max > 50 ||
+        !Array.isArray(selected) || selected.length < 1 || selected.length > max ||
+        !exact(selected, selected.length, hand.length)) {
+      throw new Error('Invalid Bard Draw draft.');
+    }
+    if (!p.selection_active) run('activateS0BardDrawChoice', []);
+    if (!readPending()?.selection_active) throw new Error('Bard Draw selection was not activated.');
+    for (const idx of selected) run('toggleS0BardDrawIndex', [idx]);
+    if (!exact(readPending()?.selected_indices, selected.length, hand.length))
+      throw new Error('Bard Draw selection did not match the draft.');
+    return run('commitS0BardDrawChoice', [false]);
+  }
+  if (kind === 'legacy_card_choice') {
+    const candidates = p.candidates || [], need = Number(p.required_choices || 1);
+    if (!unchanged('selected_indices') || need < 1 || need > 10 ||
+        !exact(selected, need, candidates.length)) {
+      throw new Error('Invalid Legacy Choice draft.');
+    }
+    for (const idx of selected) run('selectLegacyCardChoice', [idx]);
+    if (!exact(readPending()?.selected_indices, need, candidates.length))
+      throw new Error('Legacy Choice selection did not match the draft.');
+    return run('handleChoiceConfirm', []);
+  }
+  if (kind === 'crystal_ball_reorder') {
+    const original = (p.selected_order || []).slice(), permutation = payload.permutation;
+    const n = original.length;
+    if (n < 2 || n > 5 || !exact(permutation, n, n))
+      throw new Error('Invalid Crystal Ball permutation.');
+    // Each index identifies its ORIGINAL position, not a client-supplied card.
+    // This supports duplicate IDs without exposing any extra hidden deck info.
+    const current = Array.from({length:n}, (_, i) => i);
+    for (let i = 0; i < n; i++) {
+      let from = current.indexOf(permutation[i]);
+      while (from > i) {
+        run('moveCrystalBallOrder', [from + ':up']);
+        [current[from - 1], current[from]] = [current[from], current[from - 1]];
+        from--;
+      }
+    }
+    const actual = readPending()?.selected_order || [];
+    if (actual.length !== n || actual.some((id,i) => id !== original[permutation[i]]))
+      throw new Error('Crystal Ball draft does not match authoritative order.');
+    return run('handleChoiceConfirm', []);
+  }
+  throw new Error('Unknown local choice draft type.');
+}
+
+
+/**
  * Carefully bounded, server-authoritative UI round-trip reductions.
  * Never invent a target/choice or skip mandatory payment. The actual RC34
  * engine performs every rule check and every state transition.
@@ -22,6 +141,10 @@ export function applyOptimizedPvpIntent({bridge, readPending, name, args}) {
     if (!result?.ok) throw new Error(String(result?.error || `Runtime rejected ${intent}.`).slice(0,220));
     return result;
   };
+  if (name === 'commitExactLocalChoiceDraft') {
+    if (!Array.isArray(args) || args.length !== 1) throw new Error('Invalid local draft packet.');
+    return applyExactLocalChoiceDraft({bridge, readPending, payload:args[0]});
+  }
   // Narrow, server-verified multi-step UI shortcuts. The Season 1-style
   // strict in-flight channel must not split one button press into two RTTs.
   const compound = {
@@ -132,6 +255,34 @@ const RUNTIME_SOURCES = Object.freeze([
   'engine/shared-app/active-starters.js',
   'engine/shared-app/app.bundle.js'
 ]);
+
+// Batch 2: compile each immutable donor runtime only once per server process.
+// vm.Script is compiled code, not a VM context: runInContext executes it in a
+// FRESH context for each match. Never share GL_GAME_ENGINE / card / match state.
+// The server primes this cache BEFORE opening the HTTP/WebSocket listening port,
+// moving parsing/file I/O off the player's START MATCH critical path.
+const compiledRuntimeByRoot = new Map();
+const bootstrapStats = {compilations:0, cacheHits:0, preloadMs:0};
+export function primeSeason0Runtime(clientRoot) {
+  if (typeof clientRoot !== 'string' || !clientRoot) throw new Error('clientRoot is required.');
+  const root = join(clientRoot, '.');
+  const existing = compiledRuntimeByRoot.get(root);
+  if (existing) { bootstrapStats.cacheHits++; return existing; }
+  const t0 = process.hrtime.bigint();
+  const scripts = Object.freeze(RUNTIME_SOURCES.map(source => {
+    const file = join(root, source);
+    const code = readFileSync(file, 'utf8');
+    bootstrapStats.compilations++;
+    return new vm.Script(code, {filename:source});
+  }));
+  // Publish only after every script compiled successfully: never cache a partial
+  // bundle that could corrupt the next player's match initialization.
+  compiledRuntimeByRoot.set(root, scripts);
+  bootstrapStats.preloadMs += Number(process.hrtime.bigint()-t0)/1e6;
+  return scripts;
+}
+export function runtimeBootstrapStatsForQA(){return Object.freeze({...bootstrapStats});}
+
 const STARTERS = new Set([
   's0_starter_01_red_white',
   's0_starter_02_blue_red',
@@ -151,14 +302,16 @@ const APPROVED_BATCH_PAIRS = new Map([
 ]);
 
 /** Transport envelope hygiene only. RC32 engine remains the deck-legality authority.
- * Builder v1.62 exports both nested and flattened deck fields. Reject a
+ * Builder v1.64 exports both nested and flattened deck fields. Reject a
  * contradictory document instead of silently validating the wrong copy. */
 function validateSeason0DeckEnvelope(deck) {
   if (!deck || typeof deck !== 'object' || Array.isArray(deck)) throw new Error('Invalid Season 0 deck.');
   if (deck.season && deck.season !== 'S0') throw new Error('Only Season 0 decks are supported.');
   const nested = deck.deck;
   if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
-    for (const field of ['main_deck','legacy_packages','shard_deck']) {
+    // RC38 (12 Nov): shard_deck and mana_deck are non-authoritative.
+    // Only compare Main/Legacy shape; effective Mana is generated from Heroes.
+    for (const field of ['main_deck','legacy_packages']) {
       if (Array.isArray(nested[field]) && Array.isArray(deck[field]) &&
           JSON.stringify(nested[field]) !== JSON.stringify(deck[field])) {
         throw new Error(`Conflicting ${field} values in imported deck.`);
@@ -213,9 +366,10 @@ export class Season0HeadlessAuthority {
     };
     ctx.window = ctx; ctx.globalThis = ctx;
     vm.createContext(ctx, { name: 'gl-s0-headless-authority' });
-    for (const source of RUNTIME_SOURCES) {
-      const code = readFileSync(join(clientRoot, source), 'utf8');
-      new vm.Script(code, { filename: source }).runInContext(ctx, { timeout: 60000 });
+    // Scripts are shared read-only; their globals/functions are created afresh
+    // INSIDE this match's isolated context for every game.
+    for (const script of primeSeason0Runtime(clientRoot)) {
+      script.runInContext(ctx, {timeout:60000});
     }
     const bridge = ctx.GL_LOCAL_AI_BRIDGE;
     if (!bridge || typeof bridge.startSharedMatch !== 'function' ||
@@ -225,7 +379,7 @@ export class Season0HeadlessAuthority {
       throw new Error('RC32 canonical PvP bridge contract is incomplete.');
     }
     const meta = ctx.GL_ACTIVE_STARTER_SET_META;
-    if (meta?.schema_version !== 'GL-ACTIVE-STARTERS-S0-DEV45-STAGE4' ||
+    if (meta?.schema_version !== 'GL-ACTIVE-STARTERS-S0-R3.6-RULEBOOK-V3.2' ||
         meta.active_starter_count !== 5 || !Array.isArray(meta.ids) ||
         !meta.ids.every(id => STARTERS.has(id))) {
       throw new Error('Season 0 starter authority mismatch.');
@@ -271,13 +425,15 @@ export class Season0HeadlessAuthority {
     return { ok: true, revision: this.#revision, phase: canonical.appState.phase };
   }
   /** Opening outcome is chosen by the server controller, not by a remote client. */
-  completeOpening(firstSeat, face = 'HEADS') {
+  completeOpening(firstSeat, face = 'HEADS', winnerSeat = firstSeat, chosenOrder = 'FIRST') {
     if (!this.#started || this.#revision !== 1) throw new Error('Opening is unavailable.');
     if (![1, 2].includes(firstSeat)) throw new Error('Invalid first seat.');
     if (!['HEADS', 'TAILS'].includes(face)) throw new Error('Invalid coin face.');
+    if (![1,2].includes(winnerSeat) || !['FIRST','SECOND'].includes(chosenOrder) ||
+        firstSeat !== (chosenOrder==='FIRST'?winnerSeat:(winnerSeat===1?2:1))) throw new Error('Invalid winner-selected turn order.');
     const firstSide = firstSeat === 1 ? 'PLAYER' : 'AI';
     const result = this.#bridge.completeOpeningFlow(firstSide, {
-      choice: face, outcome: face, firstPlayer: firstSide, completed: true
+      choice: face, outcome: face, winner:winnerSeat===1?'PLAYER':'AI', chosenOrder, firstPlayer: firstSide, completed: true
     });
     if (result?.ok === false) throw new Error(result.error || 'Opening flow rejected.');
     this.#revision++;

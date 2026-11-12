@@ -28,7 +28,7 @@
  // separate from card effects and from the Legacy artwork RULES already in data-s0.
  // Explicitly transcribed, not synthesized from class names or old Shard terminology.
  const PRINTED_FOOTER_RULES=Object.freeze({
-  'S0-ARC-018':'Only Korvak can use this card or tribute it with a Green Mana Shard for EXP.',
+  'S0-ARC-018':'Only Fenrir can use this card or tribute it with a Green Mana Shard for EXP.',
   'S0-ARC-019':'Only Sylvan can use this card or tribute it with a Green Mana Shard for EXP.',
   'S0-ARC-025':'Only Alden can use this card or tribute it with a Green Mana Shard for EXP.',
   'S0-CLE-018':'Only Elara can use this card or tribute it with a White Mana Shard for EXP.',

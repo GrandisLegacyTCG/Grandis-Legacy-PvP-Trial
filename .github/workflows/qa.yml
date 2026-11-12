@@ -1,4 +1,4 @@
-name: Grandis Legacy PvP S0 - NET RC6 Stage 2
+name: Grandis Legacy PvP S0 RC39 - NET RC6 Stage 2
 on:
   push:
   pull_request:

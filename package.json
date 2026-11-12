@@ -1,14 +1,14 @@
 {
-  "name": "grandis-legacy-pvp-s0-rc36-patch4",
-  "version": "1.0.0-rc36-patch4-network-rc6-stage2",
+  "name": "grandis-legacy-pvp-s0-rc39",
+  "version": "1.0.0-rc39-net-rc6-stage2-repo-rc1",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js && node --check public/battle/runtime/pvp-touch-actions.js && node --check public/battle/runtime/pvp-mana-draft.js && node --check public/pvp/pvp-mobile-desktop.js && node --check public/pvp/db158-card-review.js && node --check server/ws-lite.mjs",
+    "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js && node --check public/battle/runtime/pvp-touch-actions.js && node --check public/battle/runtime/pvp-mana-draft.js && node --check public/pvp/pvp-mobile-desktop.js && node --check public/pvp/db158-card-review.js && node --check server/ws-lite.mjs && node --check public/battle/engine/shared-app/app.bundle.js",
     "test:transition": "npm run test:ws-gate",
     "check:parity": "node tests/s1-source-parity.mjs",
-    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog && npm run test:browser-response && npm run test:postmatch && npm run test:touch-static && npm run test:quickplay-tuneup && npm run test:mana-transport && npm run test:net-rc6 && npm run test:net-rc6-live && npm run test:net-stage2-socket && npm run test:net-stage2-response && npm run test:rc36-ui-hotfix && npm run test:rc36-defense-source && npm run test:rc36-mobile-waiting && npm run test:rc36-combat-target",
+    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog && npm run test:browser-response && npm run test:postmatch && npm run test:touch-static && npm run test:quickplay-tuneup && npm run test:mana-transport && npm run test:net-rc6 && npm run test:net-rc6-live && npm run test:net-stage2-socket && npm run test:net-stage2-response && npm run test:rc36-ui-hotfix && npm run test:rc36-defense-source && npm run test:rc36-mobile-waiting && npm run test:rc38-combat-hotfix && npm run test:rc38-coin-turn && npm run test:lobby-batch1 && npm run test:start-batch2 && npm run test:warmframe-batch2 && npm run test:local-draft-batch3 && npm run test:local-draft-real-batch3 && npm run test:rc38-batch4-source && npm run test:rc39-batch5 && npm run test:rc39-latest",
     "test:s0-catalog": "npm run check:catalog",
     "check:catalog": "node tests/s0-catalog-static.mjs",
     "test:ws-gate": "python3 tests/ws-gate.py",
@@ -37,12 +37,21 @@
     "test:rc36-ui-hotfix": "node tests/rc36-ui-hotfix.mjs",
     "test:rc36-defense-source": "node tests/rc36-patch6-defense-source.mjs",
     "test:rc36-mobile-waiting": "node tests/rc36-mobile-waiting.mjs",
-    "test:rc36-combat-target": "node tests/rc36-area-feedback-targeting.mjs"
+    "test:rc38-combat-hotfix": "node tests/rc38-combat-hotfix.mjs",
+    "test:rc38-coin-turn": "node tests/rc38-coin-turn.mjs",
+    "test:lobby-batch1": "node tests/rc38-lobby-batch1.mjs",
+    "test:start-batch2": "node tests/rc38-startup-batch2.mjs",
+    "test:warmframe-batch2": "node tests/rc38-battle-warmframe-batch2.mjs",
+    "test:local-draft-batch3": "node tests/rc38-local-choice-batch3.mjs",
+    "test:local-draft-real-batch3": "node tests/rc38-local-draft-real-engine-batch3.mjs",
+    "test:rc38-batch4-source": "node tests/rc38-batch4-mana-source-sync.mjs && node public/battle/runtime/season0-generated/check-stage4-engine-deck-guard.cjs",
+    "test:rc39-batch5": "node tests/rc39-batch5-rank-privacy.mjs && node tests/rc39-batch5-donor-parity.mjs && node tests/rc39-batch5-mana-loss.mjs",
+    "test:rc39-latest": "node tests/rc39-latest-banner-qa.mjs"
   },
   "engines": {
     "node": ">=18"
   },
-  "description": "PvP networking stage 2: single lobby-owned socket via same-origin battle stage, S1-style atomic response; RC36 Patch4 engine and RC5 Mana preserved",
+  "description": "Grandis Legacy PvP Season 0 RC39 latest donor non-AI presentation synced; preserved server authority, RC6 single-socket lobby, RC5 payment, RC38 Batches 1-3 optimizations.",
   "dependencies": {
     "ws": "8.21.0"
   }

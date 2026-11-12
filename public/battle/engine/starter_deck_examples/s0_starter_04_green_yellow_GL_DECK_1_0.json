@@ -2,13 +2,13 @@
   "schema_version": "GL-DECK-1.0",
   "season": "S0",
   "deck_name": "Green-Yellow Deck",
-  "format": "Grandis Legacy Season 0 / Rulebook v2.9 / exactly 50-card Main Deck",
+  "format": "Grandis Legacy Season 0 / Rulebook v3.2 / exactly 50-card Main Deck",
   "main_deck_count": 50,
   "main_deck": [
     {
       "card_id": "S0-ARC-003",
       "card_name": "Escape Arrow",
-      "quantity": 2
+      "quantity": 1
     },
     {
       "card_id": "S0-ARC-005",
@@ -18,7 +18,7 @@
     {
       "card_id": "S0-ARC-010",
       "card_name": "Arrow Barrage",
-      "quantity": 1
+      "quantity": 2
     },
     {
       "card_id": "S0-ARC-012",
@@ -43,7 +43,7 @@
     {
       "card_id": "S0-ARC-021",
       "card_name": "Aura Infusion Bolt",
-      "quantity": 1
+      "quantity": 2
     },
     {
       "card_id": "S0-ARC-022",
@@ -58,7 +58,7 @@
     {
       "card_id": "S0-THF-010",
       "card_name": "Back Slash",
-      "quantity": 3
+      "quantity": 2
     },
     {
       "card_id": "S0-THF-011",
@@ -68,16 +68,6 @@
     {
       "card_id": "S0-THF-012",
       "card_name": "Elusive Escape",
-      "quantity": 2
-    },
-    {
-      "card_id": "S0-THF-014",
-      "card_name": "Viper's Fang",
-      "quantity": 1
-    },
-    {
-      "card_id": "S0-THF-015",
-      "card_name": "Venom Sovereign",
       "quantity": 2
     },
     {
@@ -103,7 +93,7 @@
     {
       "card_id": "S0-THF-030",
       "card_name": "Flash Combo",
-      "quantity": 3
+      "quantity": 2
     },
     {
       "card_id": "S0-EVT-001",
@@ -113,11 +103,6 @@
     {
       "card_id": "S0-EVT-002",
       "card_name": "Market Bargain",
-      "quantity": 1
-    },
-    {
-      "card_id": "S0-EVT-003",
-      "card_name": "Scouting",
       "quantity": 1
     },
     {
@@ -136,18 +121,8 @@
       "quantity": 1
     },
     {
-      "card_id": "S0-ITM-008",
-      "card_name": "Phoenix Feather",
-      "quantity": 1
-    },
-    {
       "card_id": "S0-ITM-012",
       "card_name": "Spectral Grappling Hook",
-      "quantity": 1
-    },
-    {
-      "card_id": "S0-ITM-016",
-      "card_name": "Chain Mail",
       "quantity": 1
     },
     {
@@ -176,18 +151,53 @@
       "quantity": 1
     },
     {
-      "card_id": "S0-ITM-001",
-      "card_name": "Health Potion",
-      "quantity": 1
-    },
-    {
       "card_id": "S0-EVT-009",
       "card_name": "Tactical Adaptation",
       "quantity": 1
     },
     {
-      "card_id": "S0-EVT-010",
-      "card_name": "Déjà vu",
+      "card_id": "S0-ITM-019",
+      "card_name": "Warp Scroll",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-008",
+      "card_name": "Aim Shot",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-017",
+      "card_name": "Venom Binding",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-013",
+      "card_name": "Venom Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-026",
+      "card_name": "Blink Strike",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-014",
+      "card_name": "Viper's Fang",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-ARC-024",
+      "card_name": "Cross Bolt",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-004",
+      "card_name": "Smoke Screen",
+      "quantity": 1
+    },
+    {
+      "card_id": "S0-THF-006",
+      "card_name": "Sixth Sense",
       "quantity": 1
     }
   ],
@@ -197,13 +207,13 @@
       "quantity": 10
     },
     {
-      "class_name": "Archer",
       "kind": "CLASS",
+      "class_name": "Archer",
       "quantity": 1
     },
     {
-      "class_name": "Thief",
       "kind": "CLASS",
+      "class_name": "Thief",
       "quantity": 1
     }
   ],
@@ -321,19 +331,21 @@
     }
   ],
   "default_formation": {
-    "CENTER": "S0-ARC-H007",
     "LEFT": "S0-ARC-H004",
+    "CENTER": "S0-ARC-H007",
     "RIGHT": "S0-THF-H001"
   },
   "is_valid": true,
   "validation_issues": [],
   "validation_warnings": [],
-  "source_database_version": "OSA Season 0 DEV45 / current Starter Deck Authority DEV34 / Deck Builder v1.58",
+  "source_database_version": "R3.6",
   "source_file": "engine/starter_deck_examples/s0_starter_04_green_yellow_GL_DECK_1_0.json",
-  "source_authority": "Generated/Season0-Current/season0-current-starters.dev34.json",
-  "source_export_sha256": "be9bdf6549b38d5c69b76d77e9dbab91d0996570d667cf36bd0d60bca80dfe5e",
-  "source_approval_basis": "Deck Builder v1.58 script header states Approved Season 0 starter decks 1-5; user directed using latest Deck Builder starters as reference",
+  "source_authority": "Designer Deck Builder v1.64 export (2026-11-11); artwork R3.6; game rules Player Rulebook v3.2",
+  "source_export_sha256": "24eeef9a24ec8738b9ff784bca04f05bb805282762c1d1da2cb2cba585cd079d",
+  "source_approval_basis": "Designer supplied 2026-11-11",
   "active_starter_id": "s0_starter_04_green_yellow",
   "active_starter_slot": 4,
-  "generated_only": true
+  "generated_only": true,
+  "source_deck_builder": "v1.64",
+  "source_exported_at": "2026-11-11T10:38:57.046Z"
 }

@@ -28,10 +28,10 @@ try:
   send(ws,'set-deck',deckKey=key);until(ws,lambda x:x['type']=='snapshot' and x['local'].get('deckKey')==key,'deck')
   send(ws,'ready',ready=True);until(ws,lambda x:x['type']=='snapshot' and x['local']['ready'],'ready')
  send(a,'start-match');until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='coin-flip','coin flip')
- send(b,'choose-coin-flip',choice='TAILS');until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='coin-result','result')
+ send(b,'choose-coin-flip',choice='TAILS');result=until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='coin-result','result')
  send(a,'coin-presented');send(b,'coin-presented')
- until(a,lambda x:x['type']=='snapshot' and x['match']['canStartOpening'],'ready to start')
- send(a,'confirm-coin-flip');start=until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='started','started')
+ send(a if result['match']['winnerSeat']==1 else b,'choose-turn-order',order='SECOND')
+ start=until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='started','started')
  send(a,'surrender-match',clientActionId='rc3concede',baseRevision=start['match']['revision'])
  end=until(a,lambda x:x['type']=='intent-result' and x['clientActionId']=='rc3concede','surrender')
  assert end['ok'] and end['snapshot']['match']['status']=='finished'

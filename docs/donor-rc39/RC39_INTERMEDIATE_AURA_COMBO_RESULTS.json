@@ -1,0 +1,193 @@
+{
+  "total": 21,
+  "passed": 21,
+  "failed": 0,
+  "results": [
+    {
+      "name": "No Main-Deck Draw card -> custom AI never casts Aura",
+      "pass": true,
+      "detail": {
+        "choice": "SKIP",
+        "plan": null
+      }
+    },
+    {
+      "name": "Custom AI Aura + Singularity -> 1-turn plan",
+      "pass": true,
+      "detail": {
+        "plan": {
+          "turns": 1,
+          "card_id": "S0-ARC-022",
+          "source_lane": "CENTER",
+          "first_turn_draws": 5,
+          "second_turn_draws": 7
+        }
+      }
+    },
+    {
+      "name": "Starter Aura + Singularity -> 1-turn plan",
+      "pass": true,
+      "detail": {
+        "plan": {
+          "turns": 1,
+          "card_id": "S0-ARC-022",
+          "source_lane": "CENTER",
+          "first_turn_draws": 5,
+          "second_turn_draws": 7
+        }
+      }
+    },
+    {
+      "name": "Starter Aura + Market Bargain -> 2-turn plan",
+      "pass": true,
+      "detail": {
+        "plan": {
+          "turns": 2,
+          "card_id": "S0-EVT-002",
+          "source_lane": "LEFT",
+          "first_turn_draws": 4,
+          "second_turn_draws": 6
+        }
+      }
+    },
+    {
+      "name": "Custom Aura + Camouflage Draw 1 -> 2-turn plan",
+      "pass": true,
+      "detail": {
+        "plan": {
+          "turns": 2,
+          "card_id": "S0-THF-028",
+          "source_lane": "CENTER",
+          "first_turn_draws": 3,
+          "second_turn_draws": 5
+        }
+      }
+    },
+    {
+      "name": "Aura + Replenish Draw 1 with legal Discard return -> 2-turn plan",
+      "pass": true,
+      "detail": {
+        "plan": {
+          "turns": 2,
+          "card_id": "S0-ARC-014",
+          "source_lane": "LEFT",
+          "first_turn_draws": 3,
+          "second_turn_draws": 5
+        },
+        "available": false
+      }
+    },
+    {
+      "name": "Aura + Reload requires a usable caster, not merely holding it",
+      "pass": true,
+      "detail": {
+        "plan": null,
+        "legal": false
+      }
+    },
+    {
+      "name": "Aura + Camouflage cannot use a full Attachment slot",
+      "pass": true,
+      "detail": {
+        "plan": null
+      }
+    },
+    {
+      "name": "Aura in Main Deck reserves Market Bargain even with only 4 Hand",
+      "pass": true,
+      "detail": {
+        "gate": -1000
+      }
+    },
+    {
+      "name": "Aura in Hand reserves Market Bargain in Deploy",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "Aura in Main Deck reserves Camouflage Draw 1",
+      "pass": true,
+      "detail": {
+        "legal": true
+      }
+    },
+    {
+      "name": "No remaining Aura in Deck or Hand -> ordinary Draw unrestricted",
+      "pass": true,
+      "detail": {
+        "gate": 108
+      }
+    },
+    {
+      "name": "Defeated Alden -> ordinary Draw unrestricted",
+      "pass": true,
+      "detail": {
+        "living": false
+      }
+    },
+    {
+      "name": "Active Aura 2/5 -> Draw 1 contributes to 2-turn release",
+      "pass": true,
+      "detail": {
+        "action": true,
+        "bonus": {
+          "kind": "AURA_PROGRESS",
+          "score": 590
+        },
+        "gate": 588
+      }
+    },
+    {
+      "name": "Active Aura 4/5 -> Camouflage releases immediately",
+      "pass": true,
+      "detail": {
+        "score": 848
+      }
+    },
+    {
+      "name": "Active Aura 3/5 -> Draw2 bypasses Hand>4 emergency gate",
+      "pass": true,
+      "detail": {
+        "score": 848
+      }
+    },
+    {
+      "name": "Dread in Hand cannot postpone an active Aura",
+      "pass": true,
+      "detail": {
+        "score": 588
+      }
+    },
+    {
+      "name": "Actual Singularity Reload draws 3 + mandatory 2 -> 5 Aura counters on next turn",
+      "pass": true,
+      "detail": {
+        "played": true,
+        "counters": 5
+      }
+    },
+    {
+      "name": "Actual Camouflage draws 1 + two mandatory replacement Draw phases -> 5 Aura counters",
+      "pass": true,
+      "detail": {
+        "played": true,
+        "afterFirst": 3,
+        "afterSecond": 5
+      }
+    },
+    {
+      "name": "Alden Draw reserves preserved for Hand limit",
+      "pass": true,
+      "detail": {
+        "reload": 920
+      }
+    },
+    {
+      "name": "No previous Aura: late AI may use ordinary Draw normally",
+      "pass": true,
+      "detail": {
+        "legal": true
+      }
+    }
+  ]
+}

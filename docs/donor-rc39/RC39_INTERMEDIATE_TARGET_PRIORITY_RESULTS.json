@@ -1,0 +1,100 @@
+{
+  "checks": 12,
+  "failures": [],
+  "results": [
+    {
+      "name": "Regen 4: 120/120 full wins 120/150 damaged on current-HP tie",
+      "ok": true,
+      "detail": {
+        "left": 412,
+        "center": 385
+      }
+    },
+    {
+      "name": "Early game: injured low remaining HP beats full center",
+      "ok": true,
+      "detail": {
+        "left": 657,
+        "center": 15
+      }
+    },
+    {
+      "name": "Regen 4 full board: lowest Max HP outranks center Warrior Rank III",
+      "ok": true,
+      "detail": {
+        "left": 347,
+        "center": -180
+      }
+    },
+    {
+      "name": "Late game: Red/Warrior >60% avoided when another legal target exists",
+      "ok": true,
+      "detail": {
+        "left": 252,
+        "red": 140
+      }
+    },
+    {
+      "name": "Warrior at exactly 60%: avoidance removed; low remaining HP can win",
+      "ok": true,
+      "detail": {
+        "red": 228,
+        "other": 184
+      }
+    },
+    {
+      "name": "Warrior at 61%: avoid; 60%: not avoided (exact boundary)",
+      "ok": true,
+      "detail": {
+        "at61pct": -42,
+        "at60pct": 228
+      }
+    },
+    {
+      "name": "Warrior >60% is NOT forbidden when the only legal non-Legacy target",
+      "ok": true,
+      "detail": {
+        "score": 228
+      }
+    },
+    {
+      "name": "Cleric support prioritized over comparable non-Cleric on full board",
+      "ok": true,
+      "detail": {
+        "cleric": 427,
+        "center": 335
+      }
+    },
+    {
+      "name": "Warrior/Cleric Hybrid identified as support class",
+      "ok": true,
+      "detail": {
+        "hybrid": 335,
+        "mage": 228
+      }
+    },
+    {
+      "name": "Beginner path not modified (only Intermediate score)",
+      "ok": true,
+      "detail": {
+        "action": "S0-MAG-001"
+      }
+    },
+    {
+      "name": "Live Intermediate decision attacks LEFT support instead of CENTER defender",
+      "ok": true,
+      "detail": {
+        "target": "LEFT",
+        "card": "S0-MAG-001"
+      }
+    },
+    {
+      "name": "Live Intermediate decision can attack Red when its HP is <=60%",
+      "ok": true,
+      "detail": {
+        "target": "CENTER",
+        "card": "S0-MAG-001"
+      }
+    }
+  ]
+}

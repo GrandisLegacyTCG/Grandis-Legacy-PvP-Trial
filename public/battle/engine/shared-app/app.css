@@ -3607,6 +3607,11 @@ body::before{display:none!important}
   letter-spacing:.04em;
   cursor:pointer;
 }
+.gl-opening-turn-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.gl-opening-turn-actions .gl-opening-start-button{margin-top:0;width:100%;padding:10px 5px;min-width:0}
+.gl-opening-ai-decision{margin-top:15px!important;padding:10px 14px;border-radius:9px;background:rgba(28,57,78,.70);font-weight:800;text-align:center}
+.gl-opening-ai-decision strong{color:#ffd84a}
+@media(max-width:430px){.gl-opening-turn-actions{gap:8px}.gl-opening-turn-actions .gl-opening-start-button{font-size:13px}}
 .gl-opening-start-button:hover,.gl-opening-start-button:focus-visible{filter:brightness(1.08)}
 .gl-opening-start-button:disabled{opacity:.58;cursor:wait}
 

@@ -1,32 +1,32 @@
 {
   "S0-MAN-001": {
     "artwork": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-001-Regular Mana Shard.webp",
-    "artworkSHA256": "199c10d5ab55a3b07a69700fd425259ae5aa0c46d1d9ebe52b5ac1cc4fffed35",
+    "artworkSHA256": "dbe605ae204d057eacfe0ec9c662051f9b4abf622b269e16178d091d3348b0aa",
     "id": "S0-MAN-001"
   },
   "S0-MAN-002": {
     "artwork": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-002-Red Mana Shard.webp",
-    "artworkSHA256": "cd7f34d47edb64179ab64b9d5fcc370fac40c9a9522b0d488c6d6626d5e0ad49",
+    "artworkSHA256": "13ad7876790a931536ec5bea0220cb36d6266ebd7c36fadb652ef4bc80b00b74",
     "id": "S0-MAN-002"
   },
   "S0-MAN-003": {
     "artwork": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-003-Blue Mana Shard.webp",
-    "artworkSHA256": "025bf4b6da89e71d640fc6285e2fb478efb860ba07a78f87a4fe365f4a1dbba0",
+    "artworkSHA256": "02b10180cc3e43b7fc61eb0ade795b6416a40bae4dca82875c5626dce5b1089f",
     "id": "S0-MAN-003"
   },
   "S0-MAN-004": {
     "artwork": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-004-White Mana Shard.webp",
-    "artworkSHA256": "3b19691333e313e9e2554d887f183444d18d91c68631a9a940d8c7cb3b8913f8",
+    "artworkSHA256": "8d5718499f0de6fa3a449bcf6be0b37e044785cb81a8971c2321532b9ffc45e9",
     "id": "S0-MAN-004"
   },
   "S0-MAN-005": {
     "artwork": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-005-Yellow Mana Shard.webp",
-    "artworkSHA256": "c2336579f2eaebd67ed4a9643d81d56552a31c6727fb24d4dfb0a62c0951bd0b",
+    "artworkSHA256": "b27d1a32fc036d771dac3091a2c1a726822eb4e0fbbd8e0f2731551e40b889c9",
     "id": "S0-MAN-005"
   },
   "S0-MAN-006": {
     "artwork": "Authority/Game/Season0-Effects/ManaDeck-R1/Artwork/S0-MAN-006-Green Mana Shard.webp",
-    "artworkSHA256": "b6990966c0453b2a167b48bb2ae42d61303d7886bd3431b11625fe9ea87db646",
+    "artworkSHA256": "6707d8179cf96627f0773adf9883ef4c8d137897c4e84f5f72682069fee40fa1",
     "id": "S0-MAN-006"
   }
 }

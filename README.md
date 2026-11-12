@@ -1,10 +1,109 @@
-# Grandis Legacy PvP RC36.8 - Mobile Orientation and Response Hotfix 2 (2026-11-09)
+# Grandis Legacy PvP Season 0 — RC39 Repo Candidate RC1
 
-**PvP Trial staging build.** The entire mobile gameplay presentation now shares a 1600x747 landscape stage, including popups, overlays and animations. A nonblocking WAITING FOR OPPONENT RESPONSE notice shows when the opponent owns the pending Response or payment decision. No gameplay, Mana Payment, or WebSocket protocol changes.
+**Integration status:** RC39 latest donor checked, RC6 Stage 2 lobby networking preserved, all previous optimization batches retained.
+**Authority:** server-owned headless RC39 rules. **Client:** local drafts only; final atomic commit.
+**Target:** PvP Trial staging. **Not yet verified:** two real-device Northflank match / mobile Firefox.
 
-**Deployment:** Docker image regenerates compressed assets from the modified source files so stale .br/.gz files in the repository are not served. Real two-device mobile QA remains required.
+See [final source delta and QA](docs/RC39_PVP_REPO_RC1_INTEGRATION_AUDIT.md).
 
-See docs/RC36_8_MOBILE_ORIENTATION_RESPONSE_HOTFIX2_2026-11-09.md.
+**For PvP Trial:** upload the repository-root contents (not the ZIP wrapper), deploy with the included Node 22 Dockerfile, check `/health`, then test two players. The historical notes below document earlier batches; they are not the current build version.
+
+# Grandis Legacy PvP S0 RC39 — Beta 2 Batch 5 (12 November 2026)
+
+**Staging candidate — NOT production final.** Integrates VS AI RC39 Rank Up committed EXP animation, R3.7 Archer artwork (187/187 Main Deck parity), server-projected mana loss notices, and a corrected Player 2 presentation perspective. Retains RC6 Stage 2 lobby networking, RC5 Mana Payment, face-up opponent Mana Pool and Batch 1–4 optimization/gameplay. RC39 donor PvP adapter is available as an inactive reference; the working Batch 3 local draft remains active.
+
+[Integration details and QA](docs/RC39_BETA2_BATCH5_RELEASE_QA_2026-11-12.md) · Build ID: `gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12` · GitHub/Northflank not modified.
+
+---
+
+# Grandis Legacy PvP S0 RC38 — Beta 2 Batch 4 (Source Sync, 12 Nov 2026)
+
+Based on **Beta 2 Batch 3**, plus the **latest VS AI RC38 12 November automatic Mana Deck override**: 12 physical Shards are generated from the selected Hero progression base Classes (both Hybrid classes included) for both PvP seats. Imported v1.64 JSON Mana fields are ignored. RC6 single-socket lobby, RC5 atomic payment, Batches 1–3 optimizations, Face-up Opponent Mana Pool, PvP Coin Flip, and existing visuals remain. The Rank Up return-EXP and Fenrir review text now match the donor; the Build ID is unique for staging cache safety.
+
+**Status: PvP Trial staging/QA.** Do not call this final without a real two-device match. GitHub and Northflank were not updated. See `docs/RC38_BETA2_BATCH4_SOURCE_SYNC_2026-11-12.md` for source boundaries, tests, and risks.
+
+---
+
+# Grandis Legacy PvP S0 RC38 — Beta 2 Batch 3 (Local Draft staging)
+
+**Based on Beta 2 Batch 2**, including Lobby (Batch 1) and START / Battlefield prewarm (Batch 2). Six bounded multi-step choice types now use local selection and one server-authoritative commit, without changing RC6 Stage 2 lobby WebSocket or RC5 Mana. **Newer RC38 donor changes are reserved for Batch 4.**
+
+See `docs/RC38_BETA2_BATCH3_LOCAL_DRAFT.md` for scope, security boundaries, QA, deployment warning, and next steps. This is **not a final deployment build**; build identifiers have deliberately not been changed yet.
+
+---
+
+# PvP RC38 Beta 2 — Batch 2: START MATCH / Battlefield Startup (staging, 2026-11-11)
+
+Continues **Batch 1**; reduces START MATCH server JS compilation and optionally prewarms the **same embedded Battlefield** after READY, outside the click handler. Keeps **one RC6 Stage 2 lobby-owned WebSocket** and all RC38 rules/RC5 Mana/VS AI design. Includes opt-in startup timing instrumentation and dedicated multi-match isolation/regression tests. No additional gameplay HUD, no GitHub upload. This is a staging build; real two-device mobile/cold/warm timing remains unverified.
+
+See `docs/RC38_BETA2_BATCH2_STARTUP_OPTIMIZATION.md` for details and QA.
+
+---
+
+# PvP RC38 Beta 2 — Batch 1: Lobby Optimization (staging, 2026-11-11)
+
+This package is based on RC38 Beta 1 and includes **lobby-only** improvements: retained Card Review iframe and partial deck/hero render on player/room state changes. Gameplay, Stage 2 WebSocket, Mana RC5, RC38 Coin Flip and opponent face-up Mana remain unchanged. See `docs/RC38_BETA2_BATCH1_LOBBY_OPTIMIZATION.md` for QA, limitations and remaining batches.
+
+---
+
+# Grandis Legacy PvP Season 0 — RC38 Beta 1 (11 November 2026)
+
+**STATUS: PvP TRIAL / staging build. NOT a certified two-device live release.**
+
+## Authority and scope
+
+- **Gameplay donor:** the supplied VS AI Season 0 RC38 (11 Nov 2026). `engine/js/static-data.js` and `engine/shared-app/active-starters.js` are byte-identical to the donor. The `app.bundle.js` uses the RC38 donor with narrowly documented PvP bridge/atomic Mana and mirrored-identity patches.
+- **Rulebook:** v3.2 (10 Nov 2026). Five official designer R3.6 starter compositions from Deck Builder v1.64, dated 11 Nov 2026; all five supplied external JSON draft exports also opened and started in local headless tests.
+- **Network retained:** PvP RC6 Stage 2 lobby-owned single WebSocket / same-origin embedded battlefield, reconnect, player role/ready/start, batch Response, viewer-safe board. RC5 local physical-Mana draft and atomic Mana Payment retained. No change to lobby architecture.
+- **Visuals retained:** PvP Hotfix2 mobile landscape stage and `WAITING FOR OPPONENT RESPONSE...`; Hotfix3 full legal Hero lane click for Single Target and simultaneous post-Response Area Attack damage/Status presentation. Synced additional RC38 stylesheet rules; new Rank Up/Scouting choice controls use the PvP authoritative modal adapter, not a direct duplicate of VS AI's client-authoritative animations. No AI, no BGM; SFX retained.
+
+## Coin Flip UI from screenshot
+
+- On winner result, remove `Opening Coin Flip` header while retaining the visible WINNER label, YOU WON THE COIN FLIP, and coin artwork.
+- **Winner** chooses `GO FIRST` or `GO SECOND`; loser waits. The server authorizes only the winner and derives the actual first seat; no duplicate button to start the game.
+- Finish the coin animation on both screens before opening the battlefield. Local server tests cover both seats choosing FIRST and SECOND, and reject the losing player's unauthorized choice.
+
+## Opponent Mana Pool — RC38
+
+- The **opponent's Pool shows face-up Mana Shards** (Regular/Color class), while the opponent's Hand, unrevealed Legacy, and **Mana Deck remain private**.
+- Effects involving the opponent's Mana choice use the existing **opaque face-down selection** even though the normal Pool view shows Mana faces. Physical UID and deck order are not sent to the opponent. Both player and spectator projections remain masked appropriately.
+
+## RC38 interactions integrated
+
+- RC38 gameplay engine/data, card definitions, 248 card artworks, R3.6 formation/compositions, attack and Response calculations, INVINCIBLE, Rank Up, Dual Arrow, and new Scouting/EXP selection intents.
+- RC38 `trial_rankup_return_exp` and `scouting_exp_selection` are supported in the generic PvP choice modal; no local AI decisions are used.
+- Restored essential seat-2 perspective swaps for physical Mana zones, composite Provoke/End keys and per-Hero flags, preventing duplicate Provoke or missed server End phase. Cleared RC38 stale auto-End flags after Provoke turn advance.
+
+## QA (offline/local, not Northflank)
+
+- `npm run check`: complete regression (engine, RC5 Mana, RC6 WebSocket, privacy, lobby, both seats, opening, Provoke, targeting, graphics smoke test).
+- `npm run build:precompress`: regenerates Brotli/Gzip assets for all modified JS/CSS; Docker precompression runs during image build, not from stale sidecar files.
+- Custom Deck smoke run: all 5 supplied Nov 11 JSONs successfully start the RC38 authority with correct Heroes/Hand/Mana.
+- `GET /health` includes `S0-RC38-PVP-NET-RC6-STAGE2-BETA1` and reports selected transport (`ws` in production, `lite` in offline tests).
+- Card art completeness vs RC38 donor: 248/248 files; static-data and active-starters hashes identical to donor.
+
+## Still requires live QA
+
+- Browser visual validation is not available in this environment: headless Chromium local website navigation is explicitly blocked by browser policy. Test the new winner/loser Coin Flip screens on desktop and portrait mobile.
+- Test two real devices through the entire match, particularly P1/P2 Room, all attack/Response animations and Rank Up/Scouting flows, public Mana Pool / blind opponent Mana picker, reconnect under disconnection, and end of match.
+- Cold `START MATCH` latency under Northflank's shared CPU allocation was not benchmarked. The expensive RC38 runtime still loads on initial battlefield entry; keep speed expectations conservative.
+
+**Deployment:** Manual upload to **PvP Trial** only (do not replace PvP main), then `npm ci && npm run check && npm start` or the included Dockerfile. This ZIP was not uploaded to GitHub or deployed to Northflank.
+
+---
+
+## Historical PvP Release Notes
+
+# Grandis Legacy PvP Season 0 — RC36.8 Mobile Orientation + Opponent Response Hotfix 2 (9 November 2026)
+
+**STATUS: STAGING / MANUAL GITHUB UPLOAD ONLY.** Based on the previous RC36.8 Gameplay Sync package already tested in PvP Trial. No GitHub write or Northflank deploy performed by the assistant.
+
+- **Mobile orientation parity:** on phones, the *entire active battlefield presentation* (not just `.app`) now uses the same 1600x747 logical landscape stage, including choice/Response popups, review iframe, hover previews, mana/payment selectors, attack direction, VFX, card movement, banners, and related overlays. When the phone is portrait, this shared canvas is CSS-rotated; when physically landscape, it is scaled without rotation. Existing lobby and Coin Flip presentation is unchanged; the physical device is **not forcibly orientation-locked** (browsers may disallow that).
+- **Requested Response notification:** a small nonblocking `WAITING FOR OPPONENT RESPONSE...` notice appears only when a live player is awaiting the opponent-owned Response/Response payment. It hides on Response resolution, local-response turn, disconnect, setup/coin, and game-over. No new action button, gameplay HUD panel, gameplay rule, or network packet.
+- **Compatibility:** RC36.8 gameplay source-selection fix, RC5 atomic physical Mana Payment, RC6 Stage 2 transport, seat masking, SFX, BGM removal, and desktop/lobby art preserved. Updated server build ID and fingerprinted asset URLs for a clean deploy/cache migration.
+- **QA:** `npm run check` PASS, including targeted VM Response visibility and portrait/landscape mobile CSS test. A headless Chromium layout fixture at 390x844 portrait, 844x390 landscape, and 1440x900 desktop confirmed the game, dialog and VFX share the stage. This fixture is **not** a live two-player mobile match; real Android/iOS + Northflank testing remains required.
+
+See `docs/RC36_8_MOBILE_ORIENTATION_RESPONSE_HOTFIX2_2026-11-09.md`.
 
 ---
 

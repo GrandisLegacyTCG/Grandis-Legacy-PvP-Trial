@@ -49,13 +49,14 @@ try:
   send(a,'start-match');until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='coin-flip','coin-flip')
  def start_game(a,b):
   send(b,'choose-coin-flip',choice='HEADS');result=until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='coin-result','coin-result')
-  face=result['match']['outcome'];first=result['match']['firstSeat']
+  face=result['match']['outcome'];winner=result['match']['winnerSeat'];assert result['match']['firstSeat'] is None
   send(b,'choose-coin-flip',choice='HEADS');same=until(b,lambda x:x['type']=='snapshot' and x['match']['status']=='coin-result','repeat-coin')
-  assert same['match']['outcome']==face and same['match']['firstSeat']==first, 'Duplicate coin choice changed outcome'
+  assert same['match']['outcome']==face and same['match']['winnerSeat']==winner, 'Duplicate coin choice changed outcome'
   send(a,'coin-presented');until(a,lambda x:x['type']=='snapshot' and 1 in x['match']['coinPresented'],'coin-ack-p1')
-  grace=until(a,lambda x:x['type']=='snapshot' and x['match']['canStartOpening'],'coin-grace',timeout=5)
-  assert grace['match']['presentationGraceOpen'], 'Grace must unlock Start if second visual ACK is lost'
-  send(a,'confirm-coin-flip');started=until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='started','game-start')
+  grace=until(a,lambda x:x['type']=='snapshot' and x['match']['presentationGraceOpen'],'coin-grace',timeout=5)
+  assert grace['match']['firstSeat'] is None, 'Grace must not pick an order for the winner'
+  send(a if winner==1 else b,'choose-turn-order',order='FIRST')
+  started=until(a,lambda x:x['type']=='snapshot' and x['match']['status']=='started','game-start')
   assert started['match']['board']['appState']['phase']=='Deploy','Draw deadlock returned'
   return started
 

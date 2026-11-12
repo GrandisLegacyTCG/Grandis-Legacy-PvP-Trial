@@ -16,7 +16,7 @@ try {
 }
 
 import {readFileSync} from 'node:fs';
-import { Season0HeadlessAuthority } from './server/headless-rc32.mjs';
+import { Season0HeadlessAuthority, primeSeason0Runtime } from './server/headless-rc32.mjs';
 import { season0StarterCatalog } from './server/s0-pregame-catalog.mjs';
 import { viewerSafeBoard, assertViewerSafeBoard, makeBlindChoices } from './server/viewer-safe.mjs';
 
@@ -24,10 +24,14 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='S0-RC36.8-PVP-NET-RC6-STAGE2-MOBILE-RESPONSE-HOTFIX2';
-const BUILD_ID='gl-s0-pvp-rc36p8-mobile-response-hotfix2-2026-11-09';
-const BUILD_LABEL=`Grandis Legacy PvP · S0 RC36 Patch 4 PvP · Network RC6 Stage 2`;
+const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC1';
+const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12';
+const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC1 · Network RC6 Stage 2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
+// Parse the immutable RC39 engine BEFORE the server accepts players. This
+// removes script reads + JS compilation from the synchronous START MATCH path.
+// Each match still runs those scripts in its OWN vm.createContext.
+primeSeason0Runtime(path.join(PUBLIC,'battle'));
 const MAX_SPECTATORS=4;
 const MAX_WS_PAYLOAD=2*1024*1024;
 const MAX_WS_BUFFERED_BYTES=2*1024*1024;
@@ -58,7 +62,7 @@ const safeRole=v=>String(v)==='spectator'?'spectator':'player';
 const token=()=>randomBytes(24).toString('base64url');
 const tokenHash=v=>v?createHash('sha256').update(String(v)).digest('hex'):'';
 
-function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,coinPresented:[],startedAt:null,finishedAt:null,stageChangedAt:null,lastProgressAt:null,presentationGraceOpen:false,lastError:null}}
+function freshMatch(){return{status:'setup',chooserSeat:null,choice:null,outcome:null,firstSeat:null,winnerSeat:null,turnOrder:null,coinPresented:[],startedAt:null,finishedAt:null,stageChangedAt:null,lastProgressAt:null,presentationGraceOpen:false,lastError:null}}
 const room={players:new Map(),spectators:new Map(),authority:null,match:freshMatch(),ledger:new Map(),kickedClients:new Set(),createdAt:now()};
 
 function playerBySeat(seat){return [...room.players.values()].find(p=>Number(p.seat)===Number(seat))||null}
@@ -87,7 +91,7 @@ function viewFor(client){
     if(client?.role==='player'&&client.seat)board=room.authority.viewForSeat(client.seat);
     else board=room.authority.viewForSpectator();
   }
-  const match={...clone(room.match),postMatchCleanupAt:room.match.status==='finished'&&room.match.finishedAt?new Date(Date.parse(room.match.finishedAt)+POST_MATCH_CLEANUP_MS).toISOString():null,revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&(allPlayerSeatsAck(room.match.coinPresented||[])||room.match.presentationGraceOpen),board};
+  const match={...clone(room.match),postMatchCleanupAt:room.match.status==='finished'&&room.match.finishedAt?new Date(Date.parse(room.match.finishedAt)+POST_MATCH_CLEANUP_MS).toISOString():null,revision:room.authority?.revision||0,canStartOpening:room.match.status==='coin-result'&&!!room.match.turnOrder&&(allPlayerSeatsAck(room.match.coinPresented||[])||room.match.presentationGraceOpen),board};
   return{type:'snapshot',version:VERSION,buildId:BUILD_ID,serverTime:now(),local,players:sortedPlayers().map(publicPlayer),spectators:[...room.spectators.values()].map(publicSpectator),match};
 }
 // Do not accumulate infinite per-player snapshots if a mobile socket stalls.
@@ -146,14 +150,17 @@ function season0DeckFor(player){
 class Season0BattleAuthority {
   constructor(){this.engine=new Season0HeadlessAuthority(path.join(PUBLIC,'battle'));this.safeRevision=-1;this.safeBoards=new Map()}
   static prepare(p1,p2){
+    // Normalize and validate each selected deck only once. The authoritative
+    // RC38 engine still does the complete deck-legality checks in start().
+    const deck1=season0DeckFor(p1),deck2=season0DeckFor(p2);
     const a=new Season0BattleAuthority();
-    a.deckHeroIds={1:['LEFT','CENTER','RIGHT'].map(k=>season0DeckFor(p1).default_formation[k]),2:['LEFT','CENTER','RIGHT'].map(k=>season0DeckFor(p2).default_formation[k])};
-    a.engine.start({player1Deck:season0DeckFor(p1),player2Deck:season0DeckFor(p2),
+    a.deckHeroIds={1:['LEFT','CENTER','RIGHT'].map(k=>deck1.default_formation[k]),2:['LEFT','CENTER','RIGHT'].map(k=>deck2.default_formation[k])};
+    a.engine.start({player1Deck:deck1,player2Deck:deck2,
       player1Name:p1.name,player2Name:p2.name});
     return a;
   }
-  complete(firstSeat,face){
-    this.engine.completeOpening(firstSeat,face);
+  complete(firstSeat,face,winnerSeat,chosenOrder){
+    this.engine.completeOpening(firstSeat,face,winnerSeat,chosenOrder);
   }
   get revision(){return this.engine.revision}
   get canonical(){return this.engine._canonicalForServerOnly()}
@@ -178,7 +185,9 @@ class Season0BattleAuthority {
     delete st.playerLegacyPackageSlots;delete st.playerManaClasses;st.pending=st.pending?{type:st.pending.type,private_masked:true,decision_side:'UNKNOWN'}:null;
     if(st.lastDrawnCardBySide){st.lastDrawnCardBySide.PLAYER='__HIDDEN_CARD_BACK__';st.lastDrawnCardBySide.AI='__HIDDEN_CARD_BACK__';}
     // Presentation metadata must not reveal an unrevealed Draw to spectators.
-    st.presentationEvents=(st.presentationEvents||[]).map(ev=>ev&&ev.type==='CARD_DRAWN'?{...ev,card_id:'__HIDDEN_CARD_BACK__'}:ev);
+    st.presentationEvents=(st.presentationEvents||[])
+      .filter(ev=>ev?.type!=='MANA_LOSS_COMMITTED')
+      .map(ev=>ev&&ev.type==='CARD_DRAWN'?{...ev,card_id:'__HIDDEN_CARD_BACK__'}:ev);
 
     st.responseWindow=st.responseWindow?{kind:st.responseWindow.kind,private_masked:true}:null;
     assertViewerSafeBoard(safe);cache.set('spectator',safe);
@@ -201,35 +210,59 @@ function startMatch(client){
   if(room.match.status!=='setup')throw new Error('Match already started.');
   if(!bothPlayersReady())throw new Error('Both players must be connected, have a deck, and be READY.');
   const p1=playerBySeat(1),p2=playerBySeat(2);
-  // Verify the battle transition before entering the RC32 coin UI.
-  season0DeckFor(p1);season0DeckFor(p2);
+  // prepare() validates both decks and starts the isolated canonical RC38
+  // authority BEFORE modifying the live room / Coin Flip status.
+  const startTime=process.hrtime.bigint();
   const authority=Season0BattleAuthority.prepare(p1,p2);
+  if(process.env.PVP_PERF_LOG==='1'){
+    const elapsed=Number(process.hrtime.bigint()-startTime)/1e6;
+    console.info('[PvP startup] prepare authority + two decks:',Math.round(elapsed*10)/10,'ms');
+  }
   room.authority=authority;room.ledger.clear();
   room.match={...freshMatch(),status:'coin-flip',chooserSeat:2,startedAt:now(),stageChangedAt:now()};
 }
 function chooseCoin(client,msg){
   if(client.role!=='player'||client.seat!==room.match.chooserSeat)throw new Error('Only Player 2 chooses Heads or Tails.');
   const choice=String(msg.choice||'').toUpperCase();if(!['HEADS','TAILS'].includes(choice))throw new Error('Choose HEADS or TAILS.');
-  // A duplicated choice from reconnect MUST NOT roll a new outcome.
+  // Duplicate/reconnected requests must never reroll the server outcome.
   if(room.match.status==='coin-result'&&room.match.choice===choice)return;
   if(room.match.status!=='coin-flip')throw new Error('Coin choice is not active.');
   const outcome=randomInt(2)===0?'HEADS':'TAILS';
-  room.match.choice=choice;room.match.outcome=outcome;room.match.firstSeat=choice===outcome?client.seat:(client.seat===1?2:1);room.match.status='coin-result';room.match.coinPresented=[];room.match.stageChangedAt=now();room.match.presentationGraceOpen=false;
+  room.match.choice=choice;room.match.outcome=outcome;
+  room.match.winnerSeat=choice===outcome?client.seat:(client.seat===1?2:1);
+  room.match.turnOrder=null;room.match.firstSeat=null;room.match.status='coin-result';
+  room.match.coinPresented=[];room.match.stageChangedAt=now();room.match.presentationGraceOpen=false;
+}
+function finalizeCoinIfReady(){
+  if(room.match.status!=='coin-result'||!room.match.turnOrder||!room.match.firstSeat)return false;
+  if(!sortedPlayers().every(p=>p.connected))return false;
+  if(!allPlayerSeatsAck(room.match.coinPresented)&&!room.match.presentationGraceOpen)return false;
+  room.authority.complete(room.match.firstSeat,room.match.outcome,room.match.winnerSeat,room.match.turnOrder);
+  room.ledger.clear();room.match.status='started';room.match.stageChangedAt=now();room.match.lastProgressAt=Date.now();
+  return true;
 }
 function coinPresented(client){
-  if(client.role!=='player')return;if(room.match.status!=='coin-result')return;
+  if(client.role!=='player'||room.match.status!=='coin-result')return;
   if(!room.match.coinPresented.includes(client.seat))room.match.coinPresented.push(client.seat);
+  // A winner may choose FIRST/SECOND before the other client finishes flipping.
+  finalizeCoinIfReady();
 }
+function chooseTurnOrder(client,msg){
+  if(room.match.status!=='coin-result')throw new Error('Coin result is not ready.');
+  if(client.role!=='player'||client.seat!==room.match.winnerSeat)throw new Error('Only the Coin Flip winner chooses the turn order.');
+  const order=String(msg.order||'').toUpperCase();
+  if(order!=='FIRST'&&order!=='SECOND')throw new Error('Choose GO FIRST or GO SECOND.');
+  if(room.match.turnOrder){if(room.match.turnOrder===order)return;throw new Error('Turn order already selected.');}
+  room.match.turnOrder=order;
+  room.match.firstSeat=order==='FIRST'?room.match.winnerSeat:(room.match.winnerSeat===1?2:1);
+  finalizeCoinIfReady();
+}
+// Compatibility with earlier client tests only: no one can skip the winner's
+// FIRST/SECOND choice. The result UI does NOT expose a Start Game button.
 function confirmCoin(client){
   if(client.role!=='player')throw new Error('Spectators cannot start gameplay.');
-  if(room.match.status!=='coin-result')throw new Error('Coin result is not ready.');
-  if(!sortedPlayers().every(p=>p.connected))throw new Error('Both players must reconnect before Start Game.');
-  if(!allPlayerSeatsAck(room.match.coinPresented)&&!room.match.presentationGraceOpen)throw new Error('Waiting for both players to finish the Coin Flip presentation.');
-  // Coin presentation is handled inside the S0 RC32 battlefield document.
-  // Server commits a complete S0 board, never a fabricated opening modal.
-  room.authority.complete(room.match.firstSeat,room.match.outcome);
-  room.ledger.clear();
-  room.match.status='started';room.match.stageChangedAt=now();room.match.lastProgressAt=Date.now();
+  if(room.match.status!=='coin-result'||!room.match.turnOrder)throw new Error('Waiting for Coin Flip winner to choose GO FIRST or GO SECOND.');
+  if(!finalizeCoinIfReady())throw new Error('Waiting for both players to finish Coin Flip presentation.');
 }
 function applyIntent(client,msg,batch=false){
   const actionStartedAt=process.hrtime.bigint();
@@ -298,6 +331,7 @@ function handle(client,msg){
     case 'ready': if(client.role!=='player')throw new Error('Spectators cannot ready.');if(room.match.status!=='setup')throw new Error('Ready state is locked.');if(!(client.deckKey||client.customDeck))throw new Error('Choose a deck first.');client.ready=!!msg.ready;break;
     case 'start-match': startMatch(client);break;
     case 'choose-coin-flip': chooseCoin(client,msg);break;
+    case 'choose-turn-order': chooseTurnOrder(client,msg);break;
     case 'coin-presented': coinPresented(client);break;
     case 'confirm-coin-flip': confirmCoin(client);break;
     case 'runtime-intent': applyIntent(client,msg,false);break;
@@ -339,6 +373,7 @@ function enforceIdleTimeouts(){
       // Client animation ACK is advisory after the grace window: the game state
       // cannot remain hostage to a browser timer that never fired.
       room.match.presentationGraceOpen=true;changed=true;
+      if(room.match.turnOrder)finalizeCoinIfReady();
     }
   }else if(room.match.status==='finished'){
     // Server-owned post-match expiry: runs even when BOTH players close tabs.
@@ -375,12 +410,12 @@ const server=http.createServer(async(req,res)=>{
     }
     if(url.pathname==='/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
-      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lite-lobby__s0-rc36-patch4-authority',transport:WS_BACKEND,authoritySources:{'engine/shared-app/app.bundle.js':AUTHORITY_BUNDLE_SHA256}}));return;
+      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lite-lobby__s0-rc39-authority',transport:WS_BACKEND,authoritySources:{'engine/shared-app/app.bundle.js':AUTHORITY_BUNDLE_SHA256}}));return;
     }
     let rel=decodeURIComponent(url.pathname);if(rel==='/'||rel==='')rel='/index.html';if(rel==='/battle'||rel==='/battle/')rel='/battle/index.html';
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);
     if(!file.startsWith(PUBLIC+path.sep)&&file!==PUBLIC){res.writeHead(403);res.end('Forbidden');return}
-    // HTTP delivery is independent of gameplay authority. Keep RC34 data intact.
+    // HTTP delivery is independent of gameplay authority. Keep the RC38 donor data intact.
     if(/\.(br|gz)$/.test(file)){res.writeHead(403);res.end('Forbidden');return;}
     const original=await stat(file);if(!original.isFile())throw new Error('not-file');
     const ext=path.extname(file).toLowerCase(),compressible=['.js','.mjs','.css','.html','.json','.svg'].includes(ext);

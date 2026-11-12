@@ -14,7 +14,7 @@ const between=(start,end)=>{
 };
 const routeSource=between('const RESPONSE_ALLIED_SOURCE_CARDS=', 'function renderResponseRouteGuide(');
 const panelSource=between('  const tributePanelAction=', '  hc.ondblclick=');
-assert.match(html,/app-runtime\.js\?v=[^"\s]*-combat-hotfix3-2026-11-09/,'Browser must load changed runtime without using stale cached JS');
+assert.match(html,/app-runtime\.js\?v=[^"\s]*-rc39-beta2-repo-rc1-2026-11-12/,'Browser must load changed runtime without using stale cached JS');
 assert.doesNotMatch(runtime,/\breturnToLobbyDuringCoin\b/,'No unrelated coin UI control added');
 
 function routeFixture(cardId,sourceLane,targetLane){

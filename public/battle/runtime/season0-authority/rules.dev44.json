@@ -18,7 +18,7 @@
         "currentVisualSHA256": "729e4a81bb98c5e02316fb3ab1a9ea90a4058cb786a195a90d55c93565900458",
         "dualClass": null,
         "id": "S0-ARC-H001",
-        "name": "Korvak Ironfang",
+        "name": "Fenrir Ironfang",
         "racialTrait": {
           "name": "Primal Strike",
           "printedBlockBadge": null,
@@ -52,7 +52,7 @@
         "currentVisualSHA256": "e79f04c3d116e1b0950cd4857db5f75ebfb83cf4e992f3b3930dc10520f840bd",
         "dualClass": null,
         "id": "S0-ARC-H002",
-        "name": "Korvak Ironfang",
+        "name": "Fenrir Ironfang",
         "racialTrait": {
           "name": "Primal Strike",
           "printedBlockBadge": null,
@@ -88,7 +88,7 @@
         "currentVisualSHA256": "3f3777c6fb71372cee45813231413045916487ddc63fef0a67b754eb7c1b7302",
         "dualClass": null,
         "id": "S0-ARC-H003",
-        "name": "Korvak Ironfang",
+        "name": "Fenrir Ironfang",
         "racialTrait": {
           "name": "Primal Strike",
           "printedBlockBadge": null,
@@ -381,10 +381,10 @@
       {
         "classAbility": {
           "name": "Holy Grace",
-          "printedText": "Increase this Hero's Healing done by +20.",
+          "printedText": "Increase this Hero's Healing done by +10.",
           "verbatimPhrases": {
             "printedNumbers": [
-              20
+              10
             ],
             "printedResourceMentions": [],
             "printedTimingPhrases": []
@@ -482,10 +482,10 @@
       {
         "classAbility": {
           "name": "Holy Grace",
-          "printedText": "Increase this Hero's Healing done by +20.",
+          "printedText": "Increase this Hero's Healing done by +10.",
           "verbatimPhrases": {
             "printedNumbers": [
-              20
+              10
             ],
             "printedResourceMentions": [],
             "printedTimingPhrases": []

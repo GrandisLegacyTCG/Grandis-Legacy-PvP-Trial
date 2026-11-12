@@ -33,8 +33,8 @@ function labeledRowName(label='',prefix=''){
 function romanRank(value){return ({1:'I',2:'II',3:'III'})[Number(value||1)]||String(value||'-')}
 function rankUpBonusText(rank){
   const value=Number(rank||1);
-  if(value===2)return 'After Rank Up, draw 2 cards and gain +1 Mana Regen.';
-  if(value===3)return 'After Rank Up, draw 3 cards and gain +1 Mana Regen.';
+  if(value===2)return 'After Rank Up, return 2 EXP cards to your Hand and gain +1 Mana Regen.';
+  if(value===3)return 'After Rank Up, return 3 EXP cards to your Hand and gain +1 Mana Regen.';
   return '';
 }
 function heroExpValue(rank){return ({1:'—',2:'300',3:'700'})[Number(rank||1)]||'—'}
