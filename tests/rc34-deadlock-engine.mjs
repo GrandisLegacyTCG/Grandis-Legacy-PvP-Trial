@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {join,resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {Season0HeadlessAuthority} from '../server/headless-rc32.mjs';
 
 const root=join(process.cwd(),'public/battle');
@@ -52,7 +53,8 @@ for(const first of [1,2]){
 const code=readFileSync(resolve('server/headless-rc32.mjs'),'utf8');
 const marker='  /** A verified seat may concede without turn/response ownership. */';
 assert.ok(code.includes(marker));
-const testCode=code.replace(marker,`  injectFixtureForQA(snapshot) {
+const testCode=code.replace("import {PvpCombatPresentationLedger} from './combat-presentation.mjs';",
+  `import {PvpCombatPresentationLedger} from '${pathToFileURL(resolve('server/combat-presentation.mjs')).href}';`).replace(marker,`  injectFixtureForQA(snapshot) {
     this.#canonical=clone(snapshot);
     this.#bridgeSeat=null;
     this.#bridgeRevision=-1;

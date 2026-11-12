@@ -57,17 +57,37 @@ function guardedPending(p) {
   if (ownerOf(p) === 'PLAYER') return p;
   return {type: p.type, decision_side: ownerOf(p) || 'UNKNOWN', private_masked: true};
 }
+// Only declared, public Attack geometry may cross a masked nested Response.
+// In particular never forward the opponent's options, hand, cost or tokens.
+function publicIncomingAttack(r,depth=0) {
+  if(!r||typeof r!=='object'||depth>6)return null;
+  if(r.kind!=='incoming_attack')return publicIncomingAttack(r.original_attack_context,depth+1)||
+    publicIncomingAttack(r.response_continuation,depth+1);
+  const out={kind:'incoming_attack'};
+  for(const k of ['source_side','source_lane','target_side','target_lane','card_id',
+    'damage','damage_type','attack_type','cannot_block','cannot_dodge'])
+    if(Object.hasOwn(r,k))out[k]=r[k];
+  const lanes=Array.isArray(r.multi_sequence?.affected_lanes)?r.multi_sequence.affected_lanes:
+    Array.isArray(r.affected_lanes)?r.affected_lanes:[];
+  out.affected_lanes=lanes.filter(l=>['LEFT','CENTER','RIGHT'].includes(l));
+  return out;
+}
 function safeResponse(r) {
-  if (!r) return null;
-  if (r.response_owner === 'PLAYER') return r;
-  const out = {};
-  for (const k of ['kind','response_owner','target_side','target_lane','source_side','source_lane','card_id','damage','damage_type','attack_type','cannot_block','cannot_dodge']) if (Object.hasOwn(r,k)) out[k] = r[k];
-  // These are public target positions already declared by the attacking card.
-  // Keeping them lets the defender animate multi-target damage only after the
-  // authoritative Response chain resolves; do not expose any Response option.
-  if(r.kind==='incoming_attack'&&Array.isArray(r.affected_lanes))
-    out.affected_lanes=r.affected_lanes.filter(l=>['LEFT','CENTER','RIGHT'].includes(l));
-  out.private_masked = true;
+  if(!r)return null;
+  if(r.response_owner==='PLAYER')return r;
+  const out={};
+  for(const k of ['kind','response_owner','target_side','target_lane','source_side',
+    'source_lane','card_id','damage','damage_type','attack_type','cannot_block','cannot_dodge'])
+    if(Object.hasOwn(r,k))out[k]=r[k];
+  if(r.kind==='incoming_attack'){
+    const publicAttack=publicIncomingAttack(r);
+    if(publicAttack)out.affected_lanes=publicAttack.affected_lanes;
+  }else{
+    const publicAttack=publicIncomingAttack(r.original_attack_context)||
+      publicIncomingAttack(r.response_continuation);
+    if(publicAttack)out.original_attack_context=publicAttack;
+  }
+  out.private_masked=true;
   return out;
 }
 /** Opaque shuffled choice list: neither UID, kind, class nor pool order may escape. */

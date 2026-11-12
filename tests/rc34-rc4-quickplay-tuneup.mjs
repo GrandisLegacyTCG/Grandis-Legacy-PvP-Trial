@@ -47,7 +47,10 @@ for(const rank of [2,3]){
  initial=env.ctx.__RC4_TEST__.makeTuneUp(rank);
  assert.equal(initial.legal.can,true,'Bard II or Maestro III should legally play Tune Up');
  applyOptimizedPvpIntent({bridge,readPending:env.pending,name:'beginPlayFromHandFast',args:[0]});
- assert.equal(env.pending()?.type,'mana_shard_payment_choice','One legal source auto-resolves directly into Mana Payment');
+ assert.equal(env.pending()?.type,'source_selection','Even one legal Hero must be explicitly selected');
+ assert.deepEqual(Array.from(env.pending().legal_sources),['LEFT']);
+ applyOptimizedPvpIntent({bridge,readPending:env.pending,name:'chooseHeroFromBoard',args:['PLAYER','LEFT']});
+ assert.equal(env.pending()?.type,'mana_shard_payment_choice');
  const plan=env.ctx.GL_GAME_ENGINE.getManaPlan();
  assert.equal(plan.plan.ok,true);
  bridge.applyServerIntent('commitExactManaPaymentChoice',[plan.plan.selected_shard_uids,false,null]);
@@ -68,21 +71,20 @@ for(const rank of [2,3]){
  assert.ok(st.playerHand.includes('S0-ARC-026'));
  assert.ok(st.playerHand.includes('S0-CLE-026'));
  assert.ok(st.playerDiscard.includes('S0-CLE-029'));
- console.log('PASS real RC34 '+(rank===2?'Bard Rank II':'Maestro Rank III')+' -> fast PLAY -> PAY -> atomic Tune Up 2 Notes');
+ console.log('PASS real RC39 '+(rank===2?'Bard Rank II':'Maestro Rank III')+' -> mandatory source Hero -> PAY -> atomic Tune Up 2 Notes');
 }
 
-// Guard against skipping meaningful Hero choices. Exactly one lawful source
-// may be auto-resolved; multiple sources must remain player-selectable.
+// The single-legal-Hero shortcut was reported as a bug: every Skill with
+// a source requirement must explicitly present even its only valid Hero.
 for(const sources of [['LEFT'],['LEFT','RIGHT']]){
  const calls=[];
  const fakeBridge={applyServerIntent:(name,args)=>{calls.push({name,args});return{ok:true}}};
  const fakePending={type:'source_selection',decision_side:'PLAYER',source_side:'PLAYER',legal_sources:sources};
  applyOptimizedPvpIntent({bridge:fakeBridge,readPending:()=>fakePending,name:'beginPlayFromHandFast',args:[0]});
+ assert.equal(calls.length,1,'No implicit Hero-selection intent regardless of eligible Hero count');
  assert.equal(calls[0].name,'beginPlayFromHand');
- assert.equal(calls.length,sources.length===1?2:1);
- if(sources.length===1)assert.equal(calls[1].name,'chooseHeroFromBoard');
 }
-console.log('PASS fast PLAY never skips a real multi-Hero source choice');
+console.log('PASS mandatory Hero source stays selectable with one or multiple legal Heroes');
 
 // Seat 2's server VM is mirrored into a local PLAYER view. Reading a canonical
 // seat-1-coordinates pending would incorrectly classify its PLAYER decision as
@@ -96,6 +98,8 @@ applyOptimizedPvpIntent({
  readPending:()=>mirroredEnv.bridge.getCanonicalSnapshot(1).appState.pending,
  name:'beginPlayFromHandFast',args:[0]
 });
+assert.equal(mirroredEnv.bridge.getCanonicalSnapshot(1).appState.pending?.type,'source_selection');
+applyOptimizedPvpIntent({bridge:mirroredEnv.bridge,readPending:()=>mirroredEnv.bridge.getCanonicalSnapshot(1).appState.pending,name:'chooseHeroFromBoard',args:['PLAYER','LEFT']});
 assert.equal(mirroredEnv.bridge.getCanonicalSnapshot(1).appState.pending?.type,'mana_shard_payment_choice');
 assert.equal(mirroredEnv.bridge.getCanonicalSnapshot(2).appState.pending?.decision_side,'AI');
 const seat2Plan=mirroredEnv.ctx.GL_GAME_ENGINE.getManaPlan();

@@ -24,9 +24,9 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC1';
-const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12';
-const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC1 · Network RC6 Stage 2`;
+const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC3';
+const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc3-2026-11-12';
+const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC3 · Network RC6 Stage 2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 // Parse the immutable RC39 engine BEFORE the server accepts players. This
 // removes script reads + JS compilation from the synchronous START MATCH path.
@@ -173,6 +173,10 @@ class Season0BattleAuthority {
     if(![1,2].includes(Number(seat)))throw new Error('Invalid viewer seat.');
     const cache=this.boardCache();if(cache.has(seat))return cache.get(seat);
     const safe=viewerSafeBoard(this.engine._viewForMaskingOnly(seat),{seat,revision:this.revision,secret:BLIND_SECRET});
+    // Committed public battle events survive skipped intermediate Response
+    // snapshots, including either player seat and reconnect. No private data.
+    safe.appState.presentationEvents=[...(safe.appState.presentationEvents||[]),
+      ...this.engine.combatPresentationForSeat(seat)].slice(-100);
     assertViewerSafeBoard(safe);cache.set(seat,safe);return safe;
   }
   viewForSpectator(){

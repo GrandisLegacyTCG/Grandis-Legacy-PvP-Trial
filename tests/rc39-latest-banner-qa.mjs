@@ -40,6 +40,6 @@ assert.equal(buildInfo.rc39_delta.mana_loss_notice_changed,true);
 assert.equal(buildInfo.rc39_delta.pvp_donor_adapter_changed_in_aura_hotfix,false);
 const host=read('public/pvp/pvp-host.js');
 assert.match(host,/BATTLE_CHANNEL='gl-pvp-battle-transport-v1'/);
-assert.match(read('server.js'),/S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC1/);
+assert.match(read('server.js'),/S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC3/);
 assert.match(read('server.js'),/filter\(ev=>ev\?\.type!=='MANA_LOSS_COMMITTED'\)/,'Spectator receives no per-player Mana loss banner');
 console.log('PASS RC39 latest: committed English centered Mana queue, dedup/privacy, current donor provenance, RC6 transport unchanged');

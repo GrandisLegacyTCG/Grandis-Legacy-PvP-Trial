@@ -47,6 +47,7 @@ const feedback=document.createElement('div');feedback.className='gl-feedback';BF
 const choiceOverlay=document.createElement('div');choiceOverlay.className='overlay choice-overlay gl-vsai-choice-overlay';choiceOverlay.innerHTML='<section class="choice-panel"><header class="choice-head"><h2 class="gl-choice-title">Choice</h2></header><div class="choice-body gl-choice-body"></div><footer class="choice-foot"><button type="button" class="gl-choice-cancel" hidden>CANCEL</button><button type="button" class="gl-choice-confirm">CONFIRM</button></footer></section>';document.body.appendChild(choiceOverlay);
 const playedDetailOverlay=document.createElement('div');playedDetailOverlay.className='gl-played-detail-overlay';playedDetailOverlay.innerHTML='<section class="gl-played-detail-panel" role="dialog" aria-modal="true" aria-labelledby="glPlayedDetailTitle"><header class="gl-played-detail-head"><h2 id="glPlayedDetailTitle">Card Played</h2><button type="button" class="gl-played-detail-close" aria-label="Close Card Played detail">CLOSE</button></header><div class="gl-played-detail-body"></div></section>';document.body.appendChild(playedDetailOverlay);
 const cardReviewOverlay=document.createElement('div');cardReviewOverlay.className='gl-card-review-overlay';cardReviewOverlay.innerHTML='<section class="gl-card-review-panel" role="dialog" aria-modal="true" aria-label="Card Review"><div class="gl-card-review-body"></div></section>';document.body.appendChild(cardReviewOverlay);
+const expInspectorOverlay=document.createElement('div');expInspectorOverlay.className='gl-exp-inspector-overlay';expInspectorOverlay.innerHTML='<section class="gl-exp-inspector-panel" id="glExpInspectorDialog" role="dialog" aria-modal="true" aria-labelledby="glExpInspectorTitle"><header class="gl-exp-inspector-head"><div><span class="gl-exp-inspector-eyebrow">HERO EXP CARDS</span><h2 id="glExpInspectorTitle">EXP Cards</h2></div><button type="button" class="gl-exp-inspector-close">CLOSE</button></header><div class="gl-exp-inspector-summary"></div><div class="gl-exp-inspector-list"></div><p class="gl-exp-inspector-foot">Hover to enlarge (as in Legacy Deck); click for full Card Review. Ultimate EXP cannot return to Hand.</p></section>';document.body.appendChild(expInspectorOverlay);
 const animationLayer=document.createElement('div');animationLayer.className='gl-animation-layer';animationLayer.setAttribute('aria-hidden','true');document.body.appendChild(animationLayer);
 const modalHoverPreview=document.createElement('div');modalHoverPreview.className='gl-modal-hover-preview';modalHoverPreview.setAttribute('aria-hidden','true');const modalHoverImg=document.createElement('img');modalHoverPreview.appendChild(modalHoverImg);document.body.appendChild(modalHoverPreview);
 const sidebarHoverPreview=document.createElement('div');sidebarHoverPreview.className='gl-sidebar-hover-preview';sidebarHoverPreview.setAttribute('aria-hidden','true');const sidebarHoverImg=document.createElement('img');sidebarHoverPreview.appendChild(sidebarHoverImg);document.body.appendChild(sidebarHoverPreview);
@@ -54,7 +55,7 @@ const turnBanner=document.createElement('div');turnBanner.className='gl-turn-ban
 const counterBanner=document.createElement('div');counterBanner.className='gl-counter-banner';counterBanner.setAttribute('aria-live','polite');counterBanner.setAttribute('aria-atomic','true');document.body.appendChild(counterBanner);
 const seenCounterMessages=new Set(),seenRacialMessages=new Set(),presentationNoticeQueue=[];let counterBannerTimer=null,presentationNoticeActive=false;
 const lobbyOverlay=document.createElement('div');lobbyOverlay.className='gl-lobby-overlay';lobbyOverlay.innerHTML='<section class="gl-lobby-panel" role="dialog" aria-modal="true" aria-labelledby="glLobbyTitle"><header class="gl-lobby-head"><img class="gl-lobby-logo" src="engine/assets/lobby/grandis-legacy-logo.webp" alt="Grandis Legacy"><h1 id="glLobbyTitle">VS AI LOBBY</h1></header><div class="gl-lobby-error" id="glLobbyError"></div><div class="gl-lobby-decks" id="glLobbyDecks"></div><footer class="gl-lobby-foot"><button type="button" class="gl-lobby-start" id="glLobbyStart">Start Match</button></footer></section>';document.body.appendChild(lobbyOverlay);
-const coinOverlay=document.createElement('div');coinOverlay.className='gl-coin-overlay';coinOverlay.innerHTML='<section class="gl-coin-card" role="dialog" aria-modal="true" aria-labelledby="glCoinTitle"><h2 id="glCoinTitle">Opening Coin Flip</h2><div class="gl-coin-body"></div></section>';document.body.appendChild(coinOverlay);
+const coinOverlay=document.createElement('div');coinOverlay.className='gl-coin-overlay';coinOverlay.innerHTML='<section class="gl-coin-card" role="dialog" aria-modal="true" aria-label="Coin flip"><div class="gl-coin-body"></div></section>';document.body.appendChild(coinOverlay);
 const progressionOverlay=document.createElement('div');progressionOverlay.className='gl-progression-overlay';progressionOverlay.innerHTML='<section class="gl-progression-card" role="dialog" aria-modal="true" aria-labelledby="glProgressionTitle"><header><div><span>HERO PROGRESSION</span><h2 id="glProgressionTitle">Hero Progression</h2></div><button type="button" class="gl-progression-close">Close</button></header><div class="gl-progression-row"></div><p>Select a Rank card to open Card Review.</p></section>';document.body.appendChild(progressionOverlay);
 const resultOverlay=document.createElement('div');resultOverlay.className='gl-result-overlay';resultOverlay.innerHTML='<section class="gl-result-card" role="dialog" aria-modal="true" aria-labelledby="glResultTitle"><header><span>GAME RESULT</span><h2 id="glResultTitle">Match Complete</h2></header><div class="gl-result-body"></div></section>';document.body.appendChild(resultOverlay);
 let lastSignature='',manaRenderKey='',lastChainKey='',lastFeedbackKey='',resolvedHistory=[],historyKnown=new Set(),playerHandShift=0,opponentHandShift=0;
@@ -84,6 +85,8 @@ let presentationPrimed=false,previousVisualState=null,lastTurnBannerKey='';
 // While the player decides which EXP to return, keep the previous Hero visible.
 let pvpDeferredRankTransitions=[],pvpDeferredExpReturns=[];
 const pvpPresentedExpReturnIds=new Set();
+const glTrialHandFlightKeys=new Set(),glTrialReturnBatches=new Set();
+let glPresentationEpoch=0;
 let lastPhaseIndicatorKey='',lastInteractionFocusMode='',matchStartedAt=0,matchStoppedElapsed=0;
 let responsePassWindowKey='',responsePassWindowStartedAt=0;
 let centerChoiceKey='',centerChoiceRenderSig='',centerChoiceBusy=false,centerChoiceMagicRevealed=false;
@@ -216,6 +219,13 @@ function resolveActionSourceLane(s,a){
   return lane===a.lane?a:{...a,lane};
 }
 function statusIcon(name){return 'engine/assets/status-icons/Icon-'+String(name||'').replace(/[^A-Za-z]/g,'')+'.png';}
+function purifyStatusArt(name){
+  const valid=['Bleed','Burn','Freeze','Poison','Stun'];
+  if(valid.includes(name))return statusIcon(name);
+  const glyph=name==='Sleep'?'Zz':String(name||'?').slice(0,2).toUpperCase();
+  const xml='<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><rect x="6" y="6" width="148" height="148" rx="30" fill="#193244" stroke="#eac874" stroke-width="5"/><text x="80" y="100" fill="#ffe1a5" font-size="58" font-family="sans-serif" text-anchor="middle" font-weight="bold">'+glyph+'</text></svg>';
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
+}
 function getStatusName(x){try{return E().getStatusLabel(x)||x?.name||x?.status||''}catch{return x?.name||x?.status||''}}
 function isPrecommitCancelable(s){const p=s?.pending;if(!p||s?.responseWindow)return false;return ['warp_scroll_selection','source_selection','target_selection','scouting_target_selection','exact_two_target_selection','double_casting_target_selection','mana_spend_choice','mana_shard_payment_choice','optional_magical_surge','status_removal_choice','tribute_target','racial_target_selection','hero_ability_target_selection','legacy_cost_selection','legacy_hero_target_selection','manual_reposition'].includes(p.type);}
 function pendingOwner(p){return p&&(p.decision_side||p.response_owner||p.side||p.source_side||(p.type==='hand_limit_discard'?'PLAYER':null));}
@@ -407,7 +417,7 @@ function placeContextualModalHoverPreview(anchor,compactHero){
   // Contextual popup previews belong to the hovered card, but should not cover the
   // popup grid. Pick the outside edge that corresponds to the hovered card's half
   // of the popup, then fall back to whichever outside edge actually fits.
-  const panel=anchor.closest?.('.choice-panel')||choiceOverlay.querySelector('.choice-panel'),pr=uiRect(panel);
+  const panel=anchor.closest?.('.gl-exp-inspector-panel')||anchor.closest?.('.choice-panel')||choiceOverlay.querySelector('.choice-panel'),pr=uiRect(panel);
   let useRight;
   if(pr){
     useRight=(ar.left+ar.width/2)>=(pr.left+pr.width/2);
@@ -799,7 +809,7 @@ function s0PvpCoinResult(info={}){
 }
 function s0PvpCoinRelease(){coinOverlay.classList.remove('open','gl-pvp-coin-result');appRoot?.classList.remove('gl-lobby-hidden');}
 window.GL_S0_RC32_PVP_COIN={showChoice:s0PvpCoinChoice,showResult:s0PvpCoinResult,release:s0PvpCoinRelease};
-function resetPresentationState(){document.querySelectorAll('.gl-mana-loss-notice').forEach(el=>el.remove());pvpDeferredRankTransitions.length=0;pvpDeferredExpReturns.length=0;pvpPresentedExpReturnIds.clear();pvpPendingAttackVisual=null;seenCounterMessages.clear();seenRacialMessages.clear();presentationNoticeQueue.length=0;presentationNoticeActive=false;clearTimeout(counterBannerTimer);counterBanner.classList.remove('show','is-racial','is-mana');counterBanner.style.removeProperty('--gl-notice-duration');presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;glPendingDrawReservations.PLAYER.length=0;glPendingDrawReservations.AI.length=0;glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();glOpeningHiddenShardUids.clear();glExternalDrawSequence=Promise.resolve();glExternalManaDrawSequence=Promise.resolve();glExternallyPresentedShardUids.clear();resultShown=false;resultOverlay.classList.remove('open');syncMatchActionButton(null);closeLobbyProgression();resetMatchTimer()}
+function resetPresentationState(){glPresentationEpoch++;for(const batch of [...glTrialReturnBatches])batch.cancel();glTrialHandFlightKeys.clear();if(expInspectorOverlay.classList.contains('open'))closeExpInspector();document.querySelectorAll('.gl-mana-loss-notice').forEach(el=>el.remove());pvpDeferredRankTransitions.length=0;pvpDeferredExpReturns.length=0;pvpPresentedExpReturnIds.clear();pvpPendingAttackVisual=null;pvpSeenCombatCommitIds.clear();seenCounterMessages.clear();seenRacialMessages.clear();presentationNoticeQueue.length=0;presentationNoticeActive=false;clearTimeout(counterBannerTimer);counterBanner.classList.remove('show','is-racial','is-mana');counterBanner.style.removeProperty('--gl-notice-duration');presentationPrimed=false;previousVisualState=null;seenPresentationEvents.clear();resolvedHistory=[];historyKnown.clear();activeCardHold=null;glPendingDrawReservations.PLAYER.length=0;glPendingDrawReservations.AI.length=0;glHiddenCommittedDrawSlots.PLAYER.clear();glHiddenCommittedDrawSlots.AI.clear();glOpeningHiddenShardUids.clear();glExternalDrawSequence=Promise.resolve();glExternalManaDrawSequence=Promise.resolve();glExternallyPresentedShardUids.clear();resultShown=false;resultOverlay.classList.remove('open');syncMatchActionButton(null);closeLobbyProgression();resetMatchTimer()}
 function startMatchFromLobby(){
   lobbyErrorText='';const r=E().prepareLocalMatch?.();if(!r?.ok){lobbyErrorText=r?.error||'Could not start match.';renderLobby();return}
   resetPresentationState();lobbyIsOpen=false;lobbyOverlay.classList.remove('open');appRoot?.classList.add('gl-lobby-hidden');renderCoinChoice();
@@ -812,20 +822,20 @@ function beginOpeningPresentation(){
   handRenderKey='';opponentHandRenderKey='';manaRenderKey='';renderNow();
   requestAnimationFrame(()=>requestAnimationFrame(()=>{syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();appRoot?.classList.remove('gl-lobby-hidden');runOpeningHandGroups(r.handEvents||[],r.manaEvents||[])}));
 }
-/* PvP opening is PRESENTATION-ONLY. The server has already committed the six
+/* PvP opening is PRESENTATION-ONLY. The server has already committed the five
  * opening Hand pairs, three initial Mana Shards and first mandatory draw. The
  * browser animates the same RC34 opening cadence without drawing a second time
  * or ever invoking engine.beginFirstTurn. Both Hero teams render immediately. */
 function beginPvPOpeningPresentation(){
   if(window.GL_APP_MODE!=='PVP'||openingPresentationActive)return false;
   const game=st(),raw=(game?.presentationEvents||[]).filter(e=>e?.type==='CARD_DRAWN'&&e.reason==='OPENING_HAND');
-  if(!game||raw.length<12)return false;
+  if(!game||raw.length<10)return false;
   resetPresentationState();
   startMatchTimer();openingPresentationActive=true;lastTurnBannerKey='';
   const serial=++pvpOpeningSerial;pvpOpeningStartedAt=Date.now();
   clearTimeout(pvpOpeningWatchdog);
   pvpOpeningWatchdog=setTimeout(()=>finishPvPOpeningPresentation(serial,true),12000);
-  const events=raw.slice(0,12).map(e=>({...e,
+  const events=raw.slice(0,10).map(e=>({...e,
     group_index:Number.isFinite(Number(e.group_index))?Number(e.group_index):Math.max(0,Number(String(e.group_id||'').split('_').pop())-1)
   }));
   for(const e of events){
@@ -851,7 +861,7 @@ function beginPvPOpeningPresentation(){
 function runPairMotions(parts,duration,done){let left=parts.length;if(!left){done();return}parts.forEach((part,i)=>{const finish=()=>{left--;if(left<=0)done()};if(!flyBetween(part.src,part.from,part.to,duration,finish,i===0))finish()})}
 function runOpeningHandGroups(events,manaEvents,serial=null){
   const valid=()=>serial===null||(openingPresentationActive&&serial===pvpOpeningSerial);
-  const groups=[];for(let i=0;i<6;i++)groups.push((events||[]).filter(e=>Number(e.group_index)===i));let gi=0;
+  const groups=[];for(let i=0;i<5;i++)groups.push((events||[]).filter(e=>Number(e.group_index)===i));let gi=0;
   const next=()=>{if(!valid())return;if(gi>=groups.length){runOpeningShardGroups(manaEvents,serial);return}const group=groups[gi++],parts=[];group.forEach(e=>{const side=e.side==='AI'?'AI':'PLAYER',hand=side==='PLAYER'?playerHandTrack:oppHandTrack,to=hand?.querySelector('.hand-card[data-hand-index="'+Number(e.hand_index)+'"]'),from=zoneEl(side,'Main Deck');parts.push({src:'assets/ui/back-main.webp',from:from?.querySelector('.zoneCard')||from,to});});runPairMotions(parts,220,()=>{if(!valid())return;group.forEach(e=>glHiddenCommittedDrawSlots[e.side==='AI'?'AI':'PLAYER'].delete(Number(e.hand_index)));handRenderKey='';opponentHandRenderKey='';renderHand(st());renderOpponentHand(st());requestAnimationFrame(()=>setTimeout(next,20))})};next();
 }
 function runOpeningShardGroups(events,serial=null){
@@ -895,6 +905,149 @@ function flyToHeroOrientation(src,fromEl,toEl,side,lane,duration=390,onFinish,pl
   }));
   setTimeout(()=>{im.remove();glPresentationActive=Math.max(0,glPresentationActive-1);glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+60);if(typeof onFinish==='function')onFinish(true)},duration+24);return true;
 }
+// The Hand flex fan expands when a Return EXP card is appended. Animate
+// existing cards from their previous positions to the new layout so they do
+// not snap sideways before the returned card arrives at its exact slot.
+function snapshotHandPositions(side){
+  const host=side==='AI'?oppHandTrack:playerHandTrack;
+  return [...(host?.querySelectorAll(':scope > .hand-card')||[])].map(c=>{
+    const r=uiRect(c);return r?{left:r.left,top:r.top,width:r.width,height:r.height}:null;
+  });
+}
+function animateHandExpansion(side,before,duration=440){
+  if(!Array.isArray(before)||!before.length)return;
+  const host=side==='AI'?oppHandTrack:playerHandTrack,
+    cards=[...(host?.querySelectorAll(':scope > .hand-card')||[])];
+  cards.slice(0,before.length).forEach((c,i)=>{
+    const prev=before[i],next=uiRect(c);if(!prev||!next)return;
+    const dx=prev.left-next.left,dy=prev.top-next.top;
+    if(Math.abs(dx)<.8&&Math.abs(dy)<.8)return;
+    // The independent CSS translate property preserves the card's authored
+    // rotate()/fan transform. Animating transform would cancel that rotation.
+    try{c.animate([{translate:dx+'px '+dy+'px'},{translate:'0px 0px'}],
+      {duration,easing:'cubic-bezier(.22,.72,.2,1)'}).finished.catch(()=>{});}catch{}
+  });
+}
+function trialFlightKey(side,index){return (side==='AI'?'AI':'PLAYER')+'|'+Number(index);}
+// The source popup is removed as soon as the Rank Up choice commits. Capture
+// its exact screen rectangle first and reuse it as the animation origin.
+function virtualFlightSource(rect){return {getBoundingClientRect:()=>rect};}
+// Shared by deferred Rank Up VFX and the manual popup-to-Hand flights.
+function revealTrialReturnSlot(e){
+  if(!e)return;
+  const side=e.side==='AI'?'AI':'PLAYER',idx=Number(e.hand_index),host=side==='AI'?oppHandTrack:playerHandTrack;
+  glHiddenCommittedDrawSlots[side].delete(idx);
+  const slot=host?.querySelector('.hand-card[data-hand-index="'+idx+'"]');
+  if(slot){
+    // The committed slot was already laid out before the flight began. Just
+    // reveal it; rebuilding the entire fan here caused a sideways snap.
+    slot.classList.remove('gl-presentation-hidden');
+  }else{
+    // Defensive fallback if another mechanic replaced the Hand meanwhile.
+    invalidateHandRender(side);renderHand(st());renderOpponentHand(st());
+  }
+}
+// One animation frame, one timer, and one reveal for every returned EXP Card.
+// Per-card flyBetween() callbacks were independently scheduled, and an unrelated
+// 120ms render could rebuild Hand nodes between their completions. On busy
+// machines this looked random (Rank II vs III and Player vs AI).
+function runAtomicTrialReturnBatch(side,items,onComplete){
+  side=side==='AI'?'AI':'PLAYER';
+  const hand=side==='AI'?oppHandTrack:playerHandTrack;
+  const epoch=glPresentationEpoch;
+  const arrivals=(items||[]).filter(x=>Number.isInteger(Number(x.hand_index))&&Number(x.hand_index)>=0);
+  let settled=false,timer=null,active=0,clones=[];
+  const batch={cancel:()=>finish(true),complete:()=>finish(false)};glTrialReturnBatches.add(batch);
+  const finish=(cancelled=false)=>{
+    if(settled)return;settled=true;clearTimeout(timer);
+    clones.forEach(x=>x.remove());glPresentationActive=Math.max(0,glPresentationActive-active);
+    glTrialReturnBatches.delete(batch);
+    if(cancelled||epoch!==glPresentationEpoch)return;
+    // The Hand may have been re-rendered by the engine since launch; reveal
+    // CURRENT slots, not stale DOM references captured at flight start.
+    // Clear all locks BEFORE touching any DOM nodes, as a single transaction.
+    arrivals.forEach(item=>{
+      const idx=Number(item.hand_index);
+      const token=String(glHiddenCommittedDrawSlots[side].get(idx)||'');
+      if(token.startsWith('TRIAL-'))glHiddenCommittedDrawSlots[side].delete(idx);
+      glTrialHandFlightKeys.delete(trialFlightKey(side,idx));
+    });
+    const cards=[...(hand?.querySelectorAll(':scope > .hand-card[data-hand-index]')||[])];
+    cards.forEach(card=>{
+      if(arrivals.some(item=>Number(item.hand_index)===Number(card.dataset.handIndex)) &&
+         !glHiddenCommittedDrawSlots[side].has(Number(card.dataset.handIndex)))
+        card.classList.remove('gl-presentation-hidden');
+    });
+    // Rebuild only if an expected destination was replaced during the motion.
+    if(arrivals.some(item=>!cards.some(card=>Number(card.dataset.handIndex)===Number(item.hand_index)))){
+      invalidateHandRender(side);if(side==='AI')renderOpponentHand(st());else renderHand(st());
+    }
+    if(side==='AI')syncOpponentHand();else syncPlayerHandToHeroCenter();
+    glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+70);
+    if(typeof onComplete==='function')onComplete();
+  };
+  if(!arrivals.length){finish();return batch}
+  // A hidden tab may throttle requestAnimationFrame indefinitely. Keep the
+  // gameplay state and Hand visibility consistent when visibility changes.
+  if(document.hidden||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches){
+    requestAnimationFrame(()=>finish(false));
+    setTimeout(()=>finish(false),45);return batch;
+  }
+  // Some Hand layouts change on the next render tick after Rank Up. Do not
+  // start only 1 of 2/3 flights when one destination is briefly absent or
+  // zero-sized: the incomplete batch was another intermittent failure mode.
+  // Retry the COMPLETE geometry snapshot, never individual cards.
+  let geometryAttempts=0;
+  const startWhenReady=()=>{
+    if(settled||epoch!==glPresentationEpoch)return;
+    if(side==='AI')syncOpponentHand();else syncPlayerHandToHeroCenter();
+    const movements=[],missing=[];
+    for(const item of arrivals){
+      const target=hand?.querySelector('.hand-card[data-hand-index="'+Number(item.hand_index)+'"]');
+      const from=item.from,fr=uiRect(from),to=uiRect(target);
+      if(!fr||!to||fr.width<1||fr.height<1||to.width<1||to.height<1){missing.push(item);continue;}
+      movements.push({src:item.src||((side==='AI')?'assets/ui/back-main.webp':art(item.card_id)),fr,to});
+    }
+    if(missing.length){
+      // Recover the final Hand nodes if the periodic renderer replaced them.
+      // Keep every committed return hidden throughout retries.
+      if(++geometryAttempts<=6){
+        if(geometryAttempts===2){invalidateHandRender(side);if(side==='AI')renderOpponentHand(st());else renderHand(st());}
+        requestAnimationFrame(startWhenReady);return;
+      }
+      // If rendering truly cannot produce a destination, never strand an
+      // invisible card or leave the game waiting on an animation callback.
+      finish(false);return;
+    }
+    const duration=440,fragment=document.createDocumentFragment();
+    movements.forEach(m=>{
+      const im=document.createElement('img');im.className='gl-flying-card gl-trial-exp-flight';
+      im.src=m.src;im.style.left=m.fr.left+'px';im.style.top=m.fr.top+'px';
+      im.style.width=m.fr.width+'px';im.style.height=m.fr.height+'px';
+      im.style.transform='translate(0px,0px)';fragment.appendChild(im);clones.push(im);
+    });
+    animationLayer.appendChild(fragment);active=clones.length;
+    glPresentationActive+=active;glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+duration+70);
+    E()?.playCardMotionSound?.();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      if(settled||epoch!==glPresentationEpoch)return;
+      // A single requestAnimationFrame writes all destinations. No stagger.
+      movements.forEach((m,i)=>{
+        const im=clones[i];im.style.transition='transform '+duration+'ms cubic-bezier(.2,.75,.2,1),opacity '+duration+'ms ease,width '+duration+'ms ease,height '+duration+'ms ease';
+        im.style.transform='translate('+(m.to.left-m.fr.left)+'px,'+(m.to.top-m.fr.top)+'px)';
+        im.style.width=m.to.width+'px';im.style.height=m.to.height+'px';im.style.opacity='.76';
+      });
+      // Start the ONE completion timer only after the ONE animation frame
+      // actually starts. Slow displays previously revealed too early.
+      timer=setTimeout(()=>finish(false),duration+55);
+    }));
+  };
+  requestAnimationFrame(startWhenReady);
+  return batch;
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)for(const batch of [...glTrialReturnBatches])batch.complete();
+});
 function queueBattlefieldTributeMotion(p,lane){
   if(!p||p.type!=='tribute_target'||!p.card_id||!Number.isInteger(Number(p.hand_index))||!lane)return false;
   const from=playerHandTrack?.querySelector('.hand-card[data-hand-index="'+Number(p.hand_index)+'"] .hand-art'),to=heroCardEl('PLAYER',lane);
@@ -974,6 +1127,7 @@ function showTurnBannerFor(s){const key=String(s.turn)+'|'+Number(s.round||1);if
  * Keep all responses and server-authored legality untouched. Trigger all affected
  * positions together, only after the authoritative Response chain closes. */
 let pvpPendingAttackVisual=null;
+const pvpSeenCombatCommitIds=new Set();
 function pvpAttackNewStatuses(before,after){
   const old=new Map((before||[]).map(x=>[String(x.name||''),Number(x.duration||0)]));
   const found=[];
@@ -984,24 +1138,51 @@ function pvpAttackNewStatuses(before,after){
   }
   return found;
 }
+function pvpCommittedCombatBatches(cur) {
+  const batches=[];
+  for(const e of cur?.presentation||[]){
+    if(e?.type!=='PVP_COMBAT_RESOLVED'||!e.id||pvpSeenCombatCommitIds.has(e.id))continue;
+    pvpSeenCombatCommitIds.add(e.id);
+    // Reconnect/spectator import may contain historical public commits.
+    // Prime their IDs, but never replay the whole prior match on entry.
+    if(!presentationPrimed)continue;
+    const targets=(Array.isArray(e.targets)?e.targets:[]).filter(t=>
+      ['PLAYER','AI'].includes(t?.side)&&['LEFT','CENTER','RIGHT'].includes(t?.lane)).map(t=>({
+        side:t.side,lane:t.lane,damage:Math.max(0,Number(t.damage||0)),
+        statuses:(Array.isArray(t.statuses)?t.statuses:[]).filter(x=>
+          ['Poison','Burn','Bleed','Freeze','Stun','Sleep'].includes(x))
+      }));
+    if(!targets.length)continue;
+    batches.push({attack:{card_id:String(e.card_id||''),
+      source_side:e.source_side,source_lane:e.source_lane,
+      target_side:e.target_side,target_lane:e.target_lane,
+      damage_type:e.damage_type,attack_type:e.attack_type},targets});
+  }
+  return batches;
+}
 function pvpAttackVisualPlan(s,cur,prev){
   if(window.GL_APP_MODE!=='PVP'||!s)return null;
-  const rw=s.responseWindow;
-  if(rw){
-    const incoming=rw.kind==='incoming_attack'?rw:
-      rw.original_attack_context?.kind==='incoming_attack'?rw.original_attack_context:null;
-    if(!incoming)return null; // Do not reset when a nested Response is active.
-    const key=[incoming.card_id||'',incoming.source_side||'',incoming.source_lane||'',incoming.target_side||'',Number(s.round||0)].join('|');
+  const committed=pvpCommittedCombatBatches(cur);
+  if(committed.length){pvpPendingAttackVisual=null;return committed;}
+  // Fallback for intermediate response states. In normal RC39 PvP the server
+  // supplies PVP_COMBAT_RESOLVED and no visual result is guessed from diffs.
+  const incoming=findActiveAttackWindow(s);
+  if(incoming){
+    const key=[incoming.card_id||'',incoming.source_side||'',incoming.source_lane||'',
+      incoming.target_side||'',Number(s.round||0)].join('|');
     if(!pvpPendingAttackVisual||pvpPendingAttackVisual.key!==key)
-      pvpPendingAttackVisual={key,baseline:prev||cur,attack:null,targets:new Set()};
+      pvpPendingAttackVisual={key,baseline:prev||cur,attack:null,targets:new Set(),area:false};
     const plan=pvpPendingAttackVisual;
     plan.attack={card_id:String(incoming.card_id||''),source_side:incoming.source_side||'PLAYER',
       source_lane:incoming.source_lane||'CENTER',target_side:incoming.target_side||'AI',
       target_lane:incoming.target_lane||null,damage_type:incoming.damage_type||'Physical',
       attack_type:incoming.attack_type||''};
-    const direct=Array.isArray(incoming.affected_lanes)?incoming.affected_lanes:[];
+    const direct=Array.isArray(incoming.multi_sequence?.affected_lanes)?incoming.multi_sequence.affected_lanes:
+      Array.isArray(incoming.affected_lanes)?incoming.affected_lanes:[];
     for(const lane of direct)if(['LEFT','CENTER','RIGHT'].includes(lane))plan.targets.add(lane);
-    if(!direct.length&&/area|all opponents/i.test(String(plan.attack.attack_type))){
+    const area=!!incoming.multi_sequence||direct.length>1||/area|all opponents/i.test(String(plan.attack.attack_type));
+    plan.area=plan.area||area;
+    if(!direct.length&&area){
       const lanes=/all opponents/i.test(String(plan.attack.attack_type))?['LEFT','CENTER','RIGHT']:
         incoming.source_lane==='LEFT'?['LEFT','CENTER']:
         incoming.source_lane==='RIGHT'?['CENTER','RIGHT']:['LEFT','CENTER','RIGHT'];
@@ -1012,7 +1193,9 @@ function pvpAttackVisualPlan(s,cur,prev){
     return null;
   }
   if(!pvpPendingAttackVisual)return null;
-  if(['response_window','response_payment_choice','mana_shard_payment_choice'].includes(s.pending?.type))return null;
+  // Some Area hits stop between targets for a compulsory Stoneblood/Legacy
+  // or another mandatory choice. NEVER show partial Damage/Status during it.
+  if(s.responseWindow||s.pending)return null;
   const tracked=pvpPendingAttackVisual;pvpPendingAttackVisual=null;
   if(!tracked.attack)return null;
   const targets=[...tracked.targets].map(lane=>{
@@ -1023,12 +1206,22 @@ function pvpAttackVisualPlan(s,cur,prev){
       damage:Math.max(0,Number(before.hp||0)-Number(after.hp||0)),
       statuses:pvpAttackNewStatuses(before.statuses,after.statuses)};
   }).filter(Boolean);
-  // Complete negate with no affected HP/Status should not show a phantom hit.
   const beforeEvents=new Set((tracked.baseline?.presentation||[]).map(x=>String(x?.id||'')));
   const negated=(cur.presentation||[]).some(e=>e?.type==='CARD_NEGATED'&&
     e.target_card_id===tracked.attack.card_id&&!beforeEvents.has(String(e.id||'')));
   if(negated&&targets.every(x=>!x.damage&&!x.statuses.length))return null;
-  return targets.length?{attack:tracked.attack,targets}:null;
+  // When a server combat commit is present in this build, the client must not
+  // also synthesize a second copy. The fallback is for connection edge cases.
+  return targets.length?[{attack:tracked.attack,targets}]:null;
+}
+function pvpHeroVisualDuringArea(h,side,lane){
+  const a=pvpPendingAttackVisual;
+  if(!h||!a?.area||a.attack?.target_side!==side||!a.targets.has(lane))return h;
+  const before=a.baseline?.hero?.[side]?.[lane];
+  if(!before)return h;
+  // DISPLAY ONLY. Response legality, HP and Status remain authoritative in s.
+  // Freeze icons + displayed HP until the *last* affected Hero has responded.
+  return {...h,hp:before.hp,statuses:before.statuses.map(x=>({...x}))};
 }
 function playPvpCombatVisualBatch(batch){
   if(!batch||window.GL_APP_MODE!=='PVP'||!batch.targets?.length)return false;
@@ -1041,7 +1234,7 @@ function playPvpCombatVisualBatch(batch){
   // No per-Hero stagger: all VFX, shakes, Status icons are appended immediately.
   for(const target of batch.targets){
     const hero=heroCardEl(target.side,target.lane);
-    const anchor=hero?.closest('.gl-hero-physical-stack')||hero;
+    const anchor=hero?.closest('.gl-hero-physical-stack')||hero||uiLaneElement(target.side,target.lane);
     const box=uiRect(anchor);
     if(!box||box.width<1||box.height<1)continue;
     const clip=document.createElement('div');clip.className='gl-battle-vfx-clip';
@@ -1109,8 +1302,8 @@ function presentPvpManaLossNotice(event){
 function buildPresentationPlan(s){
   showNewCounterEvents(s);
   const cur=visualStateOf(s),prev=previousVisualState;
-  const plan={draws:[],returns:[],expReturns:[],shards:[],heroTransitions:[],moved:[],combatBatch:null,manaLossNotices:[]};
-  plan.combatBatch=pvpAttackVisualPlan(s,cur,prev);
+  const plan={draws:[],returns:[],expReturns:[],shards:[],heroTransitions:[],moved:[],combatBatches:[],manaLossNotices:[]};
+  plan.combatBatches=pvpAttackVisualPlan(s,cur,prev)||[];
   if(openingPresentationActive){
     (cur.presentation||[]).forEach(e=>{if(e?.id&&e.reason==='OPENING_HAND')seenPresentationEvents.add(e.id)});
     previousVisualState=cur;return plan;
@@ -1186,7 +1379,7 @@ function preparePresentationTargets(plan){
 }
 function runPresentationPlan(plan,s){
   showTurnBannerFor(s);
-  if(plan.combatBatch)playPvpCombatVisualBatch(plan.combatBatch);
+  for(const batch of plan.combatBatches||[])playPvpCombatVisualBatch(batch);
   for(const notice of plan.manaLossNotices||[])setTimeout(()=>presentPvpManaLossNotice(notice),90);
   const draws=(plan.draws||[]).slice(),expReturns=(plan.expReturns||[]).slice(),returns=(plan.returns||[]).flatMap(e=>Array.from({length:Math.min(24,Math.max(0,Math.floor(Number(e.count)||0)))},()=>({side:e.side}))),shards=(plan.shards||[]).slice(),rankTransitions=(plan.heroTransitions||[]).filter(x=>x.kind==='rank'),legacyTransitions=(plan.heroTransitions||[]).filter(x=>x.kind==='legacy');
   function runShardSequence(index){
@@ -1221,23 +1414,16 @@ function runPresentationPlan(plan,s){
   function flightReturnedExp(events,from,onComplete){
     const valid=(events||[]).filter(e=>!e.id||!pvpPresentedExpReturnIds.has(e.id));
     if(!valid.length){onComplete();return;}
-    let left=valid.length;
-    const done=()=>{if(--left===0)onComplete()};
-    valid.forEach((e,i)=>{
-      if(e.id)pvpPresentedExpReturnIds.add(e.id);
-      const side=e.side==='AI'?'AI':'PLAYER',idx=Number(e.hand_index);
-      const hand=side==='AI'?oppHandTrack:playerHandTrack;
-      const to=hand?.querySelector('.hand-card[data-hand-index="'+idx+'"]')||hand;
-      const src=side==='AI'?'assets/ui/back-main.webp':art(e.card_id);
-      const finish=()=>{
-        if(Number.isInteger(idx)&&idx>=0)glHiddenCommittedDrawSlots[side].delete(idx);
-        const slot=hand?.querySelector('.hand-card[data-hand-index="'+idx+'"]');
-        slot?.classList.remove('gl-presentation-hidden');
-        if(side==='PLAYER')handRenderKey='';else opponentHandRenderKey='';
-        done();
-      };
-      if(!flyBetween(src,from,to,350,finish,i===0))finish();
-    });
+    const sides=[...new Set(valid.map(e=>e.side==='AI'?'AI':'PLAYER'))];
+    let awaiting=sides.length;
+    for(const side of sides){
+      const batchEvents=valid.filter(e=>(e.side==='AI'?'AI':'PLAYER')===side);
+      batchEvents.forEach(e=>{if(e.id)pvpPresentedExpReturnIds.add(e.id)});
+      runAtomicTrialReturnBatch(side,batchEvents.map(e=>({
+        side,hand_index:e.hand_index,card_id:e.card_id,from,
+        src:side==='AI'?'assets/ui/back-main.webp':art(e.card_id)
+      })),()=>{if(--awaiting===0)onComplete()});
+    }
   }
   function runStandaloneExpReturns(){
     if(!expReturns.length){runReturnSequence(0);return;}
@@ -1657,6 +1843,10 @@ function centerChoiceModeFor(s){
     if(p.type==='response_payment_choice'&&Number(p.mana_cost||0)>0&&responseDiscardStageApprovedKey===responseDiscardStageKey(p))return'pay';
     return'discard';
   }
+  // RC39 donor: Rank Up and Scouting EXP are focused center-stage choices,
+  // NOT the old generic TRIAL popup. The PvP adapter keeps clicks local.
+  if(p.type==='trial_rankup_return_exp'||p.type==='scouting_exp_selection')return'discard';
+  if(p.type==='saint_purify_choice')return'purify';
   if(p.type==='s0_bard_draw_choice')return'bard';
   if(p.type==='draw_replacement_choice')return'draw-replacement';
   if(p.type==='racial_stoneblood')return'stoneblood';
@@ -1670,7 +1860,7 @@ let lastCenterChoiceBodyMode='';
 function setCenterChoiceBodyMode(mode){
   const changed=mode!==lastCenterChoiceBodyMode;
   lastCenterChoiceBodyMode=mode;
-  ['pay','opponent-shard','opponent-hand','magic-scope','bard','discard','draw-replacement','stoneblood'].forEach(x=>document.body.classList.toggle('gl-center-'+x,mode===x));
+  ['pay','opponent-shard','opponent-hand','magic-scope','bard','discard','purify','draw-replacement','stoneblood'].forEach(x=>document.body.classList.toggle('gl-center-'+x,mode===x));
   document.body.classList.toggle('gl-center-choice-active',!!mode);
   centerFocusBackdrop.classList.toggle('is-visible',!!mode);
   if(mode){
@@ -1682,7 +1872,10 @@ function setCenterChoiceBodyMode(mode){
   }else if(changed){classChoiceHoverOwner=null;hideModalHoverPreview()}
 }
 function centerChoiceOrigin(mode,p){
+  if(mode==='discard'&&p?.type==='trial_rankup_return_exp')return heroCardEl(p.side||'PLAYER',p.lane);
+  if(mode==='discard'&&p?.type==='scouting_exp_selection')return heroCardEl(p.target_side||'AI',p.target_lane);
   if(mode==='bard'||mode==='discard'||mode==='draw-replacement')return document.querySelector('.hand.bottom');
+  if(mode==='purify')return heroCardEl(p?.target_side||'PLAYER',p?.target_lane);
   if(mode==='stoneblood')return document.querySelector('.battlefield .player-heroes');
   if(mode==='pay')return document.querySelector('.player-mana-pool');
   if(mode==='opponent-shard')return p?.target_side==='PLAYER'?document.querySelector('.player-mana-pool'):document.querySelector('.opponent-mana-pool');
@@ -1816,7 +2009,19 @@ function renderCenterChoiceStage(s){
   let identity='',sig='',cards=[],selectedKeys=new Set(),clickableKeys=new Set(),titleText='',helperText='',statusText='',selectedTarget=null,otherTarget=null;
   const makeBtn=(text,cls,disabled,fn)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=text;b.disabled=!!disabled;b.onclick=fn;actions.appendChild(b);return b};
 
-  if(mode==='bard'){
+  if(mode==='purify'){
+    const choices=p.status_choices||[],selected=p.selected_status_choice==null?-1:Number(p.selected_status_choice);
+    identity='purify|'+String(p.target_side||'PLAYER')+'|'+String(p.target_lane||'')+'|'+String(p.source_card_id||'')+'|'+choices.map(x=>String(x.status_index)+':'+String(x.label)).join('|');
+    sig=identity+'|'+String(selected);
+    titleText='HOLY REJUVENATION — REMOVE STATUS';
+    helperText='Healing resolved. Choose the negative Status to remove from '+String(p.target_lane||'the healed Hero')+'.';
+    statusText=selected>=0?'1 / 1 SELECTED':'0 / 1 SELECTED';
+    cards=choices.map((x,i)=>{
+      const statusName=String(x.label||'Status').trim().split(/\s+/)[0];
+      return {key:String(i),idx:i,front:purifyStatusArt(statusName),back:purifyStatusArt(statusName),faceUp:true,selected:i===selected,clickable:true,label:String(x.label||'Status')};
+    });
+    otherTarget=heroCardEl(p.target_side||'PLAYER',p.target_lane);
+  }else if(mode==='bard'){
     const ids=s.playerHand||[],chosen=new Set((p.selected_indices||[]).map(Number));
     const max=Number(p.max_count||1),rank=max>1?'MAESTRO':'BARD';
     identity='bard|'+p.source_lane+'|'+rank+'|'+ids.join('|');
@@ -1831,23 +2036,27 @@ function renderCenterChoiceStage(s){
     const legacy=p.type==='legacy_cost_selection';
     const cleanup=p.type==='hand_limit_discard';
     const search=p.type==='card_search_choice';
-    const available=legacy?(p.cost_candidates||[]):response?(p.candidates||[]):
+    const expReturn=p.type==='trial_rankup_return_exp';
+    const scouting=p.type==='scouting_exp_selection';
+    const available=scouting?(p.exp_choices||[]):expReturn?(p.candidates||[]):legacy?(p.cost_candidates||[]):response?(p.candidates||[]):
       search?(p.candidates||[]):(s.playerHand||[]).map((card_id,hand_index)=>({card_id,hand_index}));
-    const chosen=legacy?(p.selected_cost_indices||[]):response?pvpResponseDiscardIndices(p,s):
+    const chosen=scouting?(p.selected_exp_choice==null?[]:[Number(p.selected_exp_choice)]):expReturn?(p.selected_indices||[]):legacy?(p.selected_cost_indices||[]):response?pvpResponseDiscardIndices(p,s):
       cleanup?(p.selected||[]):(p.multi_select?(p.selected_indices||[]):
       p.selected_index==null?[]:[Number(p.selected_index)]);
     const selected=new Set(chosen.map(Number));
-    const required=legacy?Number(p.required_cost||1):response?Number(p.required_discard_count||1):
+    const required=scouting?1:expReturn?Math.min(Number(p.quota||0),available.length):legacy?Number(p.required_cost||1):response?Number(p.required_discard_count||1):
       cleanup?Number(p.required||1):Number(p.required_count||1);
     const responseCard=response?cv(p.response_option?.card_id):null;
     const sourceCard=legacy?cv(p.card_id):search?cv(p.source_card_id):null;
     const name=(responseCard||sourceCard)?.name||'Card';
     identity='discard|'+p.type+'|'+String(p.resolve_to||'')+'|'+name+'|'+
-      available.map(c=>String(c.hand_index??c.index??'')+':'+c.card_id).join('|')+'|'+required;
+      available.map(c=>String(c.hand_index??c.index??c.discard_index??c.exp_index??'')+':'+c.card_id).join('|')+'|'+required;
     sig=identity+'|'+[...selected].sort((a,b)=>a-b).join(',');
-    titleText=cleanup?'HAND LIMIT — DISCARD':(legacy?'LEGACY COST — '+name.toUpperCase():
+    titleText=scouting?'SCOUTING — DISCARD OPPONENT EXP':expReturn?'RANK '+(Number(p.rank)===2?'II':'III')+' — RETURN EXP':cleanup?'HAND LIMIT — DISCARD':(legacy?'LEGACY COST — '+name.toUpperCase():
       response?name.toUpperCase()+' — DISCARD COST':name.toUpperCase()+' — CHOOSE DISCARD');
-    helperText=cleanup?'Discard exactly '+required+' card(s) to meet the Hand limit.':
+    helperText=scouting?'Select 1 normal Skill EXP Card from opponent '+String(p.target_lane||'')+'. Ultimate EXP cannot be discarded.':
+      expReturn?'Select exactly '+required+' normal EXP Skill Card'+(required===1?'':'s')+' to return to Hand. Confirm unlocks only after all required cards are selected. Remaining EXP goes to Discard. Return is NOT Draw.':
+      cleanup?'Discard exactly '+required+' card(s) to meet the Hand limit.':
       legacy?'Select '+required+' eligible Skill card(s) to pay the Legacy Ability cost.':
       response?'Select '+required+' other Hand card(s) as the Response cost. No cost is spent before confirmation.':
       'Choose the required Hand card to discard.';
@@ -1855,8 +2064,8 @@ function renderCenterChoiceStage(s){
     cards=available.map((c,i)=>({key:String(i),idx:i,card_id:c.card_id,front:art(c.card_id),
       back:'assets/ui/back-main.webp',faceUp:true,selected:selected.has(i),clickable:true,
       label:cv(c.card_id)?.name||c.card_id}));
-    selectedTarget=centerChoiceDestinationForZone('PLAYER','Discard Pile');
-    otherTarget=centerChoiceDestinationForZone('PLAYER','Hand');
+    selectedTarget=centerChoiceDestinationForZone(scouting?(p.target_side||'AI'):'PLAYER',expReturn?'Hand':'Discard Pile');
+    otherTarget=scouting?heroCardEl(p.target_side||'AI',p.target_lane):centerChoiceDestinationForZone('PLAYER',expReturn?'Discard Pile':'Hand');
   }else if(mode==='draw-replacement'){
     const id=String(p.drawn_card_id||'');
     identity='draw-replacement|'+String(p.source_lane||'')+'|'+String(p.abilityId||'')+'|'+id+'|'+String(p.hand_index);
@@ -1921,7 +2130,20 @@ function renderCenterChoiceStage(s){
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach((c,i)=>{const id=p.candidates?.[i]?.card_id,front=c.querySelector('.gl-center-choice-front img');if(front&&id)bindContextualModalPreview(front,id)});
   }
 
-  if(mode==='bard'){
+  if(mode==='purify'){
+    cardsHost.querySelectorAll('.gl-center-choice-card').forEach((c,i)=>{
+      const status=p.status_choices?.[i];
+      const caption=document.createElement('span');caption.className='gl-purify-status-caption';
+      caption.textContent=String(status?.label||'Status');c.appendChild(caption);
+      c.title=String(status?.detail||status?.label||'Remove status');
+      c.onclick=()=>{if(!centerChoiceBusy)intent('selectSaintPurifyChoice',[i])};
+    });
+    makeBtn('REMOVE SELECTED STATUS','gl-center-choice-primary',p.selected_status_choice==null||!(p.status_choices||[])[Number(p.selected_status_choice)],()=>{
+      // The bridge exposes the authoritative confirm dispatcher, not the
+      // internal commitSaintPurifyChoice helper.
+      if(!centerChoiceBusy)intent('handleChoiceConfirm',[]);
+    });
+  }else if(mode==='bard'){
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach((c,i)=>{const id=cards[i]?.card_id||p.candidates?.[i]?.card_id||s.playerHand?.[i];if(id)bindClassChoiceHoverPreview(c,id)});
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('toggleS0BardDrawIndex',[Number(c.dataset.choiceIndex)])});
     makeBtn('SKIP','gl-center-choice-cancel',false,()=>{
@@ -1939,17 +2161,19 @@ function renderCenterChoiceStage(s){
       const id=cards[i]?.card_id;if(id)bindClassChoiceHoverPreview(c,id);
       c.onclick=()=>{
         if(centerChoiceBusy)return;
-        if(p.type==='legacy_cost_selection')intent('selectLegacyCostChoice',[i]);
+        if(p.type==='scouting_exp_selection')intent('selectScoutingExpChoice',[i]);
+        else if(p.type==='trial_rankup_return_exp')intent('trialSelectRankUpReturn',[i]);
+        else if(p.type==='legacy_cost_selection')intent('selectLegacyCostChoice',[i]);
         else if(p.type==='hand_limit_discard')intent('toggleDiscardIndex',[i]);
         else if(p.type==='response_payment_choice')intent('selectResponsePaymentChoice',[i]);
         else intent('selectCardSearchChoice',[i]);
       };
     });
-    const legacy=p.type==='legacy_cost_selection',cleanup=p.type==='hand_limit_discard',response=p.type==='response_payment_choice';
-    const selectedCount=legacy?(p.selected_cost_indices||[]).length:cleanup?(p.selected||[]).length:
+    const legacy=p.type==='legacy_cost_selection',cleanup=p.type==='hand_limit_discard',response=p.type==='response_payment_choice',expReturn=p.type==='trial_rankup_return_exp',scouting=p.type==='scouting_exp_selection';
+    const selectedCount=scouting?(p.selected_exp_choice==null?0:1):expReturn?(p.selected_indices||[]).length:legacy?(p.selected_cost_indices||[]).length:cleanup?(p.selected||[]).length:
       response?pvpResponseDiscardIndices(p,s).length:p.multi_select?(p.selected_indices||[]).length:
       p.selected_index==null?0:1;
-    const need=legacy?Number(p.required_cost||1):cleanup?Number(p.required||1):
+    const need=scouting?1:expReturn?Math.min(Number(p.quota||0),(p.candidates||[]).length):legacy?Number(p.required_cost||1):cleanup?Number(p.required||1):
       response?Number(p.required_discard_count||1):Number(p.required_count||1);
     const canCancel=legacy||response||(p.type==='card_search_choice'&&p.resolve_to==='gods_blessing_precommit');
     if(canCancel)makeBtn('CANCEL','gl-center-choice-cancel',false,()=>{
@@ -1958,7 +2182,7 @@ function renderCenterChoiceStage(s){
       else intent('cancelPendingAction',[]);
     });
     const needsMana=response&&Number(p.mana_cost||0)>0;
-    makeBtn(needsMana?'CONTINUE TO MANA':(cleanup?'DISCARD SELECTED':'DISCARD & CONFIRM'),
+    makeBtn(scouting?'DISCARD '+selectedCount+' / 1 EXP':expReturn?'RETURN '+selectedCount+' / '+need+' EXP':needsMana?'CONTINUE TO MANA':(cleanup?'DISCARD SELECTED':'DISCARD & CONFIRM'),
       'gl-center-choice-primary',selectedCount!==need,async()=>{
         if(centerChoiceBusy)return;
         if(needsMana){
@@ -1966,6 +2190,13 @@ function renderCenterChoiceStage(s){
           // additional cost stays in the authoritative pending payment.
           responseDiscardStageApprovedKey=responseDiscardStageKey(p);
           renderCenterChoiceStage(st());
+          return;
+        }
+        if(expReturn||scouting){
+          // Selection lives only in the local PvP draft. Never fly EXP toward
+          // a pre-commit location: the authoritative Rank Up transaction
+          // supplies exact destinations/animation AFTER the server ACK.
+          intent('handleChoiceConfirm',[]);
           return;
         }
         const keys=new Set(cards.filter(c=>c.selected).map(c=>c.key));
@@ -2106,6 +2337,76 @@ function renderExpStack(pack,h,exhaustedVisual){
     }
   }
 }
+// EXP is public under a Hero, but the raised Player Hand can overlap the
+// small lower-left counter. The counter is a real disabled button while ANY
+// Hand card is elevated by hover/focus, preventing accidental battlefield taps.
+let expInspectorLocation=null,expInspectorReturnFocus=null,expInspectorSignature='';
+function playerHandIsRaised(){
+  return !!playerHandTrack?.querySelector('.hand-card:hover,.hand-card.is-hovered,.hand-card.hand-hover-active,.hand-card:focus-within');
+}
+function syncExpButtonLock(){
+  const locked=playerHandIsRaised();
+  document.querySelectorAll('.hero-lane > button.gl-hero-exp-indicator').forEach(button=>{
+    button.disabled=locked;
+    button.setAttribute('aria-disabled',locked?'true':'false');
+    button.title=locked?'Move away from the raised Hand card to inspect EXP.':(button.dataset.glExpTitle||'View EXP Cards');
+  });
+}
+function closeExpInspector(){
+  // Legacy Deck and EXP Inspector share the contextual hover layer.
+  // Always dismiss it before opening Card Review or returning to the board.
+  hideModalHoverPreview();
+  const restore=expInspectorReturnFocus,loc=expInspectorLocation;
+  expInspectorLocation=null;expInspectorReturnFocus=null;expInspectorSignature='';
+  expInspectorOverlay.classList.remove('open');
+  const button=loc?uiLaneElement(loc.side,loc.lane)?.querySelector(':scope > button.gl-hero-exp-indicator'):null;
+  const candidate=button?.isConnected?button:restore;
+  if(candidate?.isConnected&&typeof candidate.focus==='function')candidate.focus({preventScroll:true});
+}
+function renderExpInspector(){
+  const loc=expInspectorLocation;if(!loc)return;
+  const h=sideHeroes(st(),loc.side)?.[loc.lane];
+  if(!h||h.legacy_mode){closeExpInspector();return;}
+  const ids=Array.isArray(h.exp_cards)?h.exp_cards.slice():[],total=Math.max(0,Math.floor(Number(h.exp_total)||0));
+  const data=ids.map(id=>({id:String(id),view:cv(id)}));
+  const sig=JSON.stringify([loc.side,loc.lane,heroImageId(h),total,ids]);
+  if(sig===expInspectorSignature)return;expInspectorSignature=sig;
+  const heroName=cv(heroImageId(h))?.name||heroImageId(h)||'Hero';
+  expInspectorOverlay.querySelector('#glExpInspectorTitle').textContent=(loc.side==='PLAYER'?'YOUR':'OPPONENT')+' '+loc.lane+' - '+heroName;
+  const attachedTotal=data.reduce((sum,x)=>sum+(x.view?.isUltimate?200:100),0);
+  const retained=Math.max(0,total-attachedTotal);
+  const summary=expInspectorOverlay.querySelector('.gl-exp-inspector-summary');summary.replaceChildren();
+  for(const [label,value] of [['TOTAL EXP',total],['ATTACHED CARDS',data.length],['ATTACHED EXP',attachedTotal],['RETAINED EXP',retained]]){
+    const cell=document.createElement('div'),labelEl=document.createElement('span'),valueEl=document.createElement('strong');
+    labelEl.textContent=label;valueEl.textContent=String(value);cell.append(labelEl,valueEl);summary.appendChild(cell);
+  }
+  const host=expInspectorOverlay.querySelector('.gl-exp-inspector-list');host.replaceChildren();
+  if(!data.length){const empty=document.createElement('p');empty.className='gl-exp-inspector-empty';empty.textContent='No EXP Cards are currently attached to this Hero.';host.appendChild(empty);return;}
+  data.forEach(({id,view},index)=>{
+    const ultimate=!!view?.isUltimate,card=document.createElement('button');card.type='button';card.className='gl-exp-inspector-card';
+    card.dataset.expCardId=id;card.dataset.expIndex=String(index);
+    const img=document.createElement('img');img.src=art(id);img.alt=view?.name||id;img.draggable=false;
+    const name=document.createElement('strong');name.textContent=view?.name||id;
+    const sub=document.createElement('span');sub.textContent=(ultimate?'ULTIMATE - 200 EXP (cannot return)':'SKILL - 100 EXP');
+    card.append(img,name,sub);card.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();closeExpInspector();openCardReview(id)});
+    host.appendChild(card);
+    // Exactly the Legacy Deck contextual enlarge behavior, reused rather than a new zoom UI.
+    bindChoicePreview(img,id,'contextual');
+  });
+}
+function openExpInspector(side,lane){
+  if(playerHandIsRaised())return false;
+  const hero=sideHeroes(st(),side)?.[lane];if(!hero||hero.legacy_mode)return false;
+  hideModalHoverPreview();
+  expInspectorReturnFocus=document.activeElement;expInspectorLocation={side,lane};expInspectorSignature='';
+  renderExpInspector();expInspectorOverlay.classList.add('open');
+  expInspectorOverlay.querySelector('.gl-exp-inspector-close')?.focus({preventScroll:true});
+  return true;
+}
+expInspectorOverlay.querySelector('.gl-exp-inspector-close').addEventListener('click',closeExpInspector);
+expInspectorOverlay.addEventListener('click',e=>{if(e.target===expInspectorOverlay)closeExpInspector()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&expInspectorOverlay.classList.contains('open')){e.stopPropagation();closeExpInspector()}});
+
 function renderHero(side,lane,h,s){
   const laneEl=uiLaneElement(side,lane),hc=heroCardEl(side,lane);if(!laneEl||!hc)return;
   laneEl.classList.add('hero-panel');laneEl.dataset.side=side;laneEl.dataset.lane=lane;hc.classList.add('hero-main');
@@ -2150,18 +2451,26 @@ function renderHero(side,lane,h,s){
     hp.style.setProperty('--hp-ratio',String(hpPct/100));
     hp.innerHTML='<span class="gl-hp-text">'+Math.round(hpNow)+'/'+Math.round(hpMax)+'</span><span class="gl-hp-track"><span class="gl-hp-fill"></span></span>';
   }
-  // RC35.6: return to the compact RC32-style rectangular EXP label.
-  // Keep the existing physical EXP stack; hide this total when it is zero or Legacy.
+  // v2.13: the existing lower-left EXP label becomes a public EXP inspector
+  // button. Keep the same location and hide it for 0 EXP or Legacy, as before.
   let expBadge=laneEl.querySelector(':scope > .gl-hero-exp-indicator');
   const expTotal=Math.max(0,Math.floor(Number(h?.exp_total||0)));
   if(legacyMode||expTotal===0){if(expBadge)expBadge.remove();}
   else{
-    if(!expBadge){expBadge=document.createElement('span');expBadge.className='gl-hero-exp-indicator';laneEl.appendChild(expBadge);}
+    if(!expBadge||expBadge.tagName!=='BUTTON'){
+      expBadge?.remove();expBadge=document.createElement('button');expBadge.type='button';
+      expBadge.className='gl-hero-exp-indicator';laneEl.appendChild(expBadge);
+    }
     const label=expTotal+' EXP';
     if(expBadge.textContent!==label)expBadge.textContent=label;
-    expBadge.setAttribute('aria-label',label);
+    expBadge.setAttribute('aria-label','View '+label+' cards for '+(cv(heroImageId(h))?.name||'Hero'));
+    expBadge.setAttribute('aria-haspopup','dialog');expBadge.setAttribute('aria-controls','glExpInspectorDialog');
     const rank=Number(h?.rank||1),goal=rank<=1?300:(rank===2?700:null);
-    expBadge.title=goal===null?label+' (Rank III)':label+' / '+goal+' to next Rank';
+    expBadge.dataset.glExpTitle=(goal===null?label+' (Rank III)':label+' / '+goal+' to next Rank')+' - click to view EXP Cards';
+    expBadge.onclick=e=>{e.preventDefault();e.stopPropagation();if(!playerHandIsRaised())openExpInspector(side,lane)};
+    expBadge.disabled=playerHandIsRaised();
+    expBadge.setAttribute('aria-disabled',expBadge.disabled?'true':'false');
+    expBadge.title=expBadge.disabled?'Move away from the raised Hand card to inspect EXP.':expBadge.dataset.glExpTitle;
   }
   // Draw This Turn moved into the existing Hero-information ! tooltip in Stage 1.5.10.
   laneEl.querySelector(':scope > .gl-draw-this-turn')?.remove();
@@ -2678,7 +2987,15 @@ function renderAttackLine(s,chain){
     const line=document.createElementNS(svg.namespaceURI,'path');line.setAttribute('class','gl-pending-attack-line is-looping');line.setAttribute('marker-end','url(#glVsaiAttackArrow)');line.setAttribute('d',`M ${sx} ${sy} Q ${(sx+ex)/2} ${(sy+ey)/2-lift} ${ex} ${ey}`);svg.appendChild(line);
   });
 }
+function updateCommittedHandSlotVisibility(side){
+  const host=side==='AI'?oppHandTrack:playerHandTrack,hidden=glHiddenCommittedDrawSlots[side];
+  host?.querySelectorAll(':scope > .hand-card[data-hand-index]').forEach(el=>{
+    if(el.classList.contains('gl-draw-reservation-slot'))return;
+    el.classList.toggle('gl-presentation-hidden',hidden.has(Number(el.dataset.handIndex)));
+  });
+}
 function renderHand(s){
+  updateCommittedHandSlotVisibility('PLAYER');
   const model=E().getHandModel(),rw=s.responseWindow,p=s.pending,responseMap=new Map();
   if(rw?.response_owner==='PLAYER')(rw.options||[]).forEach((o,i)=>{if(Number.isInteger(Number(o.hand_index))){const k=Number(o.hand_index);if(!responseMap.has(k))responseMap.set(k,[]);responseMap.get(k).push(i)}});
   const responseNeedsDiscard=p?.type==='response_payment_choice'&&Number(p.required_discard_count||0)>0;
@@ -2728,12 +3045,6 @@ function renderHand(s){
       const manaOnlyBlock=!m.canPlay&&Array.isArray(m.playReasons)&&m.playReasons.length>0&&m.playReasons.every(reason=>/not enough mana/i.test(String(reason||'')));
       if(m.canPlay){addAction(actions,'PLAY','play',()=>intent('beginPlayFromHand',[idx]));actionCount++}
       else if(manaOnlyBlock){addAction(actions,'PLAY','play gl-mana-disabled',()=>{}, {disabled:true,reason:'Not enough Mana'});actionCount++}
-      else if(id==='S0-CLE-029'){
-        addAction(actions,'WHY?', 'gl-tuneup-explain', ()=>{
-          const reasons=(m.playReasons||[]).map(x=>String(x));
-          flash('Tune Up needs Bard Rank II / Maestro Rank III, Ready, Deploy Phase, and 2 Mana. '+(reasons.length?'Unavailable: '+reasons.join(', '):''));
-        });actionCount++;
-      }
       if(m.canTribute){addAction(actions,'TRIBUTE','tribute',()=>intent('beginTributeFromHand',[idx]));actionCount++}
     }
     if(actionCount)card.classList.add('gl-has-action');
@@ -2771,6 +3082,7 @@ function handleDiscardClick(p,handIndex){
   }
 }
 function renderOpponentHand(s){
+  updateCommittedHandSlotVisibility('AI');
   const p=s.pending,choice=p?.type==='opponent_hand_choice'&&pendingOwner(p)==='PLAYER',scopeReveal=p?.type==='magic_scope_reveal'&&pendingOwner(p)==='PLAYER',reveal=choice?!!p.reveal_cards:scopeReveal;
   const pendingDraws=glPendingDrawReservations.AI||[],hiddenDrawKey=[...glHiddenCommittedDrawSlots.AI.keys()].sort((a,b)=>a-b).join(',');
   const key=JSON.stringify([s.aiHand||[],p?.type,choice?(p.candidates||[]):null,scopeReveal?(p.revealed_cards||[]):null,reveal,hiddenDrawKey,pendingDraws.map(x=>x.id)]);
@@ -2958,7 +3270,7 @@ function choiceCardTile(id,idx,selected,selectHandler,previewMode='contextual'){
   article.append(previewBtn,select);return article;
 }
 function renderAllowedModal(s){
-  const p=s.pending,allowed=['card_search_choice','legacy_defeat_choice','legacy_card_choice','crystal_ball_reorder','trial_rankup_return_exp','scouting_exp_selection'];
+  const p=s.pending,allowed=['card_search_choice','legacy_defeat_choice','legacy_card_choice','crystal_ball_reorder'];
   if(!p||!allowed.includes(p.type)||pendingOwner(p)!=='PLAYER'||isDirectHandCardSearch(p)||isHandDiscardPending(p)){
     if(!p&&inspectState){renderInspectModal();return}
     // The generic modal is polled every 120 ms but DOES NOT own the preview
@@ -2967,7 +3279,8 @@ function renderAllowedModal(s){
     // still clears the preview through the center-choice lifecycle.
     const centerPreviewOwnedByCenterChoice=!!centerChoiceModeFor(s)&&
       classChoiceHoverOwner?.isConnected&&centerChoiceStage.contains(classChoiceHoverOwner);
-    if(!centerPreviewOwnedByCenterChoice)hideModalHoverPreview();
+    const expPreviewOwnedByInspector=expInspectorOverlay.classList.contains('open');
+    if(!centerPreviewOwnedByCenterChoice&&!expPreviewOwnedByInspector)hideModalHoverPreview();
     if(p)inspectState=null;
     choiceOverlay.classList.remove('open','gl-choice-main-deck-preview');activeModalType='';modalRenderKey='';return;
   }
@@ -3157,8 +3470,8 @@ function renderNow(){
   if(uiResponseSourceChoice&&s.responseWindow?.response_owner!=='PLAYER')uiResponseSourceChoice=null;
   if(responseRollbackSnapshot&&s.pending?.type!=='response_payment_choice'&&!uiResponseSourceChoice&&s.responseWindow?.response_owner!=='PLAYER')responseRollbackSnapshot=null;
   autoSpecialChoices(s);const chain=renderCombatStacks(s);
-  for(const side of ['PLAYER','AI'])for(const lane of laneOrder)renderHero(side,lane,sideHeroes(s,side)?.[lane],s);
-  renderHand(s);renderOpponentHand(s);renderMana();renderCenterChoiceStage(s);renderPhase(s);renderPay(s);renderInteractionFocus(s);renderResponseRouteGuide(s);renderDeckActions(s);renderSidebar(s,chain);renderAttackLine(s,chain);renderAllowedModal(s);renderRails(s);syncSoundButton();syncMatchActionButton(s);preparePresentationTargets(presentationPlan);showGameResult(s);renderStatusReminder(s);
+  for(const side of ['PLAYER','AI'])for(const lane of laneOrder)renderHero(side,lane,pvpHeroVisualDuringArea(sideHeroes(s,side)?.[lane],side,lane),s);
+  renderHand(s);renderOpponentHand(s);syncExpButtonLock();renderExpInspector();renderMana();renderCenterChoiceStage(s);renderPhase(s);renderPay(s);renderInteractionFocus(s);renderResponseRouteGuide(s);renderDeckActions(s);renderSidebar(s,chain);renderAttackLine(s,chain);renderAllowedModal(s);renderRails(s);syncSoundButton();syncMatchActionButton(s);preparePresentationTargets(presentationPlan);showGameResult(s);renderStatusReminder(s);
   requestAnimationFrame(()=>{syncPlayerManaPoolToHeroLeft();syncPlayerHandToHeroCenter();syncOpponentHand();syncPlayerNameBox();layoutManaPoolCards(playerManaHost);layoutManaPoolCards(aiManaHost);runPresentationPlan(presentationPlan,s)});
 }
 function clearAuthoredDummyState(){

@@ -48,6 +48,18 @@ for(;tries<36&&!found;tries++){
   const after=a._viewForMaskingOnly(1).appState;
   assert.equal(after.responseWindow,null);
   assert.ok(after.playerHeroes[target].hp<hpBefore,`Target HP should decrease after unblocked S0-MAG-007 (${hpBefore} -> ${after.playerHeroes[target].hp})`);
+  // RC39 RC2 presentation is recorded at the same authoritative Response
+  // commit. It cannot depend on the client seeing any intermediate snapshot.
+  const committedP1=a.combatPresentationForSeat(1).at(-1);
+  const committedP2=a.combatPresentationForSeat(2).at(-1);
+  assert.equal(committedP1?.type,'PVP_COMBAT_RESOLVED','Authoritative attack result must survive response-to-final snapshot coalescing');
+  assert.equal(committedP1.card_id,'S0-MAG-007');
+  assert.equal(committedP1.source_side,'AI');
+  assert.equal(committedP1.target_side,'PLAYER');
+  assert.ok(committedP1.targets.some(x=>x.lane===target&&x.damage===hpBefore-after.playerHeroes[target].hp));
+  assert.equal(committedP2.source_side,'PLAYER','Player 2 sees its own attack as PLAYER');
+  assert.equal(committedP2.target_side,'AI');
+  assert.deepEqual(committedP1.targets.map(x=>x.damage),committedP2.targets.map(x=>x.damage));
   found=true;
   console.log(`PASS RC34 seat 2 attack -> exact Mana PAY -> seat 1 Response PASS -> damage; retries=${tries+1}`);
 }

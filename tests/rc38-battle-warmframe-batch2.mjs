@@ -42,7 +42,7 @@ const ctx={window:null,globalThis:null,document:doc,WebSocket:Socket,JSON,Date,M
  requestIdleCallback(fn){idle.push(fn);return idle.length},
  CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},
  dispatchEvent(){},addEventListener(type,fn){listeners.set(type,fn)},
- GL_PVP_BUILD_META:{buildId:'gl-s0-pvp-rc39-beta2-repo-rc1-2026-11-12',versionLabel:'Batch2'},
+ GL_PVP_BUILD_META:{buildId:'gl-s0-pvp-rc39-beta2-repo-rc3-2026-11-12',versionLabel:'Batch2'},
  GL_PVP_CONFIG:{},GL_S0_LOBBY_STARTERS:{},GL_S0_LOBBY_CARD_DEFINITIONS:{cards:[]}};
 ctx.window=ctx;ctx.globalThis=ctx;
 vm.runInNewContext(src,ctx,{filename:'pvp-host.js'});

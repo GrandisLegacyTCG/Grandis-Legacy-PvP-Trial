@@ -7,7 +7,10 @@ const src=readFileSync(new URL('../public/battle/shared-app/app-runtime.js',impo
 const start=src.indexOf('/* RC36.8 Hotfix3 retained in RC38:');
 const end=src.indexOf('function buildPresentationPlan(s){',start);
 assert.ok(start>0&&end>start);
-const c={window:{GL_APP_MODE:'PVP'},console,Set,Map,Math,Number,String,Array};
+const c={window:{GL_APP_MODE:'PVP'},console,Set,Map,Math,Number,String,Array,presentationPrimed:true};
+c.findActiveAttackWindow=s=>s.responseWindow?.kind==='incoming_attack'?s.responseWindow:
+   s.responseWindow?.original_attack_context?.kind==='incoming_attack'?s.responseWindow.original_attack_context:
+   s.pending?.incoming_response_window||null;
 vm.createContext(c);vm.runInContext(src.slice(start,end),c);
 const hero=(hp,statuses=[])=>({hp,statuses,legacy:false});
 const screen=(l,m,r)=>({hero:{AI:{LEFT:l,CENTER:m,RIGHT:r},PLAYER:{}}});
@@ -19,17 +22,17 @@ assert.equal(c.pvpAttackVisualPlan({responseWindow:attack,round:2},pending,old),
 assert.equal(c.pvpAttackVisualPlan({responseWindow:{kind:'incoming_card'},round:2},pending,pending),null,'nested Response waits');
 assert.equal(c.pvpAttackVisualPlan({pending:{type:'response_payment_choice'},round:2},pending,pending),null);
 const batch=c.pvpAttackVisualPlan({pending:null,responseWindow:null,round:2},next,pending);
-assert.deepEqual(Array.from(batch.targets,x=>x.lane),['LEFT','CENTER','RIGHT']);
-assert.deepEqual(Array.from(batch.targets,x=>x.damage),[20,10,0]);
-assert.deepEqual(Array.from(batch.targets[0].statuses),['Poison']);
-assert.deepEqual(Array.from(batch.targets[1].statuses),['Burn']);
+assert.deepEqual(Array.from(batch[0].targets,x=>x.lane),['LEFT','CENTER','RIGHT']);
+assert.deepEqual(Array.from(batch[0].targets,x=>x.damage),[20,10,0]);
+assert.deepEqual(Array.from(batch[0].targets[0].statuses),['Poison']);
+assert.deepEqual(Array.from(batch[0].targets[1].statuses),['Burn']);
 assert.equal(c.pvpAttackVisualPlan({},next,next),null,'do not replay VFX');
 const observed={clips:[],shakes:0};
 function el(tag){return {tag,children:[],style:{},classList:{remove(){},add(n){if(n==='gl-battle-damage-card')observed.shakes++}},appendChild(x){this.children.push(x);if(x.className==='gl-battle-vfx-clip')observed.clips.push(x);return x},setAttribute(){},remove(){}}}
 const layer=el('div');c.document={getElementById:id=>id==='glBattleFeedbackLayer'?layer:null,createElement:el,body:el('body')};
 c.heroCardEl=()=>({closest(){return{}}});c.uiRect=()=>({left:0,top:0,width:100,height:140});
 c.uiLaneElement=()=>el('lane');c.setTimeout=()=>0;
-assert.equal(c.playPvpCombatVisualBatch(batch),true);
+assert.equal(c.playPvpCombatVisualBatch(batch[0]),true);
 assert.equal(observed.clips.length,3,'three simultaneous target effects');
 assert.equal(observed.shakes,2,'zero-damage Hero never shakes');
 assert.equal(observed.clips.filter(x=>x.children.some(y=>y.src?.includes('Icon-'))).length,2);

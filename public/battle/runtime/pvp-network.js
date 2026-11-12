@@ -276,10 +276,9 @@ function dispatch(name,args=[]){
  name=tuneUp.name;args=tuneUp.args;
  const payment=toAtomicPayment(name,args);if(payment.error)return {ok:false,error:payment.error};
  name=payment.name;args=payment.args;
- // The server may choose a Hero automatically ONLY when exactly one source
- // is legal. Other Play actions keep every player-choice step unchanged.
- if(name==='beginPlayFromHand')name='beginPlayFromHandFast';
- if(name==='beginPlayFromHandFast')state.playFlowStartedAt=clock();
+ // RC39 user choice: a legal source Hero must ALWAYS be selected explicitly,
+ // including when only one Hero can use the Skill. Never request auto-source.
+ if(name==='beginPlayFromHand')state.playFlowStartedAt=clock();
  const s=state.snapshot?.appState;
  if(name!=='executeConfirmedSurrender'){
    const who=s?.pending&&(s.pending.decision_side||s.pending.response_owner||s.pending.side||s.pending.source_side);

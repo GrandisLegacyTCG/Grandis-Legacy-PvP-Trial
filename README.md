@@ -1,3 +1,19 @@
+# Grandis Legacy PvP Season 0 — RC39 Repo RC3 Gameplay UI Parity (12 November 2026)
+
+**PvP Trial candidate; not yet visually certified in a live two-device match.** Audited and synchronized the remaining relevant gameplay UI from VS AI RC39: public EXP Inspector on both Hero sides, Holy Rejuvenation centered status selection, atomic server-committed Rank Up Return EXP flights to their exact Hand slots, removal of PvP-only Tune Up `WHY?` control, and a no-heading Coin Flip overlay. All RC2 fixes (Opening 5+5, mandatory Hero Selection, post-Response Area status/damage VFX, favicon) are preserved.
+
+**Build ID:** `gl-s0-pvp-rc39-beta2-repo-rc3-2026-11-12`. **Full QA:** [`docs/RC39_PVP_REPO_RC3_GAMEPLAY_UI_PARITY_AUDIT_2026-11-12.md`](docs/RC39_PVP_REPO_RC3_GAMEPLAY_UI_PARITY_AUDIT_2026-11-12.md). Network RC6 Stage 2 single WebSocket, RC5 Mana Draft, Batch3 local choices and RC39 engine are unchanged from RC2. User uploads to GitHub manually; no GitHub or Northflank operations performed.
+
+---
+
+# Grandis Legacy PvP Season 0 — RC39 Repo RC2 Combat & UI Hotfix (12 November 2026)
+
+**PvP Trial deployment candidate; not yet validated by a hosted two-device match.** Built on RC39 Repo RC1. Fixes the VS AI-style Rank Up/Scouting choice stage, mandatory Skill Hero source selection (even one candidate), authoritative post-Response Area combat effects + reliable VFX, opening-hand **5+5** animation, and lobby favicon. RC6 Stage 2 **single WebSocket**, RC5 atomic Mana and Batch 3 Local Draft are unchanged.
+
+**Build ID:** `gl-s0-pvp-rc39-beta2-repo-rc2-2026-11-12`. **Details & QA:** [`docs/RC39_PVP_REPO_RC2_COMBAT_UI_HOTFIX_2026-11-12.md`](docs/RC39_PVP_REPO_RC2_COMBAT_UI_HOTFIX_2026-11-12.md). Upload/deploy to PvP Trial manually; GitHub and Northflank have not been modified by this build.
+
+---
+
 # Grandis Legacy PvP Season 0 — RC39 Repo Candidate RC1
 
 **Integration status:** RC39 latest donor checked, RC6 Stage 2 lobby networking preserved, all previous optimization batches retained.
