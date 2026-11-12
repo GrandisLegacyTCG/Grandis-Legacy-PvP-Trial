@@ -24,9 +24,9 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC3';
-const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc3-2026-11-12';
-const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC3 · Network RC6 Stage 2`;
+const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC4';
+const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc4-2026-11-12';
+const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC4 · Network RC6 Stage 2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 // Parse the immutable RC39 engine BEFORE the server accepts players. This
 // removes script reads + JS compilation from the synchronous START MATCH path.
@@ -198,6 +198,28 @@ class Season0BattleAuthority {
     return safe;
   }
   applyIntent(seat,name,args=[]){
+    // No direct unblinded numeric candidate indices via the network. The
+    // only supported commit path is the revision-bound opaque handle packet.
+    if(['selectOpponentManaChoice','commitOpponentManaSelection','commitExactOpponentManaSelectionIndices'].includes(name))
+      throw new Error('Blind Mana choice must use the protected commit.');
+    if(name==='commitExactOpponentManaSelection'){
+      const payload=args?.[0];
+      if(!payload||!Array.isArray(args)||args.length!==1||
+          !Number.isInteger(payload.revision)||payload.revision!==this.revision)
+        throw new Error('Stale blind Mana selection.');
+      const local=this.engine._viewForMaskingOnly(seat).appState;
+      const pending=local?.pending,choiceMap=makeBlindChoices(local,this.revision,BLIND_SECRET,seat);
+      const handles=payload.handles,need=Math.min(Number(pending?.required_count||1),choiceMap.size);
+      if(pending?.type!=='opponent_mana_selection'||pending.decision_side!=='PLAYER'||
+          !Array.isArray(handles)||need<1||need>12||handles.length!==need||
+          new Set(handles).size!==need||
+          handles.some(h=>typeof h!=='string'||!choiceMap.has(h)))
+        throw new Error('Invalid or expired blind Mana selection.');
+      // Only server-owned opaque handles are accepted, never a physical UID.
+      // The engine validates and commits the complete selection as ONE revision.
+      const indices=handles.map(h=>choiceMap.get(h));
+      return this.engine.applyIntent(seat,'commitExactOpponentManaSelectionIndices',[indices]);
+    }
     if(name==='selectOpponentManaChoiceHandle'){
       const map=makeBlindChoices(this.engine._viewForMaskingOnly(seat).appState,this.revision,BLIND_SECRET,seat);
       const index=map.get(String(args?.[0]||''));

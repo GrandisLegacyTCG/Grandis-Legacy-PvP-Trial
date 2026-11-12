@@ -1,0 +1,70 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {makeBlindChoices,viewerSafeBoard,assertViewerSafeBoard} from '../server/viewer-safe.mjs';
+
+const src=readFileSync(resolve('server/headless-rc32.mjs'),'utf8');
+const marker='  /** A verified seat may concede without turn/response ownership. */';
+assert.ok(src.includes(marker));
+const inject=src.replace("import {PvpCombatPresentationLedger} from './combat-presentation.mjs';",
+  `import {PvpCombatPresentationLedger} from '${pathToFileURL(resolve('server/combat-presentation.mjs')).href}';`)
+  .replace(marker,`  injectFixtureForQA(snapshot) {this.#canonical=clone(snapshot);this.#bridgeSeat=null;this.#bridgeRevision=-1;}\n${marker}`);
+const {Season0HeadlessAuthority}=await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(inject));
+let cases=0;
+for(const actorSeat of [1,2]){
+ const a=new Season0HeadlessAuthority(join(process.cwd(),'public/battle'));
+ a.start({player1DeckKey:'s0_starter_01_red_white',player2DeckKey:'s0_starter_02_blue_red'});
+ a.completeOpening(1,'HEADS');
+ const seed=a._canonicalForServerOnly(),s=seed.appState;
+ const actor=actorSeat===1?'PLAYER':'AI',other=actor==='PLAYER'?'AI':'PLAYER';
+ s.turn=actor;s.phase='Reform';s.pending=null;s.responseWindow=null;s.gameOver=false;
+ s.autoEndTurnPending=false;s.autoEndResumeScheduled=false;
+ s.activeAttachments=[{side:other,card_id:'S0-MAG-028',source_lane:'CENTER',target_lane:'CENTER'}];
+ s.s0_attack_cards_played_by_turn={};s[actor==='PLAYER'?'playerHand':'aiHand']=[];
+ a.injectFixtureForQA(seed);
+ a.applyIntent(actorSeat,'advancePhase',[]);
+ const seat=actorSeat===1?2:1,rev=a.revision;
+ const raw=a._viewForMaskingOnly(seat).appState;
+ assert.equal(raw.pending?.type,'opponent_mana_selection');
+ assert.equal(raw.pending?.decision_side,'PLAYER');
+ const secret=Buffer.from('focused-qa-secret-not-from-production');
+ const map=makeBlindChoices(raw,rev,secret,seat);
+ const safe=viewerSafeBoard({appState:raw},{revision:rev,secret,seat});
+ assertViewerSafeBoard(safe);
+ const visible=safe.appState.pending;
+ assert.equal(visible.candidates.length,map.size);
+ assert.ok(visible.candidates.every(c=>/^[a-f0-9]{32}$/.test(c.choice_handle)&&c.uid===c.choice_handle));
+ assert.ok(visible.candidates.every(c=>!raw.pending.candidates.some(x=>x.uid===c.uid)));
+ const need=Math.min(Number(visible.required_count||1),visible.candidates.length);
+ const chosenHandles=visible.candidates.slice(0,need).map(c=>c.choice_handle);
+ const indices=chosenHandles.map(h=>map.get(h));
+ assert.equal(new Set(indices).size,need);
+ const physicalIds=indices.map(i=>raw.pending.candidates[i].uid);
+ const beforePool=a._canonicalForServerOnly().appState[seat===1?'aiManaPoolCards':'playerManaPoolCards'].map(c=>c.uid);
+ assert.ok(physicalIds.every(uid=>beforePool.includes(uid)));
+ // ONE action = one authoritative revision; no intermediate select intent.
+ const result=a.applyIntent(seat,'commitExactOpponentManaSelectionIndices',[indices]);
+ assert.equal(result.ok,true);
+ assert.equal(a.revision,rev+1);
+ const after=a._canonicalForServerOnly().appState;
+ assert.equal(after.pending,null);
+ const afterPool=after[seat===1?'aiManaPoolCards':'playerManaPoolCards'].map(c=>c.uid);
+ assert.ok(physicalIds.every(uid=>!afterPool.includes(uid)));
+ assert.throws(()=>a.applyIntent(seat,'commitExactOpponentManaSelectionIndices',[indices]),/Not your turn|decision|not the current|Opening|failed/i);
+ cases++;
+}
+const client=readFileSync('public/battle/runtime/pvp-network.js','utf8');
+const ui=readFileSync('public/battle/shared-app/app-runtime.js','utf8');
+const srv=readFileSync('server.js','utf8');
+assert.match(client,/function updateLocalBlindManaDraft/);
+assert.match(client,/if\(name==='selectOpponentManaChoice'\)return updateLocalBlindManaDraft/);
+assert.match(client,/commitExactOpponentManaSelection/);
+assert.match(srv,/choiceMap=makeBlindChoices/);
+assert.match(srv,/commitExactOpponentManaSelectionIndices'\]\.includes\(name\)/);
+assert.match(srv,/new Set\(handles\)\.size!==need/);
+assert.doesNotMatch(client,/actionToast\('Synchronizing/);
+assert.match(ui,/function isPrecommitCancelable\(s\)\{const p=s\?\.pending;if\(!p\|\|s\?\.responseWindow\|\|pendingOwner\(p\)!=='PLAYER'\)/);
+assert.doesNotMatch(ui,/isPrecommitCancelable\(s\)\|\|p\?\.type==='manual_reposition'/);
+assert.match(ui,/function playPvpBlindManaFlight/);
+console.log(`PASS RC39 RC4 focused blind Mana (both seats) + Cancel ownership + silent wait: ${cases} server-engine scenarios`);

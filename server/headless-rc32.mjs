@@ -142,6 +142,27 @@ export function applyOptimizedPvpIntent({bridge, readPending, name, args}) {
     if (!result?.ok) throw new Error(String(result?.error || `Runtime rejected ${intent}.`).slice(0,220));
     return result;
   };
+  if (name === 'commitExactOpponentManaSelectionIndices') {
+    const p=readPending(),indices=args?.[0];
+    if (!p||p.type!=='opponent_mana_selection'||p.decision_side!=='PLAYER')
+      throw new Error('Blind Mana selection is not the current decision.');
+    const need=Math.min(Number(p.required_count||1),(p.candidates||[]).length);
+    if (!Array.isArray(indices)||indices.length!==need||need<1||need>12||
+        indices.some(i=>!Number.isInteger(i)||i<0||i>=p.candidates.length)||
+        new Set(indices).size!==need)throw new Error('Invalid opponent Mana selection.');
+    // If the pending selection was already modified, normalize to the exact
+    // verified indices before committing. This also prevents replay of stale
+    // intermediate choices after a reconnect.
+    const original=(p.selected_indices||[]).map(Number);
+    for (const i of original) if(!indices.includes(i))run('selectOpponentManaChoice',[i]);
+    for (const i of indices) if(!(readPending()?.selected_indices||[]).includes(i))run('selectOpponentManaChoice',[i]);
+    const confirmed=readPending();
+    if(!confirmed||confirmed.type!=='opponent_mana_selection'||
+       confirmed.selected_indices?.length!==need||
+       !indices.every(i=>confirmed.selected_indices.includes(i)))
+      throw new Error('Opponent Mana selection was not accepted.');
+    return run('commitOpponentManaSelection',[]);
+  }
   if (name === 'commitExactLocalChoiceDraft') {
     if (!Array.isArray(args) || args.length !== 1) throw new Error('Invalid local draft packet.');
     return applyExactLocalChoiceDraft({bridge, readPending, payload:args[0]});

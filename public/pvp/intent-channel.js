@@ -35,7 +35,7 @@ function create(opts={}){
     clearTimer();
     timer=setT(()=>{
       if(!active)return;
-      const stuck=finish('timeout','Server response timed out. The board is being resynchronized.');
+      const stuck=finish('timeout','Server response timed out. Reconnecting…');
       try{opts.onTimeout?.(stuck)}catch{}
     },timeoutMs);
   }

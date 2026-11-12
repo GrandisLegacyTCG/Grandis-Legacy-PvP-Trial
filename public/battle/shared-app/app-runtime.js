@@ -227,7 +227,7 @@ function purifyStatusArt(name){
   return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
 }
 function getStatusName(x){try{return E().getStatusLabel(x)||x?.name||x?.status||''}catch{return x?.name||x?.status||''}}
-function isPrecommitCancelable(s){const p=s?.pending;if(!p||s?.responseWindow)return false;return ['warp_scroll_selection','source_selection','target_selection','scouting_target_selection','exact_two_target_selection','double_casting_target_selection','mana_spend_choice','mana_shard_payment_choice','optional_magical_surge','status_removal_choice','tribute_target','racial_target_selection','hero_ability_target_selection','legacy_cost_selection','legacy_hero_target_selection','manual_reposition'].includes(p.type);}
+function isPrecommitCancelable(s){const p=s?.pending;if(!p||s?.responseWindow||pendingOwner(p)!=='PLAYER')return false;return ['warp_scroll_selection','source_selection','target_selection','scouting_target_selection','exact_two_target_selection','double_casting_target_selection','mana_spend_choice','mana_shard_payment_choice','optional_magical_surge','status_removal_choice','tribute_target','racial_target_selection','hero_ability_target_selection','legacy_cost_selection','legacy_hero_target_selection','manual_reposition'].includes(p.type);}
 function pendingOwner(p){return p&&(p.decision_side||p.response_owner||p.side||p.source_side||(p.type==='hand_limit_discard'?'PLAYER':null));}
 function isDirectHandCardSearch(p){return !!(p&&p.type==='card_search_choice'&&p.zone==='hand'&&['source_exp','discard_then_draw_three'].includes(p.resolve_to));}
 function selectedChoiceIndex(p){if(p?.selected_index==null)return null;const n=Number(p.selected_index);return Number.isInteger(n)&&n>=0?n:null;}
@@ -1979,6 +1979,25 @@ function playPvpManaVisualFlight(selectedUids,target){
     setTimeout(finish,1000);
   });
 }
+function playPvpBlindManaFlight(selectedKeys,target){
+  const targetRect=uiRect(target?.querySelector?.('.zoneCard')||target);
+  if(!targetRect?.width)return;
+  centerChoiceStage.querySelectorAll('.gl-center-choice-card').forEach(card=>{
+    if(!selectedKeys.has(String(card.dataset.choiceKey||'')))return;
+    const from=uiRect(card);if(!from?.width)return;
+    const img=document.createElement('img');
+    img.src='assets/ui/back-shard.webp';img.alt='';img.setAttribute('aria-hidden','true');
+    img.style.cssText='position:fixed;z-index:2147483500;pointer-events:none;object-fit:contain;will-change:transform,opacity;';
+    Object.assign(img.style,{left:from.left+'px',top:from.top+'px',width:from.width+'px',height:from.height+'px'});
+    document.body.appendChild(img);
+    const dx=targetRect.left+targetRect.width/2-(from.left+from.width/2);
+    const dy=targetRect.top+targetRect.height/2-(from.top+from.height/2);
+    const finish=()=>img.remove();
+    try{img.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx}px,${dy}px) scale(.4)`,opacity:0}],{duration:340,easing:'ease-in',fill:'forwards'}).finished.then(finish,finish)}
+    catch{setTimeout(finish,340)}
+    setTimeout(finish,1000);
+  });
+}
 function resetCenterChoiceVisualState(){
   centerChoiceBusy=false;centerChoiceStage.classList.remove('is-busy');
   const copy=centerChoiceStage.querySelector('.gl-center-choice-copy'),actions=centerChoiceStage.querySelector('.gl-center-choice-actions');
@@ -2274,7 +2293,18 @@ function renderCenterChoiceStage(s){
   }else if(mode==='opponent-shard'){
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentManaChoice',[Number(c.dataset.choiceIndex)])});
     const required=Math.min(Number(p.required_count||1),(p.candidates||[]).length),ready=(p.selected_indices||[]).length===required;
-    makeBtn('CONFIRM','gl-center-choice-primary',!ready,async()=>{if(centerChoiceBusy)return;const keys=new Set((p.selected_indices||[]).map(i=>String(p.candidates?.[Number(i)]?.uid??i)));if(await animateCenterChoiceExit(keys,selectedTarget,otherTarget,{revealSelected:true,returnSide:p.target_side||'AI'}))intent('commitOpponentManaSelection',[])});
+    makeBtn('CONFIRM','gl-center-choice-primary',!ready,()=>{
+      if(centerChoiceBusy)return;
+      // One server-side atomic transaction. In-flight/old-revision selections
+      // cannot fire a second commit while animation is playing.
+      const keys=new Set((p.selected_indices||[]).map(i=>String(p.candidates?.[Number(i)]?.uid??i)));
+      const result=intent('commitOpponentManaSelection',[]);
+      if(!result?.ok)return;
+      centerChoiceBusy=true;centerChoiceStage.classList.add('is-busy');
+      // Never reveal a blind Shard before the server confirms its identity.
+      // Clone-only flight stays face-down; the canonical pool updates on ACK.
+      playPvpBlindManaFlight(keys,selectedTarget);
+    });
   }else if(mode==='opponent-hand'){
     cardsHost.querySelectorAll('.gl-center-choice-card').forEach(c=>c.onclick=()=>{if(!centerChoiceBusy)intent('selectOpponentHandChoice',[Number(c.dataset.choiceIndex)])});
     const ready=p.selected_index!=null&&Number.isInteger(Number(p.selected_index))&&Number(p.selected_index)>=0;
@@ -3110,7 +3140,7 @@ function renderPhase(s){
   else if(pendingOwner(p)==='PLAYER'&&p?.type==='response_payment_choice'){mode='cancel-response-payment';label='CANCEL'}
   else if(responseOwned){mode='pass';label='PASS'}
   else if(pendingOwner(p)==='PLAYER'&&(p?.type==='optional_swap'||p?.type==='optional_target_swap')){mode='decline-swap';label='CANCEL'}
-  else if(isPrecommitCancelable(s)||p?.type==='manual_reposition'){mode='cancel';label='CANCEL'}
+  else if(isPrecommitCancelable(s)){mode='cancel';label='CANCEL'}
   else{
     const pairs=E().getRepositionPairs()||[];
     if(s.turn==='PLAYER'&&(s.phase==='Deploy'||s.phase==='Reform')&&!s.pending&&!s.responseWindow&&pairs.length){mode='reposition';label='REPOSITION'}

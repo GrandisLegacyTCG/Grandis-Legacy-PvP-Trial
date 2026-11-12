@@ -44,6 +44,8 @@ const EMBEDDED=(()=>{try{return window.parent!==window&&new URLSearchParams(loca
 const ACTION_NONCE=(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
 const clone=v=>v==null?v:JSON.parse(JSON.stringify(v));
 const LOCAL_MANA_ACTIONS=new Set(['toggleManaShardPaymentChoice','toggleResponseManaShardChoice','toggleManaPaymentSurgeChoice','selectResponsePaymentChoice']);
+// Blind opponent Shard selection is also a LOCAL draft: no server request per tap.
+// Physical Shard IDs never enter the browser; only revision-bound opaque handles do.
 // Batch 3: only these non-committing selection actions are handled locally.
 // The server replays each validated selection on its own RC38 engine once the
 // player presses CONFIRM; no private state is committed in the browser.
@@ -151,6 +153,39 @@ function updateLocalManaDraft(name,args){
 // Tune Up's two Note selections are a local draft. Only the final validated
 // choice goes to the authority, saving two full WebSocket RTTs and avoiding
 // rebuilding the whole battlefield after each Note tap.
+function updateLocalBlindManaDraft(args){
+  if(state.inflight||state.queue.length)return {ok:false,error:'Wait for the pending server action.'};
+  const canonical=state.snapshot?.appState?.pending;
+  const visible=bridge.getSnapshot?.()?.appState?.pending;
+  if(canonical?.type!=='opponent_mana_selection'||canonical.decision_side!=='PLAYER'||
+      visible?.type!=='opponent_mana_selection'||visible.decision_side!=='PLAYER')
+    return {ok:false,error:'Opponent Mana choice is no longer available.'};
+  const idx=Number(args?.[0]);
+  if(!Number.isInteger(idx)||idx<0||idx>=canonical.candidates?.length||
+      !canonical.candidates[idx]?.choice_handle)return {ok:false,error:'Invalid blind Shard choice.'};
+  // The engine's toggle only edits selected_indices. It never resolves or
+  // examines a physical Shard, which remains exclusively on the server.
+  const result=bridge.applyServerIntent('selectOpponentManaChoice',[idx]);
+  if(!result?.ok)return {ok:false,error:String(result?.error||'Blind Shard selection failed.')};
+  window.GL_GAME_UI?.render?.();
+  return {ok:true,local:true};
+}
+function toAtomicBlindManaChoice(name,args){
+  if(name!=='commitOpponentManaSelection')return {name,args};
+  const canonical=state.snapshot?.appState?.pending;
+  const visible=bridge.getSnapshot?.()?.appState?.pending;
+  if(canonical?.type!=='opponent_mana_selection'||canonical.decision_side!=='PLAYER'||
+      visible?.type!=='opponent_mana_selection'||visible.decision_side!=='PLAYER')
+    return {error:'Opponent Mana choice is no longer available.'};
+  const selected=(visible.selected_indices||[]).map(Number);
+  const need=Math.min(Number(canonical.required_count||1),(canonical.candidates||[]).length);
+  if(!Number.isInteger(need)||need<1||selected.length!==need||new Set(selected).size!==need)
+    return {error:'Choose exactly '+need+' face-down Mana Shard(s).'};
+  const handles=selected.map(i=>canonical.candidates?.[i]?.choice_handle);
+  if(handles.some(x=>typeof x!=='string'||!/^[a-f0-9]{32}$/.test(x)))
+    return {error:'Blind Mana selection expired. Please choose again.'};
+  return {name:'commitExactOpponentManaSelection',args:[{revision:state.revision,handles}]};
+}
 function updateLocalTuneUpDraft(args){
   if(state.inflight||state.queue.length)return {ok:false,error:'Wait for the server action to complete.'};
   const p=bridge.getSnapshot?.()?.appState?.pending;
@@ -209,7 +244,7 @@ function toAtomicLocalChoice(name,args){
   if(!d)return {name,args};
   const p=bridge.getSnapshot?.()?.appState?.pending;
   if(d.revision!==state.revision||p?.type!==d.type||p?.decision_side!=='PLAYER')
-    return {error:'Selection changed while drafting. Please resync.'};
+    return {error:'Selection changed. Please choose again.'};
   const isConfirm=d.type==='s0_bard_draw_choice'?
     (name==='commitS0BardDrawChoice'&&args?.[0]===false):name==='handleChoiceConfirm';
   if(!isConfirm)return {name,args};
@@ -243,8 +278,8 @@ function armTimeout(actionId){
   state.pendingTimeout=setTimeout(()=>{
     if(state.inflightActionId!==actionId)return; // stale timer must not release another action
     clearInFlight();state.queue.length=0;localChoiceDraft=null;
-    pvpIntentError('Server action timed out. Resyncing.');
-    send('resync');showError('Server action timed out. Resyncing.');
+    pvpIntentError('Server action timed out.');
+    send('resync');showError('Server did not respond. Trying to reconnect…');
   },9000);
 }
 function tryAction(name,args=[]){
@@ -253,6 +288,7 @@ function tryAction(name,args=[]){
  if(!state.connected)return {ok:false,error:'Connection unavailable.'};
  if(name!=='executeConfirmedSurrender'&&window.GL_GAME_UI?.openingBusy?.())return {ok:false,error:'Opening animation is still in progress.'};
  if(LOCAL_MANA_ACTIONS.has(name))return updateLocalManaDraft(name,args);
+ if(name==='selectOpponentManaChoice')return updateLocalBlindManaDraft(args);
  if(name==='selectCardSearchChoice'&&isTuneUpDecision(state.snapshot?.appState?.pending))
    return updateLocalTuneUpDraft(args);
  if(LOCAL_CHOICE_ACTIONS.has(name))return updateLocalChoiceDraft(name,args);
@@ -270,6 +306,8 @@ function tryAction(name,args=[]){
 }
 function action(name,args=[]){const r=tryAction(name,args);return r?.ok?r:reportRejectedAction(r)}
 function dispatch(name,args=[]){
+ const blind=toAtomicBlindManaChoice(name,args);if(blind.error)return {ok:false,error:blind.error};
+ name=blind.name;args=blind.args;
  const draft=toAtomicLocalChoice(name,args);if(draft.error)return {ok:false,error:draft.error};
  name=draft.name;args=draft.args;
  const tuneUp=toAtomicTuneUpChoice(name,args);if(tuneUp.error)return {ok:false,error:tuneUp.error};
@@ -314,9 +352,7 @@ function dispatch(name,args=[]){
  state.inflight=true;state.inflightActionId=id;
  state.actionTiming={id,intent:name,phase:s?.phase||'',sentAt};
  clearTimeout(slowActionTimer);
- slowActionTimer=setTimeout(()=>{
-   if(state.inflightActionId===id)actionToast('Synchronizing '+name.replace(/([A-Z])/g,' $1').toLowerCase()+' with server…',{duration:1600});
- },1300);
+ // Slow actions remain silent. The choice button is locked until ACK/rejection.
  armTimeout(id);return {ok:true,pending:true};
 }
 // RC5: exactly one outstanding action; no silent queue of old-revision choices.
@@ -413,7 +449,7 @@ function update(snap,{force=false,receivedAt=null}={}){
        window.GL_GAME_UI?.playPvPOpening?.();
      }
    }
-   catch(e){showError('Battlefield synchronization failed: '+String(e.message||e))}
+   catch(e){showError('Battlefield update failed: '+String(e.message||e))}
  }
  if(!board)updateOpponentResponseNotice(null);
  if(state.role==='spectator'){

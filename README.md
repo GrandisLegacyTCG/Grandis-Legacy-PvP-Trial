@@ -1,3 +1,9 @@
+# Grandis Legacy PvP S0 RC39 Repo RC4 — Mana/Cancel UI Hotfix (12 November 2026)
+
+Built on RC3 with the same **Network RC6 Stage 2 single WebSocket**, RC5 Mana Payment and RC39 gameplay. Fixes blind Opponent Mana selection by drafting locally and sending only one revision-bound, server-validated atomic commit. Physical Mana UIDs remain server-only. **Cancel is rendered only for the player who owns the decision**, never on the opponent's UI. Removes on-screen slow-action `Synchronizing ...` notifications (errors are still visible). Opponent Mana selection animations remain face-down until server confirmation.
+
+**Build ID:** `gl-s0-pvp-rc39-beta2-repo-rc4-2026-11-12`. **QA:** `docs/RC39_PVP_REPO_RC4_MANA_CANCEL_HOTFIX_2026-11-12.md`. As requested, only syntax and focused Mana/Cancel checks were run, **NOT the full test suite or a live two-device browser test**. No GitHub changes or deployment performed.
+
 # Grandis Legacy PvP Season 0 — RC39 Repo RC3 Gameplay UI Parity (12 November 2026)
 
 **PvP Trial candidate; not yet visually certified in a live two-device match.** Audited and synchronized the remaining relevant gameplay UI from VS AI RC39: public EXP Inspector on both Hero sides, Holy Rejuvenation centered status selection, atomic server-committed Rank Up Return EXP flights to their exact Hand slots, removal of PvP-only Tune Up `WHY?` control, and a no-heading Coin Flip overlay. All RC2 fixes (Opening 5+5, mandatory Hero Selection, post-Response Area status/damage VFX, favicon) are preserved.

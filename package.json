@@ -1,6 +1,6 @@
 {
   "name": "grandis-legacy-pvp-s0-rc39",
-  "version": "1.0.0-rc39-net-rc6-stage2-repo-rc3",
+  "version": "1.0.0-rc39-net-rc6-stage2-repo-rc4",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
     "check:syntax": "node --check server.js && node --check server/headless-rc32.mjs && node --check server/viewer-safe.mjs && node --check server/combat-presentation.mjs && node --check public/pvp/pvp-host.js && node --check public/battle/runtime/pvp-network.js && node --check public/battle/shared-app/app-runtime.js && node --check public/battle/runtime/pvp-touch-actions.js && node --check public/battle/runtime/pvp-mana-draft.js && node --check public/pvp/pvp-mobile-desktop.js && node --check public/pvp/db158-card-review.js && node --check server/ws-lite.mjs && node --check public/battle/engine/shared-app/app.bundle.js",
     "test:transition": "npm run test:ws-gate",
     "check:parity": "node tests/s1-source-parity.mjs",
-    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog && npm run test:browser-response && npm run test:postmatch && npm run test:touch-static && npm run test:quickplay-tuneup && npm run test:mana-transport && npm run test:net-rc6 && npm run test:net-rc6-live && npm run test:net-stage2-socket && npm run test:net-stage2-response && npm run test:rc36-ui-hotfix && npm run test:rc36-defense-source && npm run test:rc36-mobile-waiting && npm run test:rc38-combat-hotfix && npm run test:rc38-coin-turn && npm run test:lobby-batch1 && npm run test:start-batch2 && npm run test:warmframe-batch2 && npm run test:local-draft-batch3 && npm run test:local-draft-real-batch3 && npm run test:rc38-batch4-source && npm run test:rc39-batch5 && npm run test:rc39-latest && npm run test:rc39-rc2 && npm run test:rc39-rc3",
+    "check": "npm run check:syntax && npm run check:parity && npm run test:lobby-init && npm run check:catalog && npm run test:rc34-rules && npm run test:atomic-mana && npm run test:ws-gate && npm run test:http && npm run test:privacy && npm run test:ids && npm run test:assets && npm run test:seat2-payment && npm run test:deadlock-engine && npm run test:deadlock-ws && npm run test:ack-race && npm run test:opening-watchdog && npm run test:browser-response && npm run test:postmatch && npm run test:touch-static && npm run test:quickplay-tuneup && npm run test:mana-transport && npm run test:net-rc6 && npm run test:net-rc6-live && npm run test:net-stage2-socket && npm run test:net-stage2-response && npm run test:rc36-ui-hotfix && npm run test:rc36-defense-source && npm run test:rc36-mobile-waiting && npm run test:rc38-combat-hotfix && npm run test:rc38-coin-turn && npm run test:lobby-batch1 && npm run test:start-batch2 && npm run test:warmframe-batch2 && npm run test:local-draft-batch3 && npm run test:local-draft-real-batch3 && npm run test:rc38-batch4-source && npm run test:rc39-batch5 && npm run test:rc39-latest && npm run test:rc39-rc2 && npm run test:rc39-rc3 && npm run test:rc39-rc4",
     "test:s0-catalog": "npm run check:catalog",
     "check:catalog": "node tests/s0-catalog-static.mjs",
     "test:ws-gate": "python3 tests/ws-gate.py",
@@ -48,12 +48,13 @@
     "test:rc39-batch5": "node tests/rc39-batch5-rank-privacy.mjs && node tests/rc39-batch5-donor-parity.mjs && node tests/rc39-batch5-mana-loss.mjs",
     "test:rc39-latest": "node tests/rc39-latest-banner-qa.mjs",
     "test:rc39-rc2": "node tests/rc39-rc2-combat-ui.mjs",
-    "test:rc39-rc3": "node tests/rc39-rc3-ui-parity.mjs"
+    "test:rc39-rc3": "node tests/rc39-rc3-ui-parity.mjs",
+    "test:rc39-rc4": "node tests/rc39-rc4-blind-mana-and-cancel.mjs"
   },
   "engines": {
     "node": ">=18"
   },
-  "description": "Grandis Legacy PvP Season 0 RC39 Repo RC3: gameplay UI parity (EXP Inspector, Holy Rejuvenation, atomic Return EXP) on RC2 Combat Hotfix; preserves RC6 single-socket, RC5 Mana and Batch3 Local Draft.",
+  "description": "Grandis Legacy PvP Season 0 RC39 Repo RC4: atomic blind opponent Mana choice, owner-only Cancel, silent WebSocket waits. Maintains RC6 single socket, RC5 Mana and Batch3 Local Draft.",
   "dependencies": {
     "ws": "8.21.0"
   }
