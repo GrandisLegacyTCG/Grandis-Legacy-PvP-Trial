@@ -1,4 +1,5 @@
 import {PvpCombatPresentationLedger} from './combat-presentation.mjs';
+import {PvpDiscardPresentationLedger} from './discard-presentation.mjs';
 /**
  * Grandis Legacy PvP Season 0 — staged server-side runtime bootstrap.
  *
@@ -364,6 +365,7 @@ export class Season0HeadlessAuthority {
   #bridgeRevision = -1;
   #canonical = null;
   #combatPresentation = new PvpCombatPresentationLedger();
+  #discardPresentation = new PvpDiscardPresentationLedger();
   constructor(clientRoot) {
     if (!clientRoot || typeof clientRoot !== 'string') throw new Error('clientRoot is required.');
     const doc = headlessDocument();
@@ -415,6 +417,7 @@ export class Season0HeadlessAuthority {
   get starterIds() { return [...STARTERS]; }
   /** Public, viewer-relative visual result ledger (NO hidden game state). */
   combatPresentationForSeat(seat) { return this.#combatPresentation.forSeat(seat); }
+  discardPresentationForSeat(seat) { return this.#discardPresentation.forSeat(seat); }
   // Read-only server-side QA accessor. Not exposed by any WebSocket route.
   getCardForQA(cardId) { return clone(this.#context.GL_TUTORIAL_BRIDGE.getCard(cardId)); }
   /** Accept ONLY validated Season 0 starter IDs at this stage. Custom import comes later. */
@@ -584,6 +587,7 @@ export class Season0HeadlessAuthority {
       throw error;
     }
     this.#combatPresentation.capture(rollback.appState,this.#canonical.appState);
+    this.#discardPresentation.capture(rollback.appState,this.#canonical.appState,seat);
     return {ok: true, revision: this.#revision};
   }
   /** Season 1-style two-step Response transaction, committed once or not at all. */
@@ -631,6 +635,7 @@ export class Season0HeadlessAuthority {
       this.#canonical=next;this.#revision+=1;this.#bridgeSeat=seat;this.#bridgeRevision=this.#revision;
       this.#settleServerContinuations();
       this.#combatPresentation.capture(rollback.appState,this.#canonical.appState);
+      this.#discardPresentation.capture(rollback.appState,this.#canonical.appState,seat);
       return {ok:true,revision:this.#revision};
     } catch(error) {
       // Restore on next action. Never publish a partially applied step.

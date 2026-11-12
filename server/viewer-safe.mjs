@@ -50,6 +50,68 @@ const safeEvent = (event) => {
   if (event.type !== 'CARD_DRAWN' && ['CARD_PLAYED', 'ATTACK', 'RESPONSE', 'TRIBUTE', 'RANK_UP'].includes(event.type)) out.card_id = event.card_id;
   return out;
 };
+// PvP Part 3: Card Played is public, but the unsanitized engine audit journal is
+// not. Project only committed played cards and public combat metrics. Do NOT
+// serialize unplayed Hand/Deck identities, detailed search results or raw logs.
+const publicCardId = id => typeof id === 'string' && /^S0-[A-Z0-9]+-[A-Z0-9]+$/.test(id);
+const publicLane = lane => ['LEFT','CENTER','RIGHT'].includes(lane) ? lane : null;
+const publicSide = side => ['PLAYER','AI'].includes(side) ? side : null;
+const publicScalar = (value,max=180) => String(value??'').replace(/[\u0000-\u001f\u007f]/g,' ').slice(0,max);
+const publicNumber = n => Number.isFinite(Number(n)) ? Math.max(-10000,Math.min(100000,Number(n))) : 0;
+// These numeric metrics are public once the Attack resolves; do not publish
+// the engine's nested details, source deck inventories or unrevealed choices.
+const publicDamageSummary = src => {
+  if(!src || typeof src!=='object')return undefined;
+  const allowed=['base_damage','damage_after_modifiers','response_block','passive_reduction',
+    'active_reduction','follow_up_incoming_damage','follow_up_damage','calculated_final_damage',
+    'actual_hp_damage','overkill','target_hp_before','target_hp_after'];
+  const out={};for(const key of allowed)if(Object.hasOwn(src,key))out[key]=publicNumber(src[key]);
+  return Object.keys(out).length ? out : undefined;
+};
+const safePlayedResultLine = line => {
+  if(typeof line!=='string'||line.length>300)return false;
+  // Only combat/visible-status outcomes are safe; the rest can contain the
+  // exact identity of cards searched, viewed, returned or still in Hand/Deck.
+  if(/\b(hand|main deck|shard deck|search|reveal|look at|top card|bottom card|deck order|random card|private)\b/i.test(line)||/S0-[A-Z0-9]+-[A-Z0-9]+/i.test(line))return false;
+  return /\b(damag\w*|hp\s*:|block\w*|dodg\w*|counter\w*|negat\w*|cancel\w*|status\w*|heal\w*|poison\w*|burn\w*|bleed\w*|freez\w*|stun\w*|sleep\w*|invincib\w*|prevent\w*|resolv\w*|defeat\w*|reflect\w*)\b/i.test(line);
+};
+function safePlayedAction(event,side) {
+  if(!event||typeof event!=='object'||!publicCardId(event.card_id))return null;
+  if(!publicSide(side))return null;
+  const label=publicScalar(event.label||'ACTION',22).toUpperCase();
+  const out={
+    id:publicScalar(event.id||'',120), label:/^[A-Z ]{1,22}$/.test(label)?label:'ACTION',
+    card_id:event.card_id,
+    title:publicScalar(event.title||event.card_id,120),
+    action_line:(side==='PLAYER'?'You':'Opponent')+' played '+publicScalar(event.title||event.card_id,120)+'.',
+    source_side:side,source_lane:publicLane(event.source_lane),
+    target_side:publicSide(event.target_side),target_lane:publicLane(event.target_lane),
+    round:Math.max(1,Math.min(9999,Number(event.round)||1)),
+    phase:publicScalar(event.phase||'',25),turn:publicSide(event.turn),
+    timestamp:Math.max(0,Number(event.timestamp)||0),
+    played_event_order:Math.max(0,Number(event.played_event_order)||0),
+    resolution_state:publicScalar(event.resolution_state||'RESOLVED',20),
+    result_lines:(Array.isArray(event.result_lines)?event.result_lines:[])
+      .filter(safePlayedResultLine).slice(0,14).map(line=>publicScalar(line,300))
+  };
+  if(!out.id)out.id='pvp_safe_'+side+'_'+out.played_event_order+'_'+out.card_id;
+  if(Array.isArray(event.target_lanes))out.target_lanes=event.target_lanes.map(publicLane).filter(Boolean);
+  const damage=publicDamageSummary(event.damage_summary);
+  if(damage)out.damage_summary=damage;
+  if(typeof event.response_to_event_id==='string')out.response_to_event_id=publicScalar(event.response_to_event_id,120);
+  if(publicCardId(event.response_to_card_id))out.response_to_card_id=event.response_to_card_id;
+  if(publicSide(event.response_to_side))out.response_to_side=event.response_to_side;
+  if(typeof event.casting_action_id==='string')out.casting_action_id=publicScalar(event.casting_action_id,140);
+  if(typeof event.related_casting_start_event_id==='string')out.related_casting_start_event_id=publicScalar(event.related_casting_start_event_id,140);
+  if(typeof event.casting_stage==='string')out.casting_stage=publicScalar(event.casting_stage,25);
+  return out;
+}
+function publicPlayedJournal(st) {
+  const raw=st.pvpActionEventsBySide||{};
+  return {PLAYER:(Array.isArray(raw.PLAYER)?raw.PLAYER:[]).map(e=>safePlayedAction(e,'PLAYER')).filter(Boolean).slice(0,120),
+    AI:(Array.isArray(raw.AI)?raw.AI:[]).map(e=>safePlayedAction(e,'AI')).filter(Boolean).slice(0,120)};
+}
+
 function ownerOf(p) { return p?.decision_side || p?.response_owner || p?.side || p?.source_side || null; }
 function guardedPending(p) {
   if (!p) return null;
@@ -133,8 +195,15 @@ export function viewerSafeBoard(raw, {revision, secret, seat} = {}) {
     hidden:false
   }));
   if (st.lastDrawnCardBySide) st.lastDrawnCardBySide.AI = HIDDEN;
-  // Private logs and ledgers may carry card IDs that never entered public play.
-  for (const key of ['lastActualDrawEvent','lastOpponentAction','drawPresentationPending','opponentPlayedEvents','pvpActionEventsBySide','pvpBattleFeedbackEvents']) delete st[key];
+  // Do not delete public played cards: that removed DEF/DODGE, broken clickable
+  // details and opponent audio/VFX from authoritative PvP projections.
+  const played=publicPlayedJournal(st);
+  for(const key of ['lastActualDrawEvent','lastOpponentAction','lastPlayerAction',
+    'drawPresentationPending','opponentPlayedEvents','playerPlayedEvents','aiPlayedEvents',
+    'pvpActionEventsBySide','pvpBattleFeedbackEvents'])delete st[key];
+  st.pvpActionEventsBySide=played;
+  st.playerPlayedEvents=played.PLAYER;
+  st.opponentPlayedEvents=played.AI;
   st.presentationEvents = (st.presentationEvents||[]).map(safeEvent).filter(Boolean).slice(-80);
   st.log = [];
   const rawPending = st.pending;
@@ -167,5 +236,9 @@ export function assertViewerSafeBoard(view) {
   if(st.pending?.private_masked && Object.keys(st.pending).some(k=>!['type','decision_side','private_masked'].includes(k)))throw new Error('Private pending leaked.');
   if(st.pending?.type==='opponent_mana_selection'&&st.pending.candidates?.some(c=>!c.choice_handle||c.uid!==c.choice_handle||c.kind||c.class_name))throw new Error('Opponent Shard choice leaked.');
   if(st.pending?.type==='opponent_hand_choice'&&!st.pending.reveal_cards&&st.pending.candidates?.some(c=>c.card_id!==HIDDEN))throw new Error('Opponent Hand blind choice leaked.');
+  for(const side of ['PLAYER','AI'])for(const e of st.pvpActionEventsBySide?.[side]||[]){
+    if(!publicCardId(e.card_id)||e.source_side!==side||Object.hasOwn(e,'privateHand')||Object.hasOwn(e,'privateDeck'))
+      throw new Error('Card Played journal contains private data.');
+  }
   return true;
 }

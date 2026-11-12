@@ -103,6 +103,8 @@ function actionToast(message,{error=false,duration=3200}={}){
 }
 function reportRejectedAction(r){
   const message=String(r?.error||'Action rejected.');
+  // Transient in-flight waits are network flow control, not player-facing errors.
+  if(r?.busy||/waiting for (?:the )?(?:server|previous server|pending server)|wait for (?:the )?(?:server|pending server)/i.test(message))return r;
   pvpIntentError(message);actionToast(message,{error:true,duration:4200});
   return r;
 }
@@ -167,7 +169,8 @@ function updateLocalBlindManaDraft(args){
   // examines a physical Shard, which remains exclusively on the server.
   const result=bridge.applyServerIntent('selectOpponentManaChoice',[idx]);
   if(!result?.ok)return {ok:false,error:String(result?.error||'Blind Shard selection failed.')};
-  window.GL_GAME_UI?.render?.();
+  // RC5 parity: the server-owned Shards and battlefield stay mounted.
+  window.GL_GAME_UI?.renderBlindManaDraft?.();
   return {ok:true,local:true};
 }
 function toAtomicBlindManaChoice(name,args){

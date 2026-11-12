@@ -24,9 +24,9 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC4';
-const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc4-2026-11-12';
-const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC4 · Network RC6 Stage 2`;
+const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC6-P3';
+const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc6-p3-2026-11-13';
+const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC6 P3 · Network RC6 Stage 2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 // Parse the immutable RC39 engine BEFORE the server accepts players. This
 // removes script reads + JS compilation from the synchronous START MATCH path.
@@ -176,7 +176,8 @@ class Season0BattleAuthority {
     // Committed public battle events survive skipped intermediate Response
     // snapshots, including either player seat and reconnect. No private data.
     safe.appState.presentationEvents=[...(safe.appState.presentationEvents||[]),
-      ...this.engine.combatPresentationForSeat(seat)].slice(-100);
+      ...this.engine.combatPresentationForSeat(seat),
+      ...this.engine.discardPresentationForSeat(seat)].slice(-120);
     assertViewerSafeBoard(safe);cache.set(seat,safe);return safe;
   }
   viewForSpectator(){
@@ -190,7 +191,7 @@ class Season0BattleAuthority {
     if(st.lastDrawnCardBySide){st.lastDrawnCardBySide.PLAYER='__HIDDEN_CARD_BACK__';st.lastDrawnCardBySide.AI='__HIDDEN_CARD_BACK__';}
     // Presentation metadata must not reveal an unrevealed Draw to spectators.
     st.presentationEvents=(st.presentationEvents||[])
-      .filter(ev=>ev?.type!=='MANA_LOSS_COMMITTED')
+      .filter(ev=>ev?.type!=='MANA_LOSS_COMMITTED'&&ev?.type!=='PVP_OPPONENT_DISCARD')
       .map(ev=>ev&&ev.type==='CARD_DRAWN'?{...ev,card_id:'__HIDDEN_CARD_BACK__'}:ev);
 
     st.responseWindow=st.responseWindow?{kind:st.responseWindow.kind,private_masked:true}:null;

@@ -56,7 +56,36 @@ export class PvpCombatPresentationLedger {
   capture(before,after) {
     if (!before || !after) return;
     const context=publicAttackState(after)||publicAttackState(before);
-    if (!this.#active && !context) return;
+    if (!this.#active && !context) {
+      // An unrespondable or immediately resolved Attack can be fully committed
+      // by a single intent. Previously no VFX/damage display was ever emitted.
+      if(after.pending||after.responseWindow)return;
+      const oldIds=new Set(['PLAYER','AI'].flatMap(side=>(before.pvpActionEventsBySide?.[side]||[]).map(e=>e.id)));
+      const direct=['PLAYER','AI'].flatMap(side=>(after.pvpActionEventsBySide?.[side]||[])
+        .filter(e=>e?.label==='ATK'&&e.card_id&&!oldIds.has(e.id)).map(e=>({...e,actor_side:side})))
+        .sort((a,b)=>Number(a.played_event_order||0)-Number(b.played_event_order||0));
+      for(const evt of direct){
+        const side=evt.actor_side,targetSide=evt.target_side==='AI'||evt.target_side==='PLAYER'?
+          evt.target_side:opposite(side);
+        const chosen=[...(evt.target_lanes||[]),evt.target_lane].filter(saneLane);
+        const targets=[];
+        for(const lane of LANES){
+          const old=publicHero(before,targetSide,lane),now=publicHero(after,targetSide,lane);
+          if(!old||!now)continue;
+          const gained=[];
+          for(const [name,n] of now.statuses)if(n>(old.statuses.get(name)||0))gained.push(name);
+          const damage=Math.max(0,old.hp-now.hp);
+          if(damage>0||gained.length||chosen.includes(lane))targets.push({side:targetSide,lane,damage,statuses:gained});
+        }
+        if(!targets.length)continue;
+        this.#events.push({id:'PVP-COMBAT-'+(++this.#serial),type:'PVP_COMBAT_RESOLVED',
+          card_id:evt.card_id,source_side:side,source_lane:saneLane(evt.source_lane)||'CENTER',
+          target_side:targetSide,target_lane:saneLane(evt.target_lane),
+          attack_type:'Attack',damage_type:'Physical',targets});
+        if(this.#events.length>36)this.#events.shift();
+      }
+      return;
+    }
     if (!this.#active && context) {
       this.#active={
         key:attackKey(context,after),card_id:String(context.card_id||'').slice(0,60),

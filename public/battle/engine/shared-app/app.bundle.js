@@ -8131,7 +8131,10 @@
     }
     if(p.continuation){
       var cont=p.continuation; state.pending=cont.resume_pending||null; closeChoice();
-      return resolvePostAttackChoices(state,cont.action||{},cont.post||{},cont.result||{},cont.options||{});
+      // RC5 parity: a false return from resolvePostAttackChoices means no more
+      // continuation is pending, NOT that the paid Mana choice was illegal.
+      resolvePostAttackChoices(state,cont.action||{},cont.post||{},cont.result||{},cont.options||{});
+      return true;
     }
     state.pending=null; closeChoice(); syncCounts(state); render();
     if(p.s0_provoke_end_phase&&!state.s0_provoke_resolving_end&&state.phase==='End'&&state===appState){

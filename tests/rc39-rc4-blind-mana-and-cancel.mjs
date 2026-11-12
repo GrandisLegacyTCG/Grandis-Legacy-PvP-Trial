@@ -9,6 +9,7 @@ const marker='  /** A verified seat may concede without turn/response ownership.
 assert.ok(src.includes(marker));
 const inject=src.replace("import {PvpCombatPresentationLedger} from './combat-presentation.mjs';",
   `import {PvpCombatPresentationLedger} from '${pathToFileURL(resolve('server/combat-presentation.mjs')).href}';`)
+  .replace("import {PvpDiscardPresentationLedger} from './discard-presentation.mjs';",`import {PvpDiscardPresentationLedger} from '${pathToFileURL(resolve('server/discard-presentation.mjs')).href}';`)
   .replace(marker,`  injectFixtureForQA(snapshot) {this.#canonical=clone(snapshot);this.#bridgeSeat=null;this.#bridgeRevision=-1;}\n${marker}`);
 const {Season0HeadlessAuthority}=await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(inject));
 let cases=0;
