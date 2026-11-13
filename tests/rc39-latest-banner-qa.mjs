@@ -14,7 +14,10 @@ const last=runtime.indexOf('function buildPresentationPlan(s){',first);
 assert.ok(first>0&&last>first);
 const messages=[];
 const context={window:{GL_APP_MODE:'PVP'},Number,String,Map,Array,Math,
-  queuePresentationNotice(...args){messages.push(args)}};
+  queuePresentationNotice(...args){messages.push(args)},pvpNoticeMs:base=>base+1000,
+  // The latest notification resolves a potential Mana Steal gain from the
+  // already-projected action ledger. The legacy VM test needs that dependency.
+  st:()=>({pvpActionEventsBySide:{PLAYER:[],AI:[]}})};
 vm.createContext(context);vm.runInContext(runtime.slice(first,last),context);
 const evt={type:'MANA_LOSS_COMMITTED',side:'PLAYER',source_side:'AI',
  effect_name:'Mana Burn',removed_count:3,
@@ -24,7 +27,7 @@ assert.equal(messages.length,1);
 assert.equal(messages[0][0],'mana');
 assert.equal(messages[0][1],'Opponent used Mana Burn.');
 assert.match(messages[0][2],/1 Blue Mana Shard and 2 Regular Mana Shards/);
-assert.equal(messages[0][3],2000);
+assert.equal(messages[0][3],3000);
 context.presentPvpManaLossNotice({...evt,side:'AI'});
 context.presentPvpManaLossNotice({...evt,type:'MANA_LOSS_PREVIEW'});
 context.presentPvpManaLossNotice({...evt,removed_count:0});
@@ -40,6 +43,6 @@ assert.equal(buildInfo.rc39_delta.mana_loss_notice_changed,true);
 assert.equal(buildInfo.rc39_delta.pvp_donor_adapter_changed_in_aura_hotfix,false);
 const host=read('public/pvp/pvp-host.js');
 assert.match(host,/BATTLE_CHANNEL='gl-pvp-battle-transport-v1'/);
-assert.match(read('server.js'),/S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC3/);
-assert.match(read('server.js'),/filter\(ev=>ev\?\.type!=='MANA_LOSS_COMMITTED'\)/,'Spectator receives no per-player Mana loss banner');
+assert.match(read('server.js'),/S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC\d+/);
+assert.match(read('server.js'),/ev\?\.type!=='MANA_LOSS_COMMITTED'&&ev\?\.type!=='PVP_OPPONENT_DISCARD'/,'Spectator receives no per-player Mana or Discard notices');
 console.log('PASS RC39 latest: committed English centered Mana queue, dedup/privacy, current donor provenance, RC6 transport unchanged');

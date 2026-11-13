@@ -90,8 +90,10 @@ const choiceCtx={
  laneOrder:['LEFT','CENTER','RIGHT'],
  seenPresentationEvents:new Set(),glExternallyPresentedShardUids:new Set(),
  pvpDeferredRankTransitions:[],pvpDeferredExpReturns:[],
+ seenPlayedActionEvents:new Set(),seenDiscardNotifications:new Set(),
  glHiddenCommittedDrawSlots:{PLAYER:new Map(),AI:new Map()},
- showNewCounterEvents(){},visualStateOf:s=>s,pvpAttackVisualPlan(){return null}
+ showNewCounterEvents(){},visualStateOf:s=>s,pvpAttackVisualPlan(){return null},
+ pvpProjectedPlayedEvents(){return []},pvpCommittedHealingTargets(){return []}
 };
 vm.createContext(choiceCtx);vm.runInContext(src.slice(begin,end),choiceCtx);
 const waiting=choiceCtx.buildPresentationPlan(fake([fakeRank],{type:'trial_rankup_return_exp',decision_side:'PLAYER',side:'PLAYER',lane:'LEFT'}));

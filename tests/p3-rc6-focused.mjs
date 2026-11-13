@@ -41,7 +41,7 @@ const discardLedger=new PvpDiscardPresentationLedger();
 discardLedger.capture(before,after,1);
 assert.deepEqual(discardLedger.forSeat(1),[]);
 const toOwner=discardLedger.forSeat(2);
-assert.deepEqual(toOwner.map(e=>e.origin),['HAND','MAIN_DECK','FIELD']);
+assert.deepEqual(toOwner.map(e=>e.origin),['HAND','MAIN_DECK','EXP']);
 assert.deepEqual(toOwner.map(e=>e.card_ids[0]),['S0-CLE-020','S0-MAG-027','S0-WAR-011']);
 assert.ok(toOwner.every(e=>e.side==='PLAYER'&&e.source_side==='AI'&&e.effect_card_id==='S0-EVT-003'));
 
@@ -77,7 +77,8 @@ const network=readFileSync(new URL('../public/battle/runtime/pvp-network.js',imp
 const server=readFileSync(new URL('../server.js',import.meta.url),'utf8');
 assert.match(runtime,/function presentPvpCommittedCardPlay\(/);
 assert.match(runtime,/function presentPvpOpponentDiscard\(/);
-assert.match(runtime,/function presentPvpCommittedDamage\(/);
+// RC7 intentionally removed the now-redundant damage modal.
+assert.doesNotMatch(runtime,/function presentPvpCommittedDamage\(/);
 assert.match(runtime,/function renderPvpIncomingDamage\(/);
 assert.match(runtime,/engine\/assets\/battle\/P\.Defense\.png/);
 assert.match(runtime,/function renderBlindManaDraftOnly\(/);

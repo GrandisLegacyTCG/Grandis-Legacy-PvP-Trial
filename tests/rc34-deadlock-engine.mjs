@@ -54,7 +54,10 @@ const code=readFileSync(resolve('server/headless-rc32.mjs'),'utf8');
 const marker='  /** A verified seat may concede without turn/response ownership. */';
 assert.ok(code.includes(marker));
 const testCode=code.replace("import {PvpCombatPresentationLedger} from './combat-presentation.mjs';",
-  `import {PvpCombatPresentationLedger} from '${pathToFileURL(resolve('server/combat-presentation.mjs')).href}';`).replace(marker,`  injectFixtureForQA(snapshot) {
+  `import {PvpCombatPresentationLedger} from '${pathToFileURL(resolve('server/combat-presentation.mjs')).href}';`)
+  .replace("import {PvpDiscardPresentationLedger} from './discard-presentation.mjs';",
+    `import {PvpDiscardPresentationLedger} from '${pathToFileURL(resolve('server/discard-presentation.mjs')).href}';`)
+  .replace(marker,`  injectFixtureForQA(snapshot) {
     this.#canonical=clone(snapshot);
     this.#bridgeSeat=null;
     this.#bridgeRevision=-1;

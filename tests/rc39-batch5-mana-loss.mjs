@@ -45,7 +45,9 @@ const planCtx={console,Map,Set,Array,Math,Number,String,
  laneOrder:['LEFT','CENTER','RIGHT'],seenPresentationEvents:new Set(),
  glExternallyPresentedShardUids:new Set(),pvpDeferredRankTransitions:[],pvpDeferredExpReturns:[],
  glHiddenCommittedDrawSlots:{PLAYER:new Map(),AI:new Map()},
- showNewCounterEvents(){},visualStateOf:s=>s,pvpAttackVisualPlan(){return null}};
+ seenPlayedActionEvents:new Set(),seenDiscardNotifications:new Set(),
+ showNewCounterEvents(){},visualStateOf:s=>s,pvpAttackVisualPlan(){return null},
+ pvpProjectedPlayedEvents(){return []},pvpCommittedHealingTargets(){return []}};
 vm.createContext(planCtx);vm.runInContext(ui.slice(a,b),planCtx);
 const one=planCtx.buildPresentationPlan(fake(ev));
 assert.equal(one.manaLossNotices.length,1);

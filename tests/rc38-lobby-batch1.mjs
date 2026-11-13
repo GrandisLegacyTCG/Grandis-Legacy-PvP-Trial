@@ -15,7 +15,7 @@ function element(tag){
 }
 const win={GL_CARD_DEFINITIONS:{cards:[card('S0-WAR-H001','Warrior Alpha'),card('S0-WAR-H002','Warrior Beta')]},
  document:{baseURI:'https://game.example/',createElement:element},location:{origin:'https://game.example'}};
-vm.runInNewContext(source,{window:win,URL,console});
+vm.runInNewContext(source,{window:win,URL,console,setTimeout(){return 1;}});
 const body=element('div'),review=win.GL_DB158_REVIEW;
 assert.equal(review.mount(body,'S0-WAR-H001',['S0-WAR-H001','S0-WAR-H002']),true);
 assert.equal(body.children.length,1);

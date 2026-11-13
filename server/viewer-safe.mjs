@@ -35,6 +35,8 @@ const safeEvent = (event) => {
   if(event.type==='MANA_LOSS_COMMITTED'){
     out.source_side=event.source_side==='PLAYER'?'PLAYER':'AI';
     out.effect_name=String(event.effect_name||'Ability').slice(0,100);
+    if(typeof event.effect_card_id==='string'&&/^S0-[A-Z0-9]+-[A-Z0-9]+$/.test(event.effect_card_id))out.effect_card_id=event.effect_card_id;
+    if(typeof event.effect_action_id==='string'&&/^pvp_(PLAYER|AI)_/.test(event.effect_action_id))out.effect_action_id=publicScalar(event.effect_action_id,120);
     out.removed_count=Math.max(0,Math.min(12,Math.trunc(Number(event.removed_count)||0)));
     out.shard_details=String(event.shard_details||'').slice(0,220);
     out.loss_kind=event.source_side==='PLAYER'?'ABILITY_SPEND':'OPPONENT_REMOVE';
@@ -64,7 +66,7 @@ const publicDamageSummary = src => {
   if(!src || typeof src!=='object')return undefined;
   const allowed=['base_damage','damage_after_modifiers','response_block','passive_reduction',
     'active_reduction','follow_up_incoming_damage','follow_up_damage','calculated_final_damage',
-    'actual_hp_damage','overkill','target_hp_before','target_hp_after'];
+    'actual_hp_damage','overkill','target_hp_before','target_hp_after','burn_damage'];
   const out={};for(const key of allowed)if(Object.hasOwn(src,key))out[key]=publicNumber(src[key]);
   return Object.keys(out).length ? out : undefined;
 };
@@ -94,10 +96,79 @@ function safePlayedAction(event,side) {
     result_lines:(Array.isArray(event.result_lines)?event.result_lines:[])
       .filter(safePlayedResultLine).slice(0,14).map(line=>publicScalar(line,300))
   };
+  // Hero identity and EXP gained are public once the action was played.
+  // Never include snapshots, raw detail_lines, hidden inventory or audit traces.
+  for(const key of ['source_hero_card_id','target_hero_card_id','defended_hero_card_id'])
+    if(publicCardId(event[key]))out[key]=event[key];
+  if(label==='TRIBUTE'){
+    const tributeLine=(Array.isArray(event.result_lines)?event.result_lines:[])
+      .find(line=>typeof line==='string'&&/\bgained\s+\d+\s+EXP\b/i.test(line));
+    const value=Number.isFinite(Number(event.exp_gained))?Number(event.exp_gained):
+      tributeLine?Number(/\bgained\s+(\d+)\s+EXP\b/i.exec(tributeLine)?.[1]):NaN;
+    if(Number.isFinite(value)&&value>=0&&value<=200)out.exp_gained=value;
+  }
+  if(label==='DEF'){
+    const allowed=['block','dodge','second_chance','dragon_scale','area_reduce','immunity',
+      'absolute_reflect','legacy_reduce','negate_return','reflect','step_in'];
+    const kind=String(event.response_kind||'').toLowerCase();
+    if(allowed.includes(kind))out.response_kind=kind;
+    // A named Response can be useful even if its text is not a literal BLOCK/DODGE keyword.
+    if(typeof event.defense_text==='string')out.defense_text=publicScalar(event.defense_text,140);
+  }
   if(!out.id)out.id='pvp_safe_'+side+'_'+out.played_event_order+'_'+out.card_id;
   if(Array.isArray(event.target_lanes))out.target_lanes=event.target_lanes.map(publicLane).filter(Boolean);
   const damage=publicDamageSummary(event.damage_summary);
   if(damage)out.damage_summary=damage;
+  if(label==='ATK'){
+    if(/^(physical|magical)$/i.test(String(event.damage_type||'')))out.damage_type=String(event.damage_type);
+    if(typeof event.attack_type==='string')out.attack_type=publicScalar(event.attack_type,40);
+  }
+  // Each target/hit has a public resolved HP delta. Arrow Barrage/Area
+  // Attacks cannot be summarized accurately using the last hit alone.
+  if(label==='ATK'&&Array.isArray(event.damage_breakdown_by_hero)){
+    out.damage_by_hero=event.damage_breakdown_by_hero.slice(0,36).map(x=>({
+      name:publicScalar(x?.name||'Target Hero',100),
+      side:publicSide(x?.side),lane:publicLane(x?.lane),
+      summary:publicDamageSummary(x?.summary)||{}
+    })).filter(x=>x.side&&x.lane);
+  }
+  if(Array.isArray(event.healing_by_hero))out.healing_by_hero=event.healing_by_hero.slice(0,16).map(x=>({
+    name:publicScalar(x?.name||'Hero',100),side:publicSide(x?.side),lane:publicLane(x?.lane),
+    healed:Math.max(0,publicNumber(x?.healed))
+  })).filter(x=>x.side&&x.lane);
+  // Explicit response-chain pointers are public: they refer to already-played
+  // cards only and let the client navigate without new server requests.
+  if(typeof event.card_played_chain_id==='string'&&event.card_played_chain_id.length<130)
+    out.card_played_chain_id=publicScalar(event.card_played_chain_id,130);
+  if(Number.isInteger(event.card_played_chain_step)&&event.card_played_chain_step>=0&&event.card_played_chain_step<=64)
+    out.card_played_chain_step=event.card_played_chain_step;
+  if(event.mana_result&&typeof event.mana_result==='object'){
+    const mode=event.mana_result.mode;
+    if(mode==='BURN'||mode==='STEAL')out.mana_result={mode,
+      removed_count:Math.max(0,Math.min(12,Math.trunc(Number(event.mana_result.removed_count)||0))),
+      gained_count:Math.max(0,Math.min(12,Math.trunc(Number(event.mana_result.gained_count)||0)))};
+  }
+  // Result-only card movement. A card brought from Main Deck into Hand
+  // remains private to both players: its identity is never serialized here.
+  if(Array.isArray(event.card_movements))out.card_movements=event.card_movements.slice(0,20).map(move=>{
+    const from=String(move?.from||''),to=String(move?.to||'');
+    if(!['Hand','Main Deck','Discard','Field','EXP'].includes(from)||
+       !['Hand','Main Deck','Discard','Field','EXP'].includes(to))return null;
+    const disclose=from==='Discard'||from==='Field'||from==='EXP'||
+      (from==='Hand'&&to==='Discard'&&side==='PLAYER');
+    const ids=disclose?(Array.isArray(move.card_ids)?move.card_ids:[]).filter(publicCardId).slice(0,20):[];
+    return {from,to,count:ids.length||Math.max(0,Math.min(40,Math.trunc(Number(move.count)||0))),
+      card_ids:ids,known:disclose&&ids.length>0};
+  }).filter(Boolean);
+  // Attack aftermath is a public HP/status transition, not a private hand
+  // inspection or an internal action trace.
+  if(label==='ATK'&&Array.isArray(event.status_breakdown_by_hero))
+    out.status_by_hero=event.status_breakdown_by_hero.slice(0,20).map(x=>({
+      name:publicScalar(x?.name||'Hero',100),side:publicSide(x?.side),lane:publicLane(x?.lane),
+      status:publicScalar(x?.status||x?.status_name||'',25),
+      before:Math.max(0,Math.min(6,Math.trunc(Number(x?.before??x?.previous_duration)||0))),
+      after:Math.max(0,Math.min(6,Math.trunc(Number(x?.after??x?.final_duration)||0)))
+    })).filter(x=>x.side&&x.lane&&/^(Poison|Burn|Bleed|Freeze|Stun|Sleep)$/i.test(x.status));
   if(typeof event.response_to_event_id==='string')out.response_to_event_id=publicScalar(event.response_to_event_id,120);
   if(publicCardId(event.response_to_card_id))out.response_to_card_id=event.response_to_card_id;
   if(publicSide(event.response_to_side))out.response_to_side=event.response_to_side;
@@ -119,6 +190,32 @@ function guardedPending(p) {
   if (ownerOf(p) === 'PLAYER') return p;
   return {type: p.type, decision_side: ownerOf(p) || 'UNKNOWN', private_masked: true};
 }
+// Variable Attack formula operands are public once the Attack commits.
+// Copy only finite numeric values from the server's accepted action. Never
+// forward private action objects, target choices or Mana/Deck inventories.
+const variableDamageSpec={
+  'S0-ARC-010':['mana_cards_spent','Mana Shards',90],
+  'S0-MAG-027':['casting_time_at_release','Casting Time',0],
+  'S0-ARC-030':['s0_condition_return_count','Zol Returned',0],
+  'S0-ARC-025':['draw_count_at_attack','Cards Drawn',140],
+  'S0-MAG-025':['mana_regen_at_attack','Mana Regen',0]
+};
+function publicAttackFormula(r) {
+  const spec=variableDamageSpec[r?.card_id],a=r?.action;
+  if(!spec||!a||typeof a!=='object')return null;
+  const count=Math.max(0,Math.min(200,Math.trunc(Number(a[spec[0]])||0)));
+  // printed_damage is intentionally null on nonprinted formulas; parse only
+  // a NUMBER already recorded in the engine's computed public formula log.
+  const matched=/\bprinted\s+(\d+)\s*[×x*]/i.exec(String(a.damage_formula_log||''));
+  let rawBase=matched?Number(matched[1]):Number(r?.post?.printed_damage);
+  // Runeforged release.post.printed_damage is itself Casting Time x print.
+  // Reverse that multiplication for a truthful one-unit formula.
+  if(r.card_id==='S0-MAG-027'&&count>0&&Number.isFinite(rawBase))rawBase/=count;
+  const unit=Number.isFinite(rawBase)&&rawBase>0?Math.min(10000,rawBase):0;
+  if(!unit||!count)return null;
+  const base=spec[2]?Math.min(spec[2],unit*count):unit*count;
+  return {unit_damage:unit,count,unit_label:spec[1],scaled_damage:base};
+}
 // Only declared, public Attack geometry may cross a masked nested Response.
 // In particular never forward the opponent's options, hand, cost or tokens.
 function publicIncomingAttack(r,depth=0) {
@@ -127,23 +224,31 @@ function publicIncomingAttack(r,depth=0) {
     publicIncomingAttack(r.response_continuation,depth+1);
   const out={kind:'incoming_attack'};
   for(const k of ['source_side','source_lane','target_side','target_lane','card_id',
-    'damage','damage_type','attack_type','cannot_block','cannot_dodge'])
+    'damage','base_damage','damage_type','attack_type','cannot_block','cannot_dodge'])
     if(Object.hasOwn(r,k))out[k]=r[k];
   const lanes=Array.isArray(r.multi_sequence?.affected_lanes)?r.multi_sequence.affected_lanes:
     Array.isArray(r.affected_lanes)?r.affected_lanes:[];
   out.affected_lanes=lanes.filter(l=>['LEFT','CENTER','RIGHT'].includes(l));
+  const publicFormula=publicAttackFormula(r);if(publicFormula)out.damage_formula=publicFormula;
+  if(r?.post?.printed_damage!=null&&Number.isFinite(Number(r.post.printed_damage)))out.base_damage=publicNumber(r.post.printed_damage);
+  else if(Number.isFinite(Number(r?.base_damage)))out.base_damage=publicNumber(r.base_damage);
   return out;
 }
 function safeResponse(r) {
   if(!r)return null;
-  if(r.response_owner==='PLAYER')return r;
+  if(r.response_owner==='PLAYER'){
+    const owned=clone(r),attack=publicIncomingAttack(r);
+    if(attack?.damage_formula)owned.damage_formula=attack.damage_formula;
+    if(attack&&Object.hasOwn(attack,'base_damage'))owned.base_damage=attack.base_damage;
+    return owned;
+  }
   const out={};
   for(const k of ['kind','response_owner','target_side','target_lane','source_side',
     'source_lane','card_id','damage','damage_type','attack_type','cannot_block','cannot_dodge'])
     if(Object.hasOwn(r,k))out[k]=r[k];
   if(r.kind==='incoming_attack'){
     const publicAttack=publicIncomingAttack(r);
-    if(publicAttack)out.affected_lanes=publicAttack.affected_lanes;
+    if(publicAttack){out.affected_lanes=publicAttack.affected_lanes;if(Object.hasOwn(publicAttack,'base_damage'))out.base_damage=publicAttack.base_damage;if(publicAttack.damage_formula)out.damage_formula=publicAttack.damage_formula;}
   }else{
     const publicAttack=publicIncomingAttack(r.original_attack_context)||
       publicIncomingAttack(r.response_continuation);

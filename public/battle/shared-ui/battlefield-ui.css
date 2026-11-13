@@ -2101,3 +2101,68 @@ body.gl-center-purify .gl-center-choice-card.is-selected{border-color:#fce383;bo
 .gl-counter-banner.is-damage{border-color:#c95151;background:rgba(36,16,17,.98)}
 .gl-counter-banner.is-damage strong{color:#ffbbb1}
 .gl-counter-banner small{overflow-wrap:anywhere;max-width:100%}
+
+/* RC7: one predictable battlefield-center disclosure. Only the pending
+   Attack name and its calculated (optionally modified) damage are rendered.
+   Never anchor this notice to a moving Hero/card element. */
+.battlefield #glPvpIncomingDamage{
+  position:absolute!important;left:50%!important;top:clamp(48px,8%,75px)!important;
+  right:auto!important;bottom:auto!important;
+  transform:translateX(-50%)!important;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  box-sizing:border-box;width:max-content;min-width:min(225px,85%);
+  max-width:85%;padding:9px 16px;pointer-events:none;
+}
+.battlefield #glPvpIncomingDamage .gl-conditional-attack-name{
+  white-space:normal;overflow-wrap:anywhere;font-size:14px;
+}
+.battlefield #glPvpIncomingDamage .gl-conditional-attack-summary{
+  white-space:normal;overflow-wrap:anywhere;font-size:12px;
+}
+/* The thumbnail's only badge identifies its actor; the Result belongs in
+   the clickable Card Played Detail instead of a RESOLVED/AI diagnostic label. */
+.gl-played-result-badge.gl-played-owner-badge{
+  left:3px;right:3px;bottom:3px;top:auto;
+  display:block;box-sizing:border-box;text-align:center;
+  padding:3px 3px;border-radius:4px;letter-spacing:.035em;
+  font:900 8px/1.2 Noto,Arial,sans-serif;
+  border:1px solid transparent;text-shadow:0 1px 2px rgba(0,0,0,.6);
+}
+.gl-played-result-badge.gl-played-owner-badge.is-you{
+  background:rgba(14,72,132,.97);color:#e3f4ff;border-color:#67b8ff;
+}
+.gl-played-result-badge.gl-played-owner-badge.is-opponent{
+  background:rgba(128,30,40,.97);color:#ffede9;border-color:#ff8f90;
+}
+/* Semantic PvP Card Played Detail; intentionally no runtime status section. */
+.gl-played-gameplay-copy{display:flex;flex-direction:column;gap:8px;min-width:0}
+.gl-played-gameplay-copy>h3{margin:0 0 4px;color:#ffe29c;line-height:1.25;overflow-wrap:anywhere}
+.gl-played-gameplay-row{display:grid;grid-template-columns:minmax(104px,34%) minmax(0,1fr);gap:10px;
+  padding:8px 0;border-bottom:1px solid rgba(152,173,194,.19);font-size:12px;line-height:1.5}
+.gl-played-gameplay-row>strong{color:#a5bfd4;font-weight:850;overflow-wrap:anywhere}
+.gl-played-gameplay-row>p{margin:0;color:#f2f4f7;overflow-wrap:anywhere}
+/* Old overlay numbers have no place in RC7's sound/VFX-first presentation. */
+.gl-pvp-impact-number{display:none!important}
+
+/* RC8: compact, recipient-safe Discard tiles and navigable response chain. */
+.played-card.gl-played-discarded-tile{position:relative}
+.gl-played-discarded-tag{position:absolute;top:2px;left:3px;right:3px;z-index:4;
+  display:block;text-align:center;letter-spacing:.04em;font:900 8px/1.3 Noto,Arial,sans-serif;
+  color:#fff4d2;background:rgba(98,48,17,.95);border:1px solid #edb967;border-radius:3px;
+  padding:2px 0;pointer-events:none}
+.gl-played-related{margin-top:12px;padding-top:12px;border-top:1px solid rgba(152,173,194,.24)}
+.gl-played-related h4{color:#e7c878;font-size:12px;margin:0 0 9px}
+.gl-played-related-list{display:flex;flex-wrap:wrap;gap:9px}
+.gl-played-related-card{display:flex;flex-direction:column;align-items:center;gap:3px;
+  width:74px;padding:5px;background:#0b2234;border:1px solid #536f83;border-radius:7px;
+  cursor:pointer;color:#e4f0f7}
+.gl-played-related-card img{width:62px;height:86px;object-fit:cover;border-radius:4px}
+.gl-played-related-card span{font:800 9px/1.3 Noto,Arial,sans-serif}
+.gl-played-related-card:focus-visible{outline:2px solid #efc564;outline-offset:2px}
+/* Hold back the iframe artwork until its CSS/fonts/art are ready; reuse it. */
+.gl-card-review-body{position:relative}
+.gl-card-review-body.gl-review-loading .gl-db158-review-frame{opacity:0!important;pointer-events:none!important}
+.gl-card-review-body.gl-review-loading::after{content:'Loading card review…';position:absolute;left:50%;top:45%;
+ transform:translate(-50%,-50%);padding:12px 20px;border-radius:8px;
+ background:#0a1927;color:#e7d090;border:1px solid #ad903d;font:800 14px Noto,Arial,sans-serif}
+.gl-card-review-body:not(.gl-review-loading) .gl-db158-review-frame{opacity:1!important}

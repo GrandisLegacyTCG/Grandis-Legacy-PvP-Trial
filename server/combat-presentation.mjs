@@ -39,6 +39,15 @@ function statuses(hero) {
   }
   return known;
 }
+function statusDeltas(oldHero,newHero){
+  if(!oldHero||!newHero)return [];
+  const result=[];
+  for(const [status,after] of newHero.statuses){
+    const before=oldHero.statuses.get(status)||0;
+    if(after>before)result.push({status,before,after});
+  }
+  return result;
+}
 function publicHero(s,side,lane) {
   const h=s?.[side==='PLAYER'?'playerHeroes':'aiHeroes']?.[lane];
   return h ? {hp:Math.max(0,Number(h.hp)||0),statuses:statuses(h)} : null;
@@ -72,16 +81,17 @@ export class PvpCombatPresentationLedger {
         for(const lane of LANES){
           const old=publicHero(before,targetSide,lane),now=publicHero(after,targetSide,lane);
           if(!old||!now)continue;
-          const gained=[];
-          for(const [name,n] of now.statuses)if(n>(old.statuses.get(name)||0))gained.push(name);
+          const delta=statusDeltas(old,now),gained=delta.map(x=>x.status);
           const damage=Math.max(0,old.hp-now.hp);
-          if(damage>0||gained.length||chosen.includes(lane))targets.push({side:targetSide,lane,damage,statuses:gained});
+          if(damage>0||gained.length||chosen.includes(lane))targets.push({side:targetSide,lane,damage,statuses:gained,status_changes:delta,
+            target_hero_card_id:before?.[targetSide==='PLAYER'?'playerHeroes':'aiHeroes']?.[lane]?.card_id||null});
         }
         if(!targets.length)continue;
         this.#events.push({id:'PVP-COMBAT-'+(++this.#serial),type:'PVP_COMBAT_RESOLVED',
-          card_id:evt.card_id,source_side:side,source_lane:saneLane(evt.source_lane)||'CENTER',
+          card_id:evt.card_id,attack_event_id:evt.id,source_side:side,source_lane:saneLane(evt.source_lane)||'CENTER',
           target_side:targetSide,target_lane:saneLane(evt.target_lane),
-          attack_type:'Attack',damage_type:'Physical',targets});
+          attack_type:String(evt.attack_type||'Attack').slice(0,55),
+          damage_type:/magical/i.test(String(evt.damage_type||''))?'Magical':'Physical',targets});
         if(this.#events.length>36)this.#events.shift();
       }
       return;
@@ -89,6 +99,7 @@ export class PvpCombatPresentationLedger {
     if (!this.#active && context) {
       this.#active={
         key:attackKey(context,after),card_id:String(context.card_id||'').slice(0,60),
+        attack_event_id:context.action?.pvp_event_id||null,
         source_side:saneSide(context.source_side),source_lane:saneLane(context.source_lane)||'CENTER',
         target_side:saneSide(context.target_side),target_lane:saneLane(context.target_lane),
         attack_type:String(context.attack_type||'').slice(0,55),
@@ -116,9 +127,9 @@ export class PvpCombatPresentationLedger {
     for(const lane of a.lanes) {
       const old=a.baseline[lane],now=publicHero(after,a.target_side,lane);
       if(!old||!now)continue;
-      const gains=[];
-      for(const [name,n] of now.statuses)if(n>(old.statuses.get(name)||0))gains.push(name);
-      targets.push({side:a.target_side,lane,damage:Math.max(0,old.hp-now.hp),statuses:gains});
+      const delta=statusDeltas(old,now),gains=delta.map(x=>x.status);
+      targets.push({side:a.target_side,lane,damage:Math.max(0,old.hp-now.hp),statuses:gains,
+        status_changes:delta,target_hero_card_id:before?.[a.target_side==='PLAYER'?'playerHeroes':'aiHeroes']?.[lane]?.card_id||null});
     }
     if (!targets.length || !a.card_id) return;
     const fullyNegated=(after.presentationEvents||[]).some(e=>
@@ -126,7 +137,7 @@ export class PvpCombatPresentationLedger {
       !a.negationIds.has(String(e.id||'')));
     if(fullyNegated && targets.every(t=>t.damage===0&&!t.statuses.length))return;
     const event={id:'PVP-COMBAT-'+(++this.#serial),type:'PVP_COMBAT_RESOLVED',
-      card_id:a.card_id,source_side:a.source_side,source_lane:a.source_lane,
+      card_id:a.card_id,attack_event_id:a.attack_event_id||null,source_side:a.source_side,source_lane:a.source_lane,
       target_side:a.target_side,target_lane:a.target_lane,attack_type:a.attack_type,
       damage_type:a.damage_type,targets};
     this.#events.push(event);
@@ -138,7 +149,8 @@ export class PvpCombatPresentationLedger {
       ...e,
       source_side:seat===2?opposite(e.source_side):e.source_side,
       target_side:seat===2?opposite(e.target_side):e.target_side,
-      targets:e.targets.map(t=>({...t,side:seat===2?opposite(t.side):t.side,statuses:[...t.statuses]}))
+      targets:e.targets.map(t=>({...t,side:seat===2?opposite(t.side):t.side,statuses:[...t.statuses],
+        status_changes:(t.status_changes||[]).map(x=>({...x}))}))
     }));
   }
 }

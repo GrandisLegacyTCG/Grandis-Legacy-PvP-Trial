@@ -7,7 +7,7 @@ const src=readFileSync(new URL('../public/battle/shared-app/app-runtime.js',impo
 const start=src.indexOf('/* RC36.8 Hotfix3 retained in RC38:');
 const end=src.indexOf('function buildPresentationPlan(s){',start);
 assert.ok(start>0&&end>start);
-const c={window:{GL_APP_MODE:'PVP'},console,Set,Map,Math,Number,String,Array,presentationPrimed:true};
+const c={window:{GL_APP_MODE:'PVP'},console,Set,Map,Math,Number,String,Array,presentationPrimed:true,E(){return null;}};
 c.findActiveAttackWindow=s=>s.responseWindow?.kind==='incoming_attack'?s.responseWindow:
    s.responseWindow?.original_attack_context?.kind==='incoming_attack'?s.responseWindow.original_attack_context:
    s.pending?.incoming_response_window||null;

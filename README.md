@@ -1,10 +1,17 @@
-# Grandis Legacy PvP S0 RC39 — Repo RC6 P3 (13 November 2026)
+# Grandis Legacy PvP S0 RC39 — Repo RC9 Stage 2 (13 November 2026)
 
-**Build:** `gl-s0-pvp-rc39-beta2-repo-rc6-p3-2026-11-13`  
-**Networking:** RC6 Stage 2 single WebSocket (unchanged); gameplay authoritative on server.
+**Build:** `gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13`  
+**Base:** PvP RC9 Stage 1 Response Parity FULL (13 November 2026).  
+**Donor:** VS AI RC39 CardPlayed & Banners Update + Part 5 Dedup Fix (13 November 2026).
 
-This release integrates eight PvP Part 3 presentation bug reports. It restores public Card Played history from the committed server journal (including DEF/BLOCK/DODGE and reactions), adds clickable detail, restores server-confirmed opponent card-flight audio and animations, adds post-Response true HP loss and status numbers including nonprinted/variable attacks such as Arrow Barrage, fixes Item/Protection arrow routing, adds owner-only notices when the opponent moves a card from Hand/Deck/Field to Discard, removes redundant Coin Flip text and silent in-flight wait toast, and holds outcome notices one additional second vs the VS AI base.
+**Stage 1 retained:** Response rulings including Dual Arrow, whole-Attack Intercept/Smoke Screen, single target/Area subtype, status and authoritative timing.
 
-**Important baseline note:** The latest RC5 ZIP was visible in the project Library but its raw bytes were not available to the working environment. This release was built from the provided **Repo RC4 full ZIP**, with the two RC5 corrections independently reproduced from the official RC5 QA notes (final attack Mana continuation accepted; blind Mana draft no full Battlefield DOM redraw). It is NOT a byte-for-byte modification of the original RC5 archive.
+**Stage 2 now patched:** recipient-safe discard and Mana result notices, local linked Card Played and discarded history, dynamic damage formula banner, real damage/Burn/HP and Status detail, no duplicate result math, reduced re-render overhead.
 
-See `docs/RC39_PVP_REPO_RC6_P3_RELEASE_2026-11-13.md` for focused QA and testing limitations. No GitHub push and no Northflank deploy were performed.
+**Stage 3 pending:** Card Review performance, resolution-adaptive 5:7 Active Card, lobby-name TURN banner, centered Choose Legacy, final visual/live QA. Website navigation and promotion remain deferred until VS AI RC40.
+
+**Architecture:** RC6 Stage 2 single WebSocket; no extra requests, engine remains server-authoritative, local Mana draft and one atomic final commit unchanged. No GitHub/Northflank action taken. Live two-browser playtest not yet verified.
+
+Run `npm run check` for full historical suite (may take longer than focused QA limits), `npm run test:rc9-s2` for new recipient-safe Stage2 focused QA, `npm run test:rc9-s1` for Stage1 Response QA, and `npm run build:precompress` when deploying changed text assets.
+
+See `docs/RC39_PVP_REPO_RC9_S1_RESPONSE_2026-11-13.md` and `docs/RC39_PVP_REPO_RC9_S2_INFORMATION_2026-11-13.md`.

@@ -55,8 +55,8 @@ assert.match(runtime,/function updateCommittedHandSlotVisibility\(side\)/);
 assert.match(runtime,/for\(let i=0;i<5;i\+\+\)groups\.push/);
 assert.doesNotMatch(runtime,/<h2 id="glCoinTitle">Opening Coin Flip<\/h2>/);
 assert.match(runtime,/aria-label="Coin flip"/);
-assert.match(html,/app-runtime\.js\?v=gl-s0-pvp-rc39-beta2-repo-rc3-2026-11-12/);
-assert.match(server,/const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC3'/);
+assert.match(html,/app-runtime\.js\?v=gl-s0-pvp-rc39-beta2-repo-rc\d+(?:-s\d+)?-2026-11-\d{2}/);
+assert.match(server,/const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC(?:8|9-S[12])'/); // RC8 baseline or RC9 Stage 1/2
 assert.doesNotMatch(runtime,/addAction\(actions,'WHY\?'/,'No PvP-only Tune Up button absent from donor UI');
 // Public EXP card IDs are visible to either seat, but hidden opposing Hand and
 // deck identities must remain masked. The inspector uses only public hero fields.
@@ -76,18 +76,17 @@ assert.equal(view.appState.aiHand[0],'__HIDDEN_CARD_BACK__');
 assert.equal(view.appState.playerDeck[0],'__HIDDEN_CARD_BACK__');
 assert.equal(view.appState.presentationEvents[0].hand_index,1);
 assert.equal(view.appState.presentationEvents[0].card_id,'S0-ARC-002');
-// Strong invariant: core RC6 socket/RC5 local-mana/engine and combat projection
-// are bit-for-bit unchanged from the previous audited RC2 release.
+// RC8-compatible invariant: RC6 socket, RC5 local Mana Draft, and headless
+// authority are byte-identical to RC7. Viewer-safe and combat projections are
+// intentionally updated for recipient-only effects and status outcomes.
 const fingerprints={
  'public/pvp/pvp-host.js':'0f1a42a0b883b2f3c0007a1f57846d8f1ba3d2debfc25633cb5195ac07c5a118',
- 'public/battle/runtime/pvp-network.js':'1305a6bc5f04e4e38b6c3dda610dfb29434186dac141b1b31b243c8e99097e44',
+ 'public/battle/runtime/pvp-network.js':'60d10aa8d24923723225eb1fb4186e6da0369313395044e7c0769d0814c2b5ec',
  'public/battle/runtime/pvp-mana-draft.js':'0dfb813cf7c549f01f83d6c7cb46fd5192fc78d554fbd53de90e8b2b572d92b7',
- 'server/headless-rc32.mjs':'84ce182236164c4a2241085bdf5e65ec74e778360a040b015dff5ac40b798586',
- 'server/viewer-safe.mjs':'82e28a28830bd8134d06b574113f5acc3102e34c521dd7ec4e61ad663ae33fda',
- 'server/combat-presentation.mjs':'284ee8d15ab21e71a3240c9f03c399df0c296095238452c6abe0c1f08890d5f9'
+ 'server/headless-rc32.mjs':'0cfb172e5bafb30877d78c296a921c69c1fc8ed23b29a008ed19120c156c6d54'
 };
 for(const [p,expected] of Object.entries(fingerprints)){
  const got=createHash('sha256').update(readFileSync(new URL('../'+p,import.meta.url))).digest('hex');
  assert.equal(got,expected,`Authority/network source unexpectedly changed: ${p}`);
 }
-console.log('PASS RC39 RC3 UI: public EXP inspector, donor Purify chooser, atomic Rank Up Return EXP, RC2 core byte-identical, privacy & 5+5 opening');
+console.log('PASS RC39 RC3 UI: public EXP inspector, donor Purify chooser, atomic Rank Up Return EXP, RC7 network/headless byte-identical, privacy & 5+5 opening');

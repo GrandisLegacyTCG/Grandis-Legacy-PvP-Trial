@@ -130,7 +130,7 @@ function clientCase(p0,actions,confirm,expected){
  assert.equal(payload.name,'commitExactLocalChoiceDraft');
  assert.deepEqual(JSON.parse(JSON.stringify(payload.args[0])),expected);
  ctx.state.revision=8;
- assert.equal(ctx.toAtomicLocalChoice(confirm,[false]).error,'Selection changed while drafting. Please resync.');
+ assert.equal(ctx.toAtomicLocalChoice(confirm,[false]).error,'Selection changed. Please choose again.');
 }
 clientCase({type:'trial_rankup_return_exp',decision_side:'PLAYER',side:'PLAYER',selected_indices:[],quota:2},
  [['trialSelectRankUpReturn',[0]],['trialSelectRankUpReturn',[2]]],'handleChoiceConfirm',

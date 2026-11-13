@@ -35,7 +35,7 @@ assert.match(stage,/rotate\(90deg\) scale/,'Portrait phone keeps landscape deskt
 assert.match(mobileCss,/grid-template-columns:minmax\(0,1fr\) 340px!important/,'Two column desktop lobby on handset');
 assert.match(mobileCss,/grid-template-areas:none!important/,'Do not apply stacked mobile deck picker');
 assert.match(wsCompat,/else if\(len===127\)/,'RFC6455 16-bit frame 127 byte regression');
-const context={URL,window:{document:{baseURI:'https://example.test/'}}};
+const context={URL,setTimeout(){return 1;},window:{document:{baseURI:'https://example.test/'}}};
 vm.runInNewContext(str('public/pvp/s0-lobby-review-catalog.js'),context);
 vm.runInNewContext(reviewer,context);
 const cards=context.window.GL_CARD_DEFINITIONS.cards;

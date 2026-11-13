@@ -19,14 +19,15 @@ import {readFileSync} from 'node:fs';
 import { Season0HeadlessAuthority, primeSeason0Runtime } from './server/headless-rc32.mjs';
 import { season0StarterCatalog } from './server/s0-pregame-catalog.mjs';
 import { viewerSafeBoard, assertViewerSafeBoard, makeBlindChoices } from './server/viewer-safe.mjs';
+import {annotatePlayerHistoryEffects,stripPrivateHistoryEffectsForSpectator} from './server/pvp-history-effects.mjs';
 
 const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC6-P3';
-const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc6-p3-2026-11-13';
-const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC6 P3 · Network RC6 Stage 2`;
+const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC9-S2';
+const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13';
+const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC9 Stage 2 · Network RC6 Stage 2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 // Parse the immutable RC39 engine BEFORE the server accepts players. This
 // removes script reads + JS compilation from the synchronous START MATCH path.
@@ -177,12 +178,14 @@ class Season0BattleAuthority {
     // snapshots, including either player seat and reconnect. No private data.
     safe.appState.presentationEvents=[...(safe.appState.presentationEvents||[]),
       ...this.engine.combatPresentationForSeat(seat),
-      ...this.engine.discardPresentationForSeat(seat)].slice(-120);
+      ...this.engine.discardPresentationForSeat(seat)].slice(-160);
+    annotatePlayerHistoryEffects(safe);
     assertViewerSafeBoard(safe);cache.set(seat,safe);return safe;
   }
   viewForSpectator(){
     const cache=this.boardCache();if(cache.has('spectator'))return cache.get('spectator');
     const safe=clone(this.viewForSeat(1)),st=safe.appState;
+    stripPrivateHistoryEffectsForSpectator(safe);
     // A spectator must not see EITHER player's unpublished hand or Mana.
     st.playerHand=Array.from({length:st.playerHandCount||st.playerHand?.length||0},()=> '__HIDDEN_CARD_BACK__');
     st.playerLegacy=Array.from({length:st.playerLegacyCount||st.playerLegacy?.length||0},()=> '__HIDDEN_CARD_BACK__');
