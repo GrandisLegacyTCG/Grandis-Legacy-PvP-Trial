@@ -25,9 +25,9 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC9-S2';
-const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13';
-const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC9 Stage 2 · Network RC6 Stage 2`;
+const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC9-S3-P1';
+const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13';
+const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC9 Stage 3 Patch 1 · Network RC6 Stage 2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 // Parse the immutable RC39 engine BEFORE the server accepts players. This
 // removes script reads + JS compilation from the synchronous START MATCH path.

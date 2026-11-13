@@ -98,8 +98,16 @@ export class PvpDiscardPresentationLedger {
     // A resolved opponent removal may involve an intermediate Hand/Deck move
     // in the same server intent. Report a conservative UNKNOWN origin then.
     const unknown=[];for(const [id,count] of remaining)for(let i=0;i<count;i++)unknown.push(id);
-    if(unknown.length)groups.push({origin:'UNKNOWN',card_ids:unknown});
+    // Cards finalized from a pending played Attack may enter Discard after the
+    // other seat presses PASS. They have no Hand/Deck/EXP/Field loss in this
+    // transaction and must NOT be advertised as opponent-caused DISCARDED.
+    // Unknown-origin transitions are intentionally not published as effects.
+    // Their public Discard pile remains visible through ordinary board state.
     const effect=sourceOf(before,after,actor);
+    // Avoid creating a misleading 'Opponent Effect' card history when the
+    // causal action cannot be tied to a committed card. Explicit effects such
+    // as Scouting/Calculated Plan remain linked by exact action id where known.
+    if(!effect)return;
     for(const group of groups){
       this.#events.push({id:'PVP-DISCARD-'+(++this.#seq),type:'PVP_OPPONENT_DISCARD',
         side:victim,source_side:actor,effect_card_id:effect?.card_id||null,effect_action_id:effect?.action_id||null,

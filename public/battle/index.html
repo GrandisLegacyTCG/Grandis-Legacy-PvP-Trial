@@ -201,7 +201,7 @@ button{font:inherit}
 .shared-box{position:relative;padding:2px;overflow:visible}
 .active-card-pane{position:absolute;inset:8px 8px 38px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .active-card-pane h3{margin:0 0 6px}
-.active-card-stage{position:relative;flex:1;min-height:0;display:flex;align-items:flex-start;justify-content:center;padding:0 4px 2px}
+.active-card-stage{position:relative;flex:1;min-height:0;display:flex;align-items:flex-start;justify-content:center;padding:0 4px 2px;container-type:size}
 .active-card-visual{position:relative;width:calc(100% - 8px);max-width:none;aspect-ratio:5/7;flex:0 0 auto}
 .active-card-visual img{display:block;width:100%;height:100%;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,.12);box-shadow:0 5px 12px rgba(0,0,0,.50)}
 .active-owner{position:absolute;right:3px;top:3px;z-index:2;padding:1px 4px;border-radius:4px;background:rgba(2,9,15,.92);border:1px solid rgba(244,211,94,.46);color:#ffe06b;font-size:5px;line-height:1.15;font-weight:950;text-shadow:0 1px 2px #000;pointer-events:none}
@@ -291,8 +291,8 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
 .opponent-field .zone>.count,.opponent-field .opponent-mana-pool>.count{left:-4px;right:auto;top:auto;bottom:-4px}
 </style>
 
-<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13">
-<link rel="stylesheet" href="runtime/pvp-mobile-landscape-fix.css?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13">
+<link rel="stylesheet" href="shared-ui/battlefield-ui.css?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13">
+<link rel="stylesheet" href="runtime/pvp-mobile-landscape-fix.css?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13">
 
 </head>
 <body>
@@ -480,21 +480,21 @@ html.gl-adaptive-stage .played{column-gap:5px;row-gap:5px}
     <div id="glAnimationLayer"></div>
   </div>
   <script>window.GL_APP_MODE="PVP";window.GL_PVP_SHARED_BOARD_ACTIVE=true;window.GL_PVP_LOCAL_ROLE="player";</script>
-  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
+  <script src="engine/shared-ui/battlefield-ui.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="engine/js/static-data.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="runtime/overrides/grand-finale-designer-nerf.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="engine/js/runtime-authority.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="engine/shared-app/active-starters.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="shared-app/db158-card-review.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="engine/shared-app/app.bundle.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="runtime/adapters/authority-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="runtime/adapters/local-ai-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="runtime/adapters/pvp-adapter.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
   <script src="/build-meta.js"></script>
-  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
-  <script src="shared-ui/mobile-landscape-lobby.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s2-2026-11-13"></script>
+  <script src="runtime/pvp-mana-draft.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="runtime/pvp-network.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="shared-app/app-runtime.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
+  <script src="shared-ui/mobile-landscape-lobby.js?v=gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13"></script>
   
 
 </body>

@@ -6554,7 +6554,7 @@
     return out;
   }
   function shadowSwitchCanReposition(state,side,incoming){
-    if(!state||!incoming)return false;
+    if(!state||!incoming||positionLockedOneVsOne(state))return false;
     var responder=sideHeroes(state,side)[incoming.target_lane],frontLane=incoming.source_lane;
     if(!isActiveHeroSlot(responder)||!frontLane)return false;
     if(frontLane===incoming.target_lane)return true; // already facing attacker; no position change
@@ -6578,7 +6578,7 @@
       if(isSmokeScreenCard(rc)&&isUltimateCard(card(incoming.card_id))) return;
       if(isBrilliantRadianceCard(rc)&&(!isStrictSingleTargetIncoming(incoming)||isUltimateCard(card(incoming.card_id)))) return;
             if(isCoverUpCard(rc)){
-        if(responseKind(rc,incoming)!=='cover_up') return;
+        if(positionLockedOneVsOne(state) || responseKind(rc,incoming)!=='cover_up') return;
         adjacentLanes(incoming.target_lane).forEach(function(srcLane){ var src=sideHeroes(state,responderSide)[srcLane]; if(sourceCompatibleForResponse(rc,src) && !hasStatus(src,'Freeze') && !hasStatus(defender,'Freeze') && affordable(rc,src)) options.push({card_id:id, hand_index:idx, card:rc, source_lane:srcLane, source_card_id:heroIdFrom(src), response_kind:'cover_up', label:cardName(rc)+' — '+cardName(card(src.card_id))+' from '+srcLane}); }); return;
       }
       var rk=responseKind(rc,incoming); if(!rk || !lunMayBlockForHero(rc,incoming,defender)) return;
@@ -7731,6 +7731,7 @@
       if(responsePolicy && responseSlot<0){ showInfo('Cannot Respond','Response source Hero has no empty Attachment Slot.'); return false; }
       if(!responseOption._payment_complete && cost>manaAvailableValueForCard(appState,rw.target_side,rc)){ showInfo('Cannot Respond','Not enough Mana value for '+cardName(rc)+'.'); return false; }
       if(kind==='cover_up'){
+        if(positionLockedOneVsOne(appState)){showInfo('Position Locked','Cover Up cannot swap or redirect during 1v1.');return false;}
         var coverLane=responseOption.source_lane, protectedLane=rw.target_lane; var heroes=sideHeroes(appState,rw.target_side), protectedHero=heroes[protectedLane], coverHero=heroes[coverLane];
         var coverArea=!!(rw.affected_lanes&&rw.affected_lanes.length)||/area|multi/i.test(String(rw.attack_type||''));
         if(coverArea || adjacentLanes(protectedLane).indexOf(coverLane)===-1 || !sourceCompatibleForResponse(rc,coverHero) || hasStatus(coverHero,'Freeze') || hasStatus(protectedHero,'Freeze')){ showInfo('Cannot Respond','Cover Up requires an adjacent legal Warrior-line Hero and Single Target incoming attack.'); return false; }
@@ -8727,7 +8728,7 @@
     return true;
   }
   function sourceSwapOptions(state, action){
-    if(!state || !action) return [];
+    if(!state || !action || positionLockedOneVsOne(state)) return [];
     var c=card(action.card_id), model=cardEffectSwapModel(c), heroes=sideHeroes(state,action.source_side)||{}, sourceLane=action.source_lane;
     var sourceHero=heroes[sourceLane];
     // Card-effect reposition is not manual Reposition. The acting object must still be an active Hero,
@@ -8752,7 +8753,7 @@
     return null;
   }
   function soulBlastTargetSwapOptions(state, action){
-    if(!action || !isSoulBlastShotCard(card(action.card_id))) return [];
+    if(positionLockedOneVsOne(state) || !action || !isSoulBlastShotCard(card(action.card_id))) return [];
     var heroes=sideHeroes(state,action.target_side), lane=action.target_lane, target=heroes&&heroes[lane];
     if(!target || !cardEffectSwapObjectEligible(target)) return [];
     return adjacentLanes(lane).filter(function(l){
@@ -8775,11 +8776,11 @@
   function performOptionalTargetSwapDecision(lane){
     if(!appState || !appState.pending || appState.pending.type!=='optional_target_swap') return false;
     var p=appState.pending, heroes=sideHeroes(appState,p.target_side), a=p.target_lane, opts=p.swap_options||[], nextPending=p.next_pending?clone(p.next_pending):null;
-    if(lane && opts.indexOf(lane)!==-1 && skillEffectSwapPairEligible(heroes[a],heroes[lane])){
+    if(!positionLockedOneVsOne(appState) && lane && opts.indexOf(lane)!==-1 && skillEffectSwapPairEligible(heroes[a],heroes[lane])){
       var targetId=heroIdFrom(heroes[a]), adjacentId=heroIdFrom(heroes[lane]);
       swapBoardStateLanes(appState,p.target_side,a,lane);
       pushLog(appState, cardName(card(p.card_id))+' force reposition resolved: '+cardName(card(targetId))+' '+a+' ↔ '+cardName(card(adjacentId))+' '+lane+'.');
-    } else if(opts.some(function(opt){return skillEffectSwapPairEligible(heroes[a],heroes[opt]);})){
+    } else if(!positionLockedOneVsOne(appState) && opts.some(function(opt){return skillEffectSwapPairEligible(heroes[a],heroes[opt]);})){
       // Printed 'swap' is mandatory. A missing/invalid input cannot decline a legal move.
       return false;
     } else pushLog(appState, cardName(card(p.card_id))+' force reposition has no legal remaining partner.');
@@ -8821,7 +8822,7 @@
   function manualRepositionTurnKey(state,side){return state?String(Number(state.round||1))+'|'+String(side||state.turn||''):'';}
   function manualRepositionUsedThisTurn(state,side){var used=state&&state.manualRepositionUsedTurnKey||{};return !!(state&&used[side]&&used[side]===manualRepositionTurnKey(state,side));}
   function markManualRepositionUsed(state,side){if(!state)return;state.manualRepositionUsedTurnKey=state.manualRepositionUsedTurnKey||{PLAYER:null,AI:null};state.manualRepositionUsedTurnKey[side]=manualRepositionTurnKey(state,side);}
-  function manualRepositionAvailable(state){ return !!(matchStarted && state && state.turn==='PLAYER' && (state.phase==='Deploy'||state.phase==='Reform') && !state.pending && !state.responseWindow && !state.gameOver && !manualRepositionUsedThisTurn(state,'PLAYER')); }
+  function manualRepositionAvailable(state){ return !!(!positionLockedOneVsOne(state) && matchStarted && state && state.turn==='PLAYER' && (state.phase==='Deploy'||state.phase==='Reform') && !state.pending && !state.responseWindow && !state.gameOver && !manualRepositionUsedThisTurn(state,'PLAYER')); }
   function repositionHeroEligible(h){ return !!(h && Number(h.hp||0)>0 && !isLegacyModeHero(h) && !h.exhausted && !hasStatus(h,'Freeze') && !hasStatus(h,'Stun')); }
   function repositionLegacyPartnerEligible(h){ return !!(h && isLegacySlot(h)); }
   function repositionPairEligible(a,b){
@@ -8831,8 +8832,8 @@
     return !!((aHero&&bHero) || (aHero&&bLegacy) || (aLegacy&&bHero));
   }
   function manualRepositionButtonEnabled(state){ return manualRepositionAvailable(state) && manualRepositionPairs(state).length>0; }
-  function repositionPairsForSide(state, side){ var h=sideHeroes(state,side)||{}; var pairs=[]; if(repositionPairEligible(h.LEFT,h.CENTER)) pairs.push(['LEFT','CENTER']); if(repositionPairEligible(h.CENTER,h.RIGHT)) pairs.push(['CENTER','RIGHT']); return pairs; }
-  function manualRepositionPairsForSide(state,side){if(!state||state.turn!==side||(state.phase!=='Deploy'&&state.phase!=='Reform')||manualRepositionUsedThisTurn(state,side))return [];return repositionPairsForSide(state,side);}
+  function repositionPairsForSide(state, side){ if(positionLockedOneVsOne(state))return []; var h=sideHeroes(state,side)||{}; var pairs=[]; if(repositionPairEligible(h.LEFT,h.CENTER)) pairs.push(['LEFT','CENTER']); if(repositionPairEligible(h.CENTER,h.RIGHT)) pairs.push(['CENTER','RIGHT']); return pairs; }
+  function manualRepositionPairsForSide(state,side){if(positionLockedOneVsOne(state)||!state||state.turn!==side||(state.phase!=='Deploy'&&state.phase!=='Reform')||manualRepositionUsedThisTurn(state,side))return [];return repositionPairsForSide(state,side);}
   function manualRepositionPairs(state){ if(!manualRepositionAvailable(state)) return []; return manualRepositionPairsForSide(state,'PLAYER'); }
   function swapBoardLanes(heroes,a,b){ var tmp=heroes[a]; heroes[a]=heroes[b]; heroes[b]=tmp; if(heroes[a]) heroes[a].lane=a; if(heroes[b]) heroes[b].lane=b; }
   function packageSlotsForSide(state, side){ return side==='PLAYER' ? (state.playerLegacyPackageSlots||[]) : (state.aiLegacyPackageSlots||[]); }
@@ -8844,19 +8845,26 @@
     (state.activeAttachments||[]).forEach(function(att){ if(!att || att.side!==side) return; if(att.lane===a) att.lane=b; else if(att.lane===b) att.lane=a; });
     /* Casting locks the original source position. Pending casting records intentionally do not move with Reposition; release validation cancels them. */
   }
-  function swapBoardStateLanes(state, side, a, b){
-    var heroes=sideHeroes(state,side); if(!heroes) return;
+  function swapBoardStateLanes(state, side, a, b, allowAutoCenter){
+    // Part 5.2: a genuine 1v1 locks every voluntary/skill/effect swap.
+    // Automatic Center is the only exception (explicit fifth argument).
+    if(positionLockedOneVsOne(state) && allowAutoCenter!==true) return false;
+    var heroes=sideHeroes(state,side); if(!heroes) return false;
     swapBoardLanes(heroes,a,b);
     swapPackageSlotLanes(state,side,a,b);
     swapActiveAttachmentLanes(state,side,a,b);
+    return true;
   }
   function activeNonLegacyLanes(state, side){ var heroes=sideHeroes(state,side)||{}; return LANE_ORDER.filter(function(lane){ return isActiveHeroSlot(heroes[lane]); }); }
+  function positionLockedOneVsOne(state){
+    return !!(state && activeNonLegacyLanes(state,'PLAYER').length===1 && activeNonLegacyLanes(state,'AI').length===1);
+  }
   function autoCenterOneVsOne(state){
     if(!state || state.gameOver || state.pending || state.responseWindow) return false;
     var p=activeNonLegacyLanes(state,'PLAYER'), a=activeNonLegacyLanes(state,'AI');
     if(p.length!==1 || a.length!==1) return false;
     var moved=[];
-    [['PLAYER',p[0]],['AI',a[0]]].forEach(function(x){ var side=x[0], lane=x[1]; if(lane && lane!=='CENTER'){ swapBoardStateLanes(state,side,lane,'CENTER'); moved.push(side+' '+lane+' → CENTER'); } });
+    [['PLAYER',p[0]],['AI',a[0]]].forEach(function(x){ var side=x[0], lane=x[1]; if(lane && lane!=='CENTER'){ swapBoardStateLanes(state,side,lane,'CENTER',true); moved.push(side+' '+lane+' → CENTER'); } });
     if(moved.length){ pushLog(state,'Auto Center 1v1: '+moved.join('; ')+'. Legacy/empty lane objects swap out of CENTER without Exhaust.'); return true; }
     return false;
   }
@@ -9116,7 +9124,7 @@
   }
   function performAIReposition(state, pair){ if(!state || !pair || pair.length<2 || manualRepositionUsedThisTurn(state,'AI') || aiMarksmanCounterfireLoss(state,pair)) return false; var chosenPlan=aiChooseRepositionPlan(state); var reason=chosenPlan&&chosenPlan.pair&&chosenPlan.pair[0]===pair[0]&&chosenPlan.pair[1]===pair[1]?(chosenPlan.reason||'TACTICAL_REPOSITION'):'TACTICAL_REPOSITION'; state.aiLastRepositionDecision={reason:reason,pair:pair.slice(),round:Number(state.round||0),phase:state.phase}; var pairs=manualRepositionPairsForSide(state,'AI'); var ok=pairs.some(function(p){return p[0]===pair[0]&&p[1]===pair[1];}); if(!ok) return false; var h=sideHeroes(state,'AI'); swapBoardStateLanes(state,'AI',pair[0],pair[1]); h=sideHeroes(state,'AI'); var exhausted=[]; [pair[0],pair[1]].forEach(function(l){ var u=h[l]; if(repositionHeroEligible(u)){ u.exhausted=true; u.exhaust_reason='AI Reposition.'; exhausted.push(l); } }); var exhaustLine=exhausted.length===2?'Both moved Heroes Exhaust.':(exhausted.length===1?'Only the moved Hero Exhausts; Legacy does not Exhaust.':'No Hero Exhausted.'); pushLog(state,'AI Reposition ['+reason+']: '+pair[0]+' ↔ '+pair[1]+'. '+exhaustLine); recordOpponentAction(state,'REPOSITION',null,'AI Reposition','AI repositioned '+pair[0]+' ↔ '+pair[1]+'.',{action_line:'Action: AI Reposition.', result_lines:['Swapped '+pair[0]+' and '+pair[1]+'.',exhaustLine]}); markManualRepositionUsed(state,'AI'); syncCounts(state); return true; }
   function openManualRepositionChoice(){
-    if(!manualRepositionAvailable(appState)){ showInfo('Reposition',manualRepositionUsedThisTurn(appState,'PLAYER')?'Manual Reposition can be used at most once during your active turn. Deploy and Reform share this limit.':'Manual Reposition is only available during your Deploy or Reform Phase when no action is pending.'); return false; }
+    if(!manualRepositionAvailable(appState)){ showInfo('Reposition',positionLockedOneVsOne(appState)?'Positions are locked while both players have exactly one active Hero. Reviving a Hero unlocks reposition.':(manualRepositionUsedThisTurn(appState,'PLAYER')?'Manual Reposition can be used at most once during your active turn. Deploy and Reform share this limit.':'Manual Reposition is only available during your Deploy or Reform Phase when no action is pending.')); return false; }
     var pairs=manualRepositionPairs(appState);
     if(!pairs.length){ showInfo('Reposition','No legal adjacent Reposition pair is available. A pair must include at least one Ready Hero; Legacy can be a partner but cannot Reposition with another Legacy.'); return false; }
     appState.pending={type:'manual_reposition', decision_side:'PLAYER', source_side:'PLAYER', side:'PLAYER', pairs:pairs};
@@ -9126,7 +9134,7 @@
   function performManualReposition(pairText){
     if(!appState || !appState.pending || appState.pending.type!=='manual_reposition') return false;
     var parts=String(pairText||'').split('|'), a=parts[0], b=parts[1], legal=(appState.pending.pairs||[]).some(function(p){ return p[0]===a && p[1]===b; });
-    if(!legal){ showInfo('Reposition','Illegal Reposition pair.'); return false; }
+    if(!legal || positionLockedOneVsOne(appState)){ showInfo('Reposition',positionLockedOneVsOne(appState)?'Positions are locked during 1v1.':'Illegal Reposition pair.'); return false; }
     var h=appState.playerHeroes; swapBoardStateLanes(appState,'PLAYER',a,b); h=appState.playerHeroes;
     var exhausted=[]; [a,b].forEach(function(l){ var u=h[l]; if(repositionHeroEligible(u)){ u.exhausted=true; u.exhaust_reason='PLAYER Reposition.'; exhausted.push(l); } });
     var exhaustLine=exhausted.length===2?'both Heroes Exhaust.':(exhausted.length===1?'only the Hero Exhausts; Legacy does not Exhaust.':'no Hero Exhausted.');
@@ -9189,7 +9197,7 @@
     if(choice===true) b=p.swap_lane||opts[0]||null;
     else if(typeof choice==='string' && opts.indexOf(choice)!==-1) b=choice;
     var nextPending=p.next_pending?clone(p.next_pending):null;
-    if(b && opts.indexOf(b)!==-1 && isActiveHeroSlot(heroes[a]) && skillEffectSwapPairEligible(heroes[a],heroes[b])){
+    if(!positionLockedOneVsOne(appState) && b && opts.indexOf(b)!==-1 && isActiveHeroSlot(heroes[a]) && skillEffectSwapPairEligible(heroes[a],heroes[b])){
       var sourceId=heroIdFrom(heroes[a]), partnerId=heroIdFrom(heroes[b]);
       swapBoardStateLanes(appState,p.source_side,a,b);
       pushLog(appState, cardName(card(p.card_id))+' optional reposition resolved: '+cardName(card(sourceId))+' '+a+' ↔ '+cardName(card(partnerId))+' '+b+'.');

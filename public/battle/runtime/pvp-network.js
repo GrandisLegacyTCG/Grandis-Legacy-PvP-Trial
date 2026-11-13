@@ -57,7 +57,8 @@ const LOCAL_CHOICE_ACTIONS=new Map([
   ['activateS0BardDrawChoice','s0_bard_draw_choice'],
   ['cancelS0BardDrawChoice','s0_bard_draw_choice'],
   ['moveCrystalBallOrder','crystal_ball_reorder'],
-  ['selectLegacyCardChoice','legacy_card_choice']
+  ['selectLegacyCardChoice','legacy_card_choice'],
+  ['selectLegacyDefeatChoice','legacy_defeat_choice']
 ]);
 let localChoiceDraft=null;
 const isTuneUpDecision=p=>p?.type==='card_search_choice'&&p.source_card_id==='S0-CLE-029'&&p.decision_side==='PLAYER'&&p.zone==='deck'&&!!p.multi_select;
@@ -238,8 +239,11 @@ function updateLocalChoiceDraft(name,args){
   if(!localChoiceDraft)localChoiceDraft={type,revision:state.revision,permutation:permutation||null};
   if(swap){[permutation[swap[0]],permutation[swap[1]]]=[permutation[swap[1]],permutation[swap[0]]];
     localChoiceDraft.permutation=permutation;}
-  // Rerender only this player's choice UI; this sends ZERO network packets.
-  window.GL_GAME_UI?.render?.();
+  // Legacy candidate highlighting changes ONLY the center chooser. Redrawing
+  // Hero cards, pools and Hand on each local click caused unnecessary blink.
+  if(type==='legacy_defeat_choice'&&window.GL_GAME_UI?.renderLocalChoiceDraft)
+    window.GL_GAME_UI.renderLocalChoiceDraft();
+  else window.GL_GAME_UI?.render?.();
   return {ok:true,local:true};
 }
 function toAtomicLocalChoice(name,args){
@@ -253,6 +257,7 @@ function toAtomicLocalChoice(name,args){
   if(!isConfirm)return {name,args};
   const payload={kind:d.type};
   if(d.type==='scouting_exp_selection')payload.index=p.selected_exp_choice;
+  else if(d.type==='legacy_defeat_choice'){payload.index=p.selected_index;payload.choiceId=String(p.choice_id||'');}
   else if(d.type==='crystal_ball_reorder')payload.permutation=[...(d.permutation||[])];
   else payload.selected=[...(d.type==='hand_limit_discard'?p.selected:p.selected_indices||[])];
   return {name:'commitExactLocalChoiceDraft',args:[payload]};

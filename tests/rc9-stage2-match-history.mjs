@@ -37,7 +37,7 @@ const context={console,window:{GL_APP_MODE:'PVP'},Map,Set,Number,Array,String,Ob
 context.currentState={playerPlayedEvents:[],opponentPlayedEvents:[],pvpActionEventsBySide:{PLAYER:[],AI:[]}};
 vm.createContext(context);
 for(const name of ['pvpPlayedHeroName','pvpPlayedActionName','pvpPlayedDamageResults','pvpPlayedEffectRows',
-  'pvpPlayedRelatedCards','pvpPlayedAdditionalLines','pvpPlayedDetailHtml','pvpIncomingDamageWording',
+  'pvpPlayedRelatedCards','pvpPlayedAdditionalLines','pvpPlayedHeroOutcomeHtml','pvpPlayedResponseDetail','pvpPlayedDetailHtml','pvpIncomingDamageWording',
   'describeResolvedManaShards','presentPvpManaLossNotice','pvpDiscardHistoryEvents']){
   vm.runInContext(bodyOf(name),context,{filename:'app-runtime:'+name});
 }
@@ -78,7 +78,7 @@ check('Part5-style dedup shows actual damage/HP/Burn once and unique result text
     'Damage after modifiers: 20.','Passive reduction: 10.','Final HP damage: 20.',
     'Burn added +10 damage.','Bromir Oathforge HP: 30 -> 10','Opponent activated Invincible.']};
   const html=context.pvpPlayedDetailHtml(e);
-  for(const word of ['Burn Added','Damage Dealt','Damage Prevention','<strong>HP</strong>'])
+  for(const word of ['Burn Bonus','Final Magical Damage: 20','Passive Reduction: -10 Damage','HP: 30 → 10'])
     assert.equal(html.split(word).length-1,1,word+' duplicated');
   assert.ok(html.includes('Opponent activated Invincible.'));
   for(const word of ['Damage after modifiers: 20.','Final HP damage: 20.',
@@ -174,24 +174,25 @@ check('Damage banner: one formula; no printed fake 0; buffs use base -> modified
     '10 × 6 Mana Shards = 60 Physical Damage → 80 Physical Damage');
   assert.ok(!context.pvpIncomingDamageWording({damage:20,damage_type:'Physical'}).includes('before Response'));
 });
-check('One socket, unchanged server-headless & local Mana draft, no action-result fetch',()=>{
-  // Pinned RC9 Stage1 hashes ensure the test remains self-contained in a clean
-  // extracted Stage2 FULL ZIP; it never reads the developer working directory.
+check('Stage3 preserves single-socket transport, local Mana and viewer-safe result projection',()=>{
+  // Stage3 intentionally changes the headless transactional Legacy choice and
+  // imports the narrow donor 1v1 lock. The Stage2 immutable source digests for
+  // those files are obsolete; preserve hashes only for truly unchanged paths.
   const sha=body=>createHash('sha256').update(body).digest('hex');
   const hashes={
-    'server/headless-rc32.mjs':'0cfb172e5bafb30877d78c296a921c69c1fc8ed23b29a008ed19120c156c6d54',
     'server/ws-lite.mjs':'1e29b60b2ce0ee357df98518db12a2b5063c5a224635df478d7588f8c5862047',
-    'public/battle/runtime/pvp-network.js':'60d10aa8d24923723225eb1fb4186e6da0369313395044e7c0769d0814c2b5ec',
     'public/battle/runtime/pvp-mana-draft.js':'0dfb813cf7c549f01f83d6c7cb46fd5192fc78d554fbd53de90e8b2b572d92b7'
   };
   for(const [file,hash] of Object.entries(hashes))
-    assert.equal(sha(read('../'+file)),hash,'Stage2 unexpectedly changed '+file);
+    assert.equal(sha(read('../'+file)),hash,'Immutable Stage2 networking or Mana changed: '+file);
   const engine=read('../public/battle/engine/shared-app/app.bundle.js');
   const auditAddition='burn_damage:Number(result&&result.burn_damage||0),';
-  assert.ok(engine.includes(auditAddition),'Missing single immutable Burn audit');
-  const original=engine.replace(auditAddition,'');
-  assert.equal(sha(original),'509d4143ccaa1c7f7ed27dc129f9569781f97a28f5fae6e6f8c72024f4ca17ee',
-    'Engine changed beyond immutable Burn audit field');
+  assert.ok(engine.includes(auditAddition),'Missing authoritative Burn audit');
+  assert.ok(engine.includes('function positionLockedOneVsOne(state)'),'Missing donor 1v1 guard');
+  const headless=read('../server/headless-rc32.mjs');
+  assert.ok(headless.includes("if (kind === 'legacy_defeat_choice')"),'Missing Stage3 atomic Legacy choice');
+  const network=read('../public/battle/runtime/pvp-network.js');
+  assert.ok(network.includes("['selectLegacyDefeatChoice','legacy_defeat_choice']"),'Missing local-only Legacy selection');
   assert.ok(source.includes('historyKnown=new Set(resolvedHistory.map'));
   assert.ok(source.includes('if(host.dataset.glHistorySig===sig)return false'));
 });

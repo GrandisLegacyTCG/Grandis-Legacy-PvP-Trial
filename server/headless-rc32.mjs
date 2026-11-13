@@ -21,7 +21,8 @@ import vm from 'node:vm';
  */
 const OWNED_TYPES = new Set([
   'trial_rankup_return_exp', 'scouting_exp_selection', 'hand_limit_discard',
-  's0_bard_draw_choice', 'crystal_ball_reorder', 'legacy_card_choice'
+  's0_bard_draw_choice', 'crystal_ball_reorder', 'legacy_card_choice',
+  'legacy_defeat_choice'
 ]);
 const index = (n, length) => Number.isInteger(n) && n >= 0 && n < length;
 const exact = (array, need, length) => Array.isArray(array) &&
@@ -94,6 +95,24 @@ export function applyExactLocalChoiceDraft({bridge, readPending, payload}) {
     if (!exact(readPending()?.selected_indices, selected.length, hand.length))
       throw new Error('Bard Draw selection did not match the draft.');
     return run('commitS0BardDrawChoice', [false]);
+  }
+  if (kind === 'legacy_defeat_choice') {
+    const candidates = p.candidates || [];
+    // Verify mandatory choice identity and exact candidate INDEX on the canonical
+    // pending window. Never accept client-provided Legacy card identities.
+    if (!p.choice_id || String(payload.choiceId || '') !== String(p.choice_id) ||
+        p.committing || p.selected_index != null || candidates.length < 1 ||
+        candidates.length > 12 || !index(payload.index, candidates.length)) {
+      throw new Error('Invalid or stale defeated-Hero Legacy selection.');
+    }
+    run('selectLegacyDefeatChoice', [payload.index]);
+    const live = readPending();
+    if (live?.type !== 'legacy_defeat_choice' ||
+        String(live.choice_id) !== String(p.choice_id) ||
+        Number(live.selected_index) !== payload.index) {
+      throw new Error('Defeated-Hero Legacy selection did not match the draft.');
+    }
+    return run('handleChoiceConfirm', []);
   }
   if (kind === 'legacy_card_choice') {
     const candidates = p.candidates || [], need = Number(p.required_choices || 1);

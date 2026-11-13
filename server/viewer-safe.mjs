@@ -9,7 +9,10 @@ const hidden = (n) => Array.from({length: Math.max(0, Math.min(1000, Number(n) |
 const safeEvent = (event) => {
   if (!event || typeof event !== 'object') return null;
   // Only the affected player receives their resolved loss notification.
-  if(event.type==='MANA_LOSS_COMMITTED'&&event.side!=='PLAYER')return null;
+  // A Mana Burn/Steal result goes ONLY to the losing seat. Self-paid
+  // Ability costs and the initiating player's choice must not produce a loss toast.
+  if(event.type==='MANA_LOSS_COMMITTED'&&
+     (event.side!=='PLAYER'||event.source_side!=='AI'||event.loss_kind==='ABILITY_SPEND'))return null;
   const out = {};
   for (const k of ['id', 'type', 'side', 'actor_side', 'reason', 'group_id', 'group_index', 'hand_index', 'timestamp']) {
     if (Object.hasOwn(event, k)) out[k] = event[k];
@@ -125,7 +128,9 @@ function safePlayedAction(event,side) {
   }
   // Each target/hit has a public resolved HP delta. Arrow Barrage/Area
   // Attacks cannot be summarized accurately using the last hit alone.
-  if(label==='ATK'&&Array.isArray(event.damage_breakdown_by_hero)){
+  // Batch2: resolved damage is public even when a card is classified as an
+  // Ability/Item/Event. Only the recipient-safe scalar breakdown crosses PvP.
+  if(Array.isArray(event.damage_breakdown_by_hero)){
     out.damage_by_hero=event.damage_breakdown_by_hero.slice(0,36).map(x=>({
       name:publicScalar(x?.name||'Target Hero',100),
       side:publicSide(x?.side),lane:publicLane(x?.lane),
@@ -162,7 +167,7 @@ function safePlayedAction(event,side) {
   }).filter(Boolean);
   // Attack aftermath is a public HP/status transition, not a private hand
   // inspection or an internal action trace.
-  if(label==='ATK'&&Array.isArray(event.status_breakdown_by_hero))
+  if(Array.isArray(event.status_breakdown_by_hero))
     out.status_by_hero=event.status_breakdown_by_hero.slice(0,20).map(x=>({
       name:publicScalar(x?.name||'Hero',100),side:publicSide(x?.side),lane:publicLane(x?.lane),
       status:publicScalar(x?.status||x?.status_name||'',25),
