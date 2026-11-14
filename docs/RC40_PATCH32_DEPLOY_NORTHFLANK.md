@@ -1,3 +1,5 @@
+> **Use the final CI-46 deployment instructions:** [`RC40_PATCH32_CI46_DEPLOY_NORTHFLANK_2026-11-15.md`](RC40_PATCH32_CI46_DEPLOY_NORTHFLANK_2026-11-15.md), including native Docker and website handoff gates.
+
 # Grandis Legacy PvP RC40 Patch 3.2 - Manual Deployment Guide
 
 **Target repo:** `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial`, branch `main`. **Do not write to the Website repository from this process.**

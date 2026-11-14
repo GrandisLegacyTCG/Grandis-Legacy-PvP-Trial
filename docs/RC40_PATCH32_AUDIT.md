@@ -1,3 +1,5 @@
+> **Superseded QA status:** see `RC40_PATCH32_CI46_AUDIT_2026-11-15.md` for the final post-CI-#46 local regression results, and open issues.
+
 # Grandis Legacy PvP Season 0 - RC40 Patch 3.2 Technical Audit
 
 Date: 14 November 2026. **Status: staging candidate, NOT production-ready.** GitHub used read-only. No push, commit, PR, deployment or Website repository modification.

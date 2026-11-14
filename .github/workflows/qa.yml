@@ -36,7 +36,7 @@ jobs:
         run: docker build --pull -t grandis-legacy-pvp-s0-net-rc6:ci .
       - name: Verify native ws transport in Docker
         run: |
-          docker run -d --rm --name gl-pvp-net-rc6 -p 3066:3000 grandis-legacy-pvp-s0-net-rc6:ci
+          docker run -d --rm --name gl-pvp-net-rc6 -e PVP_ALLOWED_ORIGINS=https://grandislegacytcg.web.id -p 3066:3000 grandis-legacy-pvp-s0-net-rc6:ci
           sleep 5
-          node -e "fetch('http://127.0.0.1:3066/health').then(r=>r.json()).then(x=>{if(!x.ok||x.transport!=='ws')process.exit(1);console.log(x.transport,x.buildId)}).catch(()=>process.exit(1))"
+          node -e "fetch('http://127.0.0.1:3066/health').then(r=>r.json()).then(x=>{if(!x.ok||x.transport!=='ws'||x.version!=='S0-RC40-PVP-NET-RC6-STAGE2-PATCH3.2'||x.buildId!=='gl-s0-pvp-rc40-patch32-item-discard-2026-11-14')process.exit(1);console.log(x.transport,x.buildId)}).catch(()=>process.exit(1))"
           docker stop gl-pvp-net-rc6

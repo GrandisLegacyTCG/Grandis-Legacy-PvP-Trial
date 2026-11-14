@@ -2,6 +2,14 @@
 
 **Release target:** `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial`, branch `main`. This is a **complete repository root package**, not a GitHub patch or nested project folder. Deployments/commits are performed manually by the project owner.
 
+## CI #46 correction (15 November 2026)
+
+GitHub Actions Run `43620361956` at repository commit `24fb7204ab073d69e543c23a2ceef5270c42ae8e` failed because a native `ws` Origin rejection correctly returned HTTP **401** while `tests/net-rc6-live-ws.py` expected only 400/403. The local test now requires an unsuccessful WebSocket upgrade (400/401/403, no Upgrade header) and also verifies the allowed Website Origin with two player sessions. The GitHub workflow retains all full regressions and Docker tests and now asserts exact Patch 3.2 Docker health identity.
+
+**Local test results:** `npm run check:rc40-p32` **PASS**, full uninterrupted `npm run check` **PASS**, `npm run build:precompress` **PASS**, including 353/353 Item/Discard and 11/11 donor Card Played checks. Local WebSocket regression ran via the **lite offline transport**, because npm registry DNS blocked native `ws` installation in this container. **New GitHub Actions success, native Docker build, and Northflank two-browser WSS have NOT been verified**. No GitHub push/deployment was performed.
+
+See `docs/RC40_PATCH32_CI46_AUDIT_2026-11-15.md` and `docs/RC40_PATCH32_CI46_DEPLOY_NORTHFLANK_2026-11-15.md` for final QA and manual deployment requirements.
+
 ## What changed from RC40 Patch 3.1
 
 Latest VS AI RC40 (14 November 2026) Item / physical Discard hotfix was ported into the authoritative PvP Season 0 engine:
