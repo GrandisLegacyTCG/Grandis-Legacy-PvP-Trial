@@ -16,7 +16,11 @@ const routeSource=between('const RESPONSE_ALLIED_SOURCE_CARDS=', 'function rende
 const panelSource=between('  const tributePanelAction=', '  hc.ondblclick=');
 const buildId=readFileSync(new URL('../server.js',import.meta.url),'utf8').match(/const BUILD_ID='([^']+)'/)?.[1];
 assert.match(buildId||'',/^gl-s0-pvp-rc40-patch32-item-discard-2026-11-14$/,'Only the RC40 Patch3.2 authority may be served');
-assert.ok(html.includes('app-runtime.js?v='+buildId+'"'),'Browser must load its current authority build ID, not stale RC39 runtime');
+const runtimeRef=html.match(/src="(shared-app\/app-runtime\.js\?[^"\n]+)"/)?.[1];
+assert.ok(runtimeRef,'Browser must load its active PvP battlefield runtime');
+const runtimeSrc=new URL(runtimeRef.replace(/&amp;/g,'&'),'https://test.invalid/battle/');
+assert.equal(runtimeSrc.searchParams.get('v'),buildId,'Browser must load the EXACT active RC40 server Build ID');
+assert.equal(runtimeSrc.searchParams.get('hotfix'),'handart-20261115','Hand runtime hotfix must bypass old immutable JS cache');
 assert.doesNotMatch(runtime,/\breturnToLobbyDuringCoin\b/,'No unrelated coin UI control added');
 
 function routeFixture(cardId,sourceLane,targetLane){

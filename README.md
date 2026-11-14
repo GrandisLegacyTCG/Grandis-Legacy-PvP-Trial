@@ -2,6 +2,10 @@
 
 **Release target:** `GrandisLegacyTCG/Grandis-Legacy-PvP-Trial`, branch `main`. This is a **complete repository root package**, not a GitHub patch or nested project folder. Deployments/commits are performed manually by the project owner.
 
+## Final runtime Hand artwork fix (15 November 2026)
+
+Source is GitHub PvP-Trial `main` `6e16d410617aace6d8190e31af448e35b3ee4dba` (Actions Run #47 successful BEFORE this hotfix). Fixed missing `glBindPlayerHandArtwork` during Battlefield local-Hand rendering. Fallback is real and visually stable; no engine, networking, protocol or Build ID change. Added 54-check DOM contract test to BOTH `check:rc40-p32` and historical `check`. Both passed locally in offline WebSocket mode. See `docs/RC40_PATCH32_HAND_ART_RUNTIME_FIX_AUDIT_2026-11-15.md` and `docs/RC40_PATCH32_HAND_ART_DEPLOY_2026-11-15.md`. New GitHub Actions, Docker/native ws for this new package, full browser and live Northflank remain unverified. **Staging candidate, NOT production-ready.**
+
 ## CI #46 correction (15 November 2026)
 
 GitHub Actions Run `43620361956` at repository commit `24fb7204ab073d69e543c23a2ceef5270c42ae8e` failed because a native `ws` Origin rejection correctly returned HTTP **401** while `tests/net-rc6-live-ws.py` expected only 400/403. The local test now requires an unsuccessful WebSocket upgrade (400/401/403, no Upgrade header) and also verifies the allowed Website Origin with two player sessions. The GitHub workflow retains all full regressions and Docker tests and now asserts exact Patch 3.2 Docker health identity.

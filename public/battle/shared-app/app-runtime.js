@@ -109,6 +109,29 @@ const laneOrder=['LEFT','CENTER','RIGHT'];
 function st(){const snap=E()?.getSnapshot?.();return snap?.appState||snap?.state||snap||null;}
 function cv(id){return id?E().cardView(id):null;}
 function art(id){return id?'card-art/'+encodeURIComponent(id)+'.webp':'';}
+
+// RC40 Patch 3.2: VS AI draws the local player's actual Hand face with
+// img.src=art(id). Keep that canonical path; the PvP wrapper adds a visible
+// Back-of-Card while decoding and a one-shot fallback on failed artwork.
+// This is purely visual: it does not read/alter opponent Hand or gameplay state.
+function glBindPlayerHandArtwork(card,img,id){
+  const cardId=String(id||'');
+  const fallback='assets/ui/'+(cardId.startsWith('S0-MAN-')?'back-shard.webp':(/-[HL]\d+$/i.test(cardId)?'back-legacy.webp':'back-main.webp'));
+  // Background covers the Hand face while the same-origin image is loading;
+  // successful artwork paints over it without a source swap or re-render.
+  img.style.background='url("'+fallback+'") center / cover no-repeat';
+  img.decoding='async';
+  img.addEventListener('error',()=>{
+    if(img.dataset.glHandArtFallback==='1')return;
+    // Website's existing document-level fallback can have changed src during
+    // capture phase. Avoid a second rewrite or a fallback/error loop.
+    try{if(new URL(img.src,document.baseURI).href===new URL(fallback,document.baseURI).href)return;}catch{}
+    img.dataset.glHandArtFallback='1';
+    img.src=fallback;
+  },{once:true});
+  img.src=art(cardId)||fallback;
+}
+
 function shardArt(sh){const faces={Generic:'S0-MAN-001',Warrior:'S0-MAN-002',Mage:'S0-MAN-003',Cleric:'S0-MAN-004',Thief:'S0-MAN-005',Archer:'S0-MAN-006'};const name=sh&&sh.kind==='CLASS'?String(sh.class_name||'').trim():'Generic';return 'card-art/'+(faces[name]||faces.Generic)+'.webp';}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cloneLite(v){try{return JSON.parse(JSON.stringify(v))}catch{return null}}
