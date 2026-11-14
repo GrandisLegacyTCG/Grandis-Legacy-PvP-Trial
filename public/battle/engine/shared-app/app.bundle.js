@@ -3265,6 +3265,7 @@
     if(isFinalGritCard(c) && state && (!legalTargetLanesFor(state,side,cardId,sourceLane).length)) reasons.push('Final Grit requires a valid allied Legacy Mode Gladiator/Conqueror target');
     if(state && sourceLane===null && (isHealthPotionCard(c)||isGreaterHealthPotionCard(c)||isElixirCard(c)||isPhoenixFeatherCard(c)||isFreezeBombCard(c)||isDazedCard(c)) && !legalTargetLanesFor(state,side,cardId,null).length) reasons.push('No legal Hero target for '+cardName(c));
     if(isStaminaPotionCard(c) && state && !legalTargetLanesFor(state,side,cardId,null).length) reasons.push('Stamina Potion requires an Exhausted allied Hero.');
+    if(isHeroAttachmentItem(c) && state && !legalTargetLanesFor(state,side,cardId,sourceLane).length) reasons.push(cardName(c)+' requires an eligible active Hero with an available Attachment Slot.');
     if(isScoutingCard(c) && state && !hasLegalScoutingExpTarget(state,side)) reasons.push('Scouting requires opponent non-Ultimate EXP card in an active Hero EXP stack');
     if(isRemoveStatusCard(c) && state && !legalTargetLanesFor(state,side,cardId,sourceLane).length) reasons.push(cardName(c)+' requires an allied active Hero with a negative status.');
     // Preplay check must reject a Heal that has nothing legal to heal, for BOTH
@@ -3293,7 +3294,7 @@
     if(isDejaVuCard(c)&&state && !(sideDiscard(state,side)||[]).some(function(id){return nonUltimateSkillCard(card(id));})) reasons.push('Déjà vu requires a non-Ultimate Skill in Discard Pile');
     if(c&&c.card_id==='S0-CLE-013'&&state && (sideHand(state,side)||[]).length<2) reasons.push("God's Blessing requires 1 other card in hand to discard");
     if(sourceLane){ var sh=sideHeroes(state,side)[sourceLane]; if(isLegacyModeHero(sh)) reasons.push('Legacy Mode cannot use Skill, Item, Racial, Class, Reposition, or Tribute actions'); }
-    if(targetLane && targetSideForActor(c,side)===side){ var th=sideHeroes(state,side)[targetLane]; if((isHeroAttachmentItem(c)||isStaminaPotionCard(c)||isElixirCard(c)||isBuffCard(c)) && isLegacyModeHero(th)) reasons.push('Legacy Mode cannot receive attachments or staged effects'); if(isPoisonVialCard(c) && !poisonVialHostEligible(th)) reasons.push('Poison Vial requires an Archer, Thief, or Warrior Hero with an available Attachment Slot.'); }
+    if(targetLane && targetSideForActor(c,side)===side){ var th=sideHeroes(state,side)[targetLane]; if((isHeroAttachmentItem(c)||isStaminaPotionCard(c)||isElixirCard(c)||isBuffCard(c)) && isLegacyModeHero(th)) reasons.push('Legacy Mode cannot receive attachments or staged effects'); if(isHeroAttachmentItem(c) && !heroMatchesLineageGate(th,itemLineageGate(c))) reasons.push(cardName(c)+' requires an eligible '+itemLineageGate(c).join(' / ')+' Hero.'); if(isPoisonVialCard(c) && !poisonVialHostEligible(th)) reasons.push('Poison Vial requires an Archer, Thief, or Warrior Hero with an available Attachment Slot.'); }
     return {ok:reasons.length===0, reasons:reasons};
   }
   function validateSourceHero(state, side, sourceLane, cardId, context){
@@ -6397,11 +6398,23 @@
   function isHandCardResponseOption(opt){ return !!(opt&&opt.card_id&&Number.isInteger(Number(opt.hand_index))&&['legacy_reduce','dragon_scale','second_chance'].indexOf(opt.response_kind)===-1); }
   function responsePaymentCandidates(state,side,responseOption){
     var hand=sideHand(state,side)||[], responseIndex=Number(responseOption&&responseOption.hand_index), out=[];
-    if(hand[responseIndex]!==responseOption.card_id){
-      responseIndex=-1;
-      for(var ri=0;ri<hand.length;ri++){if(hand[ri]===responseOption.card_id){responseIndex=ri;break;}}
-    }
+    // Physical hand slot is committed at Response choice. Do not substitute
+    // another duplicate card if that slot changed while payment is pending.
+    if(!responseOption||!Number.isInteger(responseIndex)||hand[responseIndex]!==responseOption.card_id)return out;
     hand.forEach(function(id,idx){ if(idx!==responseIndex) out.push({card_id:id,hand_index:idx,instance_key:'HAND:'+side+':'+idx}); });
+    return out;
+  }
+  function validatedPendingHandDiscardIndices(state,side,candidates,selected,excludedHandIndex){
+    if(!Array.isArray(selected))return null;
+    var hand=sideHand(state,side)||[],seenChoices={},seenHand={},out=[];
+    for(var i=0;i<selected.length;i++){
+      var ci=selected[i];
+      if(!Number.isInteger(ci)||ci<0||ci>=candidates.length||seenChoices[ci])return null;
+      seenChoices[ci]=true;
+      var candidate=candidates[ci],hi=candidate&&candidate.hand_index;
+      if(!Number.isInteger(hi)||hi<0||hi>=hand.length||seenHand[hi]||hi===excludedHandIndex||hand[hi]!==candidate.card_id)return null;
+      seenHand[hi]=true;out.push(hi);
+    }
     return out;
   }
   function discardStagedResponseCard(state,side,responseOption,reason){
@@ -6431,7 +6444,7 @@
     $('choiceBody').innerHTML=manaHtml+discardHtml;$('choiceOverlay').classList.add('open');
   }
   function selectResponsePaymentChoice(idx){
-    if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return false;idx=Number(idx);var p=appState.pending,choices=p.candidates||[],need=Number(p.required_discard_count||0);if(idx<0||idx>=choices.length)return false;
+    if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return false;idx=Number(idx);var p=appState.pending,choices=p.candidates||[],need=Number(p.required_discard_count||0);if(!Number.isInteger(idx)||idx<0||idx>=choices.length||!choices[idx]||sideHand(appState,p.side)[choices[idx].hand_index]!==choices[idx].card_id)return false;
     p.selected_indices=s0ChooseCardIndex(p.selected_indices,idx,need);renderResponsePaymentChoice();return true;
   }
   function toggleResponseManaShardChoice(uid){
@@ -6474,7 +6487,9 @@
   function commitResponsePaymentChoice(){
     if(!appState||!appState.pending||appState.pending.type!=='response_payment_choice')return false;
     var p=appState.pending,selected=Array.isArray(p.selected_indices)?p.selected_indices:[],need=Number(p.required_discard_count||0);if(selected.length!==need){showInfo('Response Payment','Choose exactly '+need+' card'+(need===1?'':'s')+' to pay the additional cost.');return false;}
-    var handIndices=selected.map(function(choiceIndex){var c=(p.candidates||[])[choiceIndex];return c&&c.hand_index;});return finalizeResponsePayment(appState,clone(p.incoming_response_window),clone(p.response_option),handIndices,(p.selected_shard_uids||[]).slice());
+    var handIndices=validatedPendingHandDiscardIndices(appState,p.side,p.candidates||[],selected,Number(p.response_option&&p.response_option.hand_index));
+    if(!handIndices){showInfo('Response Payment','Selected Hand card positions changed. No cost has been spent.');return false;}
+    return finalizeResponsePayment(appState,clone(p.incoming_response_window),clone(p.response_option),handIndices,(p.selected_shard_uids||[]).slice());
   }
   function beginResponsePayment(state,rw,responseOption){
     var rc=card(responseOption.card_id),side=rw.target_side||rw.response_owner||'PLAYER',spec=responsePaymentSpec(rc),hand=sideHand(state,side)||[],idx=Number(responseOption.hand_index),sourceLane=responseOption.source_lane||rw.target_lane,sourceHero=sourceLane?sideHeroes(state,side)[sourceLane]:null,cost=responseCostForSource(rc,sourceHero,state,side);
@@ -6613,10 +6628,21 @@
       var rk=responseKind(rc,incoming); if(!rk || !lunMayBlockForHero(rc,incoming,defender)) return;
       if(incoming.cannot_block && ['S0-WAR-012','S0-WAR-029','S0-THF-022'].indexOf(rc.card_id)>=0 &&
          !/\bREFLECT\s+\d+\b/i.test(String(branchEffectText(rc,defender)||'')))return;
-      if(isSpectralGrapplingHookCard(rc) && !spectralGrapplingHookResponderValid(defender)) return;
       if(rc.card_id==='S0-THF-023' && !shadowSwitchCanReposition(state,responderSide,incoming)) return;
-      if(isChainMailCard(rc) && !chainMailResponderValid(defender)) return;
       if((incoming.affected_lanes||[]).length>1 && !(isSacredBulwarkCard(rc) || isBlessingDivinityCard(rc) || isDefensiveFormationCard(rc) || isSpectralGrapplingHookCard(rc) || rk==='negate_return')) return;
+      if(isSpectralGrapplingHookCard(rc)||isChainMailCard(rc)){
+        // Printed 'to one of your Heroes': the user must satisfy the Item class
+        // row; the damaged ally does not have to belong to that class.
+        if(rk==='dodge'&&hasStatus(defender,'Freeze'))return;
+        LANE_ORDER.forEach(function(userLane){
+          var user=sideHeroes(state,responderSide)[userLane];
+          if(!heroMatchesLineageGate(user,itemLineageGate(rc))||!affordable(rc,user))return;
+          options.push({card_id:id,hand_index:idx,card:rc,source_lane:userLane,
+            source_card_id:heroIdFrom(user),protected_lane:incoming.target_lane,response_kind:rk,
+            label:cardName(rc)+' — '+cardName(card(user.card_id))+' protects '+cardName(card(defender&&defender.card_id))});
+        });
+        return;
+      }
       // A Thief-line Hero can be any selected target (including Spell Blade).
       // Smoke Screen belongs to that Hero, even when another Hero is the first
       // window's current damage recipient. This is a whole-Attack negate.
@@ -6709,9 +6735,9 @@
     if((isThiefDodgeResponseCard(c)||isDodgeResponseCard(c))&&incoming.cannot_dodge) reasons.push('The incoming effect cannot be Dodged.');
     if((isThiefDodgeResponseCard(c)||isDodgeResponseCard(c))&&defender&&hasStatus(defender,'Freeze')) reasons.push(cardName(card(defender.card_id))+' is Frozen and cannot Dodge.');
     if(incoming.cannot_block && c.card_id!=='S0-WAR-012' && Array.isArray(c.effect) && c.effect.some(function(e){return e.kind==='block_damage'||e.kind==='protective_def_response_block';})) reasons.push('The incoming effect cannot be Blocked.');
-    if(isSpectralGrapplingHookCard(c)&&!spectralGrapplingHookResponderValid(defender)) reasons.push('Spectral Grappling Hook has no legal reposition/response target for this defender.');
+    if(isSpectralGrapplingHookCard(c)&&!LANE_ORDER.some(function(l){return spectralGrapplingHookResponderValid(sideHeroes(state,responderSide)[l]);})) reasons.push('Spectral Grappling Hook requires an active Archer or Thief Item user.');
     if(c&&c.card_id==='S0-THF-023'&&!shadowSwitchCanReposition(state,responderSide,incoming)) reasons.push('Shadow Switch requires both Heroes to be able to swap (not Frozen or Stunned).');
-    if(isChainMailCard(c)&&!chainMailResponderValid(defender)) reasons.push('Chain Mail does not match this incoming damage or defender state.');
+    if(isChainMailCard(c)&&!LANE_ORDER.some(function(l){return chainMailResponderValid(sideHeroes(state,responderSide)[l]);})) reasons.push('Chain Mail requires an active Warrior, Archer, or Thief Item user.');
     if((incoming.affected_lanes||[]).length>1&&!(isSacredBulwarkCard(c)||isBlessingDivinityCard(c)||isDefensiveFormationCard(c)||isSpectralGrapplingHookCard(c)||isSmokeScreenCard(c)||isTacticalAdaptationCard(c))) reasons.push('This card cannot protect the full multi-target response frame.');
     var kind=responseKind(c,incoming);
     if(!kind&&!reasons.length) reasons.push('This card does not match the incoming '+String(incoming.damage_type||'')+' damage / '+String(incoming.attack_type||'Attack')+' response condition.');
@@ -8352,7 +8378,23 @@
   function baseFamilyForHero(hero){ var id=(card(heroIdFrom(hero)).identity||{}); return id.base_class_family || (id.active_class_lineage&&id.active_class_lineage[0]) || heroClass(hero); }
   function activeLineageForHero(hero){ var hcCard=card(heroIdFrom(hero))||{}, id=hcCard.identity||{}, arr=[]; if(Array.isArray(id.active_class_lineage)) arr=arr.concat(id.active_class_lineage); if(Array.isArray(id.base_skill_classes)) arr=arr.concat(id.base_skill_classes); if(typeof hcCard.active_class_lineage==='string') arr=arr.concat(hcCard.active_class_lineage.split(';')); if(typeof hcCard.base_skill_classes==='string') arr=arr.concat(hcCard.base_skill_classes.split(';')); if(id.base_class_family) arr.push(id.base_class_family); if(id.class) arr.push(id.class); var hc=heroClass(hero); if(hc) arr.push(hc); return arr.map(function(x){return String(x||'').trim();}).filter(function(x,i,a){return x&&a.indexOf(x)===i;}); }
   function heroMatchesLineageGate(hero,required){ if(!hero||isLegacyModeHero(hero)||Number(hero.hp||0)<=0) return false; required=Array.isArray(required)?required:[]; if(!required.length) return true; var line=activeLineageForHero(hero).map(function(x){return String(x).toLowerCase();}); return required.some(function(x){return line.indexOf(String(x||'').toLowerCase())!==-1;}); }
-  function itemLineageGate(c){ return c&&c.requirement&&Array.isArray(c.requirement.target_or_user_base_classes)?c.requirement.target_or_user_base_classes:[]; }
+  // Main Deck R3.8 printed Item class rows. The OSA-compiled requirement is
+  // empty for five Items; never silently interpret missing metadata as ALL.
+  // This is a VS AI bridge overlay, not a change to canonical card data.
+  var S0_PRINTED_ITEM_CLASS_GATES={
+    'S0-ITM-011':['Archer','Thief','Warrior'],
+    'S0-ITM-012':['Archer','Thief'],
+    'S0-ITM-013':['Warrior','Cleric'],
+    'S0-ITM-014':['Warrior','Cleric'],
+    'S0-ITM-015':['Mage','Cleric'],
+    'S0-ITM-016':['Warrior','Archer','Thief']
+  };
+  function itemLineageGate(c){
+    if(!c)return[];
+    if(Object.prototype.hasOwnProperty.call(S0_PRINTED_ITEM_CLASS_GATES,c.card_id))
+      return S0_PRINTED_ITEM_CLASS_GATES[c.card_id].slice();
+    return c.requirement&&Array.isArray(c.requirement.target_or_user_base_classes)?c.requirement.target_or_user_base_classes:[];
+  }
   function poisonVialHostEligible(hero){ return !!(hero && heroMatchesLineageGate(hero,itemLineageGate(card('S0-ITM-011'))) && attachmentSlotIndex(hero)!==-1); }
   function runtimeTurnStamp(state){ return String((state&&state.round)||1)+'|'+String((state&&state.turn)||''); }
   function racialTokenSpentTurnKey(side){return side==='PLAYER'?'playerRacialTokenSpentTurn':'aiRacialTokenSpentTurn';}
@@ -8441,8 +8483,12 @@
   }
   function selectCardSearchChoice(idx){
     if(!appState || !appState.pending || appState.pending.type!=='card_search_choice') return false;
-    var p=appState.pending;
-    if(idx<0 || idx>=(p.candidates||[]).length) return false;
+    var p=appState.pending;idx=Number(idx);
+    if(!Number.isInteger(idx)||idx<0 || idx>=(p.candidates||[]).length) return false;
+    // A physical Hand/Discard/Deck card cannot be selected after it has moved.
+    var cand=(p.candidates||[])[idx],physicalZone=p.zone==='hand'?sideHand(appState,p.side):p.zone==='discard'?sideDiscard(appState,p.side):p.zone==='deck'?deckForSide(appState,p.side):null,
+      physicalIndex=cand&&(p.zone==='hand'?cand.hand_index:p.zone==='discard'?cand.discard_index:cand.deck_index);
+    if(physicalZone&&(!cand||!Number.isInteger(physicalIndex)||physicalZone[physicalIndex]!==cand.card_id))return false;
     if(p.multi_select){
       p.selected_indices=p.selected_indices||[];
       p.selected_indices=s0ChooseCardIndex(p.selected_indices,idx,Number(p.max_count||p.required_count||1));
@@ -8455,10 +8501,22 @@
   }
   function commitCardSearchChoice(){
     if(!appState || !appState.pending || appState.pending.type!=='card_search_choice') return false;
-    var p=appState.pending; var selected=p.multi_select?(p.selected_indices||[]).slice():[p.selected_index];
-    selected=selected.filter(function(v){ return typeof v==='number' && p.candidates[v]; });
-    if(selected.length<cardSearchRequiredCount(p)){ showInfo('Choice Required','Select the required card choice before confirming.'); return false; }
-    var picked=selected.map(function(i){ return p.candidates[i]; });
+    var p=appState.pending,selected=p.multi_select?(p.selected_indices||[]).slice():[p.selected_index],
+      required=cardSearchRequiredCount(p),maxChoices=p.multi_select?Number(p.max_count||p.required_count||1):1;
+    if(selected.length<required||selected.length>maxChoices||new Set(selected).size!==selected.length||
+      selected.some(function(i){return !Number.isInteger(i)||i<0||i>=(p.candidates||[]).length||!(p.candidates||[])[i];})){
+      showInfo('Choice Required','Choose unique, valid cards from the displayed selection.');return false;
+    }
+    var picked=selected.map(function(i){ return p.candidates[i]; }),zone=p.zone==='hand'?sideHand(appState,p.side):p.zone==='discard'?sideDiscard(appState,p.side):p.zone==='deck'?deckForSide(appState,p.side):null,seenPhysical={};
+    // Re-check every exact zone slot before cost or movement; do not replace
+    // a stale choice with another copy of the same Card ID elsewhere.
+    if(zone){for(var ci=0;ci<picked.length;ci++){
+      var choice=picked[ci],ix=p.zone==='hand'?choice.hand_index:p.zone==='discard'?choice.discard_index:choice.deck_index;
+      if(!Number.isInteger(ix)||ix<0||ix>=zone.length||zone[ix]!==choice.card_id||seenPhysical[ix]){
+        showInfo('Choice Changed','A selected physical card changed its position. No cards were moved.');return false;
+      }
+      seenPhysical[ix]=true;
+    }}
     if(p.resolve_to==='s0_response_condition_precommit'){
       if(!discardConditionSpec(card(p.source_card_id)))return false;
       var resumeResponse=clone(p.response_option||{});resumeResponse.s0_discard_condition_picks=picked.map(function(x){return {card_id:x.card_id,discard_index:x.discard_index};});
@@ -8486,13 +8544,13 @@
     var committedCardMoves=[];
     if(p.zone==='deck'){
       var deck=deckForSide(appState,p.side);
-      picked.sort(function(a,b){ return b.deck_index-a.deck_index; }).forEach(function(cand){ var idx=cand.deck_index; if(deck[idx]!==cand.card_id) idx=deck.indexOf(cand.card_id); if(idx>=0){ var id=deck.splice(idx,1)[0]; sideHand(appState,p.side).push(id); pushLog(appState, cardName(card(p.source_card_id))+' adds chosen '+cardName(card(id))+' from deck to hand.'); } else pushLog(appState, cardName(card(p.source_card_id))+' chosen card was not found in deck at resolution.'); });
+      picked.sort(function(a,b){ return b.deck_index-a.deck_index; }).forEach(function(cand){ var idx=cand.deck_index;  if(idx>=0&&deck[idx]===cand.card_id){ var id=deck.splice(idx,1)[0]; sideHand(appState,p.side).push(id); pushLog(appState, cardName(card(p.source_card_id))+' adds chosen '+cardName(card(id))+' from deck to hand.'); } else pushLog(appState, cardName(card(p.source_card_id))+' chosen card was not found in deck at resolution.'); });
       committedCardMoves.push({from:'Main Deck',to:'Hand',count:picked.length,known:false});
       shufflePile(deck); pushLog(appState,'Deck shuffled after '+cardName(card(p.source_card_id))+' search/open.');
     } else if(p.zone==='hand'){
       var hnd=sideHand(appState,p.side);
       picked.sort(function(a,b){ return b.hand_index-a.hand_index; }).forEach(function(cand){
-        var hidx=cand.hand_index; if(hnd[hidx]!==cand.card_id) hidx=hnd.indexOf(cand.card_id);
+        var hidx=cand.hand_index;
         if(hidx>=0){
           var hid=hnd.splice(hidx,1)[0];
           if(p.resolve_to==='discard_then_draw_three'){ sideDiscard(appState,p.side).push(hid);committedCardMoves.push({from:'Hand',to:'Discard',card_ids:[hid],known:true}); pushLog(appState,cardName(card(p.source_card_id))+' discards '+cardName(card(hid))+' as its explicit cost.'); var handBeforeDraw=hnd.length;drawMany(appState,p.side,3,{reason:'CARD_EFFECT'});committedCardMoves.push({from:'Main Deck',to:'Hand',count:Math.max(0,hnd.length-handBeforeDraw),known:false});pushLog(appState,cardName(card(p.source_card_id))+' draws up to 3 cards.'); } else if(p.resolve_to==='source_exp' && p.host_side && p.host_lane){
@@ -8505,7 +8563,7 @@
       });
     } else if(p.zone==='discard'){
       var pile=sideDiscard(appState,p.side), destinationDeck=deckForSide(appState,p.side),returnedToDeck=0;
-      picked.sort(function(a,b){ return b.discard_index-a.discard_index; }).forEach(function(cand){ var pidx=cand.discard_index; if(pile[pidx]!==cand.card_id) pidx=pile.indexOf(cand.card_id); if(pidx>=0){ var pid=pile.splice(pidx,1)[0]; if(p.resolve_to==='replenish_to_deck'){ destinationDeck.push(pid);returnedToDeck++; pushLog(appState, cardName(card(p.source_card_id))+' returns chosen '+cardName(card(pid))+' from Discard Pile to deck.'); } else { sideHand(appState,p.side).push(pid); pushLog(appState, cardName(card(p.source_card_id))+' returns chosen '+cardName(card(pid))+' from Discard Pile to hand.'); } } });
+      picked.sort(function(a,b){ return b.discard_index-a.discard_index; }).forEach(function(cand){ var pidx=cand.discard_index;  if(pidx>=0&&pile[pidx]===cand.card_id){ var pid=pile.splice(pidx,1)[0]; if(p.resolve_to==='replenish_to_deck'){ destinationDeck.push(pid);returnedToDeck++; pushLog(appState, cardName(card(p.source_card_id))+' returns chosen '+cardName(card(pid))+' from Discard Pile to deck.'); } else { sideHand(appState,p.side).push(pid); pushLog(appState, cardName(card(p.source_card_id))+' returns chosen '+cardName(card(pid))+' from Discard Pile to hand.'); } } });
       if(p.resolve_to==='replenish_to_deck'){ shufflePile(destinationDeck);queueDiscardToDeckGhosts(appState,p.side,returnedToDeck); pushLog(appState,'Replenish shuffles the Main Deck after returning 2 cards.'); var handBeforeDraw=sideHand(appState,p.side).length;drawOne(appState,p.side,false,{reason:'CARD_EFFECT'});committedCardMoves.push({from:'Main Deck',to:'Hand',count:Math.max(0,sideHand(appState,p.side).length-handBeforeDraw),known:false});pushLog(appState,'Replenish draws 1 card after the shuffle.'); }
       if(picked.length)committedCardMoves.unshift({from:'Discard',to:p.resolve_to==='replenish_to_deck'?'Main Deck':'Hand',card_ids:picked.map(function(x){return x.card_id;}),known:true});
     }
@@ -9424,12 +9482,24 @@
     else {if(list.length>=cap)list.pop();list.push(idx);}
     return list;
   }
-  function selectLegacyCostChoice(idx){if(!appState||!appState.pending||appState.pending.type!=='legacy_cost_selection')return false;var p=appState.pending,need=Number(p.required_cost||1);idx=Number(idx);if(idx<0||idx>=(p.cost_candidates||[]).length)return false;p.selected_cost_indices=p.selected_cost_indices||[];p.selected_cost_indices=s0ChooseCardIndex(p.selected_cost_indices,idx,need);renderLegacyCostChoice();return true;}
-  function commitLegacyCostChoice(){if(!appState||!appState.pending||appState.pending.type!=='legacy_cost_selection')return false;var p=appState.pending,chosen=(p.selected_cost_indices||[]).map(function(i){return(p.cost_candidates||[])[i]&&(p.cost_candidates||[])[i].hand_index;}).filter(function(v){return typeof v==='number';});var pay=payLegacyAbilityCost(appState,p.side,p.ability,chosen);if(!pay.ok){showInfo('Legacy Cost','Selected cost cards are no longer legal.');return false;}appState.pending=null;closeChoice();return continueLegacyAbilityAfterCost(appState,{side:p.side,source_lane:p.source_lane,card_id:p.card_id,ability:p.ability,cost_paid:pay.paid||[]});}
+  function selectLegacyCostChoice(idx){if(!appState||!appState.pending||appState.pending.type!=='legacy_cost_selection')return false;var p=appState.pending,need=Number(p.required_cost||1);idx=Number(idx);if(!Number.isInteger(idx)||idx<0||idx>=(p.cost_candidates||[]).length)return false;var choice=p.cost_candidates[idx];if(!choice||sideHand(appState,p.side)[choice.hand_index]!==choice.card_id||!isLegacyCostCard(choice.card_id,p.ability))return false;p.selected_cost_indices=p.selected_cost_indices||[];p.selected_cost_indices=s0ChooseCardIndex(p.selected_cost_indices,idx,need);renderLegacyCostChoice();return true;}
+  function commitLegacyCostChoice(){if(!appState||!appState.pending||appState.pending.type!=='legacy_cost_selection')return false;var p=appState.pending,chosen=validatedPendingHandDiscardIndices(appState,p.side,p.cost_candidates||[],p.selected_cost_indices||[],null);if(!chosen){showInfo('Legacy Cost','Selected Hand card positions changed. No cards were discarded.');return false;}var pay=payLegacyAbilityCost(appState,p.side,p.ability,chosen);if(!pay.ok){showInfo('Legacy Cost','Selected cost cards are no longer legal.');return false;}appState.pending=null;closeChoice();return continueLegacyAbilityAfterCost(appState,{side:p.side,source_lane:p.source_lane,card_id:p.card_id,ability:p.ability,cost_paid:pay.paid||[]});}
   function continueLegacyAbilityAfterCost(state,ctx){var ability=ctx.ability,count=legacyResultCount(ability);if(legacyAbilityNeedsDiscardChoice(ability)){var choices=legacyDiscardReturnCandidates(state,ctx.side,ability,ctx.cost_paid||[]);state.pending={type:'legacy_card_choice',choice_zone:'discard',side:ctx.side,decision_side:ctx.side,source_side:ctx.side,source_lane:ctx.source_lane,card_id:ctx.card_id,abilityId:ability.action_key,ability:ability,candidates:choices,selected_indices:[],required_choices:count,cost_paid:ctx.cost_paid||[]};pushLog(state,'Choose '+count+' post-cost Discard Pile card(s) for '+cardName(card(ctx.card_id))+'.');renderLegacyCardChoice();render();return true;}if(legacyAbilityNeedsDeckChoice(ability)){var deckChoices=legacyDeckSearchCandidates(state,ctx.side,ability);state.pending={type:'legacy_card_choice',choice_zone:'deck_search',side:ctx.side,decision_side:ctx.side,source_side:ctx.side,source_lane:ctx.source_lane,card_id:ctx.card_id,abilityId:ability.action_key,ability:ability,candidates:deckChoices,selected_indices:[],required_choices:1,cost_paid:ctx.cost_paid||[]};pushLog(state,'Search and choose 1 card for '+cardName(card(ctx.card_id))+'.');renderLegacyCardChoice();render();return true;}return resolveLegacyAbility(state,ctx.side,ctx.source_lane,ability.action_key,{cost_paid:ctx.cost_paid||[]});}
   function renderLegacyCardChoice(){if(!appState||!appState.pending||appState.pending.type!=='legacy_card_choice')return;var p=appState.pending,selected=p.selected_indices||[],need=Number(p.required_choices||1),ids=(p.candidates||[]).map(function(x){return x.card_id;});if(!pvpLocalOwnsPending(appState.pending)){pvpHideChoiceForNonOwner();return;}if(SUPPRESS_RENDER||!$('choiceOverlay'))return;$('choiceTitle').textContent='Legacy Choice — '+cardName(card(p.card_id));$('choiceConfirm').style.display='';$('choiceConfirm').textContent='Confirm Legacy Choice';$('choiceConfirm').disabled=selected.length!==need;$('choiceBody').innerHTML='<p class="choice-instruction">Choose exactly '+need+' card(s).</p><div class="choice-grid card-search-choice-grid">'+ids.map(function(id,idx){var sel=selected.indexOf(idx)!==-1;return '<article class="card-search-choice '+(sel?'selected':'')+'"><button class="discard-preview" type="button" data-preview="'+esc(id)+'"><img src="'+esc(thumbFor(id))+'" alt="'+esc(cardName(card(id)))+' thumbnail"><span>'+esc(cardName(card(id)))+'</span></button><button class="discard-select" type="button" data-legacy-card-choice="'+idx+'">'+(sel?'Selected':'Select')+'</button></article>';}).join('')+'</div>';$('choiceOverlay').classList.add('open');}
-  function selectLegacyCardChoice(idx){if(!appState||!appState.pending||appState.pending.type!=='legacy_card_choice')return false;var p=appState.pending,need=Number(p.required_choices||1);idx=Number(idx);if(idx<0||idx>=(p.candidates||[]).length)return false;p.selected_indices=p.selected_indices||[];p.selected_indices=s0ChooseCardIndex(p.selected_indices,idx,need);renderLegacyCardChoice();return true;}
-  function commitLegacyCardChoice(){if(!appState||!appState.pending||appState.pending.type!=='legacy_card_choice')return false;var p=appState.pending,chosen=(p.selected_indices||[]).map(function(i){return(p.candidates||[])[i];}).filter(Boolean);if(chosen.length!==Number(p.required_choices||1)){showInfo('Legacy Choice','Choose the required number of legal cards.');return false;}appState.pending=null;closeChoice();return resolveLegacyAbility(appState,p.side,p.source_lane,p.abilityId,{choices:chosen,choice_zone:p.choice_zone,cost_paid:p.cost_paid||[]});}
+  function selectLegacyCardChoice(idx){if(!appState||!appState.pending||appState.pending.type!=='legacy_card_choice')return false;var p=appState.pending,need=Number(p.required_choices||1);idx=Number(idx);if(!Number.isInteger(idx)||idx<0||idx>=(p.candidates||[]).length)return false;p.selected_indices=p.selected_indices||[];p.selected_indices=s0ChooseCardIndex(p.selected_indices,idx,need);renderLegacyCardChoice();return true;}
+  function commitLegacyCardChoice(){
+    if(!appState||!appState.pending||appState.pending.type!=='legacy_card_choice')return false;
+    var p=appState.pending,selected=p.selected_indices||[],need=Number(p.required_choices||1),chosen=[],seen={},pile=p.choice_zone==='discard'?sideDiscard(appState,p.side):deckForSide(appState,p.side);
+    if(!Array.isArray(selected)||selected.length!==need){showInfo('Legacy Choice','Choose the required number of legal cards.');return false;}
+    for(var i=0;i<selected.length;i++){
+      var j=selected[i],c=p.candidates&&p.candidates[j],ix=c&&(p.choice_zone==='discard'?c.discard_index:c.deck_index);
+      if(!Number.isInteger(j)||j<0||seen[j]||!c||!Number.isInteger(ix)||ix<0||ix>=pile.length||pile[ix]!==c.card_id||seen['physical:'+ix]){
+        showInfo('Legacy Choice','Selected cards changed in their source zone. No card was moved.');return false;
+      }
+      seen[j]=true;seen['physical:'+ix]=true;chosen.push(c);
+    }
+    appState.pending=null;closeChoice();return resolveLegacyAbility(appState,p.side,p.source_lane,p.abilityId,{choices:chosen,choice_zone:p.choice_zone,cost_paid:p.cost_paid||[]});
+  }
   function resolveLegacyAbility(state,side,lane,abilityId,payload){
     payload=payload||{};var h=state&&sideHeroes(state,side)[lane],c=card(heroIdFrom(h)),ability=legacyAbilityData(c);
     if(!state||!h||!isLegacyModeHero(h)||!ability||ability.action_key!==abilityId){showInfo('Legacy Ability','Legacy Ability is no longer legal.');return false;}
@@ -12458,6 +12528,7 @@ var desktopMarkup='<div class="gl-lab-authority '+(state.turn==='AI'?'turn-ai':'
     $('choiceOverlay').classList.add('open','hand-discard-open');
   }
   function toggleDiscardIndex(idx){
+    if(!appState||!appState.pending||appState.pending.type!=='hand_limit_discard'||!Number.isInteger(idx)||idx<0||idx>=sideHand(appState,appState.pending.side||'PLAYER').length)return false;
     var need=appState.pending.required;
     selectedDiscardIndexes=s0ChooseCardIndex(selectedDiscardIndexes,idx,need);
     appState.pending.selected=selectedDiscardIndexes.slice(); renderHandLimitDiscardChoice();
@@ -12466,8 +12537,8 @@ var desktopMarkup='<div class="gl-lab-authority '+(state.turn==='AI'?'turn-ai':'
     if(!appState || !appState.pending || appState.pending.type!=='hand_limit_discard') return false;
     if(!pvpLocalOwnsPending(appState.pending)){ pvpHideChoiceForNonOwner(); return false; }
     var p=appState.pending, side=p.side||p.decision_side||'PLAYER';
-    var need=p.required; if(selectedDiscardIndexes.length<need) return false;
-    var hand=sideHand(appState,side), discard=sideDiscard(appState,side);
+    var need=Number(p.required||0), hand=sideHand(appState,side), discard=sideDiscard(appState,side);
+    if(selectedDiscardIndexes.length!==need||new Set(selectedDiscardIndexes).size!==need||selectedDiscardIndexes.some(function(ix){return !Number.isInteger(ix)||ix<0||ix>=hand.length;}))return false;
     selectedDiscardIndexes.slice().sort(function(a,b){return b-a;}).forEach(function(idx){ var motion=captureHandDiscardMotion(side,idx,hand[idx]); var id=hand.splice(idx,1)[0]; if(id){ discard.push(id); queueHandDiscardMotion(motion); } });
     pushLog(appState,side+' discards '+need+' card'+(need>1?'s':'')+' to hand limit.');
     appState.pending=null; selectedDiscardIndexes=[]; closeChoice();
@@ -18376,6 +18447,146 @@ function withUnshuffledSelfTest(fn){ return function(){ var old=STARTUP_SHUFFLE_
         total:checks.length,checks:checks};
     }catch(err){return{ok:false,reason:String(err&&err.stack||err),checks:checks};}
     finally{appState=oldApp;matchStarted=oldMatch;SUPPRESS_RENDER=oldSuppress;}
+  };
+
+  // RC40 Item/Class and physical-discard audit. Explicit opt-in test, no match mutation.
+  window.GL_RC40_ITEM_DISCARD_VALIDATOR_QA_SELF_TEST=function(){
+    initCards();
+    var oldApp=appState,oldMatch=matchStarted,oldSuppress=SUPPRESS_RENDER,
+      checks=[],classIds={Archer:'ARC',Thief:'THF',Warrior:'WAR',Cleric:'CLE',Mage:'MAG'},
+      // Expected values duplicated intentionally from verified artwork, not
+      // generated from the engine overlay we are asserting against.
+      printed={
+        'S0-ITM-011':['Archer','Thief','Warrior'],
+        'S0-ITM-012':['Archer','Thief'],
+        'S0-ITM-013':['Warrior','Cleric'],
+        'S0-ITM-014':['Warrior','Cleric'],
+        'S0-ITM-015':['Mage','Cleric'],
+        'S0-ITM-016':['Warrior','Archer','Thief']
+      };
+    function check(label,condition,extra){checks.push({name:label,ok:!!condition,detail:condition?undefined:(extra||null)});}
+    function fresh(turn){var s=buildInitialMatchState();appState=s;matchStarted=true;
+      s.preGame=null;s.turn=turn||'PLAYER';s.phase='Deploy';s.round=2;s.gameOver=false;
+      s.pending=null;s.responseWindow=null;s.pvpHumanVsHuman=false;
+      s.playerHand=[];s.aiHand=[];s.playerDiscard=[];s.aiDiscard=[];
+      return s;
+    }
+    function hero(s,lane,cls,rank){var h=s.playerHeroes[lane];h.card_id='S0-'+classIds[cls]+'-H00'+String(rank===1?1:rank===2?8:9);
+      h.hp=100;h.maxHp=100;h.mode='HERO';h.legacy_mode=false;h.attachments=[null,null];h.statuses=[];h.exhausted=false;return h;}
+    function rw(target){return{kind:'incoming_attack',response_owner:'PLAYER',source_side:'AI',source_lane:'CENTER',target_side:'PLAYER',target_lane:target,
+      card_id:'S0-WAR-001',damage:40,damage_type:'Physical',attack_type:'Single Target',cannot_dodge:false,cannot_block:false};}
+    try{
+      SUPPRESS_RENDER=true;
+      var s=fresh(),classes=Object.keys(classIds);
+      // All 20 Item cards: the six class-gated prints and fourteen All Classes.
+      // Active lineage includes any valid Rank II / III branch-class access.
+      Array.from({length:20},function(_,i){return 'S0-ITM-'+String(i+1).padStart(3,'0');}).forEach(function(id){
+        classes.forEach(function(cls){[1,2,3].forEach(function(rank){
+          var h=hero(s,'CENTER',cls,rank),allowed=!printed[id]||activeLineageForHero(h).some(function(x){return printed[id].indexOf(x)!==-1;});
+          check(id+' '+cls+' Rank '+rank,heroMatchesLineageGate(h,itemLineageGate(card(id)))===allowed,
+            {actual:activeLineageForHero(h),printed:printed[id]||'All Classes'});
+        });});
+      });
+      // Each of five restricted non-reactive Item hosts uses its own class row.
+      ['S0-ITM-011','S0-ITM-013','S0-ITM-014','S0-ITM-015'].forEach(function(id){
+        classes.forEach(function(cls){s=fresh();hero(s,'LEFT',cls,1);hero(s,'CENTER','Mage',1);hero(s,'RIGHT','Mage',1);
+          var permitted=printed[id].indexOf(cls)!==-1;
+          // Mage other lanes only matter for Invisibility Cloak.
+          var legal=legalTargetLanesFor(s,'PLAYER',id,null).indexOf('LEFT')!==-1;
+          check(id+' host '+cls,legal===permitted,{lanes:legalTargetLanesFor(s,'PLAYER',id,null)});
+        });
+      });
+      // 0 eligible users means the Card is blocked before any cost can be paid.
+      s=fresh();LANE_ORDER.forEach(function(l){hero(s,l,'Mage',1);});
+      check('Spectral Hook Mage-only Response denied',responseOptionsFor(s,'PLAYER',Object.assign(responseIncomingFromWindow(rw('CENTER')),{damage_type:'Physical'})).filter(function(o){return o.card_id==='S0-ITM-012';}).length===0);
+      s.playerHand=['S0-ITM-013'];
+      check('Ring of Grace Mage-only preplay denied',!validateCardPreconditions(s,'PLAYER','S0-ITM-013',null,null,{}).ok);
+      // Item user and protected target are not the same Hero: Archer protects Mage.
+      s=fresh('AI');hero(s,'LEFT','Archer',1);hero(s,'CENTER','Mage',1);hero(s,'RIGHT','Cleric',1);
+      s.playerHand=['S0-ITM-012','S0-THF-001','S0-THF-001'];
+      var incoming=responseIncomingFromWindow(rw('CENTER')),
+        opts=responseOptionsFor(s,'PLAYER',incoming).filter(function(o){return o.card_id==='S0-ITM-012';});
+      check('Hook Archer source protects Mage target',opts.length===1&&opts[0].source_lane==='LEFT'&&opts[0].protected_lane==='CENTER',opts);
+      var opt=opts[0],originalHand=s.playerHand.slice(),w=rw('CENTER');
+      if(opt){s.responseWindow=w;w.options=opts;
+        check('Hook enters precommit Hand discard picker',beginResponsePayment(s,w,clone(opt))&&s.pending&&s.pending.type==='response_payment_choice');
+        if(s.pending){
+          var choices=s.pending.candidates;
+          check('Response cost excludes only played physical Hand slot',choices.length===2&&choices[0].hand_index===1&&choices[1].hand_index===2,choices);
+          check('Select duplicate-ID other physical card',selectResponsePaymentChoice(1)&&s.pending.selected_indices.length===1&&s.pending.selected_indices[0]===1);
+          check('Response selection is tentative',s.playerHand.join('|')===originalHand.join('|')&&s.playerDiscard.length===0);
+          var stale=clone(s.pending),before=s.playerHand[2];s.playerHand[2]='S0-MAG-001';
+          check('Stale Response Hand choice rejects atomically',commitResponsePaymentChoice()===false&&s.playerHand[0]==='S0-ITM-012'&&s.playerDiscard.length===0);
+          s.playerHand[2]=before;s.pending=stale;
+          check('Hook legal commit resolves / paid other physical card',commitResponsePaymentChoice()===true&&s.playerDiscard.indexOf('S0-THF-001')!==-1,
+            {hand:s.playerHand,discard:s.playerDiscard,pending:s.pending,response:s.responseWindow});
+        }
+      }
+      // Same printed user/target distinction for Chain Mail; Mage cannot use it.
+      s=fresh();hero(s,'LEFT','Warrior',1);hero(s,'CENTER','Mage',1);hero(s,'RIGHT','Cleric',1);s.playerHand=['S0-ITM-016'];
+      opts=responseOptionsFor(s,'PLAYER',responseIncomingFromWindow(rw('CENTER'))).filter(function(o){return o.card_id==='S0-ITM-016';});
+      check('Chain Mail Warrior source protects Mage target',opts.length===1&&opts[0].source_lane==='LEFT',opts);
+      LANE_ORDER.forEach(function(l){hero(s,l,'Mage',1);});
+      check('Chain Mail Mage-only Response denied',responseOptionsFor(s,'PLAYER',responseIncomingFromWindow(rw('CENTER'))).every(function(o){return o.card_id!=='S0-ITM-016';}));
+      // Legacy activated cost: 1 or 2 matching Skills; never zero, wrong class,
+      // duplicate physical index, or stale card ID. Cost must not be paid twice.
+      var ability=card('S0-MAG-L001').ability;
+      check('Legacy L001 ability exists / up to 2',!!ability&&legacyCostMinCount(ability)===1&&legacyCostCount(ability)===2,
+        ability);
+      if(ability){
+        s=fresh();s.playerHand=['S0-MAG-001','S0-MAG-001','S0-WAR-001'];
+        check('Legacy candidate filter selects matching Skills only',legacyCostCandidates(s,'PLAYER',ability).length===2);
+        check('Legacy zero cards illegal',payLegacyAbilityCost(s,'PLAYER',ability,[]).ok===false&&s.playerDiscard.length===0);
+        check('Legacy duplicate physical index illegal',payLegacyAbilityCost(s,'PLAYER',ability,[0,0]).ok===false&&s.playerDiscard.length===0);
+        check('Legacy wrong class illegal',payLegacyAbilityCost(s,'PLAYER',ability,[2]).ok===false&&s.playerDiscard.length===0);
+        var pay1=payLegacyAbilityCost(s,'PLAYER',ability,[0]);
+        check('Legacy one matching card pays exactly once',pay1.ok&&pay1.paid.length===1&&s.playerDiscard.length===1);
+        s=fresh();s.playerHand=['S0-MAG-001','S0-MAG-001','S0-WAR-001'];
+        var pay2=payLegacyAbilityCost(s,'PLAYER',ability,[0,1]);
+        check('Legacy two equal IDs different slots valid',pay2.ok&&pay2.paid.length===2&&s.playerDiscard.length===2);
+        s=fresh();s.playerHand=['S0-MAG-001','S0-MAG-002','S0-WAR-001'];
+        s.pending={type:'legacy_cost_selection',side:'PLAYER',decision_side:'PLAYER',source_lane:'CENTER',card_id:'S0-MAG-L001',ability:ability,
+          cost_candidates:legacyCostCandidates(s,'PLAYER',ability),selected_cost_indices:[0,10],required_cost:2,min_cost:1};
+        check('Legacy malformed selected index cannot silently pass',commitLegacyCostChoice()===false&&s.playerDiscard.length===0);
+        s.pending.selected_cost_indices=[0];s.playerHand[0]='S0-ARC-001';
+        check('Legacy stale physical card rejects atomically',commitLegacyCostChoice()===false&&s.playerDiscard.length===0);
+      }
+      // Legacy post-discard return picks must still point at their physical zone.
+      s=fresh();s.playerDiscard=['S0-MAG-001','S0-MAG-002'];
+      s.pending={type:'legacy_card_choice',side:'PLAYER',source_lane:'CENTER',card_id:'S0-MAG-L002',
+        abilityId:'QA',choice_zone:'discard',required_choices:1,selected_indices:[0],candidates:[{card_id:'S0-MAG-001',discard_index:0}]};
+      s.playerDiscard[0]='S0-ARC-001';
+      check('Legacy post-discard stale selection rejects without moving',commitLegacyCardChoice()===false&&s.playerDiscard.length===2);
+      // Ordinary pending card-search/discard paths must have identical physical
+      // index validation, not an automatic "same ID elsewhere" substitution.
+      s=fresh();s.playerHand=['S0-MAG-001','S0-MAG-001'];s.pending={type:'card_search_choice',zone:'hand',side:'PLAYER',source_card_id:'S0-EVT-004',
+        resolve_to:'source_exp',host_side:'PLAYER',host_lane:'CENTER',selected_index:0,multi_select:false,
+        candidates:[{card_id:'S0-MAG-001',hand_index:0},{card_id:'S0-MAG-001',hand_index:1}]};
+      s.playerHand[0]='S0-WAR-001';
+      check('Generic Hand choice stale duplicate ID cannot be substituted',commitCardSearchChoice()===false&&s.playerHand.length===2&&s.playerHand[0]==='S0-WAR-001');
+      check('Generic Hand picker refuses stale slot',selectCardSearchChoice(0)===false);
+      s=fresh();s.playerDiscard=['S0-MAG-001','S0-MAG-001'];s.pending={type:'card_search_choice',zone:'discard',side:'PLAYER',source_card_id:'S0-ARC-014',
+        resolve_to:'replenish_to_deck',selected_index:0,multi_select:false,
+        candidates:[{card_id:'S0-MAG-001',discard_index:0},{card_id:'S0-MAG-001',discard_index:1}]};
+      s.playerDiscard[0]='S0-WAR-001';
+      check('Generic Discard pile stale duplicate ID cannot be substituted',commitCardSearchChoice()===false&&s.playerDiscard.length===2&&s.playerDiscard[0]==='S0-WAR-001');
+      s=fresh();s.playerDeck=['S0-MAG-001','S0-MAG-001'];s.pending={type:'card_search_choice',zone:'deck',side:'PLAYER',source_card_id:'S0-ITM-018',
+        resolve_to:'search_deck_to_hand',selected_index:0,multi_select:false,
+        candidates:[{card_id:'S0-MAG-001',deck_index:0},{card_id:'S0-MAG-001',deck_index:1}]};
+      s.playerDeck[0]='S0-WAR-001';
+      check('Magic Compass stale duplicate Deck choice cannot be substituted',commitCardSearchChoice()===false&&s.playerDeck.length===2&&s.playerHand.length===0);
+      s=fresh();s.playerDiscard=['S0-MAG-001','S0-MAG-001'];s.pending={type:'card_search_choice',zone:'discard',side:'PLAYER',source_card_id:'S0-ARC-014',
+        resolve_to:'replenish_to_deck',selected_indices:[0,0],multi_select:true,required_count:2,max_count:2,
+        candidates:[{card_id:'S0-MAG-001',discard_index:0},{card_id:'S0-MAG-001',discard_index:1}]};
+      check('Generic multi-choice duplicate index rejected before movement',commitCardSearchChoice()===false&&s.playerDiscard.length===2);
+      // Hand-limit invalid or duplicate indices must not mutate the Hand.
+      s=fresh();s.playerHand=['S0-MAG-001','S0-MAG-002'];s.pending={type:'hand_limit_discard',side:'PLAYER',required:2};
+      selectedDiscardIndexes=[0,0];
+      check('Hand-limit duplicate index rejected',commitHandLimitDiscard()===false&&s.playerHand.length===2&&s.playerDiscard.length===0);
+      selectedDiscardIndexes=[];
+      return{ok:checks.every(function(x){return x.ok;}),total:checks.length,passed:checks.filter(function(x){return x.ok;}).length,failures:checks.filter(function(x){return !x.ok;}),checks:checks};
+    }catch(err){return{ok:false,error:String(err&&err.stack||err),checks:checks,passed:checks.filter(function(x){return x.ok;}).length,total:checks.length};}
+    finally{appState=oldApp;matchStarted=oldMatch;SUPPRESS_RENDER=oldSuppress;selectedDiscardIndexes=[];}
   };
 
 })();

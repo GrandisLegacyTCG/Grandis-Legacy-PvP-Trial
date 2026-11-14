@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync,readdirSync} from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=p=>readFileSync(path.join(root,p),'utf8');
+const server=read('server.js');
+const config=read('public/config.js');
+const host=read('public/pvp/pvp-host.js');
+const doc=read('public/index.html');
+const artwork=path.join(root,'public/battle/card-art');
+const manifest=JSON.parse(read('public/battle/runtime/season0-generated/s0-asset-manifest-stage4.json'));
+const filenames=readdirSync(artwork).filter(x=>x.endsWith('.webp'));
+assert.equal(filenames.length,248,'Standalone must include all 248 artwork files');
+assert.equal(Object.keys(manifest.cards).length,248);
+for(const [id,v] of Object.entries(manifest.cards)){
+ assert.equal(v.local_full_path,`card-art/${id}.webp`);
+ assert.equal(v.local_thumb_path,`card-art/${id}.webp`);
+ assert.ok(existsSync(path.join(artwork,`${id}.webp`)),`missing ${id}`);
+}
+assert.ok(existsSync(path.join(root,'Dockerfile')));
+assert.ok(existsSync(path.join(root,'public/battle/index.html')));
+assert.match(doc,/pvp\/pvp-host\.js/);
+assert.match(config,/wsPath:'\/ws'/);
+assert.doesNotMatch(config,/wsBase\s*:/,'Standalone must use same-origin WebSocket');
+assert.match(host,/location\.protocol==='https:'\?'wss:'/);
+assert.match(host,/GO TO VS AI/);
+assert.match(host,/GO TO DECK BUILDER/);
+assert.match(host,/https:\/\/grandislegacytcg\.web\.id\/deck-builder\//);
+assert.match(server,/new WebSocketServer\(\{server,path:'\/ws'/);
+assert.ok(server.includes("if(rel==='/'||rel==='')rel='/index.html'"));
+assert.ok(!existsSync(path.join(root,'CNAME')),'Standalone must not take website CNAME');
+console.log('PASS standalone independence: 248/248 local artwork, same-origin /ws, lobby routes/nav, no CNAME');

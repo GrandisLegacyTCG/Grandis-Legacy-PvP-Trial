@@ -104,7 +104,8 @@ const donorMarker="if(p.type==='trial_rankup_return_exp'||p.type==='scouting_exp
 assert.ok(base.includes(donorMarker));
 assert.match(base,/titleText=scouting\?'SCOUTING — DISCARD OPPONENT EXP':expReturn\?'RANK '/);
 assert.match(base,/if\(expReturn\|\|scouting\)\{[\s\S]*?intent\('handleChoiceConfirm',\[\]\);/);
-assert.match(base,/const p=s.pending,allowed=\['card_search_choice','legacy_defeat_choice','legacy_card_choice','crystal_ball_reorder'\]/);
+assert.match(base,/const p=s.pending,allowed=\['card_search_choice','legacy_card_choice','crystal_ball_reorder'\]/);
+assert.match(base,/legacy_defeat_choice/);
 assert.match(base,/if\(!game\|\|raw.length<10\)return false;/);
 assert.match(base,/const groups=\[\];for\(let i=0;i<5;i\+\+\)/);
 const network=readFileSync('public/battle/runtime/pvp-network.js','utf8');
@@ -113,6 +114,6 @@ const calls=[],source={type:'source_selection',decision_side:'PLAYER',source_sid
 applyOptimizedPvpIntent({bridge:{applyServerIntent:(name,args)=>{calls.push(name);return{ok:true}}},readPending:()=>source,name:'beginPlayFromHandFast',args:[0]});
 assert.deepEqual(calls,['beginPlayFromHand']);
 const lobby=readFileSync('public/index.html','utf8');
-assert.match(lobby,/rel="icon"[^>]*\/battle\/engine\/assets\/favicon.png/);
+assert.match(lobby,/rel="icon"[^>]*href="battle\/engine\/assets\/favicon.png"/);
 assert.ok(existsSync('public/battle/engine/assets/favicon.png'));
 console.log('PASS RC39 RC2: authoritative Area commit, nested privacy, both seat projections, HP/status hold, no replay, donor popup, manual Skill Hero, opening 5+5, favicon');

@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "passed": 353,
+  "total": 353,
+  "engine_checks": 347,
+  "ui_source_checks": 6,
+  "failed": [],
+  "runtime": {
+    "engine": "RC40",
+    "authority": "Main R3.8 / Legacy R3.7 / OSA DEV45 + designer ruling"
+  }
+}

@@ -2250,3 +2250,7 @@ body.gl-center-legacy .gl-center-choice-card{width:min(clamp(68px,10vw,144px),ca
 .gl-played-detail-body .played-damage-block>strong{font-size:12px;}
 .gl-played-detail-body .played-damage-block .played-result-hero{margin:0;}
 .gl-played-detail-body .played-damage-block .played-result-hero li{font-size:12px;line-height:1.4;}
+
+.gl-vsai-choice-overlay .gl-choice-cancel[hidden]{display:none!important}
+.gl-flying-card.gl-draw-flip-flight{display:block;perspective:600px;transform-style:preserve-3d;overflow:visible}
+.gl-draw-flip-flight>img{display:block;width:100%;height:100%;object-fit:cover;border-radius:5px;backface-visibility:hidden;transform-origin:center;will-change:transform}

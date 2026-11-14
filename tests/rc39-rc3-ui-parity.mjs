@@ -55,8 +55,8 @@ assert.match(runtime,/function updateCommittedHandSlotVisibility\(side\)/);
 assert.match(runtime,/for\(let i=0;i<5;i\+\+\)groups\.push/);
 assert.doesNotMatch(runtime,/<h2 id="glCoinTitle">Opening Coin Flip<\/h2>/);
 assert.match(runtime,/aria-label="Coin flip"/);
-assert.match(html,/app-runtime\.js\?v=gl-s0-pvp-rc39-beta2-repo-rc\d+(?:-s\d+)?-2026-11-\d{2}/);
-assert.match(server,/const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC(?:8|9-S[12])'/); // RC8 baseline or RC9 Stage 1/2
+assert.match(html,/app-runtime\.js\?v=gl-s0-pvp-rc40-patch32-item-discard-2026-11-14/);
+assert.match(server,/const VERSION='S0-RC40-PVP-NET-RC6-STAGE2-PATCH3\.2'/); // RC40 authoritative server identity
 assert.doesNotMatch(runtime,/addAction\(actions,'WHY\?'/,'No PvP-only Tune Up button absent from donor UI');
 // Public EXP card IDs are visible to either seat, but hidden opposing Hand and
 // deck identities must remain masked. The inspector uses only public hero fields.
@@ -80,10 +80,10 @@ assert.equal(view.appState.presentationEvents[0].card_id,'S0-ARC-002');
 // authority are byte-identical to RC7. Viewer-safe and combat projections are
 // intentionally updated for recipient-only effects and status outcomes.
 const fingerprints={
- 'public/pvp/pvp-host.js':'0f1a42a0b883b2f3c0007a1f57846d8f1ba3d2debfc25633cb5195ac07c5a118',
- 'public/battle/runtime/pvp-network.js':'60d10aa8d24923723225eb1fb4186e6da0369313395044e7c0769d0814c2b5ec',
+ 'public/pvp/pvp-host.js':'58ed3fcf0da6b8bb7c8b24aa44e310f8a9cdf4530d4d01d25b1b732975a258dc',
+ 'public/battle/runtime/pvp-network.js':'696e8d81c4e125ce3604555ea0a20ecd52777057209e270cf1f1b32d7c9c8c42',
  'public/battle/runtime/pvp-mana-draft.js':'0dfb813cf7c549f01f83d6c7cb46fd5192fc78d554fbd53de90e8b2b572d92b7',
- 'server/headless-rc32.mjs':'0cfb172e5bafb30877d78c296a921c69c1fc8ed23b29a008ed19120c156c6d54'
+ 'server/headless-rc32.mjs':'e5c3013e099051ba1f9bcc43cb2c6b4a7d5b130d1fd5df91ad71d4ec61446864'
 };
 for(const [p,expected] of Object.entries(fingerprints)){
  const got=createHash('sha256').update(readFileSync(new URL('../'+p,import.meta.url))).digest('hex');

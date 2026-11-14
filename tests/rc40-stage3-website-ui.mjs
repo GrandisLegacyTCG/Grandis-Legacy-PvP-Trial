@@ -6,7 +6,7 @@ import vm from 'node:vm';
 const cwd=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const f=(p)=>readFileSync(path.join(cwd,p),'utf8');
 const checks=[];function check(name,fn){try{fn();checks.push(name);console.log('PASS',name)}catch(e){console.error('FAIL',name,e);process.exitCode=1}}
-const build='gl-s0-pvp-rc40-patch31-vsai-cardplayed-2026-11-14';
+const build='gl-s0-pvp-rc40-patch32-item-discard-2026-11-14';
 check('Server/client single build ID and original single WS',()=>{
   assert.match(f('server.js'),new RegExp(build));
   assert.match(f('server.js'),/WebSocketServer\(\{server,path:'\/ws'/);

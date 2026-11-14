@@ -144,8 +144,13 @@ check('Damage banner is stable and hides lane/before-Response wording',()=>{
 });
 check('Card Played includes linked Response and private DISCARDED tiles',()=>{
   const ui=read('../public/battle/shared-app/app-runtime.js');
-  for(const token of ['function pvpPlayedRelatedCards(','function pvpDiscardHistoryEvents(',
-    'data-gl-related-id','gl-played-discarded-tag','gl-played-owner-badge'])assert.ok(ui.includes(token),token);
+  for(const token of ['function pvpCanonicalPlayedEvent(','function pvpDiscardHistoryEvents(',
+    'data-gl-linked-event','gl-played-discarded-tag','gl-played-owner-badge']){
+    const source=token==='data-gl-linked-event'?read('../public/battle/engine/shared-app/app.bundle.js'):ui;
+    assert.ok(source.includes(token),token);
+  }
+  assert.match(ui,/getPublicCardPlayedDetail\?\.\(side,eventId,viewerSafe\)/);
+  assert.match(read('../public/battle/engine/shared-app/app.bundle.js'),/function v94EventDetailHtml\(/);
   assert.ok(!ui.includes('Resolved by Runtime'));
 });
 check('No second socket/protocol, match-authority remains single WebSocket',()=>{
@@ -157,7 +162,7 @@ check('No second socket/protocol, match-authority remains single WebSocket',()=>
 });
 for(const file of ['../public/pvp/db158-card-review.js','../public/battle/shared-app/db158-card-review.js']){
   check('Card Review readiness + reusable iframe '+file,()=>{
-    const js=read(file),win={document:{baseURI:'http://localhost/battle/'},navigator:{},requestIdleCallback:()=>{}};
+    const js=read(file),win={document:{baseURI:'http://localhost/battle/'},location:new URL('http://localhost/battle/'),navigator:{},requestIdleCallback:()=>{}};
     win.window=win;
     vm.runInNewContext(js,{window:win,URL,setTimeout(){},console,Promise,Array,Math,Number,Object,String});
     assert.ok(win.GL_DB158_REVIEW);

@@ -22,7 +22,8 @@ const source=readFileSync(new URL('../public/battle/shared-app/app-runtime.js',i
 const css=readFileSync(new URL('../public/battle/shared-ui/battlefield-ui.css',import.meta.url),'utf8');
 const server=readFileSync(new URL('../server.js',import.meta.url),'utf8');
 const lobby=readFileSync(new URL('../public/pvp/pvp-host.js',import.meta.url),'utf8');
-assert.match(source,/YOU WON THE COIN FLIP/);
+assert.match(source,/'You won the coin flip'/);
+assert.match(source,/esc\(info\.winnerName\|\|'Opponent'\)\+' won the coin flip'/);
 assert.match(source,/data-gl-coin-order="FIRST"/);
 assert.match(source,/data-gl-coin-order="SECOND"/);
 assert.match(source,/s0PvpCoinResult/);

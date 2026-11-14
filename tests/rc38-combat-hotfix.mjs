@@ -33,7 +33,7 @@ const layer=el('div');c.document={getElementById:id=>id==='glBattleFeedbackLayer
 c.heroCardEl=()=>({closest(){return{}}});c.uiRect=()=>({left:0,top:0,width:100,height:140});
 c.uiLaneElement=()=>el('lane');c.setTimeout=()=>0;
 assert.equal(c.playPvpCombatVisualBatch(batch[0]),true);
-assert.equal(observed.clips.length,3,'three simultaneous target effects');
+assert.equal(observed.clips.length,2,'all affected targets stay in the authoritative batch, but visual effects render only on the two targets with HP damage or Status; no phantom VFX for untouched Hero');
 assert.equal(observed.shakes,2,'zero-damage Hero never shakes');
 assert.equal(observed.clips.filter(x=>x.children.some(y=>y.src?.includes('Icon-'))).length,2);
 assert.match(src,/legalHeroPanelAction=engineSelectable\?\(\)=>intent\('chooseHeroFromBoard',\[side,lane\]\):null;/);

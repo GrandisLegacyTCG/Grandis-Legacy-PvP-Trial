@@ -1,6 +1,6 @@
 {
   "name": "grandis-legacy-pvp-s0-rc40",
-  "version": "1.0.0-rc40-patch31",
+  "version": "1.0.0-rc40-patch32",
   "private": true,
   "type": "module",
   "scripts": {
@@ -64,12 +64,15 @@
     "test:rc40-p3": "node tests/rc40-stage3-website-ui.mjs",
     "check:rc40-p3": "npm run check:rc40-p2 && npm run test:rc40-p3",
     "test:rc40-p31": "node tests/rc40-p31-donor-detail.mjs",
-    "check:rc40-p31": "npm run check:rc40-p3 && npm run test:rc40-p31 && npm run test:http"
+    "check:rc40-p31": "npm run check:rc40-p3 && npm run test:rc40-p31 && npm run test:http",
+    "test:standalone": "node tests/rc40-standalone-smoke.mjs",
+    "test:rc40-p32": "node tests/rc40-item-discard-hotfix.cjs",
+    "check:rc40-p32": "npm run check:rc40-p31 && npm run test:rc40-p32 && npm run test:ws-gate && npm run test:privacy"
   },
   "engines": {
     "node": ">=18"
   },
-  "description": "PvP RC40 Patch 3.1: reuse exact VS AI RC40 Card Played formatter; viewer-safe adapter and Mana terminology; original single WebSocket.",
+  "description": "PvP RC40 Patch 3.2: Item class eligibility, physical discard selection, preserved Card Played parity; single authoritative WS.",
   "dependencies": {
     "ws": "8.21.0"
   }

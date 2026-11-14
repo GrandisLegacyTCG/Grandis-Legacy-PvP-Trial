@@ -120,11 +120,17 @@ check('Viewer-safe Card Played modifier projection cannot leak private names',()
   assert.ok(s.includes('Coordination Attack'));
 });
 check('Network runtime and local Mana draft preserved byte-for-byte from Patch1',()=>{
-  const paths=['public/battle/runtime/pvp-network.js','public/battle/runtime/pvp-mana-draft.js','server/ws-lite.mjs','server/headless-rc32.mjs'];
-  for(const path of paths){
+  // Pinned to the verified Patch 1 FULL archive. Unlike a sibling
+  // workspace path, these reference hashes work in a clean GitHub CI checkout.
+  const sha256FromRC40Patch1={
+    'public/battle/runtime/pvp-network.js':'696e8d81c4e125ce3604555ea0a20ecd52777057209e270cf1f1b32d7c9c8c42',
+    'public/battle/runtime/pvp-mana-draft.js':'0dfb813cf7c549f01f83d6c7cb46fd5192fc78d554fbd53de90e8b2b572d92b7',
+    'server/ws-lite.mjs':'1e29b60b2ce0ee357df98518db12a2b5063c5a224635df478d7588f8c5862047',
+    'server/headless-rc32.mjs':'e5c3013e099051ba1f9bcc43cb2c6b4a7d5b130d1fd5df91ad71d4ec61446864'
+  };
+  for(const [path,expected] of Object.entries(sha256FromRC40Patch1)){
     const a=readFileSync(new URL('../'+path,import.meta.url));
-    const b=readFileSync(new URL('../../pvp_rc40_stage1/'+path,import.meta.url));
-    assert.equal(createHash('sha256').update(a).digest('hex'),createHash('sha256').update(b).digest('hex'),path);
+    assert.equal(createHash('sha256').update(a).digest('hex'),expected,path);
   }
 });
 console.log(`RC40 Stage2 presentation/parity: ${checks}/${checks} PASS`);

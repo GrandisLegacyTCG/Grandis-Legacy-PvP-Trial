@@ -768,6 +768,8 @@ function renderInspectModal(){
   if(inspectState.instruction){const p=document.createElement('p');p.className='choice-instruction';p.textContent=inspectState.instruction;body.appendChild(p)}
   if(inspectState.ids.length){const grid=document.createElement('div');grid.className='choice-grid inspect-card-grid';inspectState.ids.forEach(id=>{const v=cv(id),b=document.createElement('button');b.type='button';b.className='gl-inspect-card';const im=document.createElement('img');im.src=art(id);im.alt=v?.name||id;im.draggable=false;const sp=document.createElement('span');sp.textContent=v?.name||id;b.append(im,sp);grid.appendChild(b);bindChoicePreview(im,id,inspectState.previewMode||'contextual')});body.appendChild(grid)}
   else{const e=document.createElement('div');e.className='gl-inspect-empty';e.textContent='This pile is empty.';body.appendChild(e)}
+  const cancel=choiceOverlay.querySelector('.gl-choice-cancel');
+  if(cancel){cancel.hidden=true;cancel.onclick=null;}
   confirm.textContent='CLOSE';confirm.disabled=false;confirm.onclick=closeInspectModal;
 }
 // Part 5: music remains OFF by default; the existing engine SFX switch remains ON by default.
@@ -841,7 +843,7 @@ function coinFaceSrc(face){return String(face||'HEADS').toUpperCase()==='TAILS'?
 function fairCoinOutcome(){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return (a[0]&1)?'TAILS':'HEADS'}catch{return Math.random()<.5?'HEADS':'TAILS'}}
 function renderCoinChoice(){const body=coinOverlay.querySelector('.gl-coin-body');body.innerHTML='<p>Choose Heads or Tails. The winner chooses to go FIRST or SECOND.</p><div class="gl-coin-actions"><button type="button" data-coin-choice="HEADS"><img src="'+coinFaceSrc('HEADS')+'" alt="Heads"><span>Heads</span></button><button type="button" data-coin-choice="TAILS"><img src="'+coinFaceSrc('TAILS')+'" alt="Tails"><span>Tails</span></button></div>';body.querySelectorAll('[data-coin-choice]').forEach(btn=>btn.onclick=()=>runCoinFlip(btn.dataset.coinChoice));coinOverlay.classList.add('open')}
 function runCoinFlip(choice){openingChoice=choice==='TAILS'?'TAILS':'HEADS';openingOutcome=fairCoinOutcome();openingFirstSide=openingChoice===openingOutcome?'PLAYER':'AI';const body=coinOverlay.querySelector('.gl-coin-body');let face=openingOutcome==='HEADS'?'TAILS':'HEADS';body.innerHTML='<p>Flipping the coin...</p><div class="gl-coin-flip-stage"><img src="'+coinFaceSrc(face)+'" alt="Coin"></div>';const im=body.querySelector('img');let step=0;const totalSteps=8,halfDuration=72;B()?.playOpeningCoinSound?.();const runStep=()=>{if(step>=totalSteps){im.src=coinFaceSrc(openingOutcome);im.alt=openingOutcome==='HEADS'?'Heads':'Tails';im.style.transition='none';im.style.transform='translateY(0) scaleX(1)';const text=body.querySelector('p');if(text)text.textContent=(openingOutcome==='HEADS'?'Heads':'Tails')+'!';setTimeout(renderCoinResult,1000);return}const progress=(step+1)/totalSteps,lift=Math.round(Math.sin(progress*Math.PI)*22);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.45,0,.55,1)';im.style.transform='translateY(-'+lift+'px) scaleX(.04)';setTimeout(()=>{face=face==='HEADS'?'TAILS':'HEADS';im.src=coinFaceSrc(face);im.style.transition='transform '+halfDuration+'ms cubic-bezier(.2,.75,.3,1)';im.style.transform='translateY(-'+lift+'px) scaleX(1)';setTimeout(()=>{step++;runStep()},halfDuration)},halfDuration)};runStep()}
-function renderCoinResult(){const body=coinOverlay.querySelector('.gl-coin-body'),won=openingFirstSide==='PLAYER';body.innerHTML='<div class="gl-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+(won?'YOU WON THE COIN FLIP':'LOCAL AI WON THE COIN FLIP')+'</strong><p>'+(won?'You will take the first turn.':'Local AI will take the first turn.')+'</p></div><div class="gl-coin-result"><div><span>Your choice</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+(openingChoice==='TAILS'?'Tails':'Heads')+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+(openingOutcome==='TAILS'?'Tails':'Heads')+'"></div></div><button class="gl-coin-start" type="button">Start Game</button>';body.querySelector('.gl-coin-start').onclick=beginOpeningPresentation}
+function renderCoinResult(){const body=coinOverlay.querySelector('.gl-coin-body'),won=openingFirstSide==='PLAYER';body.innerHTML='<div class="gl-coin-winner '+(won?'player-wins':'ai-wins')+'"><span>WINNER</span><strong>'+(won?'You won the coin flip':'Local AI won the coin flip')+'</strong><p>'+(won?'You will take the first turn.':'Local AI will take the first turn.')+'</p></div><div class="gl-coin-result"><div><span>Your choice</span><img src="'+coinFaceSrc(openingChoice)+'" alt="'+(openingChoice==='TAILS'?'Tails':'Heads')+'"></div><div><span>Coin result</span><img src="'+coinFaceSrc(openingOutcome)+'" alt="'+(openingOutcome==='TAILS'?'Tails':'Heads')+'"></div></div><button class="gl-coin-start" type="button">Start Game</button>';body.querySelector('.gl-coin-start').onclick=beginOpeningPresentation}
 // Multiplayer coin flow reuses RC32's own coin overlay, card art, animation
 // timing and audio. Only the coin outcome and next-step permission come from
 // the authoritative server; never generate another browser-local result.
@@ -860,7 +862,7 @@ function s0PvpCoinChoice(info={}){
 function s0PvpDrawCoinResult(info){
   if(!info)return;
   const body=coinOverlay.querySelector('.gl-coin-body');
-  const won=Number(info.winnerSeat)===Number(info.localSeat),winner=won?'YOU WON THE COIN FLIP':esc(info.winnerName||'OPPONENT')+' WON THE COIN FLIP';
+  const won=Number(info.winnerSeat)===Number(info.localSeat),winner=won?'You won the coin flip':esc(info.winnerName||'Opponent')+' won the coin flip';
   openingChoice=info.choice==='TAILS'?'TAILS':'HEADS';openingOutcome=info.outcome==='TAILS'?'TAILS':'HEADS';
   openingFirstSide=Number(info.firstSeat)===Number(info.localSeat)?'PLAYER':'AI';
   const pending=!!info.turnOrder;
@@ -967,12 +969,27 @@ function visualStateOf(s){
 }
 function multisetAdded(before,after){const counts=new Map();(before||[]).forEach(id=>counts.set(String(id),(counts.get(String(id))||0)+1));const out=[];(after||[]).forEach(id=>{const k=String(id),n=counts.get(k)||0;if(n>0)counts.set(k,n-1);else out.push(id)});return out;}
 function battlefieldPresentationBusy(){return glPresentationActive>0||Date.now()<glPresentationBusyUntil;}
-function flyBetween(src,fromEl,toEl,duration=380,onFinish,playSound=true,ghost=false){
+function flyBetween(src,fromEl,toEl,duration=380,onFinish,playSound=true,ghost=false,frontSrc=null){
   if(!src||!fromEl||!toEl)return false;const fr=uiRect(fromEl),tr=uiRect(toEl);if(fr.width<1||tr.width<1)return false;
   glPresentationActive++;glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+60);
-  const im=document.createElement('img');im.className='gl-flying-card'+(ghost?' gl-return-ghost':'');im.src=src;if(ghost)im.style.opacity='.55';im.style.left=fr.left+'px';im.style.top=fr.top+'px';im.style.width=fr.width+'px';im.style.height=fr.height+'px';animationLayer.appendChild(im);if(playSound)E()?.playCardMotionSound?.();
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{im.style.transition='transform '+duration+'ms cubic-bezier(.2,.75,.2,1),opacity '+duration+'ms ease,width '+duration+'ms ease,height '+duration+'ms ease';im.style.transform='translate('+(tr.left-fr.left)+'px,'+(tr.top-fr.top)+'px)';im.style.width=tr.width+'px';im.style.height=tr.height+'px';im.style.opacity=ghost?'.42':'.72'}));
-  setTimeout(()=>{im.remove();glPresentationActive=Math.max(0,glPresentationActive-1);glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+60);if(typeof onFinish==='function')onFinish(true)},duration+20);return true;
+  // Only the local player's DRAW has a front. A separate inner face allows
+  // a physical 3D card flip without interrupting the outer flight transform.
+  const reveal=!!(frontSrc&&!ghost),flyer=reveal?document.createElement('span'):document.createElement('img');
+  flyer.className='gl-flying-card'+(ghost?' gl-return-ghost':'')+(reveal?' gl-draw-flip-flight':'');
+  const im=reveal?document.createElement('img'):flyer;
+  im.src=src;im.alt='';if(reveal)flyer.appendChild(im);
+  if(ghost)flyer.style.opacity='.55';flyer.style.left=fr.left+'px';flyer.style.top=fr.top+'px';flyer.style.width=fr.width+'px';flyer.style.height=fr.height+'px';animationLayer.appendChild(flyer);
+  if(playSound)E()?.playCardMotionSound?.();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{flyer.style.transition='transform '+duration+'ms cubic-bezier(.2,.75,.2,1),opacity '+duration+'ms ease,width '+duration+'ms ease,height '+duration+'ms ease';flyer.style.transform='translate('+(tr.left-fr.left)+'px,'+(tr.top-fr.top)+'px)';flyer.style.width=tr.width+'px';flyer.style.height=tr.height+'px';flyer.style.opacity=ghost?'.42':'.88'}));
+  if(reveal){
+    const half=Math.max(35,Math.min(65,Math.round(duration*.17))),start=Math.max(25,Math.round(duration*.38));
+    setTimeout(()=>{if(!flyer.isConnected)return;im.style.transition='transform '+half+'ms ease-in';im.style.transform='rotateY(90deg)';
+      setTimeout(()=>{if(!flyer.isConnected)return;im.src=frontSrc;im.style.transition='none';im.style.transform='rotateY(-90deg)';void im.offsetWidth;
+        im.style.transition='transform '+half+'ms ease-out';im.style.transform='rotateY(0deg)';
+      },half);
+    },start);
+  }
+  setTimeout(()=>{flyer.remove();glPresentationActive=Math.max(0,glPresentationActive-1);glPresentationBusyUntil=Math.max(glPresentationBusyUntil,Date.now()+60);if(typeof onFinish==='function')onFinish(true)},duration+20);return true;
 }
 function flyToHeroOrientation(src,fromEl,toEl,side,lane,duration=390,onFinish,playSound=true){
   if(!src||!fromEl||!toEl)return false;
@@ -1690,7 +1707,7 @@ function runPresentationPlan(plan,s){
       if(to)to.classList.remove('gl-presentation-hidden');
       requestAnimationFrame(()=>setTimeout(()=>runDrawSequence(index+1),28));
     };
-    if(!flyBetween('assets/ui/back-main.webp',from?.querySelector('.zoneCard')||from,to,360,done))done();
+    if(!flyBetween('assets/ui/back-main.webp',from?.querySelector('.zoneCard')||from,to,360,done,true,false,side==='PLAYER'&&e.card_id?art(e.card_id):null))done();
   }
   // For each committed Rank Up, return selected EXP and discard the rest
   // TOGETHER, then put the new Rank Hero onto the field. A repeated Skill ID
@@ -3491,7 +3508,7 @@ function renderHand(s){
       if(m.canTribute){addAction(actions,'TRIBUTE','tribute',()=>intent('beginTributeFromHand',[idx]));actionCount++}
     }
     if(actionCount)card.classList.add('gl-has-action');
-    card.appendChild(actions);const im=document.createElement('img');im.className='hand-art';im.src=art(id);im.alt=v?.name||'Card';im.draggable=false;card.appendChild(im);bindBattlefieldPreview(im,'hand',card);bindBattlefieldHandHover(card);card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(id)};playerHandTrack.appendChild(card);
+    card.appendChild(actions);const im=document.createElement('img');im.className='hand-art';glBindPlayerHandArtwork(card,im,id);im.alt=v?.name||'Card';im.draggable=false;card.appendChild(im);bindBattlefieldPreview(im,'hand',card);bindBattlefieldHandHover(card);card.ondblclick=e=>{e.preventDefault();e.stopPropagation();openCardReview(id)};playerHandTrack.appendChild(card);
   });
   pendingDraws.forEach((r,i)=>{
     const idx=(s.playerHand||[]).length+i,slot=document.createElement('div');slot.className='hand-card gl-draw-reservation-slot gl-presentation-hidden';slot.dataset.handIndex=idx;slot.dataset.drawReservationId=String(r.id||'');
@@ -3997,7 +4014,7 @@ function queueBattlefieldReservedDraw(reservation,commit){
   const run=()=>new Promise(resolve=>{requestAnimationFrame(()=>requestAnimationFrame(()=>{
     const from=zoneEl(side,'Main Deck'),hand=side==='PLAYER'?playerHandTrack:oppHandTrack,to=hand?.querySelector('.gl-draw-reservation-slot[data-draw-reservation-id="'+CSS.escape(String(reservation.id||''))+'"]');
     const finish=()=>{try{commit()}finally{markReservedDrawEventHandled(reservation);const at=list.findIndex(x=>String(x.id)===String(reservation.id));if(at>=0)list.splice(at,1);invalidateHandRender(side);renderNow();resolve()}};
-    if(!flyBetween('assets/ui/back-main.webp',from?.querySelector('.zoneCard')||from,to,360,finish))finish();
+    if(!flyBetween('assets/ui/back-main.webp',from?.querySelector('.zoneCard')||from,to,360,finish,true,false,side==='PLAYER'&&reservation.card_id?art(reservation.card_id):null))finish();
   }))});
   glExternalDrawSequence=glExternalDrawSequence.then(run,run);return true;
 }

@@ -110,5 +110,6 @@ assert.match(engine,/applyExactManaPayment/);
 assert.match(engine,/glPvpSwapKeys/);
 assert.match(client,/commitExactLocalChoiceDraft/);
 assert.match(lobby,/BATTLE_CHANNEL='gl-pvp-battle-transport-v1'/);
-assert.match(review,/return 2 EXP cards to your Hand/);
+assert.match(review,/return 2 EXP cards to your hand and gain \+1 Mana Regen/);
+assert.match(review,/return 3 EXP cards to your hand and gain \+1 Mana Regen/);
 console.log('PASS Batch4: RC5 atomic Mana, RC6 single-socket lobby, Batch3 drafts and v3.2 Rank Up review preserved');

@@ -1,4 +1,4 @@
-name: Grandis Legacy PvP S0 RC39 - NET RC6 Stage 2
+name: Grandis Legacy PvP S0 RC40 Patch 3.2 - NET RC6 Stage 2
 on:
   push:
   pull_request:
@@ -28,7 +28,9 @@ jobs:
         run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Build deterministic static compression
         run: npm run build:precompress
-      - name: RC34 rules, RC6 Stage 2 socket bridge, atomic Response, privacy, assets, HTTP
+      - name: RC40 Patch 3.2 Item/Discard, Card Played, authority and response QA
+        run: npm run check:rc40-p32
+      - name: Historical regression, networking, privacy and HTTP
         run: npm run check
       - name: Verify Docker image can build
         run: docker build --pull -t grandis-legacy-pvp-s0-net-rc6:ci .

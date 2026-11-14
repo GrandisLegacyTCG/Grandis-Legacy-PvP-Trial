@@ -1,5 +1,5 @@
 """PvP S0 integration contract over real RFC6455 WebSockets (QA-only dependency)."""
-import json, os, random, subprocess, time, urllib.request
+import hashlib, json, os, random, subprocess, time, urllib.request
 from pathlib import Path
 import websocket
 ROOT=Path(__file__).resolve().parents[1]
@@ -12,7 +12,9 @@ try:
       meta=json.load(urllib.request.urlopen(BASE+'/health',timeout=.6));break
     except Exception: time.sleep(.08)
   else: raise AssertionError('Server did not start')
-  assert meta['architecture']=='s1-v38017-lite-lobby__s0-rc39-authority'
+  assert meta['architecture']=='s1-v38017-lite-lobby__s0-rc40-authority', f'Unexpected authority: {meta}'
+  assert meta.get('ok') is True and meta.get('version')=='S0-RC40-PVP-NET-RC6-STAGE2-PATCH3.2', meta
+  assert meta['authoritySources']['engine/shared-app/app.bundle.js']==hashlib.sha256((ROOT/'public/battle/engine/shared-app/app.bundle.js').read_bytes()).hexdigest(), 'Server authority bundle differs from repository source'
   build=meta['buildId']
   lobby=(ROOT/'public/pvp/pvp-host.js').read_text()
   s0ui=(ROOT/'public/battle/shared-app/app-runtime.js').read_text()
