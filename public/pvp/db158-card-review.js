@@ -1,5 +1,5 @@
-/* Card Review UI: Deck Builder v1.58 layout/typography/keyword explanations.
-   Read-only presentation. Source of ALL card values is active OSA S0 DEV45 consumer.
+/* Card Review UI: Deck Builder v1.66 layout/typography/keyword explanations.
+   Read-only presentation. Uses read-only Deck Builder v1.66 printed card data; gameplay stays server-authoritative.
    Kept isolated in an iframe to avoid changing the v6.91.9 battlefield CSS. */
 (function(g){'use strict';
   var files=['app.css','s0-enhancements-v1.32.2.css','s0-shared-header-review.css','s0-part7-revision-v1.36.css','s0-part7-revision-v1.38.css','s0-part7-revision-v1.39.css','s0-review-v1.41.css','s0-review-v1.42.css','s0-review-v1.43.css','s0-review-v1.44.css','s0-ui-v1.49.css','s0-hotfix-v1.49.1.css','s0-layout-v1.50.css','s0-modal-parity-v1.52.css','s0-review-v1.54.css','s0-review-v1.56.css','s0-review-v1.57.css','s0-launch-v1.58.css','s0-rulebook-v2.9-review-v1.58.css'];
@@ -10,6 +10,7 @@
   // No card values are copied from Deck Builder/S1 data. Differences must be
   // recorded as OSA discrepancies, not silently patched in a read-only UI.
   function getCard(id){
+    var rc40=g.GL_DB166_REVIEW_CARDS?.[id];if(rc40)return rc40;
     var c=source(id);if(!c)return null;
     var ident=c.identity||{},original=(c.printed||{}).rows||[];
     var rows=original.map(function(r,i){return {
@@ -53,7 +54,7 @@
       rules:c.family==='Legacy'?((replace||{}).text||''):(c.printed?.rules||''),sourceCardId:c.card_id};
   }
   function documentHtml(c,progressionIds){
-    var base=escape(new URL('battle/',g.document.baseURI).href);
+    var base=escape(new URL(/\/battle(?:\/|\/index\.html)?$/.test(g.location.pathname)?'./':'battle/',g.document.baseURI).href);
     var styles=files.map(function(f){return '<link rel="stylesheet" href="assets/review-db158/css/'+f+'">';}).join('');
     var lineage=Array.isArray(progressionIds)&&c.family==='Hero'?progressionIds.map(function(id){return getCard(id);}).filter(Boolean):[];
     var serializedLineage=JSON.stringify(lineage.map(function(x){return {id:x.id,name:x.name,image:x.image};})).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026');
@@ -74,7 +75,7 @@
     var key=cardId+'|'+ids.join('|');
     var existing=el.querySelector('.gl-db158-review-frame');
     if(existing){
-      existing.setAttribute('title',c.name+' — Deck Builder v1.58 card review');
+      existing.setAttribute('title',c.name+' — Deck Builder v1.66 card review');
       existing.setAttribute('scrolling',ids.length?'auto':'no');
       existing.setAttribute('aria-label',c.name+' card review');
       if(existing.dataset.glReviewKey===key)return true;
@@ -85,7 +86,7 @@
     }
     var frame=g.document.createElement('iframe');frame.className='gl-db158-review-frame';
     frame.style.colorScheme='light';frame.dataset.glReviewKey=key;
-    frame.setAttribute('title',c.name+' — Deck Builder v1.58 card review');
+    frame.setAttribute('title',c.name+' — Deck Builder v1.66 card review');
     frame.setAttribute('loading','eager');frame.setAttribute('scrolling',ids.length?'auto':'no');
     frame.setAttribute('aria-label',c.name+' card review');
     frame.glReviewVisualReady=false;
@@ -110,5 +111,5 @@
   }
   if(g.document.readyState==='loading')g.document.addEventListener('DOMContentLoaded',scheduleWarmup,{once:true});
   else scheduleWarmup();
-  g.GL_DB158_REVIEW={mount:mount,getCard:getCard,documentHtml:documentHtml,source:'OSA Season 0 DEV45',view:'Deck Builder v1.58',heroFooter:'lobby-only'};
+  g.GL_DB158_REVIEW={mount:mount,getCard:getCard,documentHtml:documentHtml,source:'Main R3.8 / Legacy R3.7 (DB v1.66)',view:'Deck Builder v1.66',heroFooter:'lobby-only'};
 })(window);

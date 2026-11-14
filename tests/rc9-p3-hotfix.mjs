@@ -8,7 +8,7 @@ import {PvpDiscardPresentationLedger} from '../server/discard-presentation.mjs';
 import {annotatePlayerHistoryEffects} from '../server/pvp-history-effects.mjs';
 
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
-const src=read('../public/battle/shared-app/app-runtime.js');
+const src=read('../public/battle/shared-app/app-runtime.js')+'\n'+read('./fixtures/rc9-legacy-cardplayed-helpers.js');
 const css=read('../public/battle/shared-ui/battlefield-ui.css');
 let passed=0;
 function check(name,fn){fn();console.log('PASS '+name);passed++;}

@@ -21,3 +21,8 @@
     object-position:top left!important;
   }
 }
+
+/* v1.66: R3.7 Dragon Scale racial trait print value, both review styles. */
+.review-hero-numeric{display:flex;align-items:baseline;gap:14px;margin-top:9px;font-size:12px;}
+.review-hero-numeric span{color:#ffcb65;font-weight:800;font-size:11px;letter-spacing:.035em;}
+.review-hero-numeric strong{color:inherit;font-size:15px;}

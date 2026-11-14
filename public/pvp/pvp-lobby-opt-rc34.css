@@ -209,3 +209,15 @@ body> .app, .gl-engine-host{display:none!important}
  #pvpSetupOverlay .pvp-v260-heading h1{font-size:14px!important;line-height:1.1!important}
  #pvpSetupOverlay .pvp-v260-heading p{font-size:10px!important;line-height:1.25!important;white-space:normal!important;margin-top:5px!important}
 }
+
+/* RC40 Patch 3: first-party website navigation, same controls as Site RC40 lobby. */
+#pvpSetupOverlay .pvp-v260-topbar{grid-template-columns:minmax(128px,190px) minmax(0,1fr) auto;column-gap:clamp(10px,1.5vw,24px);align-items:center}
+#pvpSetupOverlay .pvp-v260-app-links{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;align-items:center;margin-left:auto;min-width:0}
+#pvpSetupOverlay .pvp-v260-app-link{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 15px;border:1px solid rgba(236,240,248,.5);border-radius:9px;background:rgba(4,9,16,.6);text-decoration:none;color:#f3f6fa;font:900 11px/1.15 "Noto Sans",Noto,Arial,sans-serif;letter-spacing:.03em;white-space:nowrap;transition:background-color .15s ease,border-color .15s ease}
+#pvpSetupOverlay .pvp-v260-app-link--vsai{background:#075b86;border-color:#177baa;color:white}
+#pvpSetupOverlay .pvp-v260-app-link:hover{background:#126f9e;border-color:#65b8d9}
+#pvpSetupOverlay .pvp-v260-app-link:focus-visible{outline:2px solid #f4d87e;outline-offset:3px}
+@media(max-width:950px){#pvpSetupOverlay .pvp-v260-app-link{padding:0 10px;font-size:10px;min-height:36px}#pvpSetupOverlay .pvp-v260-app-links{gap:7px}}
+@media(max-width:880px){#pvpSetupOverlay .pvp-v260-topbar{display:grid;grid-template-columns:minmax(126px,170px) minmax(0,1fr)}#pvpSetupOverlay .pvp-v260-app-links{grid-column:1 / -1;width:100%;justify-content:flex-end;margin-left:0}}
+@media(max-width:560px){#pvpSetupOverlay .pvp-v260-topbar{grid-template-columns:145px minmax(0,1fr)!important}#pvpSetupOverlay .pvp-v260-app-links{grid-column:1 / -1;justify-content:stretch;margin:3px 0 0}#pvpSetupOverlay .pvp-v260-app-link{min-width:0;flex:1 1 0;white-space:normal;text-align:center;padding:7px 8px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){#pvpSetupOverlay .pvp-v260-app-link{transition:none}}

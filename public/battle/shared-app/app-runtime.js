@@ -216,6 +216,20 @@ function currentLaneForSourceCard(s,side,sourceCardId,fallbackLane){
   }
   return fallbackLane||null;
 }
+// PvP F01: Item target connectors follow the public Hero identity. A lane is
+// only a display fallback if the engine never supplied a Hero ID. If the
+// named Hero is no longer active, suppress a stale arrow rather than point
+// at a different Hero occupying its old position.
+function currentLaneForTargetHero(s,side,targetHeroId,fallbackLane){
+  if(!targetHeroId)return fallbackLane||null;
+  if(!s||!['PLAYER','AI'].includes(side))return null;
+  const heroes=sideHeroes(s,side)||{};
+  for(const lane of laneOrder){
+    const hero=heroes[lane];
+    if(hero&&(hero.card_id===targetHeroId||hero.active_legacy_card_id===targetHeroId||heroImageId(hero)===targetHeroId))return lane;
+  }
+  return null;
+}
 function resolveActionSourceLane(s,a){
   if(!a)return a;
   const lane=currentLaneForSourceCard(s,a.side,a.source_card_id,a.lane);
@@ -302,7 +316,7 @@ function placeBattlefieldHoverPreview(kind,anchor){
 }
 function bindBattlefieldPreview(img,kind,anchor){
   if(!img)return;const key='glBattlefieldPreview'+String(kind||'card');if(img.dataset[key]==='1')return;img.dataset[key]='1';
-  const show=()=>{if(backgroundPreviewSuppressed(anchor||img))return;promoteTemporaryCardPreview(battlefieldHoverPreview);battlefieldHoverSource=img;battlefieldHoverPreview.classList.toggle('is-hero',kind==='hero');battlefieldHoverImg.src=img.src;placeBattlefieldHoverPreview(kind,anchor||img);battlefieldHoverPreview.classList.add('open');battlefieldHoverPreview.setAttribute('aria-hidden','false')};
+  const show=()=>{if(anchor?.dataset?.glBlind==='1'||backgroundPreviewSuppressed(anchor||img))return;promoteTemporaryCardPreview(battlefieldHoverPreview);battlefieldHoverSource=img;battlefieldHoverPreview.classList.toggle('is-hero',kind==='hero');battlefieldHoverImg.src=img.src;placeBattlefieldHoverPreview(kind,anchor||img);battlefieldHoverPreview.classList.add('open');battlefieldHoverPreview.setAttribute('aria-hidden','false')};
   img.addEventListener('mouseenter',show);img.addEventListener('mousemove',()=>{if(battlefieldHoverSource===img&&!backgroundPreviewSuppressed(anchor||img))placeBattlefieldHoverPreview(kind,anchor||img)});img.addEventListener('mouseleave',()=>{if(battlefieldHoverSource===img)hideBattlefieldHoverPreview()});
 }
 function formatMatchTime(ms){const total=Math.max(0,Math.floor(Number(ms||0)/1000)),m=Math.floor(total/60),sec=total%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
@@ -597,339 +611,65 @@ document.addEventListener('selectstart',e=>{if(e.target?.closest?.('.hero-card,.
 function closePlayedDetail(){playedDetailOverlay.classList.remove('open');playedDetailOverlay.querySelector('.gl-played-detail-body').innerHTML='';}
 // RC7: The donor's rich audit detail is for a local engine, not for a masked
 // PvP viewer. Render only committed, recipient-projected gameplay facts.
-function pvpPlayedHeroName(e,role){
-  const direct=role==='source'?e.source_hero_card_id:
-    role==='defended'?e.defended_hero_card_id:e.target_hero_card_id;
-  if(direct&&cv(direct)?.name)return cv(direct).name;
-  const side=role==='source'?e.source_side:role==='defended'?e.source_side:e.target_side;
-  const lane=role==='source'?e.source_lane:role==='defended'?e.source_lane:e.target_lane;
-  const snapshot=st();
-  const hero=snapshot&&side&&lane?sideHeroes(snapshot,side)?.[lane]:null;
-  // Only use an unambiguous public Hero identity; never print "AI LEFT" or
-  // use a card's current position as a precise historical target if absent.
-  if(hero&&cv(heroImageId(hero))?.name)return cv(heroImageId(hero)).name;
-  return lane?lane.charAt(0)+lane.slice(1).toLowerCase()+' position':'';
-}
-function pvpPlayedActionName(e){
-  const label=String(e.label||'').toUpperCase(),subtype=String(e.attack_type||cv(e.card_id)?.subtype||'');
-  if(label==='TRIBUTE')return 'Tribute';
-  // Use the server's actual Attack subtype, not artwork text/damage element.
-  if(label==='ATK')return /casting attack/i.test(subtype)?'Casting Attack':
-    /area attack/i.test(subtype)?'Area Attack':
-    /magical attack/i.test(subtype)?'Magical Attack':
-    /physical attack/i.test(subtype)?'Physical Attack':'Attack';
-  return ({DEF:'Defense',REACTION:'Reaction',ITEM:'Item',EVENT:'Event',
-    CAST:'Casting',SUPPORT:'Support',SUP:'Support',TACTICAL:'Tactical',
-    ABILITY:'Class Ability',LEGACY:'Legacy Ability'}[label]||
-    label.replace(/_/g,' ').toLowerCase().replace(/\b\w/g,ch=>ch.toUpperCase()));
-}
-// RC9 S2: structured, server-committed per-Hero damage is the only source of
-// Card Played damage math (VS AI Part5 duplicate-result fix). Do not add the
-// same total from raw result_lines after drawing these rows. Keep Burn as a
-// contribution, never sum it into actual HP damage a second time.
-function pvpPlayedDamageResults(e){
-  const entries=(Array.isArray(e.damage_by_hero)&&e.damage_by_hero.length)?e.damage_by_hero:
-    e.damage_summary?[{name:'Target Hero',side:e.target_side||'',lane:e.target_lane||'',summary:e.damage_summary}]:[];
-  const groups=new Map();
-  for(const h of entries){
-    const ds=h?.summary||{};
-    if(!Object.hasOwn(ds,'actual_hp_damage'))continue;
-    const name=String(h?.name||'Target Hero'),key=(h?.side||'')+'|'+(h?.lane||'')+'|'+name;
-    const row=groups.get(key)||{name,hits:0,damage:0,base:0,modified:0,
-      prevention:0,burn:0,followUp:0,hpBefore:null,hpAfter:null,
-      hasBase:false,hasModified:false};
-    const safe=n=>Number.isFinite(Number(n))?Math.max(0,Number(n)):0;
-    row.hits++;
-    row.damage+=safe(ds.actual_hp_damage);
-    if(Object.hasOwn(ds,'base_damage')){row.hasBase=true;row.base+=safe(ds.base_damage);}
-    if(Object.hasOwn(ds,'damage_after_modifiers')){row.hasModified=true;row.modified+=safe(ds.damage_after_modifiers);}
-    row.prevention+=safe(ds.response_block)+safe(ds.passive_reduction)+safe(ds.active_reduction);
-    row.burn+=safe(ds.burn_damage);
-    row.followUp+=safe(ds.follow_up_damage);
-    if(row.hpBefore===null&&Object.hasOwn(ds,'target_hp_before'))row.hpBefore=Number(ds.target_hp_before);
-    if(Object.hasOwn(ds,'target_hp_after'))row.hpAfter=Number(ds.target_hp_after);
-    groups.set(key,row);
-  }
-  if(!groups.size)return [];
-  const many=groups.size>1,rows=[];
-  const damageType=/magical/i.test(e.damage_type||'')?'Magical':
-    /physical/i.test(e.damage_type||'')?'Physical':'HP';
-  const suffix=damageType==='HP'?' HP':' '+damageType+' Damage';
-  const variable=new Set(['S0-ARC-010','S0-MAG-027','S0-ARC-030','S0-ARC-025','S0-MAG-025']);
-  for(const x of groups.values()){
-    const prefix=many?x.name+' — ':'';
-    if(x.hasBase&&x.hasModified&&x.base>0&&x.base!==x.modified&&!variable.has(e.card_id))
-      rows.push({title:prefix+'Damage',value:x.base+suffix+' → '+x.modified+suffix});
-    if(x.prevention>0)rows.push({title:prefix+'Damage Prevention',value:x.prevention+' Damage'});
-    if(x.burn>0)rows.push({title:prefix+'Burn Added',value:'+'+x.burn+' Damage'});
-    if(x.followUp>0)rows.push({title:prefix+'Follow-up Damage',value:x.followUp+' Damage'});
-    rows.push({title:prefix+'Damage Dealt',value:x.damage+suffix+(x.hits>1?' ('+x.hits+' hits)':'')});
-    if(x.hpBefore!==null&&x.hpAfter!==null&&Number.isFinite(x.hpBefore)&&Number.isFinite(x.hpAfter))
-      rows.push({title:prefix+'HP',value:x.hpBefore+' → '+x.hpAfter});
-  }
-  return rows;
-}
-function pvpPlayedEffectRows(e){
-  const rows=[];
-  for(const result of e.effect_results||[]){
-    if(result.kind==='MANA_REMOVAL'){
-      const title=e.mana_result?.mode==='STEAL'?'Mana Steal':'Mana Burn';
-      const count=Math.max(0,Math.trunc(Number(result.count)||0));
-      rows.push({title,value:'Removed '+(describeResolvedManaShards(result.removed_shards)||
-        count+' Mana Shard'+(count===1?'':'s'))+'.'});
-    }else if(result.kind==='DISCARD'){
-      const source={HAND:'Hand',MAIN_DECK:'Main Deck',FIELD:'Field',EXP:'Hero EXP',UNKNOWN:'Unknown origin'}[result.origin]||'Unknown origin';
-      const names=(result.card_ids||[]).map(id=>cv(id)?.name||id);
-      const hero=result.origin==='EXP'&&result.target_hero_card_id?(cv(result.target_hero_card_id)?.name||result.target_hero_card_id):'';
-      rows.push({title:'Cards Discarded ('+source+(hero?' · '+hero:'')+')',value:names.join(', ')||Number(result.count||0)+' cards'});
-    }
-  }
+// PvP adapter: re-shape ONLY the public, viewer-filtered server journal into the
+// source VS AI event schema. NO bespoke HTML/text presentation is produced here.
+function pvpCanonicalPlayedEvent(e){
+  if(!e||!e.id||!e.card_id)return null;
+  const event={};
+  const keys=['id','card_id','side','label','title','source_side','source_lane','target_side',
+    'target_lane','timestamp','played_event_order','resolution_state','result_lines',
+    'response_lines','damage_type','damage_summary','damage_modifiers','card_movements',
+    'card_played_chain_id','card_played_chain_step','response_to_event_id','response_to_side',
+    'response_to_card_id','card_movement_only','source_action_id','source_action_side',
+    'casting_stage','casting_action_id','exp_gained'];
+  for(const key of keys)if(Object.hasOwn(e,key))event[key]=e[key];
+  // These snapshots contain *names of public battlefield Heroes*, not private state.
+  if(e.source_hero_card_id){const name=cv(e.source_hero_card_id)?.name;if(name)event.source_snapshot={name};}
+  if(e.target_hero_card_id){const name=cv(e.target_hero_card_id)?.name;if(name)event.target_snapshot={name};}
+  if(e.label==='TRIBUTE'&&Number.isFinite(Number(e.exp_gained)))
+    event.result_lines=(event.result_lines||[]).concat('Gained '+Number(e.exp_gained)+' EXP.');
+  event.damage_breakdown_by_hero=(e.damage_by_hero||[]).map(x=>({name:x.name,side:x.side,lane:x.lane,
+    summary:{...x.summary,damage_type:x.summary?.damage_type||e.damage_type||undefined},modifiers:x.modifiers||[]}));
+  event.healing_breakdown=(e.healing_by_hero||[]).map(x=>({name:x.name,side:x.side,lane:x.lane,healed:x.healed}));
+  event.status_breakdown=(e.status_by_hero||[]).map(x=>({name:x.name,side:x.side,lane:x.lane,
+    status:x.status,previous_duration:x.before,final_duration:x.after}));
+  event.effect_breakdown_by_hero=(e.effect_breakdown_by_hero||[]).map(x=>({...x}));
+  if(e.discard_origin)event.discard_from={HAND:'Hand',MAIN_DECK:'Main Deck',FIELD:'Field',EXP:'EXP'}[e.discard_origin]||'Hand';
+  // Mana identity can be published ONLY when the target-only committed
+  // MANA_REMOVAL effect is present in this particular viewer's journal.
   const mana=e.mana_result;
   if(mana&&['BURN','STEAL'].includes(mana.mode)){
-    // The attacker may know the COUNT but not a blind-picked shard's color.
-    // Exact Regular/Color identities enter this action ONLY via the
-    // recipient-only committed MANA_REMOVAL effect above.
-    const title=mana.mode==='STEAL'?'Mana Steal':'Mana Burn';
-    if(!rows.some(x=>x.title===title)){
-      const count=Math.max(0,Math.trunc(Number(mana.removed_count)||0));
-      if(count)rows.push({title,value:'Removed '+count+' Mana Shard'+(count===1?'':'s')+' (type hidden).'});
+    const loss=(e.effect_results||[]).find(x=>x.kind==='MANA_REMOVAL');
+    const count=Math.max(0,Math.trunc(Number(mana.removed_count)||0));
+    if(count){
+      const kinds=loss?.removed_shards?.map(sh=>sh.kind==='CLASS'&&sh.class_name?
+        sh.class_name+' Mana Shard':'Regular Mana Shard')||[];
+      const removed=kinds.length===count?kinds.join(', '):
+        count+' Mana Shard'+(count===1?'':'s')+' (type hidden)';
+      const detail='Removed: '+removed+'.'+(mana.mode==='STEAL'? ' Gained: '+
+        Math.max(0,Math.trunc(Number(mana.gained_count)||0))+' Mana Shards.':'');
+      event.effect_breakdown_by_hero.push({kind:mana.mode==='STEAL'?'MANA STEAL':'MANA BURN',
+        description:mana.mode==='STEAL'?'Mana Steal':'Mana Burn',scope:'team',
+        name:'Game Resources',side:e.side,detail});
     }
-    if(mana.mode==='STEAL')rows.push({title:'Mana Gained',value:'+'+Math.max(0,Number(mana.gained_count)||0)+' Mana Shards'});
   }
-  for(const move of e.card_movements||[]){
-    const zone=({Hand:'HAND','Main Deck':'MAIN_DECK',Field:'FIELD',EXP:'EXP'})[move.from];
-    const duplicateDiscard=move.to==='Discard'&&zone&&
-      (e.effect_results||[]).some(r=>r.kind==='DISCARD'&&r.origin===zone&&
-        (move.card_ids||[]).length>0&&
-        (move.card_ids||[]).every(id=>(r.card_ids||[]).includes(id)));
-    if(duplicateDiscard)continue;
-    const names=(move.card_ids||[]).map(id=>cv(id)?.name||id);
-    rows.push({title:move.from+' → '+move.to,value:names.length?names.join(', '):
-      (Math.max(0,Number(move.count)||0)+' card'+(Number(move.count)===1?'':'s')+' (identity hidden)')});
-  }
-  return rows;
+  return event;
 }
-// Response chains and cards discarded by the same committed action are
-// navigable locally from the existing viewer-masked journal. This never asks
-// the server for a card identity or scans canonical private state.
-function pvpPlayedRelatedCards(e){
-  const ordinary=resolvedHistory.filter(x=>!x.card_movement_only&&x.card_id&&x.id);
-  if(e.card_movement_only){
-    const parent=ordinary.find(x=>x.id===e.source_action_id&&x.side===e.source_action_side);
-    if(!parent)return '';
-    return '<section class="gl-played-related"><h4>Caused By</h4><div class="gl-played-related-list">'+
-      '<button type="button" class="gl-played-related-card" data-gl-related-id="'+esc(parent.id)+'" data-gl-related-side="'+esc(parent.side)+'" aria-label="View '+esc(cv(parent.card_id)?.name||parent.card_id)+'"><img src="'+esc(art(parent.card_id))+'" alt="'+esc(cv(parent.card_id)?.name||parent.card_id)+'"><span>'+esc(parent.side==='PLAYER'?'YOU':'OPPONENT')+'</span></button>'+ 
-      '</div></section>';
-  }
-  const ids=new Set([e.id]);
-  // Explicit chain IDs and parent-to-response edges remain public only for
-  // already-played actions. Repeated copies have different committed event IDs.
-  for(const a of ordinary)if(e.card_played_chain_id&&a.card_played_chain_id===e.card_played_chain_id)ids.add(a.id);
-  for(let j=0;j<6;j++){
-    let changed=false;
-    for(const a of ordinary){
-      if(a.response_to_event_id&&ids.has(a.response_to_event_id)&&!ids.has(a.id)){ids.add(a.id);changed=true;}
-      if(a.response_to_event_id&&ids.has(a.id)&&!ids.has(a.response_to_event_id)){ids.add(a.response_to_event_id);changed=true;}
-      // Optional public card-ID relation only when an identical repeated play
-      // cannot confuse the response with another action. Never guess by round.
-      if(!a.response_to_event_id&&a.response_to_card_id&&a.response_to_side){
-        const candidates=ordinary.filter(x=>x.card_id===a.response_to_card_id&&x.side===a.response_to_side);
-        if(candidates.length===1){const parent=candidates[0];
-          if(ids.has(parent.id)&&!ids.has(a.id)){ids.add(a.id);changed=true;}
-          if(ids.has(a.id)&&!ids.has(parent.id)){ids.add(parent.id);changed=true;}
-        }
-      }
-    }
-    if(!changed)break;
-  }
-  const chain=ordinary.filter(x=>x.id!==e.id&&ids.has(x.id)).sort(playedChronology);
-  const discarded=resolvedHistory.filter(x=>x.card_movement_only&&x.source_action_id===e.id&&
-    x.source_action_side===e.side).sort(playedChronology);
-  if(!chain.length&&!discarded.length)return '';
-  const sections=[];
-  for(const [title,cards] of [['Related Cards · Response Chain',chain],['Discarded Cards',discarded]]){
-    if(!cards.length)continue;
-    sections.push('<section class="gl-played-related"><h4>'+esc(title)+'</h4><div class="gl-played-related-list">'+
-      cards.slice(0,12).map(x=>'<button type="button" class="gl-played-related-card" data-gl-related-id="'+esc(x.id)+'" data-gl-related-side="'+esc(x.side)+'" aria-label="View '+esc(cv(x.card_id)?.name||x.card_id)+'"><img src="'+esc(art(x.card_id))+'" alt="'+esc(cv(x.card_id)?.name||x.card_id)+'"><span>'+esc(x.card_movement_only?'DISCARDED':x.side==='PLAYER'?'YOU':'OPPONENT')+'</span></button>').join('')+
-      '</div></section>');
-  }
-  return sections.join('');
-}
-function pvpPlayedAdditionalLines(e,fields){
-  const hasDamage=!!(e.damage_by_hero?.length||e.damage_summary?.actual_hp_damage!==undefined);
-  const hasHeal=!!e.healing_by_hero?.length;
-  const hasStatus=!!e.status_by_hero?.some(x=>x.after!==x.before);
-  const hasMana=!!(e.mana_result||(e.effect_results||[]).some(x=>x.kind==='MANA_REMOVAL'));
-  const hasDiscard=!!(e.effect_results||[]).some(x=>x.kind==='DISCARD');
-  const hasBurn=!!(e.damage_by_hero||[]).some(h=>Number(h.summary?.burn_damage||0)>0)||
-    Number(e.damage_summary?.burn_damage||0)>0;
-  const outcomes=fields.some(x=>x.title==='Outcome');
-  const seen=new Set(),out=[];
-  for(const raw of e.result_lines||[]){
-    const line=String(raw||'').trim();if(!line)continue;
-    if(/resolved by|\bruntime\b|committed by|before response|final zone|mana cost|source:|target lane/i.test(line))continue;
-    const damageMath=/^(?:printed\/base damage|base damage|damage after modifiers(?: at release)?|primary damage after modifiers|defense\s*\/\s*prevention|primary defense\s*\/\s*prevention|response block|passive reduction|active reduction|calculated final damage|final hp damage|actual hp damage|damage dealt|follow-up damage|separate conditional follow-up|separate follow-up incoming damage|separate follow-up applied damage)\s*:/i.test(line)||
-      /^(?:.+\s+)?HP:\s*-?\d+\s*(?:->|→)\s*-?\d+\.?$/i.test(line)||
-      /\b(?:took|dealt)\s+\d+\s+(?:physical|magical)\s+damage\.?$/i.test(line);
-    if(hasDamage&&damageMath)continue;
-    if(hasBurn&&/^burn added \+\d+ damage\.?$/i.test(line))continue;
-    if(hasHeal&&/\b(heal(?:ed|ing)?|restor(?:ed|es|ing))\b/i.test(line))continue;
-    if(hasStatus&&/\b(status (?:result|effect|applied)|inflict(?:ed|s|ing)?\s+(?:Poison|Burn|Bleed|Freeze|Stun|Sleep))\b/i.test(line))continue;
-    if(hasMana&&/\b(mana burn|mana steal|mana shards removed|mana shards? (?:gained|lost|removed))\b/i.test(line))continue;
-    if(hasDiscard&&/\bdiscard(?:ed|s|ing)?\b/i.test(line))continue;
-    if(outcomes&&/\b(countered|negated|dodged|blocked)\b/i.test(line))continue;
-    if(!/\b(status result|status applied|heal(?:ed|ing)?|restor(?:ed|es|ing)|invincible|reflect(?:ed|s|ing)?|defeated|countered|negated|dodged|burn added)\b/i.test(line))continue;
-    const key=line.replace(/\s+/g,' ').toLowerCase();
-    if(!seen.has(key)){seen.add(key);out.push(line);}
-    if(out.length>=4)break;
-  }
-  return out;
-}
-// RC39 Part5 Batch2 donor: per-Hero resolved data is grouped into exactly
-// one visual box per affected Hero. Input is the already viewer-safe PvP
-// action projection; never look up private Hand or Deck state.
-function pvpPlayedHeroOutcomeHtml(e){
-  // The same committed attack can hit a Hero multiple times. One Hero box,
-  // one coherent breakdown; never repeat Damage/HP in a flat Result panel.
-  const groups=new Map();
-  const get=h=>{
-    const key=[h.side||'',h.lane||'',h.name||'Hero'].join('|');
-    if(!groups.has(key))groups.set(key,{name:String(h.name||'Hero'),lane:h.lane||'',
-      hits:0,base:0,modified:0,block:0,passive:0,active:0,burn:0,followUp:0,
-      actual:0,hpBefore:null,hpAfter:null,hasBase:false,hasModified:false,heal:0,status:[]});
-    return groups.get(key);
-  };
-  const safe=n=>Number.isFinite(Number(n))?Math.max(0,Number(n)):0;
-  const damage=Array.isArray(e.damage_by_hero)&&e.damage_by_hero.length?e.damage_by_hero:
-    (e.damage_summary&&Object.hasOwn(e.damage_summary,'actual_hp_damage')?
-      [{name:pvpPlayedHeroName(e,'target')||'Target Hero',side:e.target_side,lane:e.target_lane,summary:e.damage_summary}]:[]);
-  for(const h of damage){
-    const ds=h?.summary;if(!ds||!Object.hasOwn(ds,'actual_hp_damage'))continue;
-    const g=get(h);g.hits++;g.actual+=safe(ds.actual_hp_damage);
-    if(Object.hasOwn(ds,'base_damage')){g.hasBase=true;g.base+=safe(ds.base_damage);}
-    if(Object.hasOwn(ds,'damage_after_modifiers')){g.hasModified=true;g.modified+=safe(ds.damage_after_modifiers);}
-    g.block+=safe(ds.response_block);g.passive+=safe(ds.passive_reduction);
-    g.active+=safe(ds.active_reduction);g.burn+=safe(ds.burn_damage);
-    g.followUp+=safe(ds.follow_up_damage);
-    if(g.hpBefore===null&&Object.hasOwn(ds,'target_hp_before'))g.hpBefore=Number(ds.target_hp_before);
-    if(Object.hasOwn(ds,'target_hp_after'))g.hpAfter=Number(ds.target_hp_after);
-  }
-  for(const h of e.healing_by_hero||[]){const heal=safe(h?.healed);if(heal>0)get(h).heal+=heal;}
-  for(const h of e.status_by_hero||[]){const before=Number(h?.before),after=Number(h?.after);
-    if(h?.status&&Number.isFinite(before)&&Number.isFinite(after)&&before!==after)
-      get(h).status.push({name:String(h.status),before,after});
-  }
-  const dtype=/Magical/i.test(e.damage_type||'')?'Magical':
-    /Physical/i.test(e.damage_type||'')?'Physical':'HP';
-  const sections=[];
-  for(const g of groups.values()){
-    const lines=[];const put=x=>lines.push('<li>'+esc(x)+'</li>');
-    if(g.hasBase&&g.base>0)put('Base Damage: '+g.base);
-    if(g.hasModified&&g.hasBase&&g.modified!==g.base)put('After Modifiers: '+g.modified);
-    if(g.block>0)put('Block: -'+g.block+' Damage');
-    if(g.passive>0)put('Passive Reduction: -'+g.passive+' Damage');
-    if(g.active>0)put('Active Reduction: -'+g.active+' Damage');
-    if(g.burn>0)put('Burn Bonus: +'+g.burn+' Damage');
-    if(g.followUp>0)put('Follow-up Damage: +'+g.followUp+' Damage');
-    if(g.actual>0)put('Final '+dtype+' Damage: '+g.actual+(g.hits>1?' ('+g.hits+' hits)':''));
-    if(g.hpBefore!==null&&g.hpAfter!==null&&Number.isFinite(g.hpBefore)&&
-       Number.isFinite(g.hpAfter)&&g.hpBefore!==g.hpAfter)put('HP: '+g.hpBefore+' → '+g.hpAfter);
-    if(g.heal>0)put('HP Restored: +'+g.heal+' HP');
-    for(const x of g.status)put(x.name+': '+x.before+' → '+x.after+' turns');
-    if(lines.length)sections.push('<article class="gl-played-hero-group"><h4>'+esc(g.name)+
-      '</h4><ul>'+lines.join('')+'</ul></article>');
-  }
-  const headline=[...groups.values()].some(g=>g.hits>0)?'Damage Resolution — by Hero':'Effect Resolution — by Hero';
-  return sections.length?'<section class="gl-played-hero-groups"><h4>'+headline+'</h4>'+
-    sections.join('')+'</section>':'';
-}
-function pvpPlayedResponseDetail(e){
-  // Use ONLY other publicly committed Card Played actions. Neither private
-  // Response options nor an opponent's Hand is available to this renderer.
-  const events=resolvedHistory.filter(x=>x?.id&&!x.card_movement_only&&x.id!==e.id);
-  const uniqueTarget=resolvedHistory.filter(x=>!x.card_movement_only&&x.card_id===e.card_id&&x.side===e.side).length===1;
-  const linked=events.filter(x=>
-    (x.response_to_event_id&&x.response_to_event_id===e.id)||
-    (uniqueTarget&&!x.response_to_event_id&&x.response_to_card_id===e.card_id&&
-      x.response_to_side===e.side)||
-    (e.card_played_chain_id&&x.card_played_chain_id===e.card_played_chain_id&&
-      ['DEF','REACTION','RESPONSE','COUNTER'].includes(String(x.label||'').toUpperCase())));
-  const lines=[],seen=new Set();
-  for(const x of linked.sort(playedChronology)){
-    const actor=x.side==='PLAYER'?'You':'Opponent',card=cv(x.card_id)?.name||x.card_id;
-    const hero=x.source_hero_card_id?cv(x.source_hero_card_id)?.name||x.source_hero_card_id:'';
-    const detail=String(x.defense_text||'').trim();
-    const action=String(x.label||'').toUpperCase()==='DEF'?'used':'responded with';
-    const line=actor+' '+action+' '+card+(hero?' from '+hero:'')+(detail?' — '+detail.replace(/[.]+$/,'')+'.':'.');
-    if(!seen.has(x.id)){seen.add(x.id);lines.push(line);}
-  }
-  return lines;
-}
-
-function pvpPlayedDetailHtml(e){
-  const name=cv(e.card_id)?.name||e.title||e.card_id;
-  const field=({title,value})=>'<div class="gl-played-gameplay-row"><strong>'+esc(title)+
-    '</strong><p>'+esc(value)+'</p></div>';
-  const head='<div class="played-detail-layout"><div class="played-detail-card"><img src="'+
-    esc(art(e.card_id))+'" alt="'+esc(name)+'"></div><section class="played-detail-copy gl-played-gameplay-copy"><h3>'+esc(name)+'</h3>';
-  if(e.card_movement_only){
-    const source=e.source_effect_card_id?(cv(e.source_effect_card_id)?.name||e.source_effect_card_id):'';
-    const origin=({HAND:'Hand',MAIN_DECK:'Main Deck',FIELD:'Field',EXP:'Hero EXP'})[e.discard_origin];
-    // No anonymous 'Unknown origin / Opponent Effect' entries: a discard is
-    // displayed only when the source and real initial zone are authoritative.
-    if(!source||!origin)return head+field({title:'Action',value:'Discarded'})+'</section></div>';
-    const fields=[{title:'Action',value:'Discarded by effect'},
-      {title:'From',value:origin},{title:'Caused By',value:source}];
-    if(e.discard_hero_card_id)fields.push({title:'Hero',value:cv(e.discard_hero_card_id)?.name||e.discard_hero_card_id});
-    return head+fields.map(field).join('')+pvpPlayedRelatedCards(e)+'</section></div>';
-  }
-  const label=String(e.label||'').toUpperCase();
-  const fields=[{title:'Action',value:pvpPlayedActionName(e)}];
-  const usedBy=pvpPlayedHeroName(e,label==='TRIBUTE'?'target':'source');
-  if(usedBy)fields.push({title:label==='TRIBUTE'?'Hero':'Used By',value:usedBy});
-  if(label==='DEF'){
-    const protectedHero=pvpPlayedHeroName(e,'defended');
-    if(protectedHero&&protectedHero!==usedBy)fields.push({title:'Protected Hero',value:protectedHero});
-    if(e.response_to_card_id)fields.push({title:'Responded To',value:cv(e.response_to_card_id)?.name||e.response_to_card_id});
-  }else if(label!=='TRIBUTE'&&!(e.damage_by_hero?.length||e.healing_by_hero?.length||e.status_by_hero?.length||
-      (e.damage_summary&&Object.hasOwn(e.damage_summary,'actual_hp_damage')))){
-    const target=pvpPlayedHeroName(e,'target')||'';
-    if(target&&target!==usedBy)fields.push({title:'Target',value:target});
-  }
-  if(label==='TRIBUTE'&&Number.isFinite(Number(e.exp_gained)))
-    fields.push({title:'EXP Gained',value:'+'+Number(e.exp_gained)+' EXP'});
-  const resolution=String(e.resolution_state||'').toUpperCase();
-  if(['NEGATED','COUNTERED','CANCELED'].includes(resolution))fields.push({title:'Outcome',value:resolution});
-  if(label==='DEF'&&!['NEGATED','COUNTERED','CANCELED'].includes(resolution)){
-    const kind=String(e.response_kind||'').toLowerCase(),line=(e.result_lines||[]).join(' ');
-    const value=kind==='dodge'||kind==='second_chance'||/\bdodg(?:e|ed|es|ing)\b/i.test(line)?'DODGED':
-      ['block','dragon_scale','area_reduce','legacy_reduce'].includes(kind)||/\bblock(?:ed|s|ing)?\b/i.test(line)?'BLOCKED':'';
-    if(value)fields.push({title:'Outcome',value});
-  }
-  fields.push(...pvpPlayedEffectRows(e));
-  const response=pvpPlayedResponseDetail(e);
-  if(response.length)fields.push({title:'Response Detail',value:response.join(' · ')});
-  const additional=pvpPlayedAdditionalLines(e,fields);
-  if(additional.length)fields.push({title:'Additional Effects',value:additional.join(' · ')});
-  return head+fields.map(field).join('')+pvpPlayedHeroOutcomeHtml(e)+pvpPlayedRelatedCards(e)+'</section></div>';
-}
-
 function openPlayedDetail(side,eventId){
-  const e=resolvedHistory.find(x=>x.id===eventId&&x.side===side);
-  if(!e)return;
-  let detail;
-  if(window.GL_APP_MODE==='PVP')detail={title:'Card Played — '+(side==='PLAYER'?'You':'Opponent'),html:pvpPlayedDetailHtml(e)};
-  else detail=E()?.getCardPlayedDetail?.(side,eventId);
-  if(!detail?.html)detail={title:'Card Played — '+(side==='PLAYER'?'You':'Opponent'),html:pvpPlayedDetailHtml(e)};
+  if(!resolvedHistory.some(x=>x.id===eventId&&x.side===side))return;
+  // No custom PvP renderer/fallback: use the EXACT VS AI RC40 engine formatter.
+  const viewerSafe=resolvedHistory.map(pvpCanonicalPlayedEvent).filter(Boolean);
+  const detail=E()?.getPublicCardPlayedDetail?.(side,eventId,viewerSafe);
+  if(!detail?.html){console.warn('[PvP] No canonical Card Played detail for committed event',eventId);return;}
   playedDetailOverlay.querySelector('#glPlayedDetailTitle').textContent=detail.title;
   playedDetailOverlay.querySelector('.gl-played-detail-body').innerHTML=detail.html;
   playedDetailOverlay.classList.add('open');
 }
 playedDetailOverlay.querySelector('.gl-played-detail-close').onclick=closePlayedDetail;
 playedDetailOverlay.addEventListener('click',event=>{
-  const link=event.target.closest?.('[data-gl-related-id][data-gl-related-side]');
+  const link=event.target.closest?.('[data-gl-linked-event][data-gl-linked-side]');
   if(!link)return;
-  event.preventDefault();openPlayedDetail(link.dataset.glRelatedSide,link.dataset.glRelatedId);
+  event.preventDefault();openPlayedDetail(link.dataset.glLinkedSide,link.dataset.glLinkedEvent);
 });
 playedDetailOverlay.addEventListener('click',e=>{if(e.target===playedDetailOverlay)closePlayedDetail()});
 function adaptiveStageActive(){return document.documentElement.classList.contains('gl-adaptive-stage');}
@@ -1436,7 +1176,15 @@ function showNextPresentationNotice(){
   counterBanner.replaceChildren();
   const header=document.createElement('strong');header.textContent=item.title;
   const desc=document.createElement('small');desc.textContent=item.detail;
-  counterBanner.append(header,desc);
+  if(item.kind==='counter'&&Array.isArray(item.cards)&&item.cards.length>=2){
+    const row=document.createElement('div');row.className='gl-pvp-counter-chain-row';
+    item.cards.forEach((card,index)=>{
+      if(index){const separator=document.createElement('span');separator.className='gl-pvp-counter-chain-link';separator.textContent='→ COUNTER →';row.appendChild(separator)}
+      const box=document.createElement('span');box.className='gl-pvp-counter-chain-card '+(card.side==='PLAYER'?'is-you':'is-opponent');
+      box.textContent=String(card.name||'Card');row.appendChild(box);
+    });
+    counterBanner.append(header,row);
+  }else counterBanner.append(header,desc);
   counterBanner.classList.toggle('is-racial',item.kind==='racial');
   counterBanner.classList.toggle('is-mana',item.kind==='mana');
   for(const kind of ['played','discard','damage'])counterBanner.classList.toggle('is-'+kind,item.kind===kind);
@@ -1448,8 +1196,8 @@ function showNextPresentationNotice(){
     showNextPresentationNotice();
   },item.duration);
 }
-function queuePresentationNotice(kind,title,detail,duration){
-  presentationNoticeQueue.push({kind,title,detail,duration});
+function queuePresentationNotice(kind,title,detail,duration,cards=null){
+  presentationNoticeQueue.push({kind,title,detail,duration,cards});
   showNextPresentationNotice();
 }
 function showCommittedCounterBanner(evt){
@@ -1457,7 +1205,7 @@ function showCommittedCounterBanner(evt){
   const by=evt.counter_side==='PLAYER'?'You':(evt.counter_side==='AI'?'AI':'Opponent'),
         targetOwner=evt.target_side==='PLAYER'?'your':"opponent's",
         via=cv(evt.counter_card_id)?.name||'Response',target=cv(evt.target_card_id)?.name||'card';
-  queuePresentationNotice('counter','COUNTERED!',by+' used '+via+' to negate '+targetOwner+' '+target+'.',pvpNoticeMs(2000));
+  queuePresentationNotice('counter','COUNTERED!',by+' used '+via+' to negate '+targetOwner+' '+target+'.',pvpNoticeMs(3500),[{name:target,side:evt.target_side},{name:via,side:evt.counter_side}]);
 }
 function showCommittedRacialBanner(evt){
   if(!evt||evt.type!=='RACIAL_TOKEN_USED'||Number(evt.token_cost||0)<=0)return;
@@ -1605,8 +1353,11 @@ function playPvpCombatVisualBatch(batch){
   const magic=/magical/i.test(String(batch.attack.damage_type||''));
   const src=magic?'engine/assets/battle/M.Attack.png':'engine/assets/battle/P.Attack.png';
   const cls=magic?'gl-battle-mattack':'gl-battle-pattack',created=[];
+  let hpDamageVisuals=0;
   // No per-Hero stagger: all VFX, shakes, Status icons are appended immediately.
   for(const target of batch.targets){
+    const tookDamage=Number(target.damage||0)>0;
+    if(!tookDamage&&!(target.statuses||[]).length)continue;
     const hero=heroCardEl(target.side,target.lane);
     const anchor=hero?.closest('.gl-hero-physical-stack')||hero||uiLaneElement(target.side,target.lane);
     const box=uiRect(anchor);
@@ -1615,9 +1366,11 @@ function playPvpCombatVisualBatch(batch){
     clip.style.left=box.left+'px';clip.style.top=box.top+'px';
     clip.style.width=box.width+'px';clip.style.height=box.height+'px';
     layer.appendChild(clip);created.push(clip);
-    const vfx=document.createElement('img');vfx.className='gl-battle-vfx '+cls;
-    vfx.src=src;vfx.draggable=false;vfx.style.width='72%';vfx.style.height='72%';
-    vfx.style.left='14%';vfx.style.top='14%';clip.appendChild(vfx);
+    if(tookDamage){
+      const vfx=document.createElement('img');vfx.className='gl-battle-vfx '+cls;
+      vfx.src=src;vfx.draggable=false;vfx.style.width='72%';vfx.style.height='72%';
+      vfx.style.left='14%';vfx.style.top='14%';clip.appendChild(vfx);hpDamageVisuals++;
+    }
     const lane=uiLaneElement(target.side,target.lane);
     if(target.damage>0&&lane){lane.classList.remove('gl-battle-damage-card');void lane.offsetWidth;
       lane.classList.add('gl-battle-damage-card');setTimeout(()=>lane.classList.remove('gl-battle-damage-card'),550);}
@@ -1644,7 +1397,7 @@ function playPvpCombatVisualBatch(batch){
   if(!created.length)return false;
   // The VFX has its own short lifecycle; the +1s notice policy is reserved
   // for genuinely important information, not overlays on top of Hero cards.
-  playPvpBattleSound(magic?'M.Atk.mp3':'P.Atk.mp3',.6);
+  if(hpDamageVisuals)playPvpBattleSound(magic?'M.Atk.mp3':'P.Atk.mp3',.6);
   setTimeout(()=>created.forEach(x=>x.remove()),1050);
   return true;
 }
@@ -2134,7 +1887,9 @@ function isDefenseResponseArrowCard(cardId){
 function protectedHeroFromResponse(rw){
   const atk=findAttackContextInWindow(rw)||rw;
   if(!atk?.target_side||!atk?.target_lane)return null;
-  return {target_side:atk.target_side,target_lane:atk.target_lane};
+  const h=sideHeroes(st(),atk.target_side)?.[atk.target_lane];
+  return {target_side:atk.target_side,target_lane:atk.target_lane,
+    target_hero_card_id:atk.target_hero_card_id||heroImageId(h)||null};
 }
 function confirmResponseOption(optionIndex){
   if(!responseRollbackSnapshot)responseRollbackSnapshot=B()?.getSnapshot?.()||null;
@@ -2203,8 +1958,9 @@ function pendingActionInfo(s,p){
   const fallbackLane=p.source_lane||p.host_lane||p.response_option?.source_lane||evt?.source_lane||null;
   const lane=currentLaneForSourceCard(s,side,sourceCardId,fallbackLane);
   const targetSide=p.target_side||evt?.target_side||null;
-  const targetLane=p.target_lane||evt?.target_lane||null;
-  return{card_id:id,side,lane,source_card_id:sourceCardId,target_side:targetSide,target_lane:targetLane,no_source:!lane};
+  const targetHeroId=p.target_hero_card_id||evt?.target_hero_card_id||null;
+  const targetLane=currentLaneForTargetHero(s,targetSide,targetHeroId,p.target_lane||evt?.target_lane||null);
+  return{card_id:id,side,lane,source_card_id:sourceCardId,target_side:targetSide,target_lane:targetLane,target_hero_card_id:targetHeroId,no_source:!lane};
 }
 function bindBattlefieldHandHover(card){
   if(!card||card.dataset.glHoverBound==='1')return;card.dataset.glHoverBound='1';
@@ -2313,61 +2069,69 @@ function renderPool(host,countEl,pool,side){
     (plan.plan?.selected_shard_uids||plan.plan?.shards?.map(x=>x.uid)||p.selected_shard_uids||[]).forEach(x=>selected.add(String(x)));
     (pool||[]).forEach(sh=>selectable.add(String(sh.uid)));
   }
-  if(side==='PLAYER'&&p?.type==='mana_spend_choice') (pool||[]).forEach(sh=>selected.add(String(sh.uid)));
+  if(side==='PLAYER'&&p?.type==='mana_spend_choice')(pool||[]).forEach(sh=>selected.add(String(sh.uid)));
   if(side==='PLAYER'&&p?.type==='response_payment_choice'&&Number(p.mana_cost||0)>0){
     (plan?.plan?.selected_shard_uids||p.selected_shard_uids||[]).forEach(uid=>selected.add(String(uid)));
     (pool||[]).forEach(sh=>selectable.add(String(sh.uid)));
   }
-
-  const blindOpponent = p?.type==='opponent_mana_selection' && pendingOwner(p)==='PLAYER' && side===p.target_side;
+  const blindOpponent=p?.type==='opponent_mana_selection'&&pendingOwner(p)==='PLAYER'&&side===p.target_side;
   const blindInCenter=blindOpponent&&centerChoiceModeFor(s)==='opponent-shard';
-  // Clone-only center choice: once the real opponent Pool is on screen, do not
-  // rebuild or restyle it while the blind choice is active. This preserves the
-  // exact normal geometry, counter, stack order, and card positions behind the
-  // center overlay.
-  // In PvP the normal opponent pool shows faces. When blind selection starts,
-  // repaint its cards face-down before presenting the independent choice overlay.
-  if(blindInCenter&&host.children.length&&window.GL_APP_MODE!=='PVP'){countEl.textContent=(pool||[]).length;return;}
-  const blindSelected = new Set();
-  if(blindOpponent) (p.selected_indices||[]).forEach(i=>blindSelected.add(Number(i)));
-
+  const blindSelected=new Set((blindOpponent?p.selected_indices||[]:[]).map(Number));
   host.classList.toggle('gl-blind-shard-layout',!!blindOpponent&&!blindInCenter);
-  // Replacing a Mana card destroys its DOM node without firing mouseleave.
-  // Close the transient hover before rebuilding either Mana Pool so a spent AI Shard never leaves a stuck preview.
-  if(battlefieldHoverSource&&host.contains(battlefieldHoverSource))hideBattlefieldHoverPreview();
-  host.innerHTML='';const cards=[];
-  // During centered blind choice the source Shard Pool is layout-locked. Randomization
-  // exists only in the center clones; the real pool keeps its canonical/sorted positions.
-  const displayPool=(blindOpponent&&!blindInCenter)
-    ? (p.candidates||[]).map(c=>(pool||[]).find(sh=>String(sh?.uid)===String(c?.uid))).filter(Boolean)
-    : sortedShardPoolForDisplay(pool,side);
-  displayPool.forEach((sh,i)=>{
-    const wrap=document.createElement('div');
-    const blindIdx=(blindOpponent&&!blindInCenter)?i:-1;
-    const isBlindSelected=(blindOpponent&&!blindInCenter)&&blindSelected.has(blindIdx);
-    const openingHidden=glOpeningHiddenShardUids.has((side==='AI'?'AI':'PLAYER')+'|'+String(sh.uid));
-    wrap.className='mana-card'+(selected.has(String(sh.uid))||isBlindSelected?' gl-selected':'')+(selectable.has(String(sh.uid))||(blindOpponent&&!blindInCenter)?' gl-class-choice':'')+(sh?.kind==='CLASS'&&!(blindOpponent&&!blindInCenter)?' gl-class-shard':'')+(openingHidden?' gl-presentation-hidden':'');
-    wrap.dataset.uid=sh.uid||'';wrap.dataset.shardKind=sh?.kind||'';
-    const im=document.createElement('img');
-    // Show RC38 Mana faces in the public opponent Pool. The special effect
-    // which selects opponent Mana without looking still uses face-down cards.
-    const faceDown=blindOpponent;
-    im.src=faceDown?'assets/ui/back-shard.webp':shardArt(sh);
-    im.alt=faceDown?'Face-down opponent Shard':((sh.class_name||'Mana')+' Shard');
-    wrap.appendChild(im);host.appendChild(wrap);cards.push(wrap);
-    if(!faceDown)bindBattlefieldPreview(im,side==='PLAYER'?'shard':'opponentShard',wrap);
-    if(blindOpponent&&!blindInCenter){
-      wrap.addEventListener('click',()=>{intent('selectOpponentManaChoice',[blindIdx])});
-    }else if(selectable.has(String(sh.uid))&&!blindInCenter){
-      wrap.addEventListener('click',()=>{
-        if(p?.type==='response_payment_choice') intent('toggleResponseManaShardChoice',[sh.uid]);
-        else intent('toggleManaShardPaymentChoice',[sh.uid]);
-      });
+  const displayPool=(blindOpponent&&!blindInCenter)?
+    (p.candidates||[]).map(c=>(pool||[]).find(sh=>String(sh?.uid)===String(c?.uid))).filter(Boolean):
+    sortedShardPoolForDisplay(pool,side);
+  const existing=new Map([...host.querySelectorAll(':scope > .mana-card')].map(el=>[String(el.dataset.uid||''),el]));
+  const reused=new Set(),ordered=[];
+  for(let i=0;i<displayPool.length;i++){
+    const sh=displayPool[i],uid=String(sh?.uid||''),blindIdx=blindOpponent&&!blindInCenter?i:-1;
+    const isBlindSelected=blindIdx>=0&&blindSelected.has(blindIdx);
+    const openingHidden=glOpeningHiddenShardUids.has(side+'|'+uid);
+    let wrap=existing.get(uid);
+    if(!wrap||reused.has(wrap)){
+      wrap=document.createElement('div');wrap.className='mana-card';wrap.dataset.uid=uid;
+      const im=document.createElement('img');im.draggable=false;wrap.appendChild(im);
     }
-  });
-  countEl.textContent=(pool||[]).length;
+    reused.add(wrap);ordered.push(wrap);
+    const image=wrap.querySelector('img'),faceDown=blindOpponent;
+    wrap.dataset.uid=uid;wrap.dataset.shardKind=sh?.kind||'';
+    wrap.dataset.glBlind=faceDown?'1':'0';
+    wrap.className='mana-card'+(selected.has(uid)||isBlindSelected?' gl-selected':'')+
+      (selectable.has(uid)||blindIdx>=0?' gl-class-choice':'')+
+      (sh?.kind==='CLASS'&&blindIdx<0?' gl-class-shard':'')+
+      (openingHidden?' gl-presentation-hidden':'');
+    const src=faceDown?'assets/ui/back-shard.webp':shardArt(sh);
+    if(image.getAttribute('src')!==src){
+      if(battlefieldHoverSource===image)hideBattlefieldHoverPreview();
+      image.setAttribute('src',src);
+    }
+    image.alt=faceDown?'Face-down opponent Shard':((sh.class_name||'Mana')+' Shard');
+    if(!faceDown)bindBattlefieldPreview(image,side==='PLAYER'?'shard':'opponentShard',wrap);
+    // On reused nodes, read the CURRENT pending type. Never retain a stale
+    // closure from the previous server revision / payment continuation.
+    wrap.onclick=()=>{
+      const live=st()?.pending;
+      if(!live)return;
+      if(blindIdx>=0){
+        if(live.type==='opponent_mana_selection'&&centerChoiceModeFor(st())!=='opponent-shard')
+          intent('selectOpponentManaChoice',[blindIdx]);
+      }else if(side==='PLAYER'&&selectable.has(uid)){
+        if(live.type==='response_payment_choice')intent('toggleResponseManaShardChoice',[sh.uid]);
+        else if(live.type==='mana_shard_payment_choice')intent('toggleManaShardPaymentChoice',[sh.uid]);
+      }
+    };
+  }
+  for(const old of existing.values())if(!reused.has(old)){
+    if(battlefieldHoverSource===old.querySelector('img'))hideBattlefieldHoverPreview();
+    old.remove();
+  }
+  // Moves only genuinely reordered nodes. Unchanged Shards never lose their
+  // DOM identity, hover, paint cache or video-memory texture on a server tick.
+  ordered.forEach((node,i)=>{if(host.children[i]!==node)host.insertBefore(node,host.children[i]||null)});
+  const count=String((pool||[]).length);if(countEl.textContent!==count)countEl.textContent=count;
   requestAnimationFrame(()=>layoutManaPoolCards(host));
 }
+
 let glManaPoolResizeQueued=false;
 function refreshManaPoolGeometry(){
   if(glManaPoolResizeQueued)return;
@@ -2396,23 +2160,27 @@ function installManaPoolGeometryWatch(){
 window.addEventListener('resize',refreshManaPoolGeometry,{passive:true});
 window.addEventListener('orientationchange',refreshManaPoolGeometry,{passive:true});
 installManaPoolGeometryWatch();
+// Opponent and own Mana Pools have independent render signatures. A new
+// response/pending snapshot must never replace the unaffected Pool's nodes.
+const manaSideRenderKeys={PLAYER:'',AI:''};
 function renderMana(){
   const s=st();if(!s)return;
-  const key=JSON.stringify([
-    (s.playerManaPoolCards||[]).map(x=>[x.uid,x.kind,x.class_name]),
-    (s.aiManaPoolCards||[]).map(x=>[x.uid,x.kind,x.class_name]),
-    s.pending?.type,
-    s.pending?.selected_class_uids,
-    s.pending?.selected_shard_uids,
-    s.pending?.selected_mana_class_uids,
-    s.pending?.selected_indices,
-    s.pending?.target_side,
-    [...glOpeningHiddenShardUids].sort()
-  ]);
+  const p=s.pending||{},hidden=[...glOpeningHiddenShardUids].sort();
+  const key=JSON.stringify([s.playerManaPoolCards,s.aiManaPoolCards,p.type,p.selected_indices,
+    p.selected_shard_uids,p.selected_class_uids,p.selected_mana_class_uids,p.target_side,hidden]);
   if(key===manaRenderKey)return;
-  manaRenderKey=key;
-  renderPool(playerManaHost,playerManaCount,s.playerManaPoolCards||[],'PLAYER');
-  renderPool(aiManaHost,aiManaCount,s.aiManaPoolCards||[],'AI');
+  const force=manaRenderKey==='';manaRenderKey=key;
+  const ownKey=JSON.stringify([s.playerManaPoolCards,p.type,p.selected_shard_uids,
+    p.selected_class_uids,p.selected_mana_class_uids,hidden.filter(x=>x.startsWith('PLAYER|'))]);
+  const opponentKey=JSON.stringify([s.aiManaPoolCards,p.type==='opponent_mana_selection'?p.type:'',
+    p.type==='opponent_mana_selection'?p.target_side:'',p.type==='opponent_mana_selection'?p.selected_indices:[],
+    hidden.filter(x=>x.startsWith('AI|'))]);
+  if(force||ownKey!==manaSideRenderKeys.PLAYER){
+    manaSideRenderKeys.PLAYER=ownKey;renderPool(playerManaHost,playerManaCount,s.playerManaPoolCards||[],'PLAYER');
+  }
+  if(force||opponentKey!==manaSideRenderKeys.AI){
+    manaSideRenderKeys.AI=opponentKey;renderPool(aiManaHost,aiManaCount,s.aiManaPoolCards||[],'AI');
+  }
 }
 
 // Discard decisions share Bard's full-size, focused card selector. The engine
@@ -2684,7 +2452,7 @@ function renderCenterChoiceStage(s){
     helperText=scouting?'Select 1 normal Skill EXP Card from opponent '+String(p.target_lane||'')+'. Ultimate EXP cannot be discarded.':
       expReturn?'Select exactly '+required+' normal EXP Skill Card'+(required===1?'':'s')+' to return to Hand. Confirm unlocks only after all required cards are selected. Remaining EXP goes to Discard. Return is NOT Draw.':
       cleanup?'Discard exactly '+required+' card(s) to meet the Hand limit.':
-      legacy?'Select '+required+' eligible Skill card(s) to pay the Legacy Ability cost.':
+      legacy?'Select '+(Number(p.min_cost||required)===required?'exactly '+required:('1 to '+required))+' eligible Skill card(s) to pay the Legacy Ability cost.':
       response?'Select '+required+' other Hand card(s) as the Response cost. No cost is spent before confirmation.':
       'Choose the required Hand card to discard.';
     statusText=selected.size+' / '+required+' SELECTED';
@@ -2832,7 +2600,7 @@ function renderCenterChoiceStage(s){
     });
     const needsMana=response&&Number(p.mana_cost||0)>0;
     makeBtn(scouting?'DISCARD '+selectedCount+' / 1 EXP':expReturn?'RETURN '+selectedCount+' / '+need+' EXP':needsMana?'CONTINUE TO MANA':(cleanup?'DISCARD SELECTED':'DISCARD & CONFIRM'),
-      'gl-center-choice-primary',selectedCount!==need,async()=>{
+      'gl-center-choice-primary',legacy?(selectedCount<Number(p.min_cost||need)||selectedCount>need):selectedCount!==need,async()=>{
         if(centerChoiceBusy)return;
         if(needsMana){
           // Do not discard or spend anything before the final PAY. The selected
@@ -3461,7 +3229,7 @@ function chainActions(s){
   if(pendingAction)out.push(pendingAction);
   return dedupeActions(out);
 }
-function normalizeAction(a,id){return{card_id:id||a.card_id,side:a.source_side||a.side||'AI',lane:a.source_lane||null,source_card_id:a.source_card_id||null,target_side:a.target_side||null,target_lane:a.target_lane||null,target_lanes:Array.isArray(a.target_lanes)?a.target_lanes.slice():null,no_source:!a.source_lane}}
+function normalizeAction(a,id){return{card_id:id||a.card_id,side:a.source_side||a.side||'AI',lane:a.source_lane||null,source_card_id:a.source_card_id||null,target_side:a.target_side||null,target_lane:a.target_lane||null,target_hero_card_id:a.target_hero_card_id||a.action?.target_hero_card_id||null,target_lanes:Array.isArray(a.target_lanes)?a.target_lanes.slice():null,no_source:!a.source_lane}}
 function dedupeActions(a){const seen=new Set();return a.filter(x=>{const k=[x.card_id,x.side,x.lane,x.target_side,x.target_lane].join('|');if(seen.has(k))return false;seen.add(k);return true})}
 function combatChainStillActive(s){
   const p=s?.pending;
@@ -3533,7 +3301,7 @@ function itemEventArrowContexts(a){
     return [{source_kind:'active-card',target_kind:'zone',target_side:named.opponent?(fromSide==='PLAYER'?'AI':'PLAYER'):fromSide,target_zone:named.zone,card_id:a.card_id}];
   }
   const lanes=(a.target_lanes&&a.target_lanes.length)?a.target_lanes:(a.target_lane?[a.target_lane]:[]);
-  if(a.target_side&&lanes.length)return lanes.filter(Boolean).map(target_lane=>({source_kind:'active-card',target_kind:'hero',target_side:a.target_side,target_lane,card_id:a.card_id}));
+  if(a.target_side&&(lanes.length||a.target_hero_card_id))return (lanes.length?lanes:[null]).filter(x=>x||a.target_hero_card_id).map(target_lane=>({source_kind:'active-card',target_kind:'hero',target_side:a.target_side,target_lane,target_hero_card_id:a.target_hero_card_id&&lanes.length<=1?a.target_hero_card_id:null,card_id:a.card_id}));
   // Prefer canonical target metadata over effect prose. This prevents cards such as
   // Scouting (whose text says "discard" but whose target is a Hero EXP stack) from
   // being misread as a Discard Pile destination.
@@ -3555,7 +3323,9 @@ function targetElementForContext(ctx){
     if(ctx.target_zone==='Hand')return document.querySelector(ctx.target_side==='AI'?'.hand.top .hand-track':'.hand.bottom .hand-track');
     return zoneEl(ctx.target_side,ctx.target_zone);
   }
-  return heroCardEl(ctx?.target_side,ctx?.target_lane)?.parentElement||heroCardEl(ctx?.target_side,ctx?.target_lane);
+  const side=ctx?.target_side,lane=currentLaneForTargetHero(st(),side,ctx?.target_hero_card_id,ctx?.target_lane);
+  if(!lane)return null;
+  return heroCardEl(side,lane)?.parentElement||heroCardEl(side,lane);
 }
 function sourceElementForContext(ctx){
   if(ctx?.source_kind==='active-card')return activeStage?.querySelector('.active-card-visual')||null;
@@ -3564,7 +3334,7 @@ function sourceElementForContext(ctx){
 function activeTargetContexts(s,chain){
   const p=s?.pending;
   if(transientDefenseConnector){
-    if(combatChainStillActive(s)||p?.type==='response_payment_choice'||s?.responseWindow)return[{source_kind:'active-card',target_kind:'hero',target_side:transientDefenseConnector.target_side,target_lane:transientDefenseConnector.target_lane,card_id:transientDefenseConnector.card_id}];
+    if(combatChainStillActive(s)||p?.type==='response_payment_choice'||s?.responseWindow)return[{source_kind:'active-card',target_kind:'hero',target_side:transientDefenseConnector.target_side,target_lane:transientDefenseConnector.target_lane,target_hero_card_id:transientDefenseConnector.target_hero_card_id||null,card_id:transientDefenseConnector.card_id}];
     transientDefenseConnector=null;
   }
   // Pre-commit Mana selection is still the acting player's decision. Do not show a source->target
@@ -3620,15 +3390,15 @@ function activeTargetContexts(s,chain){
   const activeCardContexts=itemEventArrowContexts(candidates[0]);if(activeCardContexts.length)return activeCardContexts;
   const candidateFamily=String(rawCardDef(candidates[0]?.card_id)?.family||cv(candidates[0]?.card_id)?.family||'').toLowerCase();
   if(candidateFamily==='item'||candidateFamily==='event')return[];
-  const targeted=candidates.find(a=>a?.lane&&a?.target_side&&(a?.target_lane||(a?.target_lanes||[]).length));
+  const targeted=candidates.find(a=>a?.lane&&a?.target_side&&(a?.target_lane||a?.target_hero_card_id||(a?.target_lanes||[]).length));
   if(targeted){
     const lanes=(targeted.target_lanes&&targeted.target_lanes.length)?targeted.target_lanes:(targeted.target_lane?[targeted.target_lane]:[]);
-    return lanes.map(target_lane=>({source_side:targeted.side,source_lane:targeted.lane,target_side:targeted.target_side,target_lane}));
+    return lanes.map(target_lane=>({source_side:targeted.side,source_lane:targeted.lane,target_side:targeted.target_side,target_lane,target_hero_card_id:targeted.target_hero_card_id||null}));
   }
   const pa=pendingActionInfo(s,p),paActiveCardContexts=itemEventArrowContexts(pa);if(paActiveCardContexts.length)return paActiveCardContexts;
   if(pa?.lane&&pa?.target_side&&(pa?.target_lane||(pa?.target_lanes||[]).length)){
     const lanes=(pa.target_lanes&&pa.target_lanes.length)?pa.target_lanes:[pa.target_lane];
-    return lanes.filter(Boolean).map(target_lane=>({source_side:pa.side,source_lane:pa.lane,target_side:pa.target_side,target_lane}));
+    return lanes.filter(Boolean).map(target_lane=>({source_side:pa.side,source_lane:pa.lane,target_side:pa.target_side,target_lane,target_hero_card_id:pa.target_hero_card_id||null}));
   }
   // If an Item/Event has just resolved, briefly preserve its Active Card -> target connector.
   // This covers fast AI actions (notably Scouting) whose pending selection can disappear before the UI paint.
@@ -3649,7 +3419,7 @@ function renderAttackLine(s,chain){
   const vp=uiViewportSize();svg.setAttribute('viewBox','0 0 '+vp.width+' '+vp.height);
   const seen=new Set();
   contexts.forEach(ctx=>{
-    const key=[ctx.source_kind||'hero',ctx.source_side||'',ctx.source_lane||'',ctx.target_kind||'hero',ctx.target_side||'',ctx.target_lane||'',ctx.target_zone||''].join('|');if(seen.has(key))return;seen.add(key);
+    const key=[ctx.source_kind||'hero',ctx.source_side||'',ctx.source_lane||'',ctx.target_kind||'hero',ctx.target_side||'',ctx.target_hero_card_id||ctx.target_lane||'',ctx.target_zone||''].join('|');if(seen.has(key))return;seen.add(key);
     const src=sourceElementForContext(ctx),tar=targetElementForContext(ctx);
     if(!src||!tar)return;
     const from=uiRect(src),to=uiRect(tar);

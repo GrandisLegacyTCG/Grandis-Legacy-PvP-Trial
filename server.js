@@ -25,9 +25,9 @@ const BASE=path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC=path.join(BASE,'public');
 const PORT=Number(process.env.PORT||3000);
 const HOST=String(process.env.HOST||'0.0.0.0').trim()||'0.0.0.0';
-const VERSION='S0-RC39-PVP-NET-RC6-STAGE2-REPO-RC9-S3-P1';
-const BUILD_ID='gl-s0-pvp-rc39-beta2-repo-rc9-s3-p1-2026-11-13';
-const BUILD_LABEL=`Grandis Legacy PvP · S0 RC39 Repo RC9 Stage 3 Patch 1 · Network RC6 Stage 2`;
+const VERSION='S0-RC40-PVP-NET-RC6-STAGE2-PATCH3.1';
+const BUILD_ID='gl-s0-pvp-rc40-patch31-vsai-cardplayed-2026-11-14';
+const BUILD_LABEL=`Grandis Legacy PvP · Season 0 RC40 Patch 3.1 · VS AI Card Played · Network RC6 Stage 2`;
 const AUTHORITY_BUNDLE_SHA256=createHash('sha256').update(readFileSync(path.join(PUBLIC,'battle/engine/shared-app/app.bundle.js'))).digest('hex');
 // Parse the immutable RC39 engine BEFORE the server accepts players. This
 // removes script reads + JS compilation from the synchronous START MATCH path.
@@ -433,16 +433,16 @@ const server=http.createServer(async(req,res)=>{
   try{
     if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405,{'allow':'GET, HEAD'});res.end('Method not allowed');return;}
     const url=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
-    if(url.pathname==='/build-meta.js'){
+    if(url.pathname==='/build-meta.js'||url.pathname==='/pvp/build-meta.js'){
       const js=`window.GL_PVP_BUILD_META=Object.freeze(${JSON.stringify({version:VERSION,versionLabel:BUILD_LABEL,buildId:BUILD_ID})});\n`;
       res.writeHead(200,{'content-type':'text/javascript; charset=utf-8','content-length':Buffer.byteLength(js),'cache-control':'no-store'});
       res.end(js);return;
     }
-    if(url.pathname==='/health'){
+    if(url.pathname==='/health'||url.pathname==='/pvp/health'){
       res.writeHead(200,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});
-      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lite-lobby__s0-rc39-authority',transport:WS_BACKEND,authoritySources:{'engine/shared-app/app.bundle.js':AUTHORITY_BUNDLE_SHA256}}));return;
+      res.end(JSON.stringify({ok:true,version:VERSION,buildId:BUILD_ID,architecture:'s1-v38017-lite-lobby__s0-rc40-authority',transport:WS_BACKEND,authoritySources:{'engine/shared-app/app.bundle.js':AUTHORITY_BUNDLE_SHA256}}));return;
     }
-    let rel=decodeURIComponent(url.pathname);if(rel==='/'||rel==='')rel='/index.html';if(rel==='/battle'||rel==='/battle/')rel='/battle/index.html';
+    let rel=decodeURIComponent(url.pathname);if(rel==='/pvp'||rel==='/pvp/')rel='/index.html';else if(rel.startsWith('/pvp/'))rel=rel.slice(4);if(rel==='/'||rel==='')rel='/index.html';if(rel==='/battle'||rel==='/battle/')rel='/battle/index.html';
     rel=path.posix.normalize(rel).replace(/^\.\.(\/|$)/g,'');const file=path.resolve(PUBLIC,'.'+rel);
     if(!file.startsWith(PUBLIC+path.sep)&&file!==PUBLIC){res.writeHead(403);res.end('Forbidden');return}
     // HTTP delivery is independent of gameplay authority. Keep the RC38 donor data intact.
@@ -499,7 +499,7 @@ function allowedWsOrigin(req){
   try{
     const parsed=new URL(origin);
     return ['http:','https:'].includes(parsed.protocol)&&
-      (allowlist.length?allowlist.includes(origin):parsed.host===String(req.headers.host||''));
+      (parsed.host===String(req.headers.host||'') || origin==='https://grandislegacytcg.web.id' || allowlist.includes(origin));
   }catch{return false}
 }
 const wss=new WebSocketServer({server,path:'/ws',maxPayload:MAX_WS_PAYLOAD,perMessageDeflate:false,

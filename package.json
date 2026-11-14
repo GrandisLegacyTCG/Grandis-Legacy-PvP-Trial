@@ -1,6 +1,6 @@
 {
-  "name": "grandis-legacy-pvp-s0-rc39",
-  "version": "1.0.0-rc39-net-rc6-stage2-repo-rc9-s3-p1",
+  "name": "grandis-legacy-pvp-s0-rc40",
+  "version": "1.0.0-rc40-patch31",
   "private": true,
   "type": "module",
   "scripts": {
@@ -56,12 +56,20 @@
     "test:rc9-s1": "node tests/rc9-stage1-response.cjs && npm run test:rc8",
     "test:rc9-s2": "node tests/rc9-stage2-match-history.mjs",
     "test:rc9-s3": "node tests/rc9-stage3-ui-legacy.mjs",
-    "test:rc9-s3-p1": "node tests/rc9-p3-hotfix.mjs"
+    "test:rc9-s3-p1": "node tests/rc9-p3-hotfix.mjs",
+    "test:rc40-p1": "node tests/rc40_canonical_effects-donor-qa.cjs && node tests/rc40_event_lifecycle-donor-qa.cjs && node tests/rc40-stage1-burn-pvp.cjs && node tests/rc9-stage1-response.cjs && node tests/rc9-stage2-match-history.mjs && node tests/rc9-stage3-ui-legacy.mjs && node tests/rc9-p3-hotfix.mjs",
+    "check:rc40-p1": "npm run check:syntax && npm run test:rc40-p1 && npm run test:atomic-mana && npm run test:seat2-payment && npm run test:privacy && npm run test:net-stage2-socket && npm run test:net-stage2-response && npm run test:lobby-init && npm run check:catalog && npm run test:assets",
+    "test:rc40-p2": "node tests/rc40-stage2-presentation.mjs && npm run test:rc9-s2 && npm run test:rc9-s3 && npm run test:rc9-s3-p1",
+    "check:rc40-p2": "npm run check:rc40-p1 && npm run test:rc40-p2 && npm run test:seat2-payment && npm run test:net-stage2-socket",
+    "test:rc40-p3": "node tests/rc40-stage3-website-ui.mjs",
+    "check:rc40-p3": "npm run check:rc40-p2 && npm run test:rc40-p3",
+    "test:rc40-p31": "node tests/rc40-p31-donor-detail.mjs",
+    "check:rc40-p31": "npm run check:rc40-p3 && npm run test:rc40-p31 && npm run test:http"
   },
   "engines": {
     "node": ">=18"
   },
-  "description": "Grandis Legacy PvP S0 RC39 Repo RC9 Stage 3 Patch 1: recipient-only Mana Burn/Steal receipt AFTER exact selected shard reveal; discard-custody origin guard; compact VS AI-style Card Played response, per-Hero damage and Mana identity; borderless YOU/OPPONENT badges. Unchanged single WebSocket RC6 Stage2/server authority/RC5 Mana.",
+  "description": "PvP RC40 Patch 3.1: reuse exact VS AI RC40 Card Played formatter; viewer-safe adapter and Mana terminology; original single WebSocket.",
   "dependencies": {
     "ws": "8.21.0"
   }

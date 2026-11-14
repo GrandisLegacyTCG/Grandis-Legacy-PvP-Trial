@@ -8,7 +8,7 @@ import {webcrypto,createHash} from 'node:crypto';
 import {viewerSafeBoard,assertViewerSafeBoard} from '../server/viewer-safe.mjs';
 let count=0;function check(label,fn){fn();count++;console.log('PASS',label)}
 const read=x=>readFileSync(resolve(x),'utf8');
-const runtime=read('public/battle/shared-app/app-runtime.js');
+const runtime=read('public/battle/shared-app/app-runtime.js')+'\n'+read('tests/fixtures/rc9-legacy-cardplayed-helpers.js');
 const css=read('public/battle/shared-ui/battlefield-ui.css');
 const uiHtml=read('public/battle/index.html');
 const network=read('public/battle/runtime/pvp-network.js');

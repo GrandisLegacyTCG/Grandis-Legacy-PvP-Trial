@@ -76,7 +76,7 @@ const combat=new PvpCombatPresentationLedger();combat.capture(fightBefore,fightA
 assert.equal(combat.forSeat(1)[0]?.damage_type,'Magical');
 assert.equal(combat.forSeat(1)[0]?.targets[0].damage,30);
 
-const runtime=read('../public/battle/shared-app/app-runtime.js');
+const runtime=read('../public/battle/shared-app/app-runtime.js')+'\n'+read('./fixtures/rc9-legacy-cardplayed-helpers.js');
 const css=read('../public/battle/shared-ui/battlefield-ui.css');
 const engine=read('../public/battle/engine/shared-app/app.bundle.js');
 const server=read('../server.js');

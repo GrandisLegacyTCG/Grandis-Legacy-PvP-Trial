@@ -1,0 +1,185 @@
+{
+  "passed": 44,
+  "total": 44,
+  "failed": 0,
+  "records": [
+    {
+      "name": "S0-ARC-L001 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-ARC-L001 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-ARC-L001 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-ARC-L001 Player one-eligible 1-card option and zero-card rejection",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-ARC-L002 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-ARC-L002 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-ARC-L002 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-CLE-L001 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-CLE-L001 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-CLE-L001 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-CLE-L001 Player one-eligible 1-card option and zero-card rejection",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-CLE-L002 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-CLE-L002 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-CLE-L002 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-MAG-L001 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-MAG-L001 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-MAG-L001 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-MAG-L001 Player one-eligible 1-card option and zero-card rejection",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-MAG-L002 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-MAG-L002 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-MAG-L002 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-THF-L001 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-THF-L001 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-THF-L001 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-THF-L001 Player one-eligible 1-card option and zero-card rejection",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-THF-L002 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-THF-L002 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-THF-L002 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-WAR-L001 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-WAR-L001 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-WAR-L001 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-WAR-L001 Player one-eligible 1-card option and zero-card rejection",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-WAR-L002 R3.7 runtime matches printed cost / selection / target filters",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-WAR-L002 Player center-selection flow resolves and obeys once-per-turn",
+      "status": "PASS"
+    },
+    {
+      "name": "S0-WAR-L002 AI chooses and executes new ability",
+      "status": "PASS"
+    },
+    {
+      "name": "L001 center choice enables Confirm at one or two selections (not zero)",
+      "status": "PASS"
+    },
+    {
+      "name": "L002 Main Deck and Discard selectors remain centered with legal card filter",
+      "status": "PASS"
+    },
+    {
+      "name": "Hidden Archives L002 activates with full Racial Token pool: no obsolete token cap gate",
+      "status": "PASS"
+    },
+    {
+      "name": "Official R3.8 Event data, Mana 3 and BUFF timing without exhaust",
+      "status": "PASS"
+    },
+    {
+      "name": "Defensive Formation 40 or 80 reduction from committed three-base-class condition",
+      "status": "PASS"
+    },
+    {
+      "name": "Defensive Formation reduces all incoming Physical and Magical attack damage, never Direct or own",
+      "status": "PASS"
+    },
+    {
+      "name": "Official R3.8 Area Attacks are data-authoritative and Magical",
+      "status": "PASS"
+    },
+    {
+      "name": "All 242 canonical Main/Legacy artwork SHA256 values match shipped bytes and manifest",
+      "status": "PASS"
+    },
+    {
+      "name": "All 242 card/preview/recipe/JSON mirrors and changed effects remain synchronized",
+      "status": "PASS"
+    }
+  ],
+  "date": "2026-11-14",
+  "print": "MainDeck R3.8 / LegacyDeck R3.7"
+}

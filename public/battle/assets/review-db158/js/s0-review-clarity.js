@@ -1,6 +1,6 @@
-/* Grandis Legacy Season 0 — Card Review: official Player Rulebook v3.0 EN (2026-11-07), pp.13–14.
-   The card-artwork RULES footer is transcribed from the Season 0 R3.4 printed artworks.
-   MANA BURN / MANA STEAL wording is intentionally unchanged, per designer instruction.
+/* Grandis Legacy Season 0 — Card Review: keyword/status explanations from
+   official Player Rulebook v3.3 EN (2026-11-14), pages 13–14.
+   Printed card RULES footer descriptions remain sourced from approved artwork.
    MANA COST +1/+2 are printed card-specific labels, not Rulebook keywords.
    Display only; no changes to deck legality, card effects, gameplay or OSA. */
 (function(root){'use strict';
@@ -19,8 +19,8 @@
   'INVINCIBLE':'The Hero cannot take damage from an opponent or receive new Status from an opponent. Existing Status remains active.',
   'ALL OPPONENTS':'Affects all opposing active Heroes, ignoring normal Area of Attack.',
   'REFLECT':'When this Hero is hit by an Attack, deal damage to the attacker as stated on the card.',
-  'MANA BURN':"Remove the stated number of Mana cards from your opponent's Mana Pool.",
-  'MANA STEAL':"Remove up to X Mana Shards from your opponent's Mana Pool. Then take as many as possible, up to the number removed, from your Mana Deck into your Mana Pool.",
+  'MANA BURN':"Remove as many Mana Shards as possible from your opponent's Mana Pool, up to the number stated on the card.",
+  'MANA STEAL':"Remove as many Mana Shards as possible from your opponent's Mana Pool, up to the number stated on the card. Then take as many Mana Shards as possible from your Mana Deck into your Mana Pool, up to the number removed.",
   'MANA COST +1':'The required Mana is 1 higher than the printed Mana Cost.',
   'MANA COST +2':'The required Mana is 2 higher than the printed Mana Cost.'
  });
@@ -47,9 +47,9 @@
   'S0-EVT-003':'You can only have 1 of this card in your deck.',
   'S0-EVT-008':'You can only have 1 of this card in your deck.'
  });
-// Numeric callouts are copied from the official R3.5 artwork and
-// Deck Builder v1.63. This changes the Card Review popup only.
-// Do not change the actual Item effect magnitudes in the game engine.
+// The four Item cards with a *separate printed numeric badge* on R3.6 artwork.
+// Display magnitudes as Skill BLOCK/HEALING DONE do (card art retains +/- signs).
+// Do not turn effect-text numbers (duration, draw, temporary buffs) into metrics.
 const ITEM_PRINTED_METRICS=Object.freeze({
  'S0-ITM-001':Object.freeze({label:'HEALING DONE',value:'30'}),
  'S0-ITM-002':Object.freeze({label:'HEALING DONE',value:'50'}),
@@ -75,14 +75,14 @@ function applyItemPrintedMetric(card,rootNode){
  effectCell.classList.remove('full-span');
 }
  const KEYS=Object.keys(EXPLANATIONS);
- // Player Rulebook v3.0 EN, p.14: verbatim status descriptions; no engine logic changes.
+ // Player Rulebook v3.3 EN, p.14: rewritten subject-neutral explanations of each Status; no engine changes.
  const STATUSES=Object.freeze({
-  'Bleed':'This Hero cannot receive Healing. Bleed does not deal damage.',
-  'Burn':'Whenever a played Card or activated Ability deals damage to this Hero, increase that damage by 10.',
-  'Freeze':'This Hero cannot DODGE or swap positions.',
-  'Poison':"This Hero takes 10 damage during its owner's End Phase.",
-  'Sleep':'This Hero cannot use Skill or Event Cards, except Skills with DODGE. It wakes up when hit by another Attack.',
-  'Stun':'This Hero cannot use Skill or Event Cards, activate Racial Traits, BLOCK, DODGE, or swap positions. It cannot initiate other active effects.'
+  'Bleed':'Prevents the affected Hero from receiving Healing. Does not deal damage.',
+  'Burn':'Increases damage dealt to the affected Hero by a played Card or activated Ability by 10.',
+  'Freeze':'Prevents the affected Hero from using DODGE or swapping positions.',
+  'Poison':"Deals 10 damage to the affected Hero during that Hero's owner's End Phase.",
+  'Sleep':'Prevents the affected Hero from using Skill or Event Cards, except Skills with DODGE. Ends when the affected Hero is hit by another Attack.',
+  'Stun':'Prevents the affected Hero from using Skill or Event Cards, activating Racial Traits, using BLOCK or DODGE, or swapping positions. Also prevents it from initiating other active effects.'
  });
  const STATUS_COLORS=Object.freeze({Bleed:'#e46b6b',Burn:'#f6a24b',Freeze:'#79d7f6',Poison:'#a5d65a',Sleep:'#b895ee',Stun:'#f2d72e'});
  const STATUS_NAME_PATTERN=/\b(Bleed|Burn|Freeze|Poison|Sleep|Stun)\b/g;
@@ -145,10 +145,17 @@ function applyItemPrintedMetric(card,rootNode){
   fragment.append(document.createTextNode(value.slice(from)));p.replaceChildren(fragment);
  }
  function printedConditions(card,rows){
+  if(card?.printedConditionText){
+    const condition=String(card.printedConditionText).trim();
+    const numericOnlyRows=card.family==='Skill'&&rows.length>0&&
+      rows.every(r=>/^\d+$/.test(String(r.damage_text||''))&&!String(r.effect_text||'').trim());
+    if(numericOnlyRows){
+      const parts=condition.match(/^([\s\S]*?[.!?])\s+((?:Deal|Multiply)\b[\s\S]*)$/i);
+      if(parts)return [parts[1]]; // The damage/multiplier sentence is in the Rank effect.
+    }
+    return [condition];
+  }
   const cardConditions=conditionsIn(card.text);
-  // Permafrost metadata repeats its single top-level printed CONDITION in
-  // both Rank rows. Never mistake that storage duplication for two boxes
-  // on the physical card. Distinct conditions remain separate.
   const stored=cardConditions.length?cardConditions:rows.flatMap(row=>conditionsIn(row.effect_text||row.text||''));
   return [...new Set(stored.map(value=>value.replace(/\s+/g,' ').trim()))];
  }
@@ -193,7 +200,7 @@ function applyItemPrintedMetric(card,rootNode){
   }
   // REVIEW ONLY: numeric Area Attacks read "Deal 50 Area Magical damage.",
   // not "Deal Area 50 Magical damage." Preserve suffixes such as Stun/HEAL.
-  if(/^\d+$/.test(damage)){
+  if(!card?.printedExactEffect && /^\d+$/.test(damage)){
    const effect=p.textContent||'';
    if(/\bDeal\s+Area\s+(?:Physical|Magical)\s+damage\b/i.test(effect)){
     p.textContent=effect.replace(/\b(Deal)\s+Area\s+(Physical|Magical)(\s+damage)\b/i,
@@ -221,15 +228,6 @@ function applyItemPrintedMetric(card,rootNode){
    inlineKeywords(p);
   }
   if(allKeywords.size)rootNode.append(renderExplanation([...allKeywords]));
-  // Hero Review is also a Card Review: show status glossary whenever a
-  // Racial Trait / Class Ability references a Status. Previously only
-  // Skill, Item and Event Reviews displayed these explanations.
-  const statusNames=new Set();
-  for(const p of rootNode.querySelectorAll('.review-hero-block p,.review-hero-dual-section p,.rank-up-review p')){
-   for(const status of statusTags(p.textContent||''))statusNames.add(status);
-   emphasizeStatus(p);
-  }
-  if(statusNames.size)rootNode.append(renderStatuses([...statusNames]));
  }
  function syncPrintedFooterRules(card,rootNode){
   const rule=PRINTED_FOOTER_RULES[card?.id];
@@ -243,6 +241,14 @@ function applyItemPrintedMetric(card,rootNode){
    if(!panel){panel=node('div','review-generic-row review-card-printed-rules');panel.append(node('span','', 'RULES'),node('p'));rootNode.append(panel);}
    panel.querySelector('p').textContent=rule;
   }
+ }
+ function renderSharedSkillEffect(card){
+  if(card?.family!=='Skill'||!card.sharedEffectText)return null;
+  const box=node('div','review-generic-row review-shared-skill-effect');
+  box.append(node('span','', 'SKILL EFFECT'));
+  const effect=node('p','',card.sharedEffectText);
+  inlineKeywords(effect);box.append(effect);
+  return box;
  }
  function enhance(card,rootNode){
   if(!card||!rootNode||card.family==='Hero'||card.family==='LegacyModeDefinition')return;
@@ -267,6 +273,10 @@ function applyItemPrintedMetric(card,rootNode){
    // A shared, card-level panel immediately before the first Class/Rank + Effect card.
    rootNode.prepend(conditionPanel);
   }
+  // Printed once above the Rank rows: Grand Finale's INVINCIBLE and Draw 3
+  // are a shared card effect, not additional text on either numeric row.
+  const commonEffect=renderSharedSkillEffect(card);
+  if(commonEffect)rootNode.insertBefore(commonEffect,conditionPanel?conditionPanel.nextSibling:rootNode.firstChild);
   for(const keyword of tags(card.text||''))allKeywords.add(keyword);
   // Printed effect, condition, and card text can each introduce a Status.
   // Explain each unique Status once, directly beneath keyword descriptions.

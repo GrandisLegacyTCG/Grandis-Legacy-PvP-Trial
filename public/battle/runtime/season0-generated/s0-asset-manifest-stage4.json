@@ -1,5 +1,5 @@
 {
-  "version": "S0_DEV45_ACTIVE_ART_STAGE4_SHA_VERIFIED",
+  "version": "S0-RC40-MAIN-R38-LEGACY-R37",
   "canonical_registry_hash": "383d36e464a6475d5f2b1359e6d1e617766886aa154eebcedb6ff425f956363e",
   "hero_component_registry_hash": "f61ffa4578dc26193370773b72e78341a9ae1439521c6ce2cadf473ceb45ad7f",
   "cards": {
@@ -11,9 +11,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "dd7035bfc7e8b4df7060cd9df35ac956df62d5c916bcf5dfb85b8c4997971bc2",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-001.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-001-Bow Bash.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-002": {
       "card_id": "S0-ARC-002",
@@ -23,9 +22,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "c0b1acddd913921f70e91086f95f5a2f92fe7b1f6e30c80753ba8f53d59386de",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-002.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-002-Poison Arrow.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-003": {
       "card_id": "S0-ARC-003",
@@ -35,9 +33,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e33bef36b7cd56593331968c69f024cc7ca7198c134ae7846d6d9a5939f3323e",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-003.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-003-Escape Arrow.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-004": {
       "card_id": "S0-ARC-004",
@@ -47,9 +44,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f775c154dd0065d19e602a4e31133a278658592e7a19eb959f341dc38d8c7e94",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-004.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-004-Eyes of the Hawk.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-005": {
       "card_id": "S0-ARC-005",
@@ -59,9 +55,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "316ed2a30d1d7ef49bdd99af2e30f75943fe2eb64fbb723dc32c26b34e3d7ec8",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-005.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-005-Reload.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-006": {
       "card_id": "S0-ARC-006",
@@ -71,9 +66,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8693e428649c38a1710875225ded4e0f1b38c915e37f548340c723782f57d019",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-006.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-006-Straight Shot.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-007": {
       "card_id": "S0-ARC-007",
@@ -83,9 +77,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "66f8e126336b82dda816e7b325b645355124d996090fd22bc89b251f1261f455",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-007.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-007-Burning Arrow.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-008": {
       "card_id": "S0-ARC-008",
@@ -95,9 +88,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "1c17e902a478f9d4143380aaafa9c67410d58c72dae139c27efb0bbaae95c53f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-008.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-008-Aim Shot.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-009": {
       "card_id": "S0-ARC-009",
@@ -107,9 +99,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "4aeafe4158856d3d5f36fdd0f2647825b33cdc0c21f84881e5c9a7a1b1e97e33",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-009.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-009-Arrow Volley.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-010": {
       "card_id": "S0-ARC-010",
@@ -119,9 +110,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "5c0c7fbc14727f33da4c8ad3be4f4d5cbfec77c8c6a73bc1a2409de8edce3d92",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-010.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-010-Arrow Barrage.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-011": {
       "card_id": "S0-ARC-011",
@@ -131,9 +121,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e7027274e922efd9d22a07679f1454673e988585d519baa67d5c68392856ce23",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-011.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-011-Back Step.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-012": {
       "card_id": "S0-ARC-012",
@@ -143,9 +132,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "bff16a6072f3717bbf4912b7f04bf65a16e27b8923e7da3ea435efaa1d82f270",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-012.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-012-Deflect Arrow.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-013": {
       "card_id": "S0-ARC-013",
@@ -155,9 +143,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b02b05142e82229d1223d14ad499d6ca1db2b308f23e410a4fb369477118b34f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-013.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-013-Triple Shot.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-014": {
       "card_id": "S0-ARC-014",
@@ -167,7 +154,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "0c7dde10cde69ac85ad6b5e00071067e1573a1d82e0bd06f048f865ccf88f28e",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-014.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-014-Replenish.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-015": {
@@ -178,9 +165,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "746269d350052c294b71855cdc8d53a35cb38ec18f0847c23ed590e74536f39a",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-015.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-015-Power Shot.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-016": {
       "card_id": "S0-ARC-016",
@@ -190,9 +176,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "fb4506a0b56ff3c7776bf66fc79a5c256e37d34b39087f84b4e1536f821a1268",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-016.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-016-Soul Blast Shot.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-017": {
       "card_id": "S0-ARC-017",
@@ -202,9 +187,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "a07a8d78f3df4fdf866521d44027cc7573016a8bae9178e6a4763368371ef8ea",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-017.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-017-Dual Arrow.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-018": {
       "card_id": "S0-ARC-018",
@@ -214,9 +198,8 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b828402732e19926f1d64d83b14688c2c6de967bac7c00241691d630684d604c",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-018.webp",
-      "status": "ACTIVE_SHA256_VERIFIED",
-      "rc39_artwork_source": "GL_S0_MainDeck_R3.7.rar"
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-018-Soul Charged Shot.webp",
+      "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-019": {
       "card_id": "S0-ARC-019",
@@ -226,7 +209,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "68bf1196bc3db36001336bea1f2c171bca7652967ce3045c46b1b9b86f3bdd0a",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-019.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-019-Divine Edge.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-020": {
@@ -237,7 +220,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b9339c3df952192cb2f56a5d273de172bf2a5d69c5b3296c882fb8039ea55a48",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-020.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-020-Long Range Shot.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-021": {
@@ -248,7 +231,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "01e9d5de639d46a2bf95c13bded4415dd5521439fb5028bcaf548a24da857b07",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-021.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-021-Aura Infusion Bolt.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-022": {
@@ -259,7 +242,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "16daf84c708e614f08f908da6d63c6440d3bc957f4bf0813d7107cc25ecc2a28",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-022.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-022-Singularity Reload.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-023": {
@@ -270,7 +253,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f7a3c6ca65a12d8e8194b4681a406fbcb4a75b967d6d77d110c21cfa6a3b2220",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-023.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-023-Homing Shot.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-024": {
@@ -281,7 +264,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "17545d0a8d17c34aaacf7979e5a37706bb8e0eea312b9629e0d19f805db78518",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-024.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-024-Cross Bolt.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-025": {
@@ -292,7 +275,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3027b0bd4a9f483268187e95860a246bce47b5fa8a8e8f3f0d5cdcc1750422b5",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-025.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-025-Colossal Dreadbolt.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-026": {
@@ -303,7 +286,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "c093d63b5ecfdff94bf851be55ca99b931d307db3ffae13aa5e8c2e4200d7add",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-026.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-026-Zol.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-027": {
@@ -314,7 +297,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "bc6c25643bafb5034c6afb0e5d4dc6aa860ed48e3847806d67cf4ccb9ec9006b",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-027.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-027-Sleeping Dart.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-028": {
@@ -325,7 +308,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "94402a173725f82cdb9f58dc1150b7ef0990277303ee20ff6edfb1d397aba7be",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-028.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-028-Midnight Lullaby.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-029": {
@@ -336,7 +319,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8bd076097947c256da21f406806c0edfab8df49e9b6ea2720703757e4fea698f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-029.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-029-Swift Movement.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-030": {
@@ -347,7 +330,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "aaa1ebc05cca75b13a02c9ef2478e2160f2c9348a0c9b7d952e769ddea4fc39a",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-030.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-030-Crimson Crescendo.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-031": {
@@ -358,7 +341,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "132423a3d347c32bc86ab8fdb4d1ff6d11a6761c93c8a7060eab4ab0a6ff9ab1",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ARC-031.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ARC-031-Resonance Burst.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H001": {
@@ -369,7 +352,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "fe20725d2e837860b6171c4d45fc371e3727a0854760008e0338d8e6aff2ec4e",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H001-Beastman Archer.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H002": {
@@ -380,7 +363,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8c1ac609e4c520f1d597a25fd171852b6990efe8846ca0716d96010e0dd05a6e",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H002-Beastman Marksman.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H003": {
@@ -391,7 +374,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "735a0d03d16f599f729dbb68337b764775e04c51487f7d210e3b36462a4c6a59",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H003-Beastman Grand Ranger.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H004": {
@@ -402,7 +385,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3cddbcaeb111e4ec370d21537ef4b0cf2a2e70d16dcf5fb060287c1f308bdc1c",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H004-Elf Archer.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H005": {
@@ -413,7 +396,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "442255c8a6131df844f2fa0bd01faf1f918020474193b248483710005d04adcf",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H005-Elf Marksman.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H006": {
@@ -424,7 +407,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "25ef7bfebcb6d225fdfb6723975d3b8205e5c2a9b9cc6a88423d28aaae487e8a",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H006-Elf Grand Ranger.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H007": {
@@ -435,7 +418,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "540c8fabfc21c5440cf1e1a52fe51de7b30702a74c21d7937e7393434074f400",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H007-Human Archer.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H008": {
@@ -446,7 +429,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "2e5331c35114093725f66bf2bf823805d503566803d982a15188659fd79b95ad",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H008-Human Arbalest.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-H009": {
@@ -457,7 +440,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "c573c9848caaa7ca907272019e7155e63fc35c60e2d43fe2ad2aaffedf6213ad",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-H009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-H009-Human Grand Arbalest.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-L001": {
@@ -467,8 +450,8 @@
       "verified_local_full_path": "card-art/S0-ARC-L001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "005b60e613bf3bd650fd39fe3d637a3b430609261b2fb87cf660ab9039ef2d5e",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-L001.webp",
+      "sha256": "66190819d59ff87910d4857cb95beeeabc88df8ba03f7446664f6a929c8d2d32",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-L001-Golden Arrows.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ARC-L002": {
@@ -478,8 +461,8 @@
       "verified_local_full_path": "card-art/S0-ARC-L002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "c03988e9ba33f807c3bf2f1f96d06bd152b64492c857fd4bc586f17d7cf6e56c",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-ARC-L002.webp",
+      "sha256": "1dd283c9c4d7a7d044b470a563bcd175ff6b19ead3d2e4c8a9efba747bc6524a",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-ARC-L002-Falconer’s Whistle.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-001": {
@@ -490,7 +473,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "fae13839b3857aa892acc7d21a32684de2120e8c1f0bc539e3129c2880b4eadf",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-001-Smite.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-002": {
@@ -501,7 +484,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3ae5da76cc5a6d6414343d95cac8759b23c1873b1c97d81a2c9650f4f14bf7b9",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-002-Brilliant Radiance.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-003": {
@@ -512,7 +495,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b87320f4f5339f2f191eb146868c33e40082798ccb22670ce8236943b7cbd1be",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-003-Purify.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-004": {
@@ -523,7 +506,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "1c6247ddf69b3d9d35a084da9bc6e45060362fb145d855d2b2f851c1a7336979",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-004-Blessing of Might.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-005": {
@@ -534,7 +517,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8f63a5ba5258d3550b20869802aab0a49e5d9d7f9563dcd907befb0f8c46396f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-005-Blessing of Wisdom.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-006": {
@@ -544,8 +527,8 @@
       "verified_local_full_path": "card-art/S0-CLE-006.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "f6c9f07ffdf20e598d3b77654673d2563c5493242e4ec355ea647a0f74aa8104",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-006.webp",
+      "sha256": "33f2f6668831e0aec2d7143f6b1119e8e6e7eef4859889f073c7f736e2564d8d",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-006-Sacred Bolt.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-007": {
@@ -556,7 +539,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "22fbe1d622c23abb1fed907cdbaec8873583647754e10c03c65444e1ce072023",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-007-Holy Ring.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-008": {
@@ -567,7 +550,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e9bdda1c430ca86d7454864d12fb93ddbb043d00788dfad0d2401c87fc1ee1b3",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-008-Holy Fire.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-009": {
@@ -578,7 +561,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3ea6bdb32998d4c7db328c30323a7badc5f8ea9e2d57c8251f820f427631675a",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-009-Holy Blast.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-010": {
@@ -589,7 +572,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "76aa8101c470c8f8ef26dfb72a2c4a0a19f4082d65829db1ae6081ad8c2a362d",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-010.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-010-Holy Barrier.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-011": {
@@ -600,7 +583,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "69682c175a1bb7a971efe07018f1cd2638340c67fed8c4e69980bec1d4c9ad9f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-011.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-011-Flash Heal.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-012": {
@@ -611,7 +594,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "37b9376c654556142427d268693bb07e8b27abce766def0f2c61b1971ccde4ee",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-012.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-012-Binding Light.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-013": {
@@ -622,7 +605,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "ea43291d6cf024b691df4dac057c18d5b0fd08a7e879a44e52d592efb7e73332",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-013.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-013-God's Blessing.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-014": {
@@ -633,7 +616,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "d1a5a47cd0c62ad4062c491de9d5b8f94bce897e489eff04d5247db04ac83564",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-014.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-014-Wrathful Radiance.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-015": {
@@ -644,7 +627,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "2e316d3646add544d60e5640f8428b708aaaaa8e3365ba7af9294fbc9bb4db02",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-015.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-015-Resurrection.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-016": {
@@ -655,7 +638,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "dbb4b5e1d0e0cfa78552f82b2e600e0891fbc920fa16b2e5780db715ff013d42",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-016.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-016-Sanctuary.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-017": {
@@ -666,7 +649,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "6dc7a2da1d42c5532cac54e73c3d262ed339a09a70fee8b0bfdd6fd8cac4a2d1",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-017.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-017-Lay on Hands.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-018": {
@@ -677,7 +660,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e959d575ae6e69fe057f3061fa78633c420c2d0c4b1c38771003fe6554194a9b",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-018.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-018-Wings of Valor.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-019": {
@@ -688,7 +671,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "cdb782fac0ef21ef2fdfec61e869e67e271084b751a1ce17b0cc6f58c66b80ca",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-019.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-019-Divine Punishment.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-020": {
@@ -699,7 +682,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "981ab73cf38dbb6380670a952d1079f5b9e75ae0c16ef73dcf19a51a57fa52df",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-020.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-020-Holy Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-021": {
@@ -710,7 +693,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e532b31ddf239f700bfde253dd1aa1b2d2af71eba2f6eb51e531ca0028321ac7",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-021.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-021-Hammer of Justice.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-022": {
@@ -721,7 +704,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "da985bd2758a17c6979306af5b1c1dc39deaf7d16f86a6829ed6addf1770db91",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-022.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-022-Sacred Bulwark.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-023": {
@@ -732,7 +715,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b62a4e48ad4493f9e6babce2868ec09288fd539e1c08c411855a4f13f30a1a20",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-023.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-023-Holy Light.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-024": {
@@ -743,7 +726,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9969b35c03743315d36ebf3a79e2e618a737aca340a475891d2c81e9c22899f5",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-024.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-024-Divine Judgement.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-025": {
@@ -754,7 +737,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "690d4b0c0461b35396ca2c7a07302b203bbeab92fc5b8a27bb53627f7183b794",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-025.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-025-Blessing of Divinity.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-026": {
@@ -765,7 +748,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b59bcf887f74d2045b1710d5f038bb71fbfd01605aab862b044cf01bafd8dfbf",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-026.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-026-Lun.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-027": {
@@ -776,7 +759,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "aabc6e80aa349091aa6fa7d5fe04d9ec790be7a337b2a54a384df6ad11cc2deb",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-027.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-027-Vae.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-028": {
@@ -787,7 +770,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "5d4062645e3c32fb992bd5e5ee589c3a3e1aca6c8f16052c86eee2c340ab9475",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-028.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-028-Blessing of Accuracy.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-029": {
@@ -798,7 +781,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3a445bf63d20a99a448e7fb8db4960de14eeb119bbb08ab70d9513f23d63db8f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-029.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-029-Tune Up.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-030": {
@@ -809,7 +792,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8da7b464a6cfbd0efca34095c5e2f06a987c2923ced0446c09c8b1a1344bffb3",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-030.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-030-Blooming Harmony.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-031": {
@@ -820,7 +803,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "1d05629b76b52da42cbb384ece2ea37e505432aa580ad9cdb12dc44ca69d9489",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-CLE-031.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-CLE-031-Grand Finale.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H001": {
@@ -831,7 +814,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "ddec2103c282b2ef5df29078180433edaf60c3a1e8bd665217a83333b2c6906a",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H001-Elf Cleric.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H002": {
@@ -842,7 +825,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9fd90bdc24bf9f71493c0ba3957107eee5045679df90c0a94f3cdd93508e6dce",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H002-Elf Priest.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H003": {
@@ -853,7 +836,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b69abdb55ce2902127ec07dbeeeff51f3f7b7745455693c7600c5f8dee4d7cc6",
-      "osa_source_path": "Authority/Game/Season0-Visual/DEV43-Approved-Hero-Artwork/S0-CLE-H003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H003-Elf Saint.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H004": {
@@ -864,7 +847,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b66dfad22718e16e997700328ce5e933081679bd5cfaa4c503c4444fd02680db",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H004-Dwarf Cleric.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H005": {
@@ -875,7 +858,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9720526b6c24bf4871af2e37c7aaa7e3ea34e5bbcf38678fffa5b24fce3e5393",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H005-Dwarf Priest.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H006": {
@@ -886,7 +869,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "333e99b5688ea3138fb92e6dcf9a48ea583226e25bb0fd79253435038277011b",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H006-Dwarf Saint.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H007": {
@@ -897,7 +880,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "ac65a22e13bb74ac3cc1dadd223e9b113bcdcf356685ef1d2ac3fa31bc55d46f",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H007-Halfling Cleric.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H008": {
@@ -908,7 +891,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "5cef413c0cc2614cfdef70c9675145dbc7784b9c59a9c8b604d0a01abf935ad7",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H008-Halfling Bard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-H009": {
@@ -919,7 +902,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "77098e678e22b53c96f5cc9122bf8befd9c433130c9de0d9216ff886d9782f4f",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-H009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-H009-Halfling Maestro.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-L001": {
@@ -929,8 +912,8 @@
       "verified_local_full_path": "card-art/S0-CLE-L001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "1cc0d00ed94e49a1d3dceaf52c53db0ef9c26cb5e72a22cb0b4aa8a2f6dc62f3",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-L001.webp",
+      "sha256": "5a0540eb41311437825cc3de3cf1d73b31403fdf70ef453bcdd4bd0bb85e41e9",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-L001-Sun God Church.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-CLE-L002": {
@@ -940,8 +923,8 @@
       "verified_local_full_path": "card-art/S0-CLE-L002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "3bafacb9a064fb6e68f10d934df1cc83a8b5bde689b1667a2575222c5d2bc8dc",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-CLE-L002.webp",
+      "sha256": "889197727eb9a23b9cceb08e503a3f5a82bfa006ba8a5e7bbee63e6da51ca319",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-CLE-L002-Wand of First Light.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-001": {
@@ -952,7 +935,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f954bfbc3a13a7890cf1854e883d946e47a0a8290743b36a52608e910a04d872",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-001-Begin Anew.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-002": {
@@ -963,7 +946,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "dd2de401d9032ef74a1eb31f19a37a7a6b83d8920ee912f383a07291780b2ccc",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-002-Market Bargain.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-003": {
@@ -974,7 +957,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "7e4fe41023ffe2e66389776fda7f710b5c0c957d60d7c24d9878badd3a4a7493",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-003-Scouting.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-004": {
@@ -985,7 +968,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "99ce21389ecfed3825ef2888aad072a4d730a72fb425f3394ab6cf31a4123e63",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-004-Relentless Leveling.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-005": {
@@ -996,7 +979,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b955f6784c20d1d84200b721399d0e557bd6023a513115587a610a229b10116b",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-005-Last Resort.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-006": {
@@ -1007,7 +990,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8995ed80b523ec155ff89e3ff4a31625e4ae4227a775fd09ab9f7c18147965ae",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-006-Dazed.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-007": {
@@ -1018,7 +1001,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "50c1ecb1254012addb306d8531fe4051a096caddc8a8745388932af0acd6d932",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-007-Intercept.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-008": {
@@ -1029,7 +1012,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "161587498ef23a28b1ef588b5b7c8475ab2698e242a7cc918433c459393ea49a",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-008-Forged Alliance.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-009": {
@@ -1040,7 +1023,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9da9c367ec12c485d701222c6c1f40e26f03973a2b5918301a00d534871fc92f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-009-Tactical Adaptation.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-010": {
@@ -1051,7 +1034,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e94d9b55b7bb347f72564b6b2808cc2239f3e631e470f0c04fde9f4e754a21ad",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-010.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-010-Deja vu.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-011": {
@@ -1061,8 +1044,8 @@
       "verified_local_full_path": "card-art/S0-EVT-011.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "8b6d747bcaf5b670811ddf22c503dab2a2e345459d078a7f64be8f168e506e4e",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-011.webp",
+      "sha256": "90ef1dae025dd6ac031766a8936737b4d01e7917367b385b13a316a10e176ca8",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-011-Coordination Attack.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-EVT-012": {
@@ -1072,8 +1055,8 @@
       "verified_local_full_path": "card-art/S0-EVT-012.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "c7ad6554965056d38739139a723a41558f41e49c43e382f55755e946e012c905",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-EVT-012.webp",
+      "sha256": "9c487741c7beb1eda9feb35084ac422295d8ebaf01ac0db9cde648ebb5caf8ed",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-EVT-012-Defensive Formation.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-001": {
@@ -1084,7 +1067,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "766ccd37c7fdc893e1d3f8b3ea7197a5f3c3467205de91bb673121e5dfd2d7c2",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-001-Health Potion.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-002": {
@@ -1095,7 +1078,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3dc7c8d5163075d17465de02182952576abcefe8f0b7899a15d5426d11250da6",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-002-Greater Health Potion.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-003": {
@@ -1106,7 +1089,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "6a1c079c03b73d9b28ef0a33121e5ae2cb0e5b8dc6458720eaa351a4050ed26a",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-003-Stamina Potion.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-004": {
@@ -1117,7 +1100,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "27e8ab4f8c6751849e964270e45c493fc9a0649ea0f287a968604b51497f7682",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-004-Elixir.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-005": {
@@ -1128,7 +1111,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "24576d60a268331a4ff32049e7dc8366ccc8d1ee9df95eabfed084ed02b3ff2d",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-005-Mana Potion.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-006": {
@@ -1139,7 +1122,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "dc6e153f8329faa3e75762aeea9b5ade8af3aad36fa826f54afb0c6dc1a4c8b2",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-006-Magic Scope.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-007": {
@@ -1150,7 +1133,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "28532de8bc3566dbfec2044702a8f6a810a452f392f73ea888d09f6ff9ae9a47",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-007-Ring of Protection.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-008": {
@@ -1161,7 +1144,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "6f349af0919ec9fd2e94adb168b72f34430eb637a157a47b4aa7998b6816ef13",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-008-Phoenix Feather.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-009": {
@@ -1172,7 +1155,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "ff134e6db313a535f815c37a92f9208dddfcbd0768310adc948b09ee12b18604",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-009-Crystal Ball.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-010": {
@@ -1183,7 +1166,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "210c186a644b2252d531d95242520bbf67a19db33a342032085a197b785528b5",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-010.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-010-Arcane Scroll.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-011": {
@@ -1194,7 +1177,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "a0e9be117240dc78a411c37b4289913749710b9edb1d1c8331353056e283bbe1",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-011.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-011-Poison Vial.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-012": {
@@ -1205,7 +1188,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "1fa5adca5793f81cddabea31738e3e654e1ac1785a850c77ae9ef7bc590c7eff",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-012.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-012-Spectral Grappling Hook.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-013": {
@@ -1216,7 +1199,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "06632f5215dd95949fb5aae4674dd45468f1c523e0b723e0bdd3d7d8bd52c208",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-013.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-013-Ring of Grace.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-014": {
@@ -1227,7 +1210,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "db860835095c4f56ab748051e0413ca05cf3780db1dddc91ecb7d323d5366fa3",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-014.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-014-Holy Medallion.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-015": {
@@ -1238,7 +1221,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "7376e0c34101d5a4ea35271282956cec6c0dc675adeddb421c542a8e96019510",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-015.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-015-Invisibility Cloak.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-016": {
@@ -1249,7 +1232,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b6bb98942b3b8dfd597e6b4b6b23a9983848421e6dbcc88daeabd63918e5c56d",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-016.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-016-Chain Mail.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-017": {
@@ -1260,7 +1243,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "2cd27832c7976084e4c4531e33625d5aceb0d52fa9768eccf3d3f7b33c522044",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-017.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-017-Flashpowder Bomb.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-018": {
@@ -1270,8 +1253,8 @@
       "verified_local_full_path": "card-art/S0-ITM-018.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "0651e20536e2fe2dc60ed957f0fd303cadee64218720ae75f0847e9db6a63ffa",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-018.webp",
+      "sha256": "d26405e334f7d423885c5a10c6df87fa70d85166fda605368bfe005c9bcbe776",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-018-Magic Compass.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-019": {
@@ -1282,7 +1265,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "53585e1a90e39353d85db75eeeac9ce0fce121519d95cedb37ff46a3e3df0e96",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-019.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-019-Warp Scroll.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-ITM-020": {
@@ -1293,7 +1276,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "50ec2f070c94d735b9d5fe0a099419bc99a9f2d2d03578b31874ea69dc029074",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-ITM-020.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-ITM-020-Freeze Bomb.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-001": {
@@ -1304,7 +1287,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "d3e4daa48b4d4ba53443c760cee6c5aaa685737b4526694ac345c6cf9a6d1dbb",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-001-Arcane Bolt.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-002": {
@@ -1315,7 +1298,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b8677b024ab8ed937c3cdb735835b16a8d607b3ed7c2ec562102cb0e1993214a",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-002-Ice Lance.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-003": {
@@ -1326,7 +1309,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "0358d08005a04633a4216c28a6ed513f6a1da25a94e3e8cf67a9985b34146c52",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-003-Fireball.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-004": {
@@ -1337,7 +1320,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b7e1ab89f07de1d07161c99682374ecbf6d5b38396495583cf93559be2d8712e",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-004-Mana Shield.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-005": {
@@ -1348,7 +1331,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "44597da50f8407b5365c90d7926029a52d8001692ce9bd42f10a70617d97e7fd",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-005-Mirror Image.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-006": {
@@ -1359,7 +1342,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "bbeb41ec8277580fa7e6eb3168f04e49f599c8becc573c0ac34d58c585feb6f4",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-006-Meditation.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-007": {
@@ -1370,7 +1353,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "571160470cd6886c9eba6553946c1d483c31ccc44ca0719d70f8c1449dc13008",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-007-Frostbite.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-008": {
@@ -1381,7 +1364,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "edbfe36919c6aa1d1a7cbf1044f6e8857077e252d975e805e70d3b2693b781b4",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-008-Tornado.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-009": {
@@ -1392,7 +1375,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "49868dc9d4c6a2ce64c90c8c0dde64921d6285f32ddffd58c46c0253df3eb62a",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-009-Fire Blast.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-010": {
@@ -1403,7 +1386,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "eb73e34aee687e8687861872dd5836fd0adb64c5711380f357fcba7d3b13f277",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-010.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-010-Lightning Strike.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-011": {
@@ -1414,7 +1397,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "883ed6f23d915d89333fd47d492512661a3ce3143a5a851b4f5bacf6f4b85aef",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-011.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-011-Ice Block.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-012": {
@@ -1425,7 +1408,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "94305f382434b7648c3d3c6cd43e01086c9a5497db9ecfe9878f85815ab2019b",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-012.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-012-Fire Wall.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-013": {
@@ -1435,8 +1418,8 @@
       "verified_local_full_path": "card-art/S0-MAG-013.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "e49525ed852b82488fcdc855c71ee1f502b05c876d7362932ca651529c781e23",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-013.webp",
+      "sha256": "bea7a3e461648aa34c8466ccffa76bd17f4c4c2e83a52fa1f99ee3b37ebf34c9",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-013-Wildfire.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-014": {
@@ -1447,7 +1430,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "12c8e4a72a99ea5d6b7de555fcbf287ad7d0127518462e2dc7636c0b61a05b48",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-014.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-014-Glacial Spike.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-015": {
@@ -1458,7 +1441,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "42eb6de3d9fcfc7071fa8a355746e92848cbda989166415cfc18ffd500030d1d",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-015.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-015-Permafrost.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-016": {
@@ -1469,7 +1452,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "2fc819fc3ef87a07510f150e3df283f1bd850d705fd78317d1cc32d8c7523d69",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-016.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-016-Nova Strike.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-017": {
@@ -1480,7 +1463,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "478a587d05584ac5b904e541179d15d7d8f750f849ebd35d63060beb6e183c67",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-017.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-017-Frostfire Nova.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-018": {
@@ -1491,7 +1474,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "d8ff79bf0eb776f4d559c26557853af2db5c9c9c50b84a684593b9453a970af5",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-018.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-018-Double Casting.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-019": {
@@ -1501,8 +1484,8 @@
       "verified_local_full_path": "card-art/S0-MAG-019.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "d8957565c11e964544271507b1c0856e54619b097223eb8f3ad97ec02ff44138",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-019.webp",
+      "sha256": "f45b0a0b330af132a8f01f4fc4816f3616be8b81528f11393893c84b87d5c5c0",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-019-Flame Dragon's Wrath.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-020": {
@@ -1513,7 +1496,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "fd794dd08abb4ee5719bad11700ce2dde750a549c5806ef752a21b9c1cb740f5",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-020.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-020-Aether Ball.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-021": {
@@ -1524,7 +1507,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "82bcfb893f9b23312481226ceedae30046824cc46eaef4f49fd1f6c08872e2b3",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-021.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-021-Mana Absorption.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-022": {
@@ -1535,7 +1518,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8bc23ac1d7d2eda871cca821452ae92ef1fb4391273963eda38aa8928285c25c",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-022.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-022-Aether Infusion.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-023": {
@@ -1546,7 +1529,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "61e3b191afdde7c6b36254b85ffabeed65de01a8adb21ffc935cb589b07b77f0",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-023.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-023-Aether Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-024": {
@@ -1557,7 +1540,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "6f360c7eedf20f9a995a42ba1ec92442ebf26ffb32b4a7c7532da488235334d4",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-024.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-024-Aether Sweep.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-025": {
@@ -1568,7 +1551,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "df8d988a23a1fd3796d591f3501eab5dfd7c6b20f43445bc171df8b0d5074a98",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-025.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-025-Mana Void.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-026": {
@@ -1579,7 +1562,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "a5449129dbd1cc6e0aee7e7cc46bfe8f5789eb658c3b77810ac9df0b823a47b9",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-026.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-026-Arcane Disruption.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-027": {
@@ -1590,7 +1573,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3e7e03dbdc2055f7f5ed3af5ef4415a051610f26ee9e310818fc072f08181517",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-027.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-027-Runeforged Burst.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-028": {
@@ -1601,7 +1584,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "4afa5d8834f2088bd71c32d5fb27910a1a21c04d75da1011054e6960e471246f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-028.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-028-Provoke.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-029": {
@@ -1612,7 +1595,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f36f0c542c26fb82708d003ecd750c3052db15ae1b319b82992414c0a1978217",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-029.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-029-Arcane Shockwave.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-030": {
@@ -1623,7 +1606,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "5da66bc90744e3ee57d0531c940817f6bbfe61c36cb287bf3d4d25750a49cba1",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-030.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-030-Invincible Stance.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-031": {
@@ -1634,7 +1617,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "a651f76578e6a5e385a20ae735efc064850ca3029238fedeefa3578d410a0093",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-MAG-031.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-MAG-031-Absolute Defense.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H001": {
@@ -1645,7 +1628,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8d1b1f29dba347ec2cd377aee81c49982e45203b831a4ee663bda55284358a33",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H001-Elf Mage.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H002": {
@@ -1656,7 +1639,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b3e0d8a7d0007bd070a63a4b90ea2a3d85ad1172378084fcbaa558c14269b3b6",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H002-Elf Elementalist.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H003": {
@@ -1667,7 +1650,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "5aa8f1bc425a75f92aeefa614c6e901d03d5f8b58ec0e83e1cc428c71b6445b2",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H003-Elf Elemental Lord.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H004": {
@@ -1678,7 +1661,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "fffa2353b9881383e68f007b70e764f488617220743877946c0a5ee7a64a8887",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H004-Human Mage.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H005": {
@@ -1689,7 +1672,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "80bb1e8a68941d5ae6ceae531aaa6c10782430bb22b8217399c340f43e311c41",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H005-Human Elementalist.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H006": {
@@ -1700,7 +1683,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3012d672f8262f03ea4777b798078f082ea08da0df46124535c9dd770b0fd86c",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H006-Human Elemental Lord.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H007": {
@@ -1711,7 +1694,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "0bb0b1d34133705c1daaacee7dc2c3999e3d7b8f326230ae5ecdeffed3852b05",
-      "osa_source_path": "Authority/Game/Season0-Visual/DEV43-Approved-Hero-Artwork/S0-MAG-H007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H007-Dwarf Mage.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H008": {
@@ -1722,7 +1705,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f6bf66a71b0e01663c93e89a3aa410c5e5111310397fc197a18cc834a0bc859f",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H008-Dwarf Arcane Warrior.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-H009": {
@@ -1733,7 +1716,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "a16ef602e9067f52089e8b9b498f92b3f314b5169d8b283017ae342da2c90506",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-H009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-H009-Dwarf Arcane Vanguard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-L001": {
@@ -1743,8 +1726,8 @@
       "verified_local_full_path": "card-art/S0-MAG-L001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "a357af9bc3521f8b49a02be80957359016cf1af32b92dd1db8c2ccf83bed362e",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-L001.webp",
+      "sha256": "1729f918811dd648d69510a5642388d7fbe7e80242697b5604d8c7ea87456759",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-L001-Ancestral Tome.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAG-L002": {
@@ -1754,8 +1737,8 @@
       "verified_local_full_path": "card-art/S0-MAG-L002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "80c350e41ecdbde1c78452e0a51f9ddc4e8db2a80137a361d99b7f9567866451",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-MAG-L002.webp",
+      "sha256": "7f19314e6df722af432837a320da08bacefe0aac9fc0878b908de5b2f3410d54",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-MAG-L002-Arcane Wand.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-MAN-001": {
@@ -1832,7 +1815,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "70d9f99dfec5d5e51facad5531c76aad8f5e67dc0030429bf45e3f2857457c1f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-001-Dash Stab.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-002": {
@@ -1843,7 +1826,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e5bd311b4efc6999ec5b0d9c5908c64229bfeb55c58d1d83746d1298f60546c4",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-002-Jump Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-003": {
@@ -1854,7 +1837,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "290d9640e1585528bf1d8471de6d4d7432eced3649d60d5e9f4a5ecd5750e476",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-003-Evasion.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-004": {
@@ -1865,7 +1848,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "2ec3f0788cdc797333e9b9d05770887b01476d8bea0129bb5cf1f3724fd0b437",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-004-Smoke Screen.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-005": {
@@ -1876,7 +1859,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "7cd5698ba746bb6f875ee0268aec62c25d832963023a3b1bde8f1a1e14831972",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-005-Steal.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-006": {
@@ -1887,7 +1870,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "bc4f6c5e4bbe84fc1b7149fa4ae2239d50143623b964ba3b344c626c2b91a4b2",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-006-Sixth Sense.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-007": {
@@ -1898,7 +1881,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "5fe57836252679599cf36d56c4c427344040d65805423495d9d657e99c2264a1",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-007-Horizontal Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-008": {
@@ -1909,7 +1892,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9fa447a9cb31607fd75b2d597e9d7310ff0a84a6fe2906f568742fe9f384383f",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-008-Vertical Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-009": {
@@ -1920,7 +1903,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "d215694bd2323c81a9527bce11dfb9efdff8c5cbe037c1b39f51fa6a061aed0c",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-009-X Cross Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-010": {
@@ -1931,7 +1914,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "2ee45ec8405b1102184c7bb55d5b8b8596d00239c3fddcce7ea44bc836573144",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-010.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-010-Back Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-011": {
@@ -1942,7 +1925,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "dd127e2d4e257288b4e2498947da5bedd35c607c083d9e057afa289cd52178f9",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-011.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-011-Poison Mist.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-012": {
@@ -1953,7 +1936,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "a25ed798066a2d89e42c2d061450116cd8dd0caaed26fa986a7e46b70d3c5f13",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-012.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-012-Elusive Escape.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-013": {
@@ -1963,8 +1946,8 @@
       "verified_local_full_path": "card-art/S0-THF-013.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "a31292f1e22328331621d52407cc21a5d9b46b681b07d64afc44ee4da7698c94",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-013.webp",
+      "sha256": "5cbdf58cf8591c66784888b1bdab0a5bc8bcd30090f37311ac9ae60dce7b8260",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-013-Venom Strike.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-014": {
@@ -1974,8 +1957,8 @@
       "verified_local_full_path": "card-art/S0-THF-014.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "4bf9f359afabfa6f4d60403bb029a437ec433c0f209cbf28ede595e9a9aa855c",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-014.webp",
+      "sha256": "e03a41c0acbdf6270a6dd5d00b83f6e549a00dabc033b2ef9a8ddb0cafc4e7d3",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-014-Viper's Fang.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-015": {
@@ -1986,7 +1969,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9244e0ad0f89b5ab59925c86828c0c0d8b889f00c79cc2bf7363e5f5d00b7699",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-015.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-015-Venom Sovereign.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-016": {
@@ -1996,8 +1979,8 @@
       "verified_local_full_path": "card-art/S0-THF-016.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "1f3150468ea16e1c05b2c5083385276259c956ee631845624b9c8dbcaedadae6",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-016.webp",
+      "sha256": "551120d41a1f26a6b88f6c8f467c4b34a0ed47c71ef32f10f24173e269803385",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-016-Finishing Strike.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-017": {
@@ -2008,7 +1991,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "4ee6d315dba25fd9756ea751cea597e2a31563f97d057af669c6c141565a0b97",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-017.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-017-Venom Binding.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-018": {
@@ -2018,8 +2001,8 @@
       "verified_local_full_path": "card-art/S0-THF-018.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "45addbe90135d67268d60372a8c03a3594035928262b6eeb5ae6080aeea0a239",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-018.webp",
+      "sha256": "8b3ddef406fd3d16b7bd4b80c94d24d6b33d946425b56111f9fdc3fa6fdc0f85",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-018-Venom Detonation.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-019": {
@@ -2030,7 +2013,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "1a6b633c6ed7ce02748f7f76020973a5bc3871e88b2a8f8e65b1a5c2b4132bdd",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-019.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-019-Lethal Venom.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-020": {
@@ -2041,7 +2024,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8d38976556b4443c4aca254844ee7f8fa7a26d6070b6cb82b4791ddb57fad8fb",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-020.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-020-Dash Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-021": {
@@ -2052,7 +2035,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "52727b41a74109529ccfdb54db681df29e2ad184d5731186170f7e7b57a3a167",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-021.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-021-Sword Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-022": {
@@ -2063,7 +2046,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e12f212b4e58a39d3e853e3fc1b6df1c14a8faf31a5da8c888044610436c22e1",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-022.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-022-Deflection.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-023": {
@@ -2074,7 +2057,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f5b8d4acd9798f81464acca86bd16c1654c1be0848a59651b32e1c68588d03a5",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-023.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-023-Shadow Switch.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-024": {
@@ -2085,7 +2068,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "87c83789af537cd19a77f56983e05ce4c636f6cccf4b807b833f26e082001d0c",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-024.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-024-Flash Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-025": {
@@ -2096,7 +2079,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "8b05f0800c54bffb30424c493aae5e41a921eeee0ea81c16aafeb067100d2649",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-025.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-025-Sword Combo.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-026": {
@@ -2107,7 +2090,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "510fe05f0a56fd3b1317ef342b7ebc68ad452aa63d5adaf4e409043e902b9811",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-026.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-026-Blink Strike.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-027": {
@@ -2118,7 +2101,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "19753a9ba523c9396c6074353bb55de854dff494f7955550fdf2bace99342514",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-027.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-027-Dodge Instinct.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-028": {
@@ -2129,7 +2112,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3c2fba0755dda56a8356bcc66c0df93bb366589590ed8adb627e9d6375f81782",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-028.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-028-Camouflage.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-029": {
@@ -2140,7 +2123,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "87d836af4e71d37e084c6786105e01404065d21ce8a4f3bee1503048ee0abaa8",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-029.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-029-Calculated Plan.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-030": {
@@ -2151,7 +2134,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "b41c91fd40922b7804522130e79ca0b54383adb6d2d0820a94bf889d23c9dc1b",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-030.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-030-Flash Combo.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-031": {
@@ -2162,7 +2145,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "7b6bb8c5bf5afd7e295c394c706227dc3e18443ac7523375a99c73bb6020145d",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-THF-031.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-THF-031-Crescent Moon Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H001": {
@@ -2173,7 +2156,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "1dccfda1beb2213897a0ac288c9ec67c29139430bb9149784aa5cf1ae1b24eb7",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H001-Halfling Thief.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H002": {
@@ -2184,7 +2167,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "23078977dd19df459efcc29592cf41ae3b52f4cfc59eb1d68790e2b5e12047fc",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H002-Halfling Rogue.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H003": {
@@ -2195,7 +2178,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "6cf249aea998168c9b524753af9352f9e458652904575651b959ee52b81e6a1e",
-      "osa_source_path": "Authority/Game/Season0-Visual/DEV43-Approved-Hero-Artwork/S0-THF-H003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H003-Halfling Renegade.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H004": {
@@ -2206,7 +2189,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9737d8f8e97bc1a4069ab246d34c5ea15490085fa9b75233f2024f0d1ae685ea",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H004-Dragonborn Thief.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H005": {
@@ -2217,7 +2200,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f205c245990ae1bd047e5462b1a19cd1162c4dfe77e7b4510a130575eaae8a99",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H005-Dragonborn Rogue.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H006": {
@@ -2228,7 +2211,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f7f0bfc294439936a0c43f05d2fc877f148607ff3226572555bc53fa3c602c4c",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H006-Dragonborn Renegade.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H007": {
@@ -2239,7 +2222,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "5f7c209f9479badafde0b0da62e8b72a5c1efc12124a30ed077b1ced5804f02e",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H007-Elf Thief.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H008": {
@@ -2250,7 +2233,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "0d294d8fdc9192ecb3b38da3634bb745136107840b7ed093594dc6113d00b1aa",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H008-Elf Spell Blade.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-H009": {
@@ -2261,7 +2244,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "44650654d5f693c24827f7f1a1c217cd604d12cbebb2bdc35e700b899e807be9",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-H009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-H009-Elf Arcane Duelist.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-L001": {
@@ -2271,8 +2254,8 @@
       "verified_local_full_path": "card-art/S0-THF-L001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "b11dcda3eea7f1cdd9f6e79344038752ea56db6da34badab9e6f18ed0d972ccf",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-L001.webp",
+      "sha256": "2638eb1047b11dee06ce6edb48c8214857e7b430e840781d342a6c5c67cbbf37",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-L001-Hidden Stash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-THF-L002": {
@@ -2282,8 +2265,8 @@
       "verified_local_full_path": "card-art/S0-THF-L002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "69dc42613cd95a2b503f3cbcaec77e32b99c8e84b5b0f933a1635ffa24608c8e",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-THF-L002.webp",
+      "sha256": "747b5f0fe32f4572bf2a968a998fbe8f0b7af0a1d9923b15088cc8369657c688",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-THF-L002-Hidden Archives.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-001": {
@@ -2294,7 +2277,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "1871fb1709f67b065dcc5ca77452922ba58b4571a1968967a010d0d0494f5864",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-001-Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-002": {
@@ -2305,7 +2288,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9fad89ba2ba3c84b90013a69a04e638c041a6ff165506050394159931cb6c9d0",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-002-Power Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-003": {
@@ -2316,7 +2299,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9c5009979a0f10f76144b5fd74ee7cc989132ea6e443e60bb783475d4f8e9fc7",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-003-Parry.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-004": {
@@ -2327,7 +2310,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "cf974bf17f67a8e6b3ca07d74ca7f8e254876f7a22e95392dc292899df2172c3",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-004-Cover Up.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-005": {
@@ -2338,7 +2321,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3b6406d3c3f9bbc57ff33a44a7cf63540267deb997a3d8d9c3e207f11cdec29c",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-005-Taunt.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-006": {
@@ -2349,7 +2332,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "2c17ec66f234d1d956976458a7fcfebd399bd24998d5c4ce454c434509ad874e",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-006-Savage Blow.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-007": {
@@ -2360,7 +2343,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "89c38844a18d3e899c702b076c15da4017e2298f3914f6566f010b49ad55713e",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-007.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-007-Upward Thrust.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-008": {
@@ -2371,7 +2354,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "e2a55dce72128d4e5c2a020d11f8f266ca04a69193ebbe788af080fc0a5d8c63",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-008.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-008-Wild Swing.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-009": {
@@ -2382,7 +2365,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "18dd61bbb5efee7c0338b11c8bffb775d7a49a251c4456b0d4c01c9269611838",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-009-Rage Swing.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-010": {
@@ -2392,8 +2375,8 @@
       "verified_local_full_path": "card-art/S0-WAR-010.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "1ccae36abea2e800dc0a5c5b07857df7444b436a6bce728a82873d1ad31ff7b2",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-010.webp",
+      "sha256": "8b1c6855ccfc5cc93c8d1945b861ee9c040f8e15d3fc5d162487480c676185e1",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-010-Rage Blast.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-011": {
@@ -2404,7 +2387,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "552eb8170f91c7b17407a58ab402030606b7ce5deeedeca231170f8c67d79b59",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-011.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-011-Side Step.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-012": {
@@ -2415,7 +2398,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "742b82965df039e456ae85d9905ce0c88d1ac7a67da61c1e71ae49ad2fa9fb3e",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-012.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-012-Deflect.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-013": {
@@ -2426,7 +2409,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "64639f87c09a9e30a9ae6b56b98812d1064396936827bb2b9a278a56f0db064e",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-013.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-013-Enrage.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-014": {
@@ -2437,7 +2420,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "aa05df97531b64b79d609bea266675b26055c96926661527ecee6d18197015c5",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-014.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-014-Final Grit.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-015": {
@@ -2448,7 +2431,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "7f5d26a944413258610db342219583d0ef504f41f553ad1d9188ae857abae209",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-015.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-015-Charge Attack.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-016": {
@@ -2459,7 +2442,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "239fbc2164c374f814b0da0199ba8ad16d1972151598ab1be502117d2d4ee083",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-016.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-016-Whirlwind.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-017": {
@@ -2470,7 +2453,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "d591dfd5eab2dae5b3cee039917df3c674da4b7161f7028a7ce26160f1e38f03",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-017.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-017-Fiery Thrust.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-018": {
@@ -2481,7 +2464,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "0af7400ab2a8eb5ed9acb556af210c217a9659275bc2e11ca3cf703245731b9c",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-018.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-018-Execute.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-019": {
@@ -2492,7 +2475,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "762630fd81b8f65faa04c08ddb74916044a506a989c74beabd6951bc7d2ac955",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-019.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-019-Wild Assault.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-020": {
@@ -2503,7 +2486,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "9f7c45eaf24e37cc4e8f82e4af47c9b15dc5b9504b817acd9e912dd41c6ca8d2",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-020.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-020-Radiant Cleave.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-021": {
@@ -2513,8 +2496,8 @@
       "verified_local_full_path": "card-art/S0-WAR-021.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "053e8f6fcb5408937508700aa4526364e0fb1ab3b2e0d98bd3244d1bd4f46644",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-021.webp",
+      "sha256": "0ad3370768e7647a37e10f6b76c225e08fb4d17162223ace3ec013cc18e09c71",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-021-Shield Bash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-022": {
@@ -2525,7 +2508,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3cca56c741c5fa4432b0a51ac49a907eb0979bd212dbbf41717dc6b7215a20de",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-022.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-022-Sacred Stormblade.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-023": {
@@ -2536,7 +2519,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "4e997804f97fc946adc4e0020107947daf49f0d73ba1dfc6f63ccea59c18e945",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-023.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-023-Unbroken Stand.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-024": {
@@ -2547,7 +2530,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "3aa756e2ae1ba183f95486933f0354128752076e7bf2d091441185c13052e865",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-024.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-024-Divine Slash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-025": {
@@ -2558,7 +2541,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "f18893c79d4752098629643ead365bb384798fb862746b76b192fa485b685aa3",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-025.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-025-Heroic Charge.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-026": {
@@ -2569,7 +2552,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "7d7c7fd07f219656577f5e0aeced7d33e14808a4ba53b9a4f01e8a84584674b0",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-026.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-026-Skull Crush.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-027": {
@@ -2580,7 +2563,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "0e4f92517b26c33b3ea357d43eaaee1b603825c53a8df0f12a2922cf5919d4dc",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-027.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-027-Colossal Bash.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-028": {
@@ -2591,7 +2574,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "220d8e2d4bbfb926bc65952097545ce11efa9889439feb3d57ad84d16ae41ddb",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-028.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-028-Weapon Throw.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-029": {
@@ -2602,7 +2585,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "ca137bdaac26c4bcc46cc3b7ce4baa87afdfb1c7925c672b4e75a7e444ef9131",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-029.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-029-Runic Guard.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-030": {
@@ -2613,7 +2596,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "843c1624d0b67c7d4bbd022769ddda068a5267494c18253b409878782c17b325",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-030.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-030-Shield Charge.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-031": {
@@ -2623,8 +2606,8 @@
       "verified_local_full_path": "card-art/S0-WAR-031.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "ff81b97e3100a8bdd43d2bee51440f3f122cebffb983222b2200198dff73a0c7",
-      "osa_source_path": "Authority/Game/Season0-Effects/MainDeck-R3.4/Artwork/S0-WAR-031.webp",
+      "sha256": "737fc49ab30e084346b7de6a7a4392c6d9d96cd1ffcabab7f9587719bea8d621",
+      "osa_source_path": "Grandis Legacy / Season0 / MainDeck R3.8/S0-WAR-031-Shield Blast.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H001": {
@@ -2635,7 +2618,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "822661223e155ea1d1b9906938ced96e1e6c622e97dacb6cab85f6e3f59ba6f6",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H001.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H001-Human Warrior.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H002": {
@@ -2646,7 +2629,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "827d703d80629fde5009ce88d623431813221e34e7768a6e050f6da84dc3783e",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H002.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H002-Human Gladiator.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H003": {
@@ -2657,7 +2640,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "54a11bf2ccd4474585f8270605753df97a04d7468a1015e472a518262d011de1",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H003.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H003-Human Conqueror.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H004": {
@@ -2668,7 +2651,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "a74ad5d6068b91d54de975fe37bc724a89d18f10340131f1feb909dd599f5311",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H004.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H004-Beastman Warrior.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H005": {
@@ -2679,7 +2662,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "70864609a2adb269e3caaf9678561f6001628049f3d36bb3ce635d57df0ca089",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H005.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H005-Beastman Gladiator.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H006": {
@@ -2690,7 +2673,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "395db6eabbcbb839158c6777ad98613507ccfe5151d7ec24744668e20ee850d4",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H006.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H006-Beastman Conqueror.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H007": {
@@ -2700,8 +2683,8 @@
       "verified_local_full_path": "card-art/S0-WAR-H007.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "b1297d857f0c1c1de68ba048af6db4d82248ab75bb6251b89dd876fea94691d1",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H007.webp",
+      "sha256": "3288b5c54ddf4e46d85b7ee703addcf0f8cdd160cfb908d50f41dc52ef8d8db8",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H007-Dragonborn Warrior.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H008": {
@@ -2711,8 +2694,8 @@
       "verified_local_full_path": "card-art/S0-WAR-H008.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "268623aa5e6c5424d129b3413024ac919a35e3276b13123d437d167c1a074b60",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H008.webp",
+      "sha256": "fc1298f3436a5241d3922d400b5ec6c97a3483ed67757a22a980d09883e96005",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H008-Dragonborn Paladin.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-H009": {
@@ -2723,7 +2706,7 @@
       "local_thumb_exists": true,
       "local_full_exists": true,
       "sha256": "db90962302127177fa2a4ae6026faa59916cfa0960ba22a8710060a04083d5fc",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-H009.webp",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-H009-Dragonborn Crusader.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-L001": {
@@ -2733,8 +2716,8 @@
       "verified_local_full_path": "card-art/S0-WAR-L001.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "33a59bf88d74b89afde6b60863ce85fc38708005df17a45de7fdb63fab2d9c52",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-L001.webp",
+      "sha256": "7ab847ea82d2428fb3effea66cce03deb848323595820b0c1e7dc1fb14b53533",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-L001-Warrior's Relic.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     },
     "S0-WAR-L002": {
@@ -2744,8 +2727,8 @@
       "verified_local_full_path": "card-art/S0-WAR-L002.webp",
       "local_thumb_exists": true,
       "local_full_exists": true,
-      "sha256": "4c721790b6b8efa1916c964612fe95f1ca003bea9efb5d90b5c8fb9578cc75a0",
-      "osa_source_path": "Authority/Game/Season0-Effects/LegacyDeck-R3.3/Artwork/S0-WAR-L002.webp",
+      "sha256": "400c85747c502df3283099fc0a52ed753b3174a00ee4495ece2bc4b4d1bf1d57",
+      "osa_source_path": "Grandis Legacy / Season0 / LegacyDeck R3.7/S0-WAR-L002-Statue of the Lightbringer.webp",
       "status": "ACTIVE_SHA256_VERIFIED"
     }
   },
@@ -2761,7 +2744,7 @@
     "legacy_deck_card_back": "assets/ui/back-legacy.webp",
     "mana_shard": "assets/ui/back-shard.webp"
   },
-  "artwork_source": "OSA DEV45 Generated/Season0-Consumers/season0-consumer-assets.dev44.json",
+  "artwork_source": "MainDeck R3.8 / LegacyDeck R3.7",
   "backs": {
     "legacy": {
       "file": "assets/ui/back-legacy.webp",
@@ -2778,14 +2761,5 @@
       "sha256": "817b05bd2642020bebd0b7365fa44e46fffc05ad2e0616dc3cec53f1bc8efbe3",
       "osa_source_path": "Authority/Game/Season0-Visual/CardBacks/Current/back-mana.webp"
     }
-  },
-  "rc39_main_deck_artwork": {
-    "release": "RC39",
-    "main_deck_authority": "GL_S0_MainDeck_R3.7.rar",
-    "main_deck_card_count": 187,
-    "main_deck_art_changed_vs_rc38": 17,
-    "legacy_deck_artwork": "R3.6 unchanged",
-    "hashes": "per-card sha256 updated in cards table",
-    "builder_artwork_crosscheck": "Grandis_Legacy_Deck_Builder_v1.65_2026-11-12.zip: 187/187 exact matches"
   }
 }

@@ -1,0 +1,29 @@
+{
+  "passed": 5,
+  "total": 5,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Defensive Formation is a playable Deploy BUFF Event with 3 Mana; PLAYER source stays Ready",
+      "status": "PASS"
+    },
+    {
+      "name": "Defensive Formation lasts through first owner End then expires at second, discarding exactly once",
+      "status": "PASS"
+    },
+    {
+      "name": "Live Defensive Formation mitigates real attack (all allied lanes, Physical & Magical), not friendly damage",
+      "status": "PASS"
+    },
+    {
+      "name": "Coordination Attack real commit +20 for mixed classes, duration two owner End phases",
+      "status": "PASS"
+    },
+    {
+      "name": "Defensive Formation in hand is not offered as Response to Area Attack",
+      "status": "PASS"
+    }
+  ],
+  "version": "RC40",
+  "canonical": "MainDeck R3.8 / LegacyDeck R3.7"
+}

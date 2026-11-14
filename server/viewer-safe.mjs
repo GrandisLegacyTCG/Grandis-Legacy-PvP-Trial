@@ -73,6 +73,14 @@ const publicDamageSummary = src => {
   const out={};for(const key of allowed)if(Object.hasOwn(src,key))out[key]=publicNumber(src[key]);
   return Object.keys(out).length ? out : undefined;
 };
+const publicDamageModifiers = input => (Array.isArray(input)?input:[]).slice(0,14).map(m=>{
+  if(!m||typeof m!=='object'||!Number.isFinite(Number(m.amount)))return null;
+  const type=String(m.source_type||'Modifier');
+  if(!['Attachment','Hero Ability','Status','Event','Runtime','Modifier'].includes(type))return null;
+  const raw=String(m.source_name||type);
+  const safe=/^[\w\s+'-]{1,75}$/.test(raw)&&!/(?:hand|deck|search|private|unrevealed|hidden|choice)/i.test(raw);
+  return {source_type:type,source_name:safe?raw:type,amount:publicNumber(m.amount)};
+}).filter(Boolean);
 const safePlayedResultLine = line => {
   if(typeof line!=='string'||line.length>300)return false;
   // Only combat/visible-status outcomes are safe; the rest can contain the
@@ -97,7 +105,9 @@ function safePlayedAction(event,side) {
     played_event_order:Math.max(0,Number(event.played_event_order)||0),
     resolution_state:publicScalar(event.resolution_state||'RESOLVED',20),
     result_lines:(Array.isArray(event.result_lines)?event.result_lines:[])
-      .filter(safePlayedResultLine).slice(0,14).map(line=>publicScalar(line,300))
+      .filter(safePlayedResultLine).slice(0,14).map(line=>publicScalar(line,300)),
+    response_lines:(Array.isArray(event.response_lines)?event.response_lines:[])
+      .filter(safePlayedResultLine).slice(0,8).map(line=>publicScalar(line,300))
   };
   // Hero identity and EXP gained are public once the action was played.
   // Never include snapshots, raw detail_lines, hidden inventory or audit traces.
@@ -134,8 +144,22 @@ function safePlayedAction(event,side) {
     out.damage_by_hero=event.damage_breakdown_by_hero.slice(0,36).map(x=>({
       name:publicScalar(x?.name||'Target Hero',100),
       side:publicSide(x?.side),lane:publicLane(x?.lane),
-      summary:publicDamageSummary(x?.summary)||{}
+      summary:publicDamageSummary(x?.summary)||{},modifiers:publicDamageModifiers(x?.modifiers)
     })).filter(x=>x.side&&x.lane);
+  }
+  // RC40: public Attachment effects are safe, but raw audit fields are not.
+  // Only the canonical VS AI player-facing text of an already played card is forwarded.
+  if(Array.isArray(event.effect_breakdown_by_hero)){
+    const rows=event.effect_breakdown_by_hero.slice(0,16).map(effect=>{
+      if(String(effect?.kind||'').toUpperCase()!=='ATTACHMENT')return null;
+      if(!['team','hero'].includes(String(effect.scope||'')))return null;
+      const description=publicScalar(effect.description,120),detail=publicScalar(effect.detail,230);
+      if(!detail||/(?:\bhand\b|\bdeck\b|\bsearch\b|\bprivate\b|\bunrevealed\b|\brole:|\bexpiry:|\bslot \d+|\bcounters:)/i.test(description+' '+detail))return null;
+      return {kind:'ATTACHMENT',scope:effect.scope,name:publicScalar(effect.name,100),
+        side:publicSide(effect.side)||side,lane:publicLane(effect.lane)||'',
+        description,detail};
+    }).filter(Boolean);
+    if(rows.length)out.effect_breakdown_by_hero=rows;
   }
   if(Array.isArray(event.healing_by_hero))out.healing_by_hero=event.healing_by_hero.slice(0,16).map(x=>({
     name:publicScalar(x?.name||'Hero',100),side:publicSide(x?.side),lane:publicLane(x?.lane),

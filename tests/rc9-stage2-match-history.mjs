@@ -9,15 +9,17 @@ import {annotatePlayerHistoryEffects, stripPrivateHistoryEffectsForSpectator} fr
 import {PvpDiscardPresentationLedger} from '../server/discard-presentation.mjs';
 
 const source=readFileSync(new URL('../public/battle/shared-app/app-runtime.js',import.meta.url),'utf8');
+const legacyCardPlayedFixture=readFileSync(new URL('./fixtures/rc9-legacy-cardplayed-helpers.js',import.meta.url),'utf8');
 const read=x=>readFileSync(new URL(x,import.meta.url),'utf8');
 let checks=0;
 function check(label,fn){fn();checks++;console.log('PASS '+label);}
 function bodyOf(name){
-  const start=source.indexOf('function '+name+'(');
+  const src=legacyCardPlayedFixture.includes('function '+name+'(')?legacyCardPlayedFixture:source;
+  const start=src.indexOf('function '+name+'(');
   assert.ok(start>=0,'Missing UI function '+name);
-  const after=source.indexOf('\nfunction ',start+1);
+  const after=src.indexOf('\nfunction ',start+1);
   assert.ok(after>start,'Unterminated UI function '+name);
-  return source.slice(start,after);
+  return src.slice(start,after);
 }
 const cv=id=>({
   'S0-MAG-019':{name:"Flame Dragon's Wrath",subtype:'Magical Attack'},

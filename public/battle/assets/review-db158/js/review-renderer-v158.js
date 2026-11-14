@@ -1,6 +1,4 @@
-/* Deck Builder v1.58 Card Review renderer (presentation only).
-   Extracted from original js/app-s0.js. Only the following DOM adapters are new.
-   Gameplay and source card records remain OSA S0 DEV45. */
+/* Exact Deck Builder v1.66 Review renderer logic, adapted to the isolated iframe. */
 (function(){'use strict';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -33,8 +31,8 @@ function labeledRowName(label='',prefix=''){
 function romanRank(value){return ({1:'I',2:'II',3:'III'})[Number(value||1)]||String(value||'-')}
 function rankUpBonusText(rank){
   const value=Number(rank||1);
-  if(value===2)return 'After Rank Up, return 2 EXP cards to your Hand and gain +1 Mana Regen.';
-  if(value===3)return 'After Rank Up, return 3 EXP cards to your Hand and gain +1 Mana Regen.';
+  if(value===2)return 'After Rank Up, return 2 EXP cards to your hand and gain +1 Mana Regen.';
+  if(value===3)return 'After Rank Up, return 3 EXP cards to your hand and gain +1 Mana Regen.';
   return '';
 }
 function heroExpValue(rank){return ({1:'—',2:'300',3:'700'})[Number(rank||1)]||'—'}
@@ -76,21 +74,52 @@ function effectMetric(card,row={}){
   if(!label)return null;
   return {label,value};
 }
-function skillEffectText(row={},metric=null){
-  let effect=String(row.effect_text||row.text||'').trim();
-  if(!metric)return effect||String(row.damage_text||'—').trim()||'-';
-  // Numeric-only Attack rows have no printed effect text beyond the damage number.
-  // Expand their REVIEW ONLY into a readable action while preserving the numeric metric.
-  // Do not infer damage type for Area/Casting or rewrite any nonnumeric card effects.
-  if(/^\s*[+-]?\d+\s*$/.test(effect) && /^(?:PHYSICAL|MAGICAL) DAMAGE$/.test(metric.label)){
-    return `Deal ${metric.value} ${metric.label==='PHYSICAL DAMAGE'?'Physical':'Magical'} damage.`;
+function skillEffectText(row={},metric=null,card=null){
+  const effect=String(row.effect_text||row.text||'').trim();
+  const rawValue=String(row.damage_text||'').trim();
+  const isAttack=/^(?:Physical|Magical|Area|Casting) Attack$/i.test(String(card?.classification||''));
+  const type=metric&&/^(?:PHYSICAL|MAGICAL) DAMAGE$/.test(metric.label)
+    ?(metric.label==='PHYSICAL DAMAGE'?'Physical':'Magical'):'';
+  const damageText=(value,damageType=type)=>`Deal ${value} ${damageType} damage.`;
+
+  // The shared CONDITION box on some attacks contains a prerequisite sentence
+  // followed by the printed damage/multiplier sentence. Display the first in
+  // CONDITION once, and the second under each Rank with its printed number.
+  const printedCondition=String(card?.printedConditionText||'').trim();
+  if(isAttack&&type&&/^\d+$/.test(rawValue)&&(!effect||/^[+-]?\d+$/.test(effect))&&printedCondition){
+    const match=printedCondition.match(/^([\s\S]*?[.!?])\s+((?:Deal|Multiply)\b[\s\S]*)$/i);
+    if(match){
+      const mechanic=match[2].trim();
+      if(/^Deal\s+(?:Area\s+)?(?:Physical|Magical)\s+damage\b/i.test(mechanic)){
+        return mechanic.replace(/^Deal\s+((?:Area\s+)?(?:Physical|Magical))\s+damage\b/i,
+          (_m,t)=>`Deal ${metric.value} ${t} damage`);
+      }
+      if(/^Multiply\b/i.test(mechanic))return `${damageText(metric.value)} ${mechanic}`;
+    }
   }
-  if(/DAMAGE$/.test(metric.label)&&metric.label!=='DAMAGE REDUCTION')effect=effect.replace(/^(?:Deal|Inflict)\s+[+-]?\d+[^.]*?damage\.\s*/i,'').trim();
-  else if(metric.label==='DAMAGE REDUCTION')effect=effect.replace(/^Block\s+[+-]?\d+[^.]*?damage[^.]*\.\s*/i,'').trim();
-  else if(metric.label==='HEALING DONE')effect=effect.replace(/^(?:Heal|Restore)[^.]*?[+-]?\d+[^.]*\.\s*/i,'').trim();
-  return effect||'—';
+
+  if(!metric)return effect||String(row.damage_text||'—').trim()||'—';
+  if(isAttack&&type){
+    const detail=/^[+-]?\d+$/.test(effect)?'':effect;
+    // Add the numeric print to an existing typed damage sentence in-place.
+    // Preserve the surrounding original text and damage mechanism verbatim.
+    const typed=/\b(Deal(?:s)?\s+)(\d+\s+)?((?:Area\s+)?(?:Physical|Magical))(\s+damage\b)/i;
+    if(typed.test(detail))return detail.replace(typed,(_m,verb,oldNumber,kind,suffix)=>
+      `${verb}${oldNumber||metric.value+' '}${kind}${suffix}`);
+    const prelude=detail.match(/^((?:(?:MELEE|RANGE|PIERCING|SURE HIT)\s+)+)/)?.[1]||'';
+    const remaining=detail.slice(prelude.length);
+    return `${prelude}${damageText(metric.value)}${remaining?' '+remaining:''}`.trim();
+  }
+  let remaining=effect;
+  if(/DAMAGE$/.test(metric.label)&&metric.label!=='DAMAGE REDUCTION')
+    remaining=remaining.replace(/^(?:Deal|Inflict)\s+[+-]?\d+[^.]*?damage\.\s*/i,'').trim();
+  else if(metric.label==='DAMAGE REDUCTION')
+    remaining=remaining.replace(/^Block\s+[+-]?\d+[^.]*?damage[^.]*\.\s*/i,'').trim();
+  else if(metric.label==='HEALING DONE')
+    remaining=remaining.replace(/^(?:Heal|Restore)[^.]*?[+-]?\d+[^.]*\.\s*/i,'').trim();
+  return remaining||'—';
 }
-function itemClassText(card){
+function itemClassText(card){if(card.printedClassRequirement)return card.printedClassRequirement;
   const classes=Array.isArray(card.requiredBaseClasses)?card.requiredBaseClasses.filter(Boolean):[];
   return classes.length?classes.join(' • '):'All Classes';
 }
@@ -113,7 +142,7 @@ function heroReviewHtml(card){
   if(dualRow)detailBlocks.push(`<div class="review-hero-dual-section"><span>DUAL CLASS</span><p>${esc(dualRow.text||'—')}</p></div>`);
   detailBlocks.push(`<div class="review-hero-block hero-racial-section">
     <div class="review-hero-group"><span>RACE</span><strong>${esc(card.race||'—')}</strong></div>
-    <div class="review-hero-group"><span>RACIAL TRAITS</span><strong>${esc(racialName)}</strong><p>${esc(racialRow?.text||card.text||'—')}</p></div>
+    <div class="review-hero-group"><span>RACIAL TRAITS</span><strong>${esc(racialName)}</strong><p>${esc(racialRow?.text||card.text||'—')}</p>${card.printedRacialDamageReduction?`<div class="review-hero-numeric"><span>DAMAGE REDUCTION</span><strong>${esc(card.printedRacialDamageReduction)}</strong></div>`:''}</div>
   </div>`);
   detailBlocks.push(`<div class="review-hero-block hero-class-section">
     <div class="review-hero-class-summary">
@@ -136,7 +165,7 @@ function standardReviewHtml(card){
     ['EXP TRIBUTE',card.ultimate?.isUltimate?'200 EXP':'100 EXP']
   );
   else if(card.family==='LegacyModeDefinition')stats.push(['CARD TYPE','LEGACY'],['CLASS',card.classGroup||'—']);
-  else stats.push(['CARD TYPE',String(card.family||'CARD').toUpperCase()],['SUBTYPE',card.classification||reviewType(card)],['MANA COST',reviewCost(card)]);
+  else stats.push(['CARD TYPE',String(card.family||'CARD').toUpperCase()],['SUBTYPE',card.family==='Event'?(card.classification==='Normal Event'?'Regular':card.classification==='Special Event'?'Special':card.classification||reviewType(card)):card.classification||reviewType(card)],['MANA COST',reviewCost(card)]);
   $('reviewStats').innerHTML=`<div class="review-summary ${stats.length===4?'four-column-summary':''}">
     ${stats.map(([label,value])=>`<div class="review-summary-item"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join('')}
   </div>`;
@@ -147,22 +176,15 @@ function standardReviewHtml(card){
       const parsed=rowClassRank(row.label);
       const metric=effectMetric(card,row);
       const rankText=isUltimate&&/Rank\s+III/i.test(parsed.rank)&&index===rows.length-1?`Ultimate ${parsed.rank}`:parsed.rank;
-      const effectText=skillEffectText(row,metric);
+      const effectText=skillEffectText(row,metric,card);
       const rankClass=isUltimate&&/^Ultimate\s+Rank\s+III$/i.test(rankText)?' class="ultimate-rank"':'';
       if(metric){
-        return `<div class="review-effect-row has-metric"><div class="review-effect-class"><span>CLASS</span><strong>${esc(parsed.className||card.classGroup||'—')}</strong></div><div class="review-effect-rank"><span>RANK</span><strong${rankClass}>${esc(rankText)}</strong></div><div class="review-effect-metric"><span>${esc(metric.label)}</span><strong>${esc(metric.value)}</strong>${metric.damageType?`<small class="review-metric-type">${esc(metric.damageType)}</small>`:''}</div><div class="review-effect-info"><span>SKILL EFFECT</span><p>${esc(effectText)}</p></div></div>`;
+        return `<div class="review-effect-row has-metric"><div class="review-effect-class"><span>CLASS</span><strong>${esc(parsed.className||card.classGroup||'—')}</strong></div><div class="review-effect-rank"><span>RANK</span><strong${rankClass}>${esc(rankText)}</strong></div><div class="review-effect-metric"><span>${esc(metric.label)}</span><strong>${esc(metric.value)}</strong>${metric.damageType?`<small class="review-metric-type">${esc(metric.damageType)}</small>`:''}</div>${effectText?`<div class="review-effect-info"><span>SKILL EFFECT</span><p>${esc(effectText)}</p></div>`:''}</div>`;
       }
       return `<div class="review-effect-row no-metric"><div class="review-effect-class"><span>CLASS</span><strong>${esc(parsed.className||card.classGroup||'—')}</strong></div><div class="review-effect-rank"><span>RANK</span><strong${rankClass}>${esc(rankText)}</strong></div><div class="review-effect-info full-span"><span>SKILL EFFECT</span><p>${esc(effectText)}</p></div></div>`;
     }).join('');
     const rules=isUltimate&&card.ultimate?.owner?`<div class="review-ultimate-rules"><span>ULTIMATE RULES</span><p>${esc(/\bcan use this card\b/i.test(String(card.ultimate.owner))?card.ultimate.owner:`Only ${card.ultimate.owner} can use this card or Tribute it for EXP.`)}</p></div>`:'';
-    // Shared printed effect is not part of the individual Bard/Maestro
-    // numeric damage rows. Keep it visible separately in this card's Review.
-    // Source: designer-approved local printed front (without trailing row values).
-    const commonEffect=card.id==='S0-CLE-031'
-      ?String(card.text||'').replace(/\s+60\s*\|\s*90\s*$/,'').trim():'';
-    const commonBlock=commonEffect
-      ?`<div class="review-generic-row review-large-effect gl-s0-review-common-effect"><span>SHARED EFFECT / CONDITION</span><p>${esc(commonEffect)}</p></div>`:'';
-    $('reviewRows').innerHTML=commonBlock+effectRows+rules;
+    $('reviewRows').innerHTML=effectRows+rules;
   }else if(card.family==='Item'){
     const effect=rows.map(row=>row.effect_text||row.text||row.damage_text||'').filter(Boolean).join(' ');
     $('reviewRows').innerHTML=`<div class="review-effect-row item-effect-row no-metric"><div><span>CLASS</span><strong>${esc(itemClassText(card))}</strong></div><div><span>RANK</span><strong>All Ranks</strong></div><div class="review-effect-info full-span"><span>ITEM EFFECT</span><p>${esc(effect||'—')}</p></div></div>`;
@@ -183,13 +205,7 @@ window.GL_S0_REVIEW_RENDER=function(card){
  $('reviewTitle').textContent=card.name;
  $('reviewEyebrow').textContent=reviewEyebrow(card);
  $('reviewArt').src=card.image;$('reviewArt').alt=card.name;
- if(card.family==='Hero'){
-  heroReviewHtml(card);window.GL_S0_REVIEW_CLARITY?.enhanceHero(card,$('reviewRows'));
- }else{
-  standardReviewHtml(card);window.GL_S0_REVIEW_CLARITY?.enhance(card,$('reviewRows'));
- }
- // VS AI design decision: Hero Lineage/Rank selection is handled by the existing
- // battlefield progression surface, so never add the Deck Builder footer here.
- const progression=$('reviewProgression');if(progression)progression.hidden=true;
+ if(card.family==='Hero'){heroReviewHtml(card);window.GL_S0_REVIEW_CLARITY?.enhanceHero(card,$('reviewRows'))}
+ else {standardReviewHtml(card);window.GL_S0_REVIEW_CLARITY?.enhance(card,$('reviewRows'))}
 };
 })();

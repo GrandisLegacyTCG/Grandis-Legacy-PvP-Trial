@@ -19,5 +19,7 @@
   "authority_mode": "OSA_S0_DEV45_READ_ONLY_CONSUMER",
   "development_stage": 4,
   "gameplay_tested": false,
-  "playability": "UNVERIFIED"
+  "playability": "UNVERIFIED",
+  "active_print_authority": "MainDeck R3.8 / LegacyDeck R3.7",
+  "active_visual_authority": "MainDeck R3.8 / LegacyDeck R3.7"
 }
